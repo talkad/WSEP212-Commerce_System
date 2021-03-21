@@ -1,17 +1,14 @@
-package ShoppingManager;
+package Domain.ShoppingManager;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Product {
 
+    private int productID;
     private String name;
     private double price;
     private List<String> categories; // maybe?
@@ -19,7 +16,8 @@ public class Product {
     private Lock updateName;
     private Lock updateCategories;
 
-    public Product(String name, double price){
+    public Product(int productID, String name, double price){
+        this.productID = productID;
         this.name = name;
         this.price = price;
         this.categories = Collections.synchronizedList(new LinkedList<>());

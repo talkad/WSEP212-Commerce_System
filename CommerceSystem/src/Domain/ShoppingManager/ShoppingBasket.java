@@ -1,4 +1,4 @@
-package ShoppingManager;
+package Domain.ShoppingManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,11 +19,19 @@ public class ShoppingBasket {
         products.add(product);
     }
 
-    public void removeProduct(Product product){
-        products.remove(product);
+    public void updateName(String newName){
+        // ...
     }
 
-    public List<Product> getProducts(){
-        return products;
+    public void updatePrice(double newPrice){
+        // ...
+    }
+
+    public void addCategory(String category){
+        // ...
+    }
+
+    public void removeCategory(String category){
+        // ...
     }
 }

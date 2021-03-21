@@ -1,4 +1,4 @@
-package ShoppingManager;
+package Domain.ShoppingManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,8 +8,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ShoppingCart {
 
-    // the user that this cart is belong to
-    private String username;
     // map storeID to its relevant shopping basket
     private Map<Integer, ShoppingBasket> baskets;
 
@@ -17,8 +15,7 @@ public class ShoppingCart {
     private Lock writeLock;
     private Lock readLock;
 
-    public ShoppingCart(String username){
-        this.username = username;
+    public ShoppingCart(){
         this.baskets = new ConcurrentHashMap<>();
 
         lock = new ReentrantReadWriteLock();
