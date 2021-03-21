@@ -1,4 +1,4 @@
-package ShoppingManager;
+package Domain.ShoppingManager;
 
 public class StoreController {
 }

@@ -1,4 +1,4 @@
-package UserManager;
+package Domain.UserManager;
 
 public class UserController {
 }
