@@ -13,10 +13,7 @@ public class Product {
     private int storeID;
     private String name;
     private AtomicReference<Double> price;
-    private List<String> categories; // maybe?
-
-    private Lock updateName;
-    private Lock updateCategories;
+    private List<String> categories;
 
     public Product(int productID, int storeID, String name, double price){
         this.productID = productID;
@@ -24,9 +21,6 @@ public class Product {
         this.name = name;
         this.price = new AtomicReference<>(price);
         this.categories = Collections.synchronizedList(new LinkedList<>());
-
-        updateName = new ReentrantLock();
-        updateCategories = new ReentrantLock();
     }
 
     public void updatePrice(double newPrice){
@@ -43,6 +37,10 @@ public class Product {
 
     public String getName() {
         return name;
+    }
+
+    public int getProductID() {
+        return productID;
     }
 
     public ProductDTO getDTO() {
