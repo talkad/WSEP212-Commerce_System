@@ -1,4 +1,4 @@
 package Domain.UserManager;
 
-public class Admin extends Registered{
+public class Admin extends Registered {
 }
