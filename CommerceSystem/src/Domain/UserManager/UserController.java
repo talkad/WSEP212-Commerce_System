@@ -19,5 +19,9 @@ public class UserController {
     public static UserController getInstance() {
         return UserController.CreateSafeThreadSingleton.INSTANCE;
     }
+
+    public boolean createStore(String userName, String storeName){
+        return connectedUsers.get(userName).createStore(storeName);
+    }
 }
 

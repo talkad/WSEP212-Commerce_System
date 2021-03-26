@@ -26,6 +26,11 @@ public class User{
         }
     }
 
-
-
+    public boolean createStore(String storeName) {
+        boolean result;
+        result = this.state.createStore(storeName);
+        if(result)
+            this.roles.put(storeName, Role.STORE_OWNER);
+        return result;
+    }
 }
