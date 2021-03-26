@@ -36,9 +36,12 @@ public class UserController {
         }
     }
 
-    public String logout(String name){
+    public String logout(String name) {
         connectedUsers.remove(name);
         return addGuest();
+    }
+    public boolean createStore(String userName, String storeName) {
+        return connectedUsers.get(userName).createStore(storeName);
     }
 }
 

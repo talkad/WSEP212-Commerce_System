@@ -24,4 +24,9 @@ public class Registered extends UserState {
     public void logout() { //@TODO
 
     }
+
+    @Override
+    public boolean createStore(String storeName) {
+        return CommerceSystem.createStore(storeName);        //TODO add implementation
+    }
 }

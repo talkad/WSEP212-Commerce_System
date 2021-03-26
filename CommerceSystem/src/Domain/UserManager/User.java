@@ -35,11 +35,15 @@ public class User{
         }
     }
 
-    public UserState getState() {
-        return state;
-    }
-
     public boolean login(String name, String password) {
         return this.state.login(name, password);
+    }
+    public boolean createStore(String storeName) {
+        boolean result;
+        result = this.state.createStore(storeName);
+        if(result)
+            this.roles.put(storeName, Role.STORE_OWNER);
+        return result;
+>>>>>>> a3ae1a61c4d5548464a1a0fd4d410eac91d8e414
     }
 }

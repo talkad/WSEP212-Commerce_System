@@ -41,4 +41,8 @@ public class Guest extends UserState {
     public boolean loggedIn(){
         return false;
     }
+
+    public boolean createStore(String storeName) {
+        return false;
+    }
 }
