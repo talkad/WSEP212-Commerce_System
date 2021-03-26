@@ -4,6 +4,7 @@ import Domain.CommonClasses.Response;
 import Domain.ShoppingManager.Product;
 import Domain.ShoppingManager.ProductDTO;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,10 @@ public class ShoppingCart {
         readLock = lock.readLock();
     }
 
-    public Response<Boolean> addProduct(int storeID, Product product){
+    public Response<Boolean> addProduct(Product product){
         ShoppingBasket basket;
         Response<Boolean> res;
+        int storeID = product.getStoreID();
 
         writeLock.lock();
         baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
@@ -42,13 +44,14 @@ public class ShoppingCart {
         return res;
     }
 
-    public Response<Boolean> removeProduct(int storeID, Product product){
+    public Response<Boolean> removeProduct(Product product){
         ShoppingBasket basket;
         Response<Boolean> res;
+        int storeID = product.getStoreID();
 
         writeLock.lock();
         if(!baskets.containsKey(storeID)){
-            res = new Response<Boolean>(false, true, "This store basket doesn't exists");
+            res = new Response<>(false, true, "This store basket doesn't exists");
         }
         else{
             basket = baskets.get(storeID);
@@ -59,12 +62,16 @@ public class ShoppingCart {
         return res;
     }
 
-    public List<ProductDTO> getProducts(){
-        List<ProductDTO> products = new LinkedList<>();
+    /**
+     * get DTO products from cart
+     * @return map contains the storeID of a basket and its content
+     */
+    public Map<Integer, List<ProductDTO>> getProducts(){
+        Map<Integer, List<ProductDTO>> products = new HashMap<>();
         readLock.lock();
 
         for(ShoppingBasket basket: baskets.values()){
-            products.addAll(basket.getProducts());
+            products.put(basket.getStoreID() ,basket.getProducts());
         }
 
         readLock.unlock();

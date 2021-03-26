@@ -6,24 +6,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import Domain.CommonClasses.Rating;
 
 public class Product {
 
-    private int productID;
-    private int storeID;
-    private String name;
+    private final int productID;
+    private final int storeID;
+    private final String name;
     private AtomicReference<Double> price;
     private List<String> categories;
 
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
     private Collection<String> reviews;
-
-    private final Lock compLock;
 
 
     public Product(int productID, int storeID, String name, double price, List<String> categories){
@@ -36,8 +32,6 @@ public class Product {
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.reviews = Collections.synchronizedCollection(new LinkedList<>());
-
-        this.compLock = new ReentrantLock();
     }
 
     public void updatePrice(Double newPrice){
