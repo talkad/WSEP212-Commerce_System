@@ -85,7 +85,6 @@ public class ShoppingCartTest {
         int numberOfThreads1 = 100;
         int numberOfThreads2 = 50;
         Map<Integer, List<ProductDTO>> cartProducts;
-        Response<Boolean> res;
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads1 + numberOfThreads2);
 
