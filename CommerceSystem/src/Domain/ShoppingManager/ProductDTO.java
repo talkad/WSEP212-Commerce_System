@@ -15,4 +15,20 @@ public class ProductDTO {
         this.categories = categories;
         this.storeID = storeID;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public int getStoreID() {
+        return storeID;
+    }
 }
