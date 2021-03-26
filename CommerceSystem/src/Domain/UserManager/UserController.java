@@ -19,5 +19,26 @@ public class UserController {
     public static UserController getInstance() {
         return UserController.CreateSafeThreadSingleton.INSTANCE;
     }
+
+    private String addGuest(){
+        String guestName = "Guest" + availableId.getAndIncrement();
+        connectedUsers.put(guestName, new User());
+        return guestName;
+    }
+
+    private void login(String name, String password, String prevName){
+        if(connectedUsers.get(name).login(name, password)){
+            connectedUsers.remove(prevName);
+            connectedUsers.put(name, new User(name)); //@TODO what is user?
+        }
+        else {
+            //@TODO ERROR MSG FAILED TO LOGIN
+        }
+    }
+
+    public String logout(String name){
+        connectedUsers.remove(name);
+        return addGuest();
+    }
 }
 
