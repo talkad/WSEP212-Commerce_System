@@ -2,9 +2,8 @@ package Domain.ShoppingManager;
 
 import Domain.CommonClasses.Response;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class Inventory {
@@ -55,7 +54,7 @@ public class Inventory {
         return res;
     }
 
-    public Map<Integer, Product> getInventory(){
-        return products;
+    public Collection<Product> getInventory(){
+        return products.values();
     }
 }
