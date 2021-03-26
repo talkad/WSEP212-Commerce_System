@@ -10,7 +10,7 @@ import java.util.List;
 public class ShoppingBasket {
 
     // the store these products are belong to
-    private int storeID;
+    private final int storeID;
     private List<Product> products;
 
     public ShoppingBasket(int storeID){
