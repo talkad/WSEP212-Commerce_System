@@ -56,4 +56,7 @@ public class ShoppingBasket {
         return basketProducts;
     }
 
+    public int getStoreID() {
+        return storeID;
+    }
 }
