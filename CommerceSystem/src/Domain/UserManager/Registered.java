@@ -12,5 +12,12 @@ public class Registered extends UserState {
         return false;
     }
 
+    @Override
+    public boolean loggedIn() {
+        return true;
+    }
 
+    public void logout() {
+
+    }
 }

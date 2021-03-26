@@ -37,4 +37,8 @@ public class Guest extends UserState {
     private void registerUser(String name, String password){
         RegisteredDAO.getInstance().registerUser(name, password); //@TODO database write function
     }
+
+    public boolean loggedIn(){
+        return false;
+    }
 }

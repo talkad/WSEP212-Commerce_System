@@ -17,8 +17,13 @@ public class User{
         this.state = new Guest();
     }
 
-    public void changeState(UserState state){
-        this.state = state;
+    public void changeState(Role role){
+        switch (role){
+            case GUEST:
+                state = new Guest();
+                break;
+
+        }
     }
 
 
