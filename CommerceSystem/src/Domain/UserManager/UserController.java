@@ -27,7 +27,7 @@ public class UserController {
     }
 
     private void login(String name, String password, String prevName){
-        if(connectedUsers.get(name).login(name, password)){
+        if(connectedUsers.get(prevName).login(name, password)){
             connectedUsers.remove(prevName);
             connectedUsers.put(name, new User(name)); //@TODO what is user?
         }

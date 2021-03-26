@@ -4,13 +4,6 @@ import java.util.Map;
 
 public class User{
 
-    enum Role{
-        GUEST,
-        REGISTERED,
-        STORE_MANAGER,
-        STORE_OWNER,
-        ADMIN
-    }
     private UserState state;
     private Map<String, Role> roles;
 
@@ -21,6 +14,7 @@ public class User{
 
     public User(String name){
         this.state = new Registered(name);
+        //this.roles = state.roles
         // @TODO roles = loadfromdb
     }
 
@@ -44,6 +38,5 @@ public class User{
         if(result)
             this.roles.put(storeName, Role.STORE_OWNER);
         return result;
->>>>>>> a3ae1a61c4d5548464a1a0fd4d410eac91d8e414
     }
 }

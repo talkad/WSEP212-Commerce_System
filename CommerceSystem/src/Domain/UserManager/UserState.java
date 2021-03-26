@@ -9,5 +9,6 @@ public abstract class UserState {
     public abstract boolean loggedIn();
 
     public abstract boolean createStore(String storeName);
-}
+
+    }
 

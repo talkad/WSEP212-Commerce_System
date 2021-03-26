@@ -1,9 +1,12 @@
 package Domain.UserManager;
 
+import java.util.Map;
+
 public class Registered extends UserState {
 
     public Registered(String name) {
         super();
+        //RegisteredDAO.getInstance().getRegisteredRoles(name);
     }
 
     @Override

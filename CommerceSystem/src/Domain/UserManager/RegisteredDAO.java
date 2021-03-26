@@ -1,11 +1,14 @@
 package Domain.UserManager;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RegisteredDAO {
 
     private Map<String, String> registeredUsers;
+    private Map<String, Map<String, Role>> userRoles;
+
 
     private RegisteredDAO(){
         this.registeredUsers = new ConcurrentHashMap<>();
@@ -32,5 +35,13 @@ public class RegisteredDAO {
         if(registeredUsers.get(name) != null)
             return registeredUsers.get(name).equals(password);
         return false;
+    }
+
+    public Map<String, Role> getRegisteredRoles(String name){
+        if(registeredUsers.containsKey(name)){
+            return userRoles.get(name);
+        }
+        //@TODO else(loadFromDB)
+        return new ConcurrentHashMap<>();
     }
 }
