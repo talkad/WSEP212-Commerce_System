@@ -42,4 +42,15 @@ public class Product {
         // ...
     }
 
+    public int getProductID() {
+        return productID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
 }
