@@ -5,6 +5,8 @@ import Domain.CommonClasses.Response;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Inventory {
 
@@ -12,23 +14,77 @@ public class Inventory {
     private Map<Integer, Integer> pAmount;
     private Map<Integer, Product> products;
 
-    public Inventory() {
+    private final ReadWriteLock lock;
+
+    public Inventory(){
         pAmount = new HashMap<>();
         products = new HashMap<>();
+        lock = new ReentrantReadWriteLock();
     }
 
-    public synchronized void addProducts(Product product, int amount) {
-        int productID = product.getProductID();
-        Integer result = pAmount.putIfAbsent(productID, 0);  // result will be null if not exists
+
+    public void addProducts(Product product, int amount){
+        int productID;
+        Integer result;
+
+        lock.writeLock().lock();
+
+        productID = product.getProductID();
+        result = pAmount.putIfAbsent(productID, 0);  // result will be null if not exists
 
         pAmount.put(productID, pAmount.get(productID) + amount);
 
-        if (result == null) {
+        if(result == null){
             products.put(productID, product);
         }
+        lock.writeLock().unlock();
+    }
+
+    public Response<Boolean> removeProducts(Product product, int amount){
+        Response<Boolean> res;
+        int productID = product.getProductID();
+        int newAmount;
+
+        lock.writeLock().lock();
+
+        if(!pAmount.containsKey(productID)){
+            res = new Response<>(false, true, "This product doesn't exist");
+        }
+        else{
+            newAmount = pAmount.get(productID) - amount;
+
+            if(newAmount > 0){
+                pAmount.put(product.getProductID(), newAmount);
+            }
+            else{
+                pAmount.remove(productID);
+                products.remove(productID);
+            }
+
+            res = new Response<>(true, false, "success");
+        }
+
+        lock.writeLock().unlock();
+        return res;
     }
 
     public Collection<Product> getInventory(){
-        return products.values();
+        Collection<Product> result;
+
+        lock.readLock().lock();
+        result = products.values();
+        lock.readLock().unlock();
+
+        return result;
+    }
+
+    public int getProductAmount(int productID){
+        Integer result;
+
+        lock.readLock().lock();
+        result = pAmount.get(productID);
+        lock.readLock().unlock();
+
+        return result == null? 0 : result;
     }
 }
