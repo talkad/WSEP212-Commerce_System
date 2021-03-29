@@ -1,5 +1,7 @@
 package Domain.ShoppingManager;
 
+import Domain.CommonClasses.Rating;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -7,27 +9,27 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import Domain.CommonClasses.Rating;
-
 public class Product {
 
     private final int productID;
     private final int storeID;
     private final String name;
     private AtomicReference<Double> price;
-    private List<String> categories;
+    private final List<String> categories;
+    private final List<String> keywords;
 
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
     private Collection<String> reviews;
 
 
-    public Product(int productID, int storeID, String name, double price, List<String> categories){
+    public Product(int productID, int storeID, String name, double price, List<String> categories, List<String> keywords){
         this.productID = productID;
         this.storeID = storeID;
         this.name = name;
         this.price = new AtomicReference<>(price);
         this.categories = categories;
+        this.keywords = keywords;
 
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
@@ -58,10 +60,6 @@ public class Product {
         return price.get();
     }
 
-    public ProductDTO getDTO() {
-        return new ProductDTO(name, price.get(), categories, storeID);
-    }
-
     public void addReview(String review){
         reviews.add(review);
     }
@@ -88,4 +86,13 @@ public class Product {
     public double getRating(){
         return rating.get();
     }
+
+    public boolean containsCategory(String category){
+        return categories.contains(category);
+    }
+
+    public boolean containsKeyword(String category){
+        return keywords.contains(category);
+    }
+
 }

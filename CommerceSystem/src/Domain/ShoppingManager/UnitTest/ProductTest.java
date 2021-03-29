@@ -18,7 +18,7 @@ public class ProductTest {
 
     @BeforeEach
     public void setUp(){
-        product = new Product(0, 0, "Oreo", 22.9, null);
+        product = new Product(0, 0, "Oreo", 22.9, null, null);
     }
 
     @Test

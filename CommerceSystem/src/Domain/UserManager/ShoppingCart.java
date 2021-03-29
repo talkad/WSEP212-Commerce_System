@@ -2,10 +2,8 @@ package Domain.UserManager;
 
 import Domain.CommonClasses.Response;
 import Domain.ShoppingManager.Product;
-import Domain.ShoppingManager.ProductDTO;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -16,7 +14,6 @@ public class ShoppingCart {
 
     // map storeID to its relevant shopping basket
     private Map<Integer, ShoppingBasket> baskets;
-
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
@@ -65,8 +62,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<Integer, List<ProductDTO>> getProducts(){
-        Map<Integer, List<ProductDTO>> products = new HashMap<>();
+    public Map<Integer, Map<Product, Integer>> getBaskets(){
+        Map<Integer, Map<Product, Integer>> products = new HashMap<>();
         readLock.lock();
 
         for(ShoppingBasket basket: baskets.values()){
