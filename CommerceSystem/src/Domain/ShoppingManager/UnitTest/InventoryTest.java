@@ -21,7 +21,7 @@ public class InventoryTest {
     @BeforeEach
     public void setUp(){
         inventory = new Inventory();
-        product = new Product(0, 0, "Oreo", 22.9, null);
+        product = new Product(0, 0, "Oreo", 22.9, null, null);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class InventoryTest {
         Product product2;
         Response<Boolean> res;
 
-        product2 = new Product(1,0,"T-Shirt", 25.9, null);
+        product2 = new Product(1,0,"T-Shirt", 25.9, null, null);
         res = inventory.removeProducts(product2, 5);
         assertTrue(res.isFailure());
     }

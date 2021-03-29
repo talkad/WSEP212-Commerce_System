@@ -35,7 +35,7 @@ public class StoreController {
         List<Product> productList = new LinkedList<>();
         for(Store store : stores)
             for(Product product : store.getInventory().getInventory())
-                if(product.getCategories().contains(category))
+                if(product.containsCategory(category))
                     productList.add(product);
 
         return productList;
