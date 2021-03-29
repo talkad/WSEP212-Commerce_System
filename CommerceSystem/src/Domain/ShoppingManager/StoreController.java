@@ -12,11 +12,12 @@ public class StoreController {
         stores = new LinkedList<>();
     }
 
-    public Response<Boolean> addStore(int id, Inventory inventory){
+    public synchronized Response<Boolean> addStore(int id, String name, Inventory inventory,
+                                                   DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
         for(Store store : stores)
             if(store.getStoreID() == id)
                 return new Response<>(false, true, "Store id already exists.");
-        stores.add(new Store(id, inventory));
+        stores.add(new Store(id, name, inventory, discountPolicy, purchasePolicy));
         return new Response<>(true, false, "Store has been added successfully.");
     }
 

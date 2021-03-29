@@ -88,4 +88,8 @@ public class Product {
     public double getRating(){
         return rating.get();
     }
+
+    public List<String> getCategories() {
+        return categories;
+    }
 }
