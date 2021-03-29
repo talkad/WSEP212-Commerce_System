@@ -91,8 +91,8 @@ public class Product {
         return categories.contains(category);
     }
 
-    public boolean containsKeyword(String category){
-        return keywords.contains(category);
+    public boolean containsKeyword(String key){
+        return keywords.contains(key);
     }
 
 }
