@@ -50,18 +50,21 @@ public class Inventory {
         if(!pAmount.containsKey(productID)){
             res = new Response<>(false, true, "This product doesn't exist");
         }
-        else{
+        else {
             newAmount = pAmount.get(productID) - amount;
 
-            if(newAmount > 0){
+            if (newAmount > 0) {
                 pAmount.put(product.getProductID(), newAmount);
+                res = new Response<>(true, false, "Product amount updated successfully");
             }
-            else{
+            else if (newAmount == 0) {
                 pAmount.remove(productID);
                 products.remove(productID);
+                res = new Response<>(true, false, "Product is out of stock");
             }
-
-            res = new Response<>(true, false, "success");
+            else {
+                res = new Response<>(false, true, "Amount to remove exceeds amount in stock");
+            }
         }
 
         lock.writeLock().unlock();
@@ -85,6 +88,6 @@ public class Inventory {
         result = pAmount.get(productID);
         lock.readLock().unlock();
 
-        return result == null? 0 : result;
+        return result == null ? 0 : result;
     }
 }

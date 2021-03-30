@@ -88,10 +88,10 @@ public class Product {
     }
 
     public boolean containsCategory(String category){
-        return categories.contains(category);
+        return categories != null && categories.contains(category);
     }
 
     public boolean containsKeyword(String key){
-        return keywords.contains(key);
+        return keywords != null && keywords.contains(key);
     }
 }
