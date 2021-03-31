@@ -1,12 +1,22 @@
 package Server.Domain.UserManager;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Guest extends UserState {
-    //private FuncEnum allowed;
+    private List<FunctionName> allowedFunctions;
     public Guest(){
-        //allowed = {LOGIN, REGISTER}
+        this.allowedFunctions = new LinkedList<>();
+        this.allowedFunctions.add(FunctionName.REGISTER);
     }
-//    private ReadWriteLock lock;
+
+    @Override
+    public boolean allowed(FunctionName func, String userName) {
+        return this.allowedFunctions.contains(func);
+    }
+
+    //    private ReadWriteLock lock;
 //    private Lock writeLock;
 //    private Lock readLock;
 

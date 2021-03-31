@@ -10,7 +10,7 @@ public abstract class UserState {
 
 //    public abstract boolean createStore(String storeName);
 
-    public boolean allowed(){
+    public boolean allowed(FunctionName func, String userName){
         return true;
     }
 

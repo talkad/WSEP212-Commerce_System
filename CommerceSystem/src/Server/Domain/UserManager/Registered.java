@@ -1,11 +1,21 @@
 package Server.Domain.UserManager;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Registered extends UserState {
 
-    public Registered(String name) {
-        super();
-        //RegisteredDAO.getInstance().getRegisteredRoles(name);
+    private List<FunctionName> allowedFunctions;
+
+    public Registered() {
+        this.allowedFunctions = new LinkedList<>();
+        this.allowedFunctions.add(FunctionName.CREATE_STORE);
+    }
+
+    @Override
+    public boolean allowed(FunctionName func, String userName) {
+        return this.allowedFunctions.contains(func);
     }
 
 //    @Override
