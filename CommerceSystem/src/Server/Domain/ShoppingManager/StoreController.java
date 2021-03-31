@@ -1,17 +1,17 @@
 package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Response;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
-    private List<Store> stores;
+    // map storeID to its corresponding store
+    private Map<Integer, Store> stores;
+
 
     private StoreController(){
-        stores = Collections.synchronizedList(new ArrayList<>());
+        stores = new ConcurrentHashMap<>();
     }
 
     public static StoreController getInstance(){
@@ -24,62 +24,82 @@ public class StoreController {
         return storeController;
     }
 
-    public Response<Boolean> addStore(int id, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
-        for(Store store : stores)
-            if(store.getStoreID() == id)
-                return new Response<>(false, true, "Store id already exists.");
-        stores.add(new Store(id, name, discountPolicy, purchasePolicy));
+    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
+        if(stores.containsKey(storeID))
+            return new Response<>(false, true, "Store id already exists.");
+
+        stores.put(storeID, new Store(storeID, name, discountPolicy, purchasePolicy));
         return new Response<>(true, false, "Store has been added successfully.");
     }
 
     public Response<Boolean> addStore(Store store){
         if(store == null)
             return new Response<>(false, true, "Invalid store");
-        if(stores.contains(store))
+        if(stores.containsKey(store.getStoreID()))
             return new Response<>(false, true, "Store already exists.");
-        stores.add(store);
+        stores.put(store.getStoreID(), store);
         return new Response<>(true, false, "Store has been added successfully.");
     }
 
     public List<Product> searchByProductName(String productName){
-        List<Product> productList = new LinkedList<>();
-        if(productName != null) {
-            for (Store store : stores)
-                for (Product product : store.getInventory().getInventory())
-                    if (product.getName().equals(productName))
-                        productList.add(product);
-        }
-
-        return productList;
+        return SearchEngine.getInstance().searchByProductName(productName);
     }
 
     public List<Product> searchByCategory(String category){
-        List<Product> productList = new LinkedList<>();
-        if(category != null) {
-            for (Store store : stores)
-                for (Product product : store.getInventory().getInventory())
-                    if (product.containsCategory(category))
-                        productList.add(product);
-        }
-
-        return productList;
+        return SearchEngine.getInstance().searchByCategory(category);
     }
 
     public List<Product> searchByKeyWord(String keyword){
-        List<Product> productList = new LinkedList<>();
-        if(keyword != null) {
-            for (Store store : stores)
-                for (Product product : store.getInventory().getInventory())
-                    if (product.containsKeyword(keyword))
-                        productList.add(product);
-        }
-        return productList;
+        return SearchEngine.getInstance().searchByKeyWord(keyword);
     }
 
     public Store getStoreById(int storeId) {
-        for(Store store : stores)
-            if(store.getStoreID() == storeId)
-                return store;
-        return null;
+        return stores.get(storeId);
+    }
+
+    /**
+     * @pre only searchEngine can use this function (concurrency issues)
+     * @return stores list
+     */
+    public Collection<Store> getStores(){
+        return stores.values();
+    }
+
+    public Response<Boolean> addProductToStore(int storeID, Product product, int amount){
+        Response<Boolean> result;
+        Store store;
+
+        if(amount < 0){
+            result = new Response<>(false, true, "The amount cannot be negative");
+        }
+        else if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            store.addProduct(product, amount);
+
+            result = new Response<>(false, true, "The product added successfully");
+        }
+
+        return result;
+    }
+
+    public Response<Boolean> removeProductToStore(int storeID, Product product, int amount){
+        Response<Boolean> result;
+        Store store;
+
+        if(amount < 0){
+            result = new Response<>(false, true, "The amount cannot be negative");
+        }
+        else if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            result = store.removeProduct(product, amount);
+        }
+
+        return result;
     }
 }
