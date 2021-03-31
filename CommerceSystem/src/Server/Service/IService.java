@@ -1,9 +1,13 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.Store;
+import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
+import Server.Domain.UserManager.UserDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +18,7 @@ public interface IService {
      * System requirements - 1
      */
     void init(); // 1.1
+
 
     /**
      * Guest requirements - 2
@@ -56,6 +61,42 @@ public interface IService {
 
     Response<Boolean> addProductReview(String username, int productID, String review); // 3.3
 
+    List<Purchase> getPurchaseHistory(String username); // 3.7
 
 
+    /**
+     * Store Owner requirements - 4
+     *
+     * Store Manager requirements - 5
+     * can do all of the functions that store owner do, depends on its permissions
+     */
+    Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount); // 4.1 - a
+
+    Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount); // 4.1 - b
+
+    Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice); // 4.1 - c
+
+    List<PurchasePolicy> getPurchasePolicy(String username, int storeID); // 4.2 - a
+
+    List<DiscountPolicy> getDiscountPolicy(String username, int storeID); // 4.2 - b
+
+    // add policy and edit it ???? 4.2 - c
+
+    Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID); // 4.3
+
+    Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
+
+    Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID); // 4.7
+
+    Response<UserDetails> getWorkersDetails(String username, int storeID); // 4.9
+
+    Response<Purchase> getPurchaseDetails(String username, int storeID); // 4.11
+
+
+    /**
+     * System Manager requirements - 6
+     */
+    List<Purchase> getUserPurchaseHistory(String username); // 6.4 - a
+
+    List<Purchase> getStorePurchaseHistory(int storeID); // 6.4 - b
 }
