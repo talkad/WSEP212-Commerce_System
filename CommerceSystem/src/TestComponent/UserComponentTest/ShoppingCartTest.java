@@ -1,4 +1,4 @@
-package TestComponent.UnitTesting.UnitTest;
+package TestComponent.UserComponentTest;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
