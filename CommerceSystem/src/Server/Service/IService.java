@@ -57,7 +57,7 @@ public interface IService {
      */
     Response<Boolean> logout(String userName); // 3.1
 
-    Response<Boolean> openStore(String username, Store store); // 3.2
+    Response<Boolean> openStore(String username, String storeName); // 3.2
 
     Response<Boolean> addProductReview(String username, int productID, String review); // 3.3
 

@@ -80,8 +80,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> openStore(String username, Store store) {
-        return CommerceSystem.getInstance().openStore(username, store); // make instead a function that returns a store
+    public Response<Boolean> openStore(String username, String storeName) {
+        return CommerceSystem.getInstance().openStore(username, storeName); // make instead a function that returns a store
     }
 
     @Override

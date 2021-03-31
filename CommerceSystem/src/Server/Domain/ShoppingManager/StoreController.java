@@ -1,17 +1,21 @@
 package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.Purchase;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
     // map storeID to its corresponding store
     private Map<Integer, Store> stores;
+    private AtomicInteger indexer;
 
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
+        indexer = new AtomicInteger(0);
     }
 
     public static StoreController getInstance(){
@@ -24,22 +28,32 @@ public class StoreController {
         return storeController;
     }
 
-    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
-        if(stores.containsKey(storeID))
-            return new Response<>(false, true, "Store id already exists.");
+    public Store openStore(String StoreName){
+        int id = indexer.getAndIncrement();
 
-        stores.put(storeID, new Store(storeID, name, discountPolicy, purchasePolicy));
-        return new Response<>(true, false, "Store has been added successfully.");
+        // should be a way to add and edit policies
+        Store store = new Store(id, StoreName, null, null);
+        stores.put(id, store);
+
+        return store;
     }
 
-    public Response<Boolean> addStore(Store store){
-        if(store == null)
-            return new Response<>(false, true, "Invalid store");
-        if(stores.containsKey(store.getStoreID()))
-            return new Response<>(false, true, "Store already exists.");
-        stores.put(store.getStoreID(), store);
-        return new Response<>(true, false, "Store has been added successfully.");
-    }
+//    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
+//        if(stores.containsKey(storeID))
+//            return new Response<>(false, true, "Store id already exists.");
+//
+//        stores.put(storeID, new Store(storeID, name, discountPolicy, purchasePolicy));
+//        return new Response<>(true, false, "Store has been added successfully.");
+//    }
+//
+//    public Response<Boolean> addStore(Store store){
+//        if(store == null)
+//            return new Response<>(false, true, "Invalid store");
+//        if(stores.containsKey(store.getStoreID()))
+//            return new Response<>(false, true, "Store already exists.");
+//        stores.put(store.getStoreID(), store);
+//        return new Response<>(true, false, "Store has been added successfully.");
+//    }
 
     public List<Product> searchByProductName(String productName){
         return SearchEngine.getInstance().searchByProductName(productName);
@@ -101,5 +115,17 @@ public class StoreController {
         }
 
         return result;
+    }
+
+    public List<Store> getContent() {
+        //TODO: implement it 2.5
+
+        return null;
+    }
+
+    public List<Purchase> getStorePurchaseHistory(int storeID) {
+        //TODO: implement it 6.4
+
+        return null;
     }
 }

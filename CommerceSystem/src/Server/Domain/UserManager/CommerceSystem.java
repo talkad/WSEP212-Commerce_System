@@ -40,22 +40,22 @@ public class CommerceSystem implements IService {
 
     @Override
     public List<Store> getContent() {
-        return null;
+        return StoreController.getInstance().getContent();
     }
 
     @Override
     public List<Product> searchByProductName(String productName) {
-        return null;
+        return StoreController.getInstance().searchByProductName(productName);
     }
 
     @Override
     public List<Product> searchByProductCategory(String category) {
-        return null;
+        return StoreController.getInstance().searchByCategory(category);
     }
 
     @Override
     public List<Product> searchByProductKeyword(String keyword) {
-        return null;
+        return StoreController.getInstance().searchByKeyWord(keyword);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> openStore(String username, Store store) {
+    public Response<Boolean> openStore(String username, String storeName) {
         return null;
     }
 
@@ -160,7 +160,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public List<Purchase> getStorePurchaseHistory(int storeID) {
-        return null;
+        return StoreController.getInstance().getStorePurchaseHistory(storeID);
     }
 
 }
