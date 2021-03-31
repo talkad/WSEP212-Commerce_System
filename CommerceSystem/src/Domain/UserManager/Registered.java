@@ -1,6 +1,5 @@
 package Domain.UserManager;
 
-import java.util.Map;
 
 public class Registered extends UserState {
 
@@ -9,27 +8,27 @@ public class Registered extends UserState {
         //RegisteredDAO.getInstance().getRegisteredRoles(name);
     }
 
-    @Override
-    public boolean register(String name, String password) {
-        return false;
-    }
+//    @Override
+//    public boolean register(String name, String password) {
+//        return false;
+//    }
 
-    @Override
-    public boolean login(String name, String password) {
-        return false;
-    }
+//    @Override
+//    public boolean login(String name, String password) {
+//        return false;
+//    }
 
-    @Override
-    public boolean loggedIn() {
-        return true;
-    }
+//    @Override
+//    public boolean loggedIn() {
+//        return true;
+//    }
 
-    public void logout() { //@TODO
+//    public void logout() { //@TODO
+//
+//    }
 
-    }
-
-    @Override
-    public boolean createStore(String storeName) {
-        return CommerceSystem.createStore(storeName);        //TODO add implementation
-    }
+//    @Override
+//    public boolean createStore(String storeName) {
+//        return CommerceSystem.createStore(storeName);        //TODO add implementation
+//    }
 }
