@@ -10,52 +10,57 @@ import java.util.Map;
 
 public class CommerceSystem implements IService {
 
-    private static volatile CommerceSystem commerceSystem;
+    private UserController userController;
+    private StoreController storeController;
 
+    private CommerceSystem() {
+        init();
+    }
 
-    public static CommerceSystem getInstance(){
-        if(commerceSystem == null){
-            synchronized (StoreController.class){
-                if(commerceSystem == null)
-                    commerceSystem = new CommerceSystem();
-            }
-        }
-        return commerceSystem;
+    private static class CreateSafeThreadSingleton
+    {
+        private static final CommerceSystem INSTANCE = new CommerceSystem();
+    }
+
+    public static CommerceSystem getInstance()
+    {
+        return CommerceSystem.CreateSafeThreadSingleton.INSTANCE;
     }
 
     @Override
     public void init() {
-
+        this.userController = UserController.getInstance();
+        this.storeController = StoreController.getInstance();
     }
 
     @Override
-    public Response<Boolean> register(String username, String pwd) {
-        return null;
+    public Response<Boolean> register(String prevName, String username, String pwd) {
+        return userController.register(prevName, username, pwd);
     }
 
     @Override
-    public Response<Boolean> login(String username, String pwd) {
-        return null;
+    public Response<String> login(String prevName, String username, String pwd) {
+        return userController.login(prevName, username, pwd);
     }
 
     @Override
     public List<Store> getContent() {
-        return StoreController.getInstance().getContent();
+        return storeController.getContent();
     }
 
     @Override
     public List<Product> searchByProductName(String productName) {
-        return StoreController.getInstance().searchByProductName(productName);
+        return storeController.searchByProductName(productName);
     }
 
     @Override
     public List<Product> searchByProductCategory(String category) {
-        return StoreController.getInstance().searchByCategory(category);
+        return storeController.searchByCategory(category);
     }
 
     @Override
     public List<Product> searchByProductKeyword(String keyword) {
-        return StoreController.getInstance().searchByKeyWord(keyword);
+        return storeController.searchByKeyWord(keyword);
     }
 
     @Override
@@ -160,7 +165,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public List<Purchase> getStorePurchaseHistory(int storeID) {
-        return StoreController.getInstance().getStorePurchaseHistory(storeID);
+        return storeController.getStorePurchaseHistory(storeID);
     }
 
 }

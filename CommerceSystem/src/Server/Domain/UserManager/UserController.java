@@ -39,18 +39,19 @@ public class UserController {
         return guestName;
     }
 
-    public boolean register(String userName, String name, String password){
+    public Response<Boolean> register(String prevName, String name, String password){
         //@TODO prevent invalid usernames (Guest...)
-        return connectedUsers.get(userName).register(name, password);
+        return connectedUsers.get(prevName).register(name, password);
     }
 
-    private void login(String name, String password, String prevName){
+    public Response<String> login(String prevName, String name, String password){
         if(connectedUsers.get(prevName).login(name, password)){
             connectedUsers.remove(prevName);
             connectedUsers.put(name, new User(name)); //@TODO what is user?
+            return new Response<>(name, false,"null");
         }
         else {
-            //@TODO ERROR MSG FAILED TO LOGIN
+           return new Response<>(name, true, "Failed to login user");
         }
     }
 
@@ -72,8 +73,8 @@ public class UserController {
         return addGuest();
     }
 
-    public boolean createStore(String userName, String storeName) {
-        return connectedUsers.get(userName).createStore(storeName);
+    public Response<Integer> openStore(String userName, String storeName) {
+        return connectedUsers.get(userName).openStore(storeName);
     }
 
     public List<Purchase> getPurchaseHistoryContents(String userName){

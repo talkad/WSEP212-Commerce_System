@@ -20,13 +20,13 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> register(String username, String pwd) {
-        return CommerceSystem.getInstance().register(username, pwd);
+    public Response<Boolean> register(String prevName, String username, String pwd) {
+        return CommerceSystem.getInstance().register(prevName, username, pwd);
     }
 
     @Override
-    public Response<Boolean> login(String username, String pwd) {
-        return CommerceSystem.getInstance().login(username, pwd);
+    public Response<String> login(String prevName, String username, String pwd) {
+        return CommerceSystem.getInstance().login(prevName, username, pwd);
     }
 
     @Override

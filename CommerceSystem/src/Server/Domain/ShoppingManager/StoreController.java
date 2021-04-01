@@ -28,15 +28,16 @@ public class StoreController {
         return storeController;
     }
 
-    public Store openStore(String StoreName){
+    public Response<Integer> openStore(String StoreName){
         int id = indexer.getAndIncrement();
 
         // should be a way to add and edit policies
         Store store = new Store(id, StoreName, null, null);
         stores.put(id, store);
 
-        return store;
+        return new Response<>(id, false, "Store with id "+id+" opened successfully");
     }
+
 
 //    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
 //        if(stores.containsKey(storeID))

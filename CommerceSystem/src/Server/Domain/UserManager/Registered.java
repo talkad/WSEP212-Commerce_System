@@ -10,7 +10,7 @@ public class Registered extends UserState {
 
     public Registered() {
         this.allowedFunctions = new LinkedList<>();
-        this.allowedFunctions.add(FunctionName.CREATE_STORE);
+        this.allowedFunctions.add(FunctionName.OPEN_STORE);
     }
 
     @Override

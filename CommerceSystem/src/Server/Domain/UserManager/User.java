@@ -14,8 +14,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class User{
 
     private UserState state;
-    private List<String> storesOwned;
-    private List<String> storesManaged;
+    private List<Integer> storesOwned;
+    private List<Integer> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
@@ -51,26 +51,26 @@ public class User{
         // @TODO roles = loadfromdb
     }
 
-    public void changeState(FunctionName role){
-        switch (role){
-            case GUEST:
-                state = new Guest();
-                break;
-//            case REGISTERED:
-//                state = new Registered(); //@TODO Login info???
+//    public void changeState(FunctionName role){
+//        switch (role){
+//            case GUEST:
+//                state = new Guest();
 //                break;
-        }
-    }
+////            case REGISTERED:
+////                state = new Registered(); //@TODO Login info???
+////                break;
+//        }
+//    }
 
-    public boolean register(String name, String password) {
+    public Response<Boolean> register(String name, String password) {
+        Response<Boolean> result = new Response<>(false, true, "Username is not unique");
         if(!state.allowed(FunctionName.REGISTER, this.name)){
-            return false;
+            return new Response<>(false, true, "User not allowed to register");
         }
-        boolean result = false;
         readLock.lock();
         if(UserDAO.getInstance().isUniqueName(name)) {
             UserDAO.getInstance().registerUser(name, password);
-            result = true;
+            result = new Response<>(true, false, "");
         }
         readLock.unlock();
         return result;
@@ -98,15 +98,15 @@ public class User{
         //@TODO final actions before logout
     }
 
-    public Response<Boolean> createStore(String storeName) {
-        Response<Boolean> result;
-        if (!this.state.allowed(FunctionName.CREATE_STORE, this.name)) {
-            return new Response<>(false, true, "Not allowed to add store");
+    public Response<Integer> openStore(String storeName) {
+        Response<Integer> result;
+        if (!this.state.allowed(FunctionName.OPEN_STORE, this.name)) {
+            return new Response<>(-1, true, "Not allowed to add store");
         }
-        //Response<Boolean> result;
-        result = StoreController.addStore(storeName);  //@TODO situate store creation process
-        if(result.getResult()) {
-            this.storesOwned.add(storeName);
+
+        result = StoreController.getInstance().openStore(storeName);  //@TODO situate store creation process
+        if(!result.isFailure()) {
+            this.storesOwned.add(result.getResult());
         }
         return result;
     }

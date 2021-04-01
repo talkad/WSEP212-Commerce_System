@@ -27,9 +27,9 @@ public interface IService {
 
     // 2.2 ?
 
-    Response<Boolean> register(String username, String pwd); // 2.3
+    Response<Boolean> register(String prevName, String username, String pwd); // 2.3
 
-    Response<Boolean> login(String username, String pwd); // 2.4
+    Response<String> login(String prevName, String username, String pwd); // 2.4
 
     List<Store>  getContent(); // 2.5
 
