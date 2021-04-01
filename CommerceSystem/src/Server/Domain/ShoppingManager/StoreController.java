@@ -38,6 +38,7 @@ public class StoreController {
         return new Response<>(id, false, "Store with id "+id+" opened successfully");
     }
 
+
 //    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
 //        if(stores.containsKey(storeID))
 //            return new Response<>(false, true, "Store id already exists.");

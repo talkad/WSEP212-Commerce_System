@@ -20,13 +20,13 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> register(String username, String pwd) {
-        return CommerceSystem.getInstance().register(username, pwd);
+    public Response<Boolean> register(String prevName, String username, String pwd) {
+        return CommerceSystem.getInstance().register(prevName, username, pwd);
     }
 
     @Override
-    public Response<Boolean> login(String username, String pwd) {
-        return CommerceSystem.getInstance().login(username, pwd);
+    public Response<String> login(String prevName, String username, String pwd) {
+        return CommerceSystem.getInstance().login(prevName, username, pwd);
     }
 
     @Override
@@ -65,6 +65,11 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
+        return CommerceSystem.getInstance().updateProductQuantity(username, product, amount);
+    }
+
+    @Override
     public Response<Boolean> purchaseCartItems(String username, String creditCardDetails) {
         return CommerceSystem.getInstance().purchaseCartItems(username, creditCardDetails);
     }
@@ -75,12 +80,12 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> logout(String userName) {
+    public Response<String> logout(String userName) {
         return CommerceSystem.getInstance().logout(userName);
     }
 
     @Override
-    public Response<Boolean> openStore(String username, String storeName) {
+    public Response<Integer> openStore(String username, String storeName) {
         return CommerceSystem.getInstance().openStore(username, storeName); // make instead a function that returns a store
     }
 

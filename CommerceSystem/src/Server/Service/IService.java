@@ -27,9 +27,9 @@ public interface IService {
 
     // 2.2 ?
 
-    Response<Boolean> register(String username, String pwd); // 2.3
+    Response<Boolean> register(String prevName, String username, String pwd); // 2.3
 
-    Response<Boolean> login(String username, String pwd); // 2.4
+    Response<String> login(String prevName, String username, String pwd); // 2.4
 
     List<Store>  getContent(); // 2.5
 
@@ -47,6 +47,8 @@ public interface IService {
 
     Map<Integer, Map<Product, Integer>> getCartDetails(String username); // 2.8 - b
 
+    Response<Boolean> updateProductQuantity(String username, Product product, int amount); // 2.8 - c
+
     Response<Boolean> purchaseCartItems(String username, String creditCardDetails); // 2.9
 
     User getUserByName(String username); // for tests purposes
@@ -55,13 +57,13 @@ public interface IService {
     /**
      * Registered requirements - 3
      */
-    Response<Boolean> logout(String userName); // 3.1
+    Response<String> logout(String userName); // 3.1
 
-    Response<Boolean> openStore(String username, String storeName); // 3.2
+    Response<Integer> openStore(String username, String storeName); // 3.2
 
     Response<Boolean> addProductReview(String username, int productID, String review); // 3.3
 
-    List<Purchase> getPurchaseHistory(String username); // 3.7
+    List<Purchase> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
 
 
     /**
