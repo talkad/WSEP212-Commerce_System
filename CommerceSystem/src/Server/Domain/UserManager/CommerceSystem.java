@@ -65,17 +65,22 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> addToCart(String username, Product product) {
-        return null;
+        return userController.addToCart(username, product);
     }
 
     @Override
     public Response<Boolean> removeFromCart(String username, Product product) {
-        return null;
+        return userController.removeProduct(username, product);
     }
 
     @Override
     public Map<Integer, Map<Product, Integer>> getCartDetails(String username) {
-        return null;
+        return userController.getShoppingCartContents(username);
+    }
+
+    @Override
+    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
+        return userController.updateProductQuantity(username, product, amount);
     }
 
     @Override
@@ -89,23 +94,23 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> logout(String userName) {
-        return null;
+    public Response<String> logout(String userName) {
+        return userController.logout(userName);
     }
 
     @Override
-    public Response<Boolean> openStore(String username, String storeName) {
-        return null;
+    public Response<Integer> openStore(String username, String storeName) {
+        return userController.openStore(username, storeName);
     }
 
     @Override
     public Response<Boolean> addProductReview(String username, int productID, String review) {
-        return null;
+        return userController.addProductReview(username, productID, review);
     }
 
     @Override
     public List<Purchase> getPurchaseHistory(String username) {
-        return null;
+        return userController.getPurchaseHistoryContents(username);
     }
 
     @Override

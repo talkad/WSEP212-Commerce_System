@@ -7,6 +7,7 @@ import Server.Domain.ShoppingManager.StoreController;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -84,14 +85,12 @@ public class User{
         return this.shoppingCart.addProduct(product);
     }
 
-    public List<Map<Product, Integer>> getShoppingCartContents() {
-        List<Map<Product, Integer>> shoppingCartContents = new LinkedList<>();
-        //@TODO sort out return type
-        return shoppingCartContents;
+    public Map<Integer ,Map<Product, Integer>> getShoppingCartContents() {
+        return this.shoppingCart.getBaskets(); //@TODO SHOULD PROBABLY CHECK
     }
 
     public Response<Boolean> removeProduct(Product product) {
-        return this.shoppingCart.removeProduct(product);
+        return this.shoppingCart.removeProduct(product); //@TODO SHOULD PROBABLY CHECK
     }
 
     public void logout() {
@@ -101,10 +100,10 @@ public class User{
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
         if (!this.state.allowed(FunctionName.OPEN_STORE, this.name)) {
-            return new Response<>(-1, true, "Not allowed to add store");
+            return new Response<>(-1, true, "Not allowed to open store");
         }
 
-        result = StoreController.getInstance().openStore(storeName);  //@TODO situate store creation process
+        result = StoreController.getInstance().openStore(storeName);
         if(!result.isFailure()) {
             this.storesOwned.add(result.getResult());
         }
@@ -113,5 +112,14 @@ public class User{
 
     public List<Purchase> getPurchaseHistoryContents() {
         return this.purchaseHistory.getPurchases();
+    }
+
+    public Response<Boolean> updateProductQuantity(Product product, int amount) {
+        return this.shoppingCart.updateProductQuantity(product, amount); // @TODO IMPLEMENT IN SHOPPINGCART TAL KADOSH
+    }
+
+    public Response<Boolean> addProductReview(int productID, String review) {
+        // @TODO purchaseHistory.getPurchases().contains(productID) then add product
+        return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
     }
 }

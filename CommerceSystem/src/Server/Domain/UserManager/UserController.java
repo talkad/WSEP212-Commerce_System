@@ -25,6 +25,15 @@ public class UserController {
         this.externalPayment = new PaymentSystemAdapter(new PaymentSystem()); /* communication with external payment system */
         this.externalDelivery = new ProductSupplyAdapter(new ProductSupply()); /* communication with external delivery system */
     }
+
+    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
+        return connectedUsers.get(username).updateProductQuantity(product, amount);
+    }
+
+    public Response<Boolean> addProductReview(String username, int productID, String review) {
+        return connectedUsers.get(username).addProductReview(productID, review);
+    }
+
     private static class CreateSafeThreadSingleton {
         private static final UserController INSTANCE = new UserController();
     }
@@ -33,10 +42,10 @@ public class UserController {
         return UserController.CreateSafeThreadSingleton.INSTANCE;
     }
 
-    private String addGuest(){
+    private Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
-        return guestName;
+        return new Response<>(guestName, false, "idk"); //@TODO FIGURE OUT ERR MSG
     }
 
     public Response<Boolean> register(String prevName, String name, String password){
@@ -59,7 +68,7 @@ public class UserController {
         return connectedUsers.get(userName).addToCart(product);
     }
 
-    public List<Map<Product, Integer>> getShoppingCartContents(String userName){
+    public Map<Integer ,Map<Product, Integer>> getShoppingCartContents(String userName){
         return connectedUsers.get(userName).getShoppingCartContents();
     }
 
@@ -67,7 +76,7 @@ public class UserController {
         return connectedUsers.get(userName).removeProduct(product);
     }
 
-    public String logout(String name) {
+    public Response<String> logout(String name) {
         connectedUsers.get(name).logout();
         connectedUsers.remove(name);
         return addGuest();
