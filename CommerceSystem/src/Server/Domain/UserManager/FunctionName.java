@@ -2,6 +2,9 @@ package Server.Domain.UserManager;
 
 public enum FunctionName {
     REGISTER,
-    LOGIN,
-    OPEN_STORE
+    OPEN_STORE,
+    ADD_PRODUCT_TO_STORE,
+    REMOVE_PRODUCT_FROM_STORE,
+    UPDATE_PRODUCT_PRICE,
+    APPOINT_OWNER
 }

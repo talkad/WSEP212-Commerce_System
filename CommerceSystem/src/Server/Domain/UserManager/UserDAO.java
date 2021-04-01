@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserDAO {
 
     private Map<String, String> registeredUsers;
-    private Map<String, List<Integer>> testManagers;
+    private Map<String, Map<Integer, List<Permissions>>> testManagers;
     private Map<String, List<Integer>> testOwners;
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
@@ -37,12 +37,14 @@ public class UserDAO {
     }
 
     public UserDTO getUser(String name){
+        if(!registeredUsers.containsKey(name))
+            return null;
         List<Integer> storesOwned = testOwners.get(name);
         if (storesOwned == null)
             storesOwned = new LinkedList<>();
-        List<Integer> storesManaged = testManagers.get(name);
+        Map<Integer, List<Permissions>> storesManaged = testManagers.get(name);
         if (storesManaged == null)
-            storesManaged = new LinkedList<>();
+            storesManaged = new ConcurrentHashMap<>();
         ShoppingCart shoppingCart = shoppingCarts.get(name);
         if (shoppingCart == null){
             shoppingCart = new ShoppingCart();

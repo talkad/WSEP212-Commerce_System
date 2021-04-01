@@ -34,6 +34,18 @@ public class UserController {
         return connectedUsers.get(username).addProductReview(productID, review);
     }
 
+    public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
+        return connectedUsers.get(username).addProductsToStore(storeID, product, amount);
+    }
+
+    public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
+        return connectedUsers.get(username).removeProductsFromStore(storeID, product, amount);
+    }
+
+    public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
+        return connectedUsers.get(username).updateProductPrice(storeID, productID, newPrice);
+    }
+
     private static class CreateSafeThreadSingleton {
         private static final UserController INSTANCE = new UserController();
     }
@@ -89,5 +101,12 @@ public class UserController {
     public List<Purchase> getPurchaseHistoryContents(String userName){
         return connectedUsers.get(userName).getPurchaseHistoryContents();
     }
+
+//    public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
+//        UserDTO user = UserDAO.getInstance().getUser(userName);
+//        if(user != null){
+//
+//        }
+//    }
 }
 

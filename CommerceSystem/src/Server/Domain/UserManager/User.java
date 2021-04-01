@@ -16,7 +16,7 @@ public class User{
 
     private UserState state;
     private List<Integer> storesOwned;
-    private List<Integer> storesManaged;
+    private Map<Integer, List<Permissions>> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
@@ -52,7 +52,36 @@ public class User{
         // @TODO roles = loadfromdb
     }
 
-//    public void changeState(FunctionName role){
+    public List<Integer> getStoresOwned() {
+        return storesOwned;
+    }
+
+    public void addStoresOwned(int storeId) {
+        this.storesOwned.add(storeId);
+    }
+
+    public Map<Integer, List<Permissions>> getStoresManaged() {
+        return storesManaged;
+    }
+
+    public void addStoresManaged(int storeId, List<Permissions> permission) {
+        this.storesManaged.put(storeId, permission);
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public PurchaseHistory getPurchaseHistory() {
+        return purchaseHistory;
+    }
+
+    //    public void changeState(FunctionName role){
 //        switch (role){
 //            case GUEST:
 //                state = new Guest();
@@ -65,7 +94,7 @@ public class User{
 
     public Response<Boolean> register(String name, String password) {
         Response<Boolean> result = new Response<>(false, true, "Username is not unique");
-        if(!state.allowed(FunctionName.REGISTER, this.name)){
+        if(!state.allowed(FunctionName.REGISTER, this)){
             return new Response<>(false, true, "User not allowed to register");
         }
         readLock.lock();
@@ -99,7 +128,7 @@ public class User{
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
-        if (!this.state.allowed(FunctionName.OPEN_STORE, this.name)) {
+        if (!this.state.allowed(FunctionName.OPEN_STORE, this)) {
             return new Response<>(-1, true, "Not allowed to open store");
         }
 
@@ -119,7 +148,37 @@ public class User{
     }
 
     public Response<Boolean> addProductReview(int productID, String review) {
+        //todo add allowed
         // @TODO purchaseHistory.getPurchases().contains(productID) then add product
         return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
     }
+
+    public Response<Boolean> addProductsToStore(int storeID, Product product, int amount) {
+        if(this.state.allowed(FunctionName.ADD_PRODUCT_TO_STORE, this, storeID)){
+            return StoreController.getInstance().addProductToStore(storeID, product, amount);
+        }
+        return new Response<>(false, true, "The user is not allowed to add products to the store");
+    }
+
+    public Response<Boolean> removeProductsFromStore(int storeID, Product product, int amount) {
+        if(this.state.allowed(FunctionName.REMOVE_PRODUCT_FROM_STORE, this, storeID)){
+            return StoreController.getInstance().removeProductFromStore(storeID, product, amount);
+        }
+        return new Response<>(false, true, "The user is not allowed to remove products from the store");
+    }
+
+    public Response<Boolean> updateProductPrice(int storeID, int productID, int newPrice) {
+        if(this.state.allowed(FunctionName.UPDATE_PRODUCT_PRICE, this, storeID)){
+            return StoreController.getInstance().updateProductPrice(storeID, productID, newPrice); //TODO ON SHOP SIDE
+        }
+        return new Response<>(false, true, "The user is not allowed to edit products information in the store");
+    }
+
+    public Response<Boolean> appointOwner(String newOwner, int storeId){
+        if(this.state.allowed(FunctionName.APPOINT_OWNER, this, storeId) && ){
+            allUser.get(newOwner).addStoresOwned(storeId);
+        }
+    }
+
+
 }

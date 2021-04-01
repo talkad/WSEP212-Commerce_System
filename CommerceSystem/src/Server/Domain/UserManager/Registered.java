@@ -14,31 +14,19 @@ public class Registered extends UserState {
     }
 
     @Override
-    public boolean allowed(FunctionName func, String userName) {
+    public boolean allowed(FunctionName func, User user) {
         return this.allowedFunctions.contains(func);
     }
 
-//    @Override
-//    public boolean register(String name, String password) {
-//        return false;
-//    }
+    @Override
+    public boolean allowed(FunctionName func, User user, int storeId) {
+        if (user.getStoresOwned().contains(storeId)) {
+            return true;
+        }
+        else if(user.getStoresManaged().get(storeId).contains(func)) { // @TODO func or permission?
+            return true;
+        }
+        return false;
+    }
 
-//    @Override
-//    public boolean login(String name, String password) {
-//        return false;
-//    }
-
-//    @Override
-//    public boolean loggedIn() {
-//        return true;
-//    }
-
-//    public void logout() { //@TODO
-//
-//    }
-
-//    @Override
-//    public boolean createStore(String storeName) {
-//        return CommerceSystem.createStore(storeName);        //TODO add implementation
-//    }
 }

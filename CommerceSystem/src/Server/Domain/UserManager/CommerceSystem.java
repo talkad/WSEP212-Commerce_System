@@ -115,17 +115,17 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
-        return null;
+        return userController.addProductsToStore(username, storeID, product, amount);
     }
 
     @Override
     public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
-        return null;
+        return userController.removeProductsFromStore(username, storeID, product, amount);
     }
 
     @Override
     public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
-        return null;
+        return userController.updateProductPrice(username, storeID, productID, newPrice); //TODO DESCRIPTION EDIT?
     }
 
     @Override
