@@ -99,7 +99,7 @@ public class StoreController {
         return result;
     }
 
-    public Response<Boolean> removeProductToStore(int storeID, Product product, int amount){
+    public Response<Boolean> removeProductFromStore(int storeID, Product product, int amount){
         Response<Boolean> result;
         Store store;
 
@@ -117,15 +117,34 @@ public class StoreController {
         return result;
     }
 
-    public List<Store> getContent() {
-        //TODO: implement it 2.5
+    public Response<Boolean> purchaseFromStore(int storeID, Product product, int amount){
+        Response<Boolean> result;
+        Store store;
 
-        return null;
+        if(amount < 0){
+            result = new Response<>(false, true, "The amount cannot be negative");
+        }
+        else if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            result = store.purchase(product, amount);
+        }
+
+        return result;
+    }
+
+    public List<Store> getContent() {
+        return (List<Store>) stores.values();
     }
 
     public List<Purchase> getStorePurchaseHistory(int storeID) {
-        //TODO: implement it 6.4
+        Store store = stores.get(storeID);
 
-        return null;
+        if(store == null)
+            return null;
+
+        return store.getPurchaseHistory();
     }
 }

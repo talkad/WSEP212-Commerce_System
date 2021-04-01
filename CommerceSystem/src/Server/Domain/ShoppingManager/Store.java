@@ -1,6 +1,12 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.Purchase;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Store {
     private int storeID;
@@ -10,6 +16,10 @@ public class Store {
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
 
+    private List<Purchase> purchaseHistory;
+    private ReentrantReadWriteLock readWriteLock;
+
+
     public Store(int id, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
         this.name = name;
         this.storeID = id;
@@ -17,6 +27,8 @@ public class Store {
         this.isActiveStore = true;
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
+        this.purchaseHistory = new LinkedList<>();
+        this.readWriteLock = new ReentrantReadWriteLock();
     }
 
     public void addProduct(Product product, int amount){
@@ -49,5 +61,28 @@ public class Store {
 
     public PurchasePolicy getPurchasePolicy() {
         return purchasePolicy;
+    }
+
+    public Response<Boolean> purchase(Product product, int amount) {
+        Response<Boolean> result = inventory.removeProducts(product, amount);
+
+        readWriteLock.writeLock().lock();
+
+        if(!result.isFailure()){
+            purchaseHistory.add(new Purchase()); //TODO: Purchase isn't implemented
+        }
+
+        readWriteLock.writeLock().unlock();
+        return result;
+    }
+
+    public List<Purchase> getPurchaseHistory() {
+        List<Purchase> history;
+
+        readWriteLock.readLock().lock();
+        history = new LinkedList<>(purchaseHistory);
+        readWriteLock.readLock().unlock();
+
+        return history;
     }
 }
