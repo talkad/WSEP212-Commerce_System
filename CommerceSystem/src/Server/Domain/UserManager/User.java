@@ -98,13 +98,14 @@ public class User{
         //@TODO final actions before logout
     }
 
-    public boolean createStore(String storeName) {
+    public Response<Boolean> createStore(String storeName) {
+        Response<Boolean> result;
         if (!this.state.allowed(FunctionName.CREATE_STORE, this.name)) {
-            return false;
+            return new Response<>(false, true, "Not allowed to add store");
         }
-        boolean result;
-        result = StoreController.createStore(storeName);  //@TODO situate store creation process
-        if(result) {
+        //Response<Boolean> result;
+        result = StoreController.addStore(storeName);  //@TODO situate store creation process
+        if(result.getResult()) {
             this.storesOwned.add(storeName);
         }
         return result;
