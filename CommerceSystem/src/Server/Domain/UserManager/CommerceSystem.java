@@ -14,7 +14,8 @@ public class CommerceSystem implements IService {
     private StoreController storeController;
 
     private CommerceSystem() {
-        init();
+        this.userController = UserController.getInstance();
+        this.storeController = StoreController.getInstance();
     }
 
     private static class CreateSafeThreadSingleton
@@ -29,8 +30,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public void init() {
-        this.userController = UserController.getInstance();
-        this.storeController = StoreController.getInstance();
+
     }
 
     @Override
