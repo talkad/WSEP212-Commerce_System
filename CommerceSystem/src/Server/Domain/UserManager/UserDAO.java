@@ -1,5 +1,7 @@
 package Server.Domain.UserManager;
 
+import Server.Domain.CommonClasses.Response;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +68,15 @@ public class UserDAO {
     }
 
     public void registerUser(String name, String password){
-        registeredUsers.put(name, password);
+        this.registeredUsers.put(name, password);
+        this.testManagers.put(name, new ConcurrentHashMap<>());
+        this.testOwners.put(name, new LinkedList<>());
+        this.shoppingCarts.put(name, new ShoppingCart());
+        this.purchaseHistories.put(name, new PurchaseHistory());
     }
 
-    public boolean isUniqueName(String name) {
-        return !this.registeredUsers.containsKey(name);
+    public Response<Boolean> userExists(String name) {
+        return new Response<>(true, this.registeredUsers.containsKey(name), "username already exists");
     }
 
     public boolean validUser(String name, String password) {
@@ -81,6 +87,28 @@ public class UserDAO {
         }
         readLock.unlock();
         return isValid;
+    }
+
+    public Response<Boolean> addStoreOwned(String name, int storeId){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        writeLock.lock();
+        if(!userExists(name).isFailure()){
+            this.testOwners.get(name).add(storeId);
+            result = new Response<>(true, false, "Store added to owner's list");
+        }
+        writeLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> addStoreManaged(String name, int storeId) {
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        writeLock.lock();
+        if(!userExists(name).isFailure()){
+            this.testManagers.get(name).put(storeId, new LinkedList<>());   //@TODO list of permissions
+            result = new Response<>(true, false, "Store added to manager's list");
+        }
+        writeLock.unlock();
+        return result;
     }
 
 //    public Map<String, Role> getRegisteredRoles(String name){

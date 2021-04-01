@@ -38,15 +38,15 @@ public class User{
         this.purchaseHistory = null;
     }
 
-    public User(String name){
+    public User(UserDTO userDTO){
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
 
-        UserDTO userDTO = UserDAO.getInstance().getUser(name);
+        this.state = new Registered();
         this.storesOwned = userDTO.getStoresOwned();
         this.storesManaged = userDTO.getStoresManaged();
-        this.name = name;
+        this.name = userDTO.getName();
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
         // @TODO roles = loadfromdb
@@ -92,23 +92,16 @@ public class User{
 //        }
 //    }
 
-    public Response<Boolean> register(String name, String password) {
-        Response<Boolean> result = new Response<>(false, true, "Username is not unique");
-        if(!state.allowed(FunctionName.REGISTER, this)){
-            return new Response<>(false, true, "User not allowed to register");
+    public Response<Boolean> register() {
+        if(state.allowed(FunctionName.REGISTER, this)){
+            return new Response<>(true, false, "User is allowed to register");
         }
-        readLock.lock();
-        if(UserDAO.getInstance().isUniqueName(name)) {
-            UserDAO.getInstance().registerUser(name, password);
-            result = new Response<>(true, false, "");
-        }
-        readLock.unlock();
-        return result;
+        return new Response<>(false, true, "User is not allowed to register");
     }
 
-    public boolean login(String name, String password){
-        return UserDAO.getInstance().validUser(name, password);
-    }
+//    public boolean login(String name, String password){
+//        //@TODO what is the purpose of this function?
+//    }
 
     public Response<Boolean> addToCart(Product product) {
         return this.shoppingCart.addProduct(product);
@@ -175,10 +168,23 @@ public class User{
     }
 
     public Response<Boolean> appointOwner(String newOwner, int storeId){
-        if(this.state.allowed(FunctionName.APPOINT_OWNER, this, storeId) && ){
-            allUser.get(newOwner).addStoresOwned(storeId);
+        if(this.state.allowed(FunctionName.APPOINT_OWNER, this, storeId)){
+            Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
+            if(!exists.isFailure()) {
+                return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+            }
         }
+        return new Response<>(false, true, "User isn't allowed to appoint owner");
     }
 
 
+    public Response<Boolean> appointManager(String newManager, int storeId) {
+        if(this.state.allowed(FunctionName.APPOINT_MANAGER, this, storeId)){
+            Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
+            if(!exists.isFailure()) {
+                return UserDAO.getInstance().addStoreManaged(newManager, storeId);
+            }
+        }
+        return new Response<>(false, true, "User isn't allowed to appoint manager");
+    }
 }
