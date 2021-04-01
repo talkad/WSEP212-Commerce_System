@@ -6,20 +6,20 @@ import java.util.List;
 
 public class Registered extends UserState {
 
-    private List<FunctionName> allowedFunctions;
+    private List<Permissions> allowedFunctions;
 
     public Registered() {
         this.allowedFunctions = new LinkedList<>();
-        this.allowedFunctions.add(FunctionName.OPEN_STORE);
+        this.allowedFunctions.add(Permissions.OPEN_STORE);
     }
 
     @Override
-    public boolean allowed(FunctionName func, User user) {
+    public boolean allowed(Permissions func, User user) {
         return this.allowedFunctions.contains(func);
     }
 
     @Override
-    public boolean allowed(FunctionName func, User user, int storeId) {
+    public boolean allowed(Permissions func, User user, int storeId) {
         if (user.getStoresOwned().contains(storeId)) {
             return true;
         }
