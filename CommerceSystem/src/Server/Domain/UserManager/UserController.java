@@ -6,10 +6,14 @@ import Server.Domain.ExternalComponents.PaymentSystem;
 import Server.Domain.ExternalComponents.ProductSupply;
 import Server.Domain.ShoppingManager.Product;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class UserController {
     private AtomicInteger availableId;
@@ -18,12 +22,28 @@ public class UserController {
     PaymentSystemAdapter externalPayment;
     ProductSupplyAdapter externalDelivery;
 
+    private ReadWriteLock lock;
+    private Lock writeLock;
+    private Lock readLock;
+
     private UserController(){
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
 
         this.externalPayment = new PaymentSystemAdapter(new PaymentSystem()); /* communication with external payment system */
         this.externalDelivery = new ProductSupplyAdapter(new ProductSupply()); /* communication with external delivery system */
+
+        lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
+        readLock = lock.readLock();
+    }
+
+    private static class CreateSafeThreadSingleton {
+        private static final UserController INSTANCE = new UserController();
+    }
+
+    public static UserController getInstance() {
+        return UserController.CreateSafeThreadSingleton.INSTANCE;
     }
 
     public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
@@ -46,14 +66,6 @@ public class UserController {
         return connectedUsers.get(username).updateProductPrice(storeID, productID, newPrice);
     }
 
-    private static class CreateSafeThreadSingleton {
-        private static final UserController INSTANCE = new UserController();
-    }
-
-    public static UserController getInstance() {
-        return UserController.CreateSafeThreadSingleton.INSTANCE;
-    }
-
     private Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
@@ -62,14 +74,25 @@ public class UserController {
 
     public Response<Boolean> register(String prevName, String name, String password){
         //@TODO prevent invalid usernames (Guest...)
-        return connectedUsers.get(prevName).register(name, password);
+        Response<Boolean> result = connectedUsers.get(prevName).register();
+        if(!result.isFailure()) {
+            readLock.lock();
+            result = UserDAO.getInstance().userExists(name);
+            if (!result.isFailure()) {
+                UserDAO.getInstance().registerUser(name, password);
+                result = new Response<>(true, false, "");
+            }
+            readLock.unlock();
+        }
+        return result;
     }
 
     public Response<String> login(String prevName, String name, String password){
-        if(connectedUsers.get(prevName).login(name, password)){
+        if(UserDAO.getInstance().validUser(name, password)){
             connectedUsers.remove(prevName);
-            connectedUsers.put(name, new User(name)); //@TODO what is user?
-            return new Response<>(name, false,"null");
+            UserDTO userDTO = UserDAO.getInstance().getUser(name);
+            connectedUsers.put(name, new User(userDTO)); //@TODO what is user?
+            return new Response<>(name, false,"no error");
         }
         else {
            return new Response<>(name, true, "Failed to login user");
@@ -102,11 +125,54 @@ public class UserController {
         return connectedUsers.get(userName).getPurchaseHistoryContents();
     }
 
-//    public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
-//        UserDTO user = UserDAO.getInstance().getUser(userName);
-//        if(user != null){
-//
-//        }
-//    }
+    //@TODO appointments need to connect to store's appointment tree
+    public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
+        Response<Boolean> result = connectedUsers.get(userName).appointOwner(newOwner, storeId);
+        if(!result.isFailure()){
+            writeLock.lock();
+            if(this.connectedUsers.containsKey(newOwner)){
+                connectedUsers.get(newOwner).addStoresOwned(storeId);
+            }
+            writeLock.unlock();
+        }
+        return result;
+    }
+
+    public Response<Boolean> appointManager(String userName, String newManager, int storeId) {
+        Response<Boolean> result = connectedUsers.get(userName).appointManager(newManager, storeId);
+        if(!result.isFailure()){
+            writeLock.lock();
+            if(this.connectedUsers.containsKey(newManager)){
+                connectedUsers.get(newManager).addStoresManaged(storeId, new LinkedList<>()); //@TODO list of permissions
+            }
+            writeLock.unlock();
+        }
+        return result;
+    }
+
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+        if(appointee.isOwner(storeID)){
+
+        }
+        writeLock.lock();
+        if(this.connectedUsers.containsKey(appointerName)) {
+            this.connectedUsers.get(appointerName).removeOwnerAppointment(appointeeName, storeID);
+        }
+        UserDAO.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
+        List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
+        if(appointments != null){
+            for(String name : appointments){
+                removeOwnerAppointment(appointeeName, name, storeID);
+            }
+        }
+        writeLock.unlock();
+        return new Response<>(true, false, "");
+    }
+
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        Response<String> initialRemoval = this.connectedUsers.get(appointerName).removeManagerAppointment(appointeeName, storeID);
+    }
+
 }
 

@@ -140,17 +140,22 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID) {
-        return null;
+        return userController.appointOwner(appointerName, appointeeName, storeID);
+    }
+
+    @Override
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        return userController.removeOwnerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
-        return null;
+        return userController.appointManager(appointerName, appointeeName, storeID);
     }
 
     @Override
-    public Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID) {
-        return null;
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        return userController.removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override

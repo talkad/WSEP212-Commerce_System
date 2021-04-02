@@ -4,10 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.StoreController;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -20,6 +18,7 @@ public class User{
     private String name;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
+    private Appointment appointments;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -36,19 +35,21 @@ public class User{
         this.storesManaged = null;
         this.shoppingCart = new ShoppingCart();
         this.purchaseHistory = null;
+        this.appointments = null;
     }
 
-    public User(String name){
+    public User(UserDTO userDTO){
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
 
-        UserDTO userDTO = UserDAO.getInstance().getUser(name);
+        this.state = new Registered();
         this.storesOwned = userDTO.getStoresOwned();
         this.storesManaged = userDTO.getStoresManaged();
-        this.name = name;
+        this.name = userDTO.getName();
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
+        this.appointments = new Appointment();
         // @TODO roles = loadfromdb
     }
 
@@ -92,23 +93,16 @@ public class User{
 //        }
 //    }
 
-    public Response<Boolean> register(String name, String password) {
-        Response<Boolean> result = new Response<>(false, true, "Username is not unique");
-        if(!state.allowed(FunctionName.REGISTER, this)){
-            return new Response<>(false, true, "User not allowed to register");
+    public Response<Boolean> register() {
+        if(state.allowed(Permissions.REGISTER, this)){
+            return new Response<>(true, false, "User is allowed to register");
         }
-        readLock.lock();
-        if(UserDAO.getInstance().isUniqueName(name)) {
-            UserDAO.getInstance().registerUser(name, password);
-            result = new Response<>(true, false, "");
-        }
-        readLock.unlock();
-        return result;
+        return new Response<>(false, true, "User is not allowed to register");
     }
 
-    public boolean login(String name, String password){
-        return UserDAO.getInstance().validUser(name, password);
-    }
+//    public boolean login(String name, String password){
+//        //@TODO what is the purpose of this function?
+//    }
 
     public Response<Boolean> addToCart(Product product) {
         return this.shoppingCart.addProduct(product);
@@ -128,7 +122,7 @@ public class User{
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
-        if (!this.state.allowed(FunctionName.OPEN_STORE, this)) {
+        if (!this.state.allowed(Permissions.OPEN_STORE, this)) {
             return new Response<>(-1, true, "Not allowed to open store");
         }
 
@@ -154,31 +148,60 @@ public class User{
     }
 
     public Response<Boolean> addProductsToStore(int storeID, Product product, int amount) {
-        if(this.state.allowed(FunctionName.ADD_PRODUCT_TO_STORE, this, storeID)){
+        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, storeID)){
             return StoreController.getInstance().addProductToStore(storeID, product, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }
 
     public Response<Boolean> removeProductsFromStore(int storeID, Product product, int amount) {
-        if(this.state.allowed(FunctionName.REMOVE_PRODUCT_FROM_STORE, this, storeID)){
+        if(this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)){
             return StoreController.getInstance().removeProductFromStore(storeID, product, amount);
         }
         return new Response<>(false, true, "The user is not allowed to remove products from the store");
     }
 
     public Response<Boolean> updateProductPrice(int storeID, int productID, int newPrice) {
-        if(this.state.allowed(FunctionName.UPDATE_PRODUCT_PRICE, this, storeID)){
+        if(this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)){
             return StoreController.getInstance().updateProductPrice(storeID, productID, newPrice); //TODO ON SHOP SIDE
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
 
     public Response<Boolean> appointOwner(String newOwner, int storeId){
-        if(this.state.allowed(FunctionName.APPOINT_OWNER, this, storeId) && ){
-            allUser.get(newOwner).addStoresOwned(storeId);
+        if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)){
+            Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
+            if(!exists.isFailure()) {
+                return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+            }
         }
+        return new Response<>(false, true, "User isn't allowed to appoint owner");
     }
 
 
+    public Response<Boolean> appointManager(String newManager, int storeId) {
+        if(this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)){
+            Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
+            if(!exists.isFailure()) {
+                return UserDAO.getInstance().addStoreManaged(newManager, storeId);
+            }
+        }
+        return new Response<>(false, true, "User isn't allowed to appoint manager");
+    }
+
+    public Response<String> removeOwnerAppointment(String appointeeName, int storeId) {
+        return this.appointments.removeAppointment(storeId, appointeeName);
+    }
+
+    public Response<String> removeManagerAppointment(String appointeeName, int storeId) {
+        return this.appointments.removeAppointment(storeId, appointeeName);
+    }
+
+    public boolean isOwner(int storeId){
+        return this.storesOwned.contains(storeId);
+    }
+
+    public boolean isManager(int storeId){
+        return this.storesManaged.containsKey(storeId);
+    }
 }
