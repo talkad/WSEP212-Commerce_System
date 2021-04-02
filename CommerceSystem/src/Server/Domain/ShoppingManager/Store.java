@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class Store {
     private int storeID;
     private String name;
+    private String ownerName;
     private Inventory inventory;
     private boolean isActiveStore;
     private DiscountPolicy discountPolicy;
@@ -19,9 +20,10 @@ public class Store {
     private ReentrantReadWriteLock readWriteLock;
 
 
-    public Store(int id, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
+    public Store(int id, String name,String ownerName, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
         this.name = name;
         this.storeID = id;
+        this.ownerName = ownerName;
         this.inventory = new Inventory();
         this.isActiveStore = true;
         this.discountPolicy = discountPolicy;
@@ -83,5 +85,9 @@ public class Store {
         readWriteLock.readLock().unlock();
 
         return history;
+    }
+
+    public String getOwnerName(){
+        return ownerName;
     }
 }

@@ -28,11 +28,11 @@ public class StoreController {
         return storeController;
     }
 
-    public Response<Integer> openStore(String StoreName){
+    public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
 
         // should be a way to add and edit policies
-        Store store = new Store(id, StoreName, null, null);
+        Store store = new Store(id, StoreName, ownerName, null, null);
         stores.put(id, store);
 
         return new Response<>(id, false, "Store with id "+id+" opened successfully");
@@ -147,5 +147,9 @@ public class StoreController {
             return null;
 
         return store.getPurchaseHistory();
+    }
+
+    public String getStoreOwnerName(int storeID){
+        return stores.get(storeID).getOwnerName();
     }
 }
