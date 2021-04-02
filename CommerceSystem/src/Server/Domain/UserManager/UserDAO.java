@@ -107,7 +107,9 @@ public class UserDAO {
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         writeLock.lock();
         if(!userExists(name).isFailure()){
-            this.testManagers.get(name).put(storeId, new LinkedList<>());   //@TODO list of permissions
+            List<Permissions> permissions = new LinkedList<>();
+            permissions.add(Permissions.RECEIVE_STORE_ROLES_INFO);
+            this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
         writeLock.unlock();
