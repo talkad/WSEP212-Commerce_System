@@ -115,7 +115,7 @@ public class User{
     }
 
     public Response<Boolean> updateProductQuantity(Product product, int amount) {
-        return this.shoppingCart.updateProductQuantity(product, amount); // @TODO IMPLEMENT IN SHOPPINGCART TAL KADOSH
+        return this.shoppingCart.updateProductQuantity(product, amount); // @TODO STFU SHAKED
     }
 
     public Response<Boolean> addProductReview(int productID, String review) {

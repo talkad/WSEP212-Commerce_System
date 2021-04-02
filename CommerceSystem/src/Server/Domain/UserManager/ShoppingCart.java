@@ -75,4 +75,16 @@ public class ShoppingCart {
         return products;
     }
 
+    public Response<Boolean> updateProductQuantity(Product product, int amount) {
+        ShoppingBasket basket;
+
+        readLock.lock();
+        basket = baskets.get(product.getProductID());
+        readLock.unlock();
+
+        if(basket == null)
+            return new Response<>(false, true, "This basket doesn't exists");
+
+        return basket.updateProductQuantity(product, amount);
+    }
 }
