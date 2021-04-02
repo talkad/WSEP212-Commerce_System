@@ -13,8 +13,8 @@ public class Product {
 
     private final int productID;
     private final int storeID;
-    private final String name;
     private AtomicReference<Double> price;
+    private AtomicReference<String> name;
     private final List<String> categories;
     private final List<String> keywords;
 
@@ -26,7 +26,7 @@ public class Product {
     public Product(int productID, int storeID, String name, double price, List<String> categories, List<String> keywords){
         this.productID = productID;
         this.storeID = storeID;
-        this.name = name;
+        this.name = new AtomicReference<>(name);
         this.price = new AtomicReference<>(price);
         this.categories = categories;
         this.keywords = keywords;
@@ -44,12 +44,20 @@ public class Product {
         }while (!price.compareAndSet(currentPrice, newPrice));
     }
 
+    public void updateName(String newName){
+        String currentName;
+
+        do {
+            currentName = name.get();
+        }while (!name.compareAndSet(currentName, newName));
+    }
+
     public int getStoreID(){
         return storeID;
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public int getProductID() {

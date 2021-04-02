@@ -86,7 +86,7 @@ public class CommerceService implements IService{
 
     @Override
     public Response<Integer> openStore(String username, String storeName) {
-        return CommerceSystem.getInstance().openStore(username, storeName); // make instead a function that returns a store
+        return CommerceSystem.getInstance().openStore(username, storeName);
     }
 
     @Override

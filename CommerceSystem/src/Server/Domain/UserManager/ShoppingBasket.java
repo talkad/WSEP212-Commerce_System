@@ -77,4 +77,26 @@ public class ShoppingBasket {
     public int getStoreID() {
         return storeID;
     }
+
+    public Response<Boolean> updateProductQuantity(Product product, int amount) {
+        Response<Boolean> res;
+        int productID = product.getProductID();
+
+        if(amount < 0){
+            res = new Response<>(false, true, "amount can't be negative");
+        }
+        else if(!products.contains(product)){
+            res = new Response<>(false, true, product.getName()+" is not in the basket");
+        }
+        else{
+            pAmount.put(productID, amount);
+
+            if(pAmount.get(productID) == 0)
+                products.remove(product);
+
+            res = new Response<>(true, false, "Product "+product.getName()+" amount updated");
+        }
+
+        return res;
+    }
 }
