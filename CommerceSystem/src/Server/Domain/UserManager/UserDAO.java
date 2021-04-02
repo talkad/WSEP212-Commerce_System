@@ -37,8 +37,6 @@ public class UserDAO {
         readLock = lock.readLock();
     }
 
-
-
     public UserDTO getUser(String name){
         if(!registeredUsers.containsKey(name))
             return null;
@@ -62,8 +60,6 @@ public class UserDAO {
         }
         return new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment);
     }
-
-
 
     private static class CreateSafeThreadSingleton {
         private static final UserDAO INSTANCE = new UserDAO();
@@ -129,17 +125,24 @@ public class UserDAO {
         return result;
     }
 
-    public void removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+    public void removeAppointment(String appointerName, String appointeeName, int storeID) {
         writeLock.lock();
         if(this.appointments.containsKey(appointerName))
             this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
-        writeLock.unlock();
+        writeLock.unlock();//todo need to also remove stores owned/managed from the list
     }
-//    public Map<String, Role> getRegisteredRoles(String name){
-//        if(registeredUsers.containsKey(name)){
-//            return userRoles.get(name);
-//        }
-//        //@TODO else(loadFromDB)
-//        return new ConcurrentHashMap<>();
-//    }
+
+    public void removeRole(String appointeeName, int storeID) {
+        if(testOwners.containsKey(appointeeName)) {
+            if (testOwners.get(appointeeName).contains(storeID)) {
+                testOwners.get(appointeeName).remove(storeID);
+            }
+        }
+        else if(testManagers.containsKey(appointeeName)) {
+            if (testManagers.get(appointeeName).containsKey(storeID)) {
+                testManagers.get(appointeeName).remove(storeID);
+            }
+        }
+    }
+
 }

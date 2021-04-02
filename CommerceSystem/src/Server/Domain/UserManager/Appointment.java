@@ -64,4 +64,11 @@ public class Appointment {
         return response;
     }
 
+    public boolean contains(int storeId, String apointee){
+        if(this.storeAppointments.containsKey(storeId)){
+            return this.storeAppointments.get(storeId).contains(apointee);
+        }
+        return false;
+    }
+
 }

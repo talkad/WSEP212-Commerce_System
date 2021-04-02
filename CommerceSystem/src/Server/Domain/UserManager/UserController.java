@@ -150,28 +150,84 @@ public class UserController {
         return result;
     }
 
-    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
-        User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
-        if(appointee.isOwner(storeID)){
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID){
+        User appointer = new User(UserDAO.getInstance().getUser(appointerName));
+        if(appointer.appointed(appointeeName)) {
+            User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+            if (appointee.isOwner(storeID)) {
+                if(this.connectedUsers.containsKey(appointerName)) {
+                    this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
+                    this.connectedUsers.get(appointeeName).removeRole(storeID);
+                }
+                Response<List<String>> response = UserDAO.getInstance().getAppointments(appointeeName, storeID);
+                UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
+                UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-        }
-        writeLock.lock();
-        if(this.connectedUsers.containsKey(appointerName)) {
-            this.connectedUsers.get(appointerName).removeOwnerAppointment(appointeeName, storeID);
-        }
-        UserDAO.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
-        List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
-        if(appointments != null){
-            for(String name : appointments){
-                removeOwnerAppointment(appointeeName, name, storeID);
+                for (String name : response.getResult()) {
+                    removeAppointmentRec(appointeeName, name, storeID);
+                }
+                if (response.getResult() != null) {
+                    return new Response<>(true, false, "");
+                } else {
+                    return new Response<>(false, true, response.getErrMsg());
+                }
+            } else {
+                return new Response<>(false, true, "Attempted to remove not a store owner");
             }
         }
-        writeLock.unlock();
-        return new Response<>(true, false, "");
+        else{
+            return new Response<>(false, true, "Attempted to remove a store owner that wasn't appointed by him");
+        }
     }
 
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
-        Response<String> initialRemoval = this.connectedUsers.get(appointerName).removeManagerAppointment(appointeeName, storeID);
+        User appointer = new User(UserDAO.getInstance().getUser(appointerName));
+        if(appointer.appointed(appointeeName)) {
+            User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+            if (appointee.isManager(storeID)) {
+                if(this.connectedUsers.containsKey(appointerName)) {
+                    this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
+                    this.connectedUsers.get(appointeeName).removeRole(storeID);
+                }
+                Response<List<String>> response = UserDAO.getInstance().getAppointments(appointeeName, storeID);
+                UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
+                UserDAO.getInstance().removeRole(appointeeName, storeID);
+
+                for (String name : response.getResult()) {
+                    removeAppointmentRec(appointeeName, name, storeID);
+                }
+                if (response.getResult() != null) {
+                    return new Response<>(true, false, "");
+                } else {
+                    return new Response<>(false, true, response.getErrMsg());
+                }
+            } else {
+                return new Response<>(false, true, "Attempted to remove not a store manager");
+            }
+        }
+        else {
+            return new Response<>(false, true, "Attempted to remove a store manager that wasn't appointed by him");
+
+        }
+    }
+
+    private void removeAppointmentRec(String appointerName, String appointeeName, int storeID) {//todo void return ok?
+        writeLock.lock();
+        if(this.connectedUsers.containsKey(appointerName)) {                                    // if the user is connected:
+            this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);   // remove his appointee from his appointment list
+            this.connectedUsers.get(appointeeName).removeRole(storeID);                         // remove his appointee's role from the appointee's list
+        }
+        List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
+        UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);         // remove appointee from the appointers list
+        UserDAO.getInstance().removeRole(appointeeName, storeID);                               // remove appointee's role from his list
+
+        if(appointments != null){
+            for(String name : appointments){
+                removeAppointmentRec(appointeeName, name, storeID);                             // recursive call
+            }
+        }
+        writeLock.unlock();
+        //return new Response<>(true, false, ""); //todo seems unnecessary
     }
 
 }

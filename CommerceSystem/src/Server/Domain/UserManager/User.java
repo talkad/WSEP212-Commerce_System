@@ -204,4 +204,27 @@ public class User{
     public boolean isManager(int storeId){
         return this.storesManaged.containsKey(storeId);
     }
+
+    public Response<String> removeAppointment(String appointeeName, int storeID) {
+        if(this.storesOwned.contains(storeID)){
+            return this.appointments.removeAppointment(storeID, appointeeName);
+        }
+        else if(this.storesManaged.containsKey(storeID)){
+            return this.appointments.removeAppointment(storeID, appointeeName);
+        }
+        return new Response<>("problem", true, "user not appointed by this appointer");
+    }
+
+    public void removeRole(int storeID) {
+        if(this.storesOwned.contains(storeID)){
+            this.storesOwned.remove(storeID);
+        }
+        else if(this.storesManaged.containsKey(storeID)){
+            this.storesManaged.remove(storeID);
+        }
+    }
+
+    public boolean appointed(String appointeeName) {
+        this.appointments.
+    }
 }
