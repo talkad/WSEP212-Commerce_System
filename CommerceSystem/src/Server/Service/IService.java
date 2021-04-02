@@ -39,8 +39,6 @@ public interface IService {
 
     List<Product> searchByProductKeyword(String keyword); // 2.6 - c
 
-    // filtering of the results by some defined criteria - JONATAN?
-
     Response<Boolean> addToCart(String username, Product product); // 2.7
 
     Response<Boolean> removeFromCart(String username, Product product); // 2.8 - a

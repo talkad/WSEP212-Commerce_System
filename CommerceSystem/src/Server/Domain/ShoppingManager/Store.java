@@ -1,10 +1,13 @@
 package Server.Domain.ShoppingManager;
 
+import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.Purchase;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Store {
@@ -14,6 +17,8 @@ public class Store {
     private boolean isActiveStore;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
+    private AtomicReference<Double> rating;
+    private AtomicInteger numRatings;
 
     private List<Purchase> purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
@@ -27,6 +32,8 @@ public class Store {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         this.purchaseHistory = new LinkedList<>();
+        this.rating = new AtomicReference<>(0.0);
+        this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
@@ -83,5 +90,24 @@ public class Store {
         readWriteLock.readLock().unlock();
 
         return history;
+    }
+
+    public void addRating(Rating rate){
+        int prevNum;
+        Double currentRating;
+        Double newRating;
+
+        do {
+            currentRating = rating.get();
+            prevNum = numRatings.get();
+            newRating = (prevNum * currentRating + rate.rate) / (prevNum + 1);
+
+        }while (!rating.compareAndSet(currentRating, newRating));
+
+        numRatings.getAndIncrement();
+    }
+
+    public double getRating() {
+        return rating.get();
     }
 }

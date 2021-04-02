@@ -35,7 +35,7 @@ public class StoreController {
         Store store = new Store(id, StoreName, null, null);
         stores.put(id, store);
 
-        return new Response<>(id, false, "Store with id "+id+" opened successfully");
+        return new Response<>(id, false, "Store with id " + id + " opened successfully");
     }
 
 
@@ -67,6 +67,15 @@ public class StoreController {
     public List<Product> searchByKeyWord(String keyword){
         return SearchEngine.getInstance().searchByKeyWord(keyword);
     }
+
+    public List<Product> filterByRating(double rating){ return SearchEngine.getInstance().filterByRating(rating);}
+
+    public List<Product> filterByPriceRange(double lowRate, double highRate){ return SearchEngine.getInstance().filterByPriceRange(lowRate, highRate);}
+
+    public List<Product> filterByStoreRating(double rating){ return SearchEngine.getInstance().filterByStoreRating(rating);}
+
+    public List<Product> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
+
 
     public Store getStoreById(int storeId) {
         return stores.get(storeId);
