@@ -20,9 +20,6 @@ public class UserDAO {
     private Lock writeLock;
     private Lock readLock;
 
-    // private Map<String, Map<String, Role>> userRoles;
-
-
     private UserDAO(){
 
         this.registeredUsers = new ConcurrentHashMap<>();
