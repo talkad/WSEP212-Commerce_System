@@ -12,6 +12,10 @@ import Server.Domain.UserManager.UserDetails;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * this class also serves as the Bridge in implementing the acceptance testings
+ */
 public interface IService {
 
     /**

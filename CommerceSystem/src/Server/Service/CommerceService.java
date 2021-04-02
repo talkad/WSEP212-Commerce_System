@@ -13,6 +13,10 @@ import Server.Domain.UserManager.UserDetails;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * this class also serves as the real Bridge in implementing the acceptance testings
+ */
 public class CommerceService implements IService{
     @Override
     public void init() {
