@@ -17,6 +17,7 @@ public class UserDAO {
     private Map<String, List<Integer>> testOwners;
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
+    private Map<String, Appointment> appointments;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -32,11 +33,14 @@ public class UserDAO {
         this.testOwners = new ConcurrentHashMap<>();
         this.shoppingCarts = new ConcurrentHashMap<>();
         this.purchaseHistories = new ConcurrentHashMap<>();
+        this.appointments = new ConcurrentHashMap<>();
 
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
     }
+
+
 
     public UserDTO getUser(String name){
         if(!registeredUsers.containsKey(name))
@@ -55,8 +59,14 @@ public class UserDAO {
         if (purchaseHistory == null){
             purchaseHistory = new PurchaseHistory();
         }
-        return new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory);
+        Appointment appointment = appointments.get(name);
+        if(appointment == null){
+            appointment = new Appointment();
+        }
+        return new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment);
     }
+
+
 
     private static class CreateSafeThreadSingleton {
         private static final UserDAO INSTANCE = new UserDAO();
@@ -111,6 +121,23 @@ public class UserDAO {
         return result;
     }
 
+    public Response<List<String>> getAppointments(String appointeeName, int storeID) {
+        Response<List<String>> result;
+        readLock.lock();
+        if(this.appointments.containsKey(appointeeName)){
+            result = this.appointments.get(appointeeName).getAppointees(storeID);
+        }
+        else result = new Response<>(null, true, "User doesn't exist");
+        readLock.unlock();
+        return result;
+    }
+
+    public void removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        writeLock.lock();
+        if(this.appointments.containsKey(appointerName))
+            this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
+        writeLock.unlock();
+    }
 //    public Map<String, Role> getRegisteredRoles(String name){
 //        if(registeredUsers.containsKey(name)){
 //            return userRoles.get(name);

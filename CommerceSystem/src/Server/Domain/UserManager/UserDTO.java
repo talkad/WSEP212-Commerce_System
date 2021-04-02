@@ -10,22 +10,25 @@ public class UserDTO {
     private List<Integer> storesOwned;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
+    private Appointment appointments;
 
-    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory) {
+    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments) {
         this.name = name;
         this.password = password;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
+        this.appointments = appointments;
     }
 
-    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory) {
+    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments) {
         this.name = name;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
+        this.appointments = appointments;
     }
 
     public String getName() {
@@ -48,5 +51,9 @@ public class UserDTO {
 
     public PurchaseHistory getPurchaseHistory() {
         return purchaseHistory;
+    }
+
+    public Appointment getAppointments() {
+        return appointments;
     }
 }

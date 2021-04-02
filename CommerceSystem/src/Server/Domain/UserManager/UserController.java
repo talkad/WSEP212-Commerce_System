@@ -150,5 +150,29 @@ public class UserController {
         return result;
     }
 
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+        if(appointee.isOwner(storeID)){
+
+        }
+        writeLock.lock();
+        if(this.connectedUsers.containsKey(appointerName)) {
+            this.connectedUsers.get(appointerName).removeOwnerAppointment(appointeeName, storeID);
+        }
+        UserDAO.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
+        List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
+        if(appointments != null){
+            for(String name : appointments){
+                removeOwnerAppointment(appointeeName, name, storeID);
+            }
+        }
+        writeLock.unlock();
+        return new Response<>(true, false, "");
+    }
+
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        Response<String> initialRemoval = this.connectedUsers.get(appointerName).removeManagerAppointment(appointeeName, storeID);
+    }
+
 }
 

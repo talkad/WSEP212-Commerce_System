@@ -18,6 +18,7 @@ public class User{
     private String name;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
+    private Appointment appointments;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -34,6 +35,7 @@ public class User{
         this.storesManaged = null;
         this.shoppingCart = new ShoppingCart();
         this.purchaseHistory = null;
+        this.appointments = null;
     }
 
     public User(UserDTO userDTO){
@@ -47,6 +49,7 @@ public class User{
         this.name = userDTO.getName();
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
+        this.appointments = new Appointment();
         // @TODO roles = loadfromdb
     }
 
@@ -184,5 +187,21 @@ public class User{
             }
         }
         return new Response<>(false, true, "User isn't allowed to appoint manager");
+    }
+
+    public Response<String> removeOwnerAppointment(String appointeeName, int storeId) {
+        return this.appointments.removeAppointment(storeId, appointeeName);
+    }
+
+    public Response<String> removeManagerAppointment(String appointeeName, int storeId) {
+        return this.appointments.removeAppointment(storeId, appointeeName);
+    }
+
+    public boolean isOwner(int storeId){
+        return this.storesOwned.contains(storeId);
+    }
+
+    public boolean isManager(int storeId){
+        return this.storesManaged.containsKey(storeId);
     }
 }

@@ -86,9 +86,11 @@ public interface IService {
 
     Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID); // 4.3
 
+    Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID);  // 4.4
+
     Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
 
-    Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID); // 4.7
+    Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
     Response<UserDetails> getWorkersDetails(String username, int storeID); // 4.9
 
