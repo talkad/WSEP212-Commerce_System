@@ -1,5 +1,6 @@
 package Server.Domain.ShoppingManager;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -83,15 +84,9 @@ public class ProductDTO {
 
     @Override
     public String toString() {
-        return "ProductDTO{\n" +
-                "name=" + name + '\n' +
-                ", productID=" + productID + '\n' +
-                ", storeID=" + storeID + '\n' +
-                ", price=" + price + '\n' +
-                ", categories=" + categories.toString()+ '\n' +
-                ", keywords=" + keywords.toString() + '\n' +
-                ", reviews=" + reviews.toString() + '\n' +
-                ", rating=" + rating +
-                '}';
+        return "Product id " + productID + ":\n" +
+                "name: " + name + ", price: " + price + ", categories=" + Arrays.toString(categories.toArray()) +
+                ", keywords=" + Arrays.toString(keywords.toArray()) + "\n" +
+                "Rating: " + rating +", keywords=" + Arrays.toString(reviews.toArray()) + "\n";
     }
 }

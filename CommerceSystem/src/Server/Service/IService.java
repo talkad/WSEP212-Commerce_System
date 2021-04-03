@@ -1,10 +1,7 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
@@ -44,13 +41,13 @@ public interface IService {
 
     List<Product> searchByProductKeyword(String keyword); // 2.6 - c
 
-    Response<Boolean> addToCart(String username, Product product); // 2.7
+    Response<Boolean> addToCart(String username, int storeID, int productID); // 2.7
 
-    Response<Boolean> removeFromCart(String username, Product product); // 2.8 - a
+    Response<Boolean> removeFromCart(String username,  int storeID, int productID); // 2.8 - a
 
-    Map<Integer, Map<Product, Integer>> getCartDetails(String username); // 2.8 - b
+    Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username); // 2.8 - b
 
-    Response<Boolean> updateProductQuantity(String username, Product product, int amount); // 2.8 - c
+    Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount); // 2.8 - c
 
     Response<Boolean> purchaseCartItems(String username, String creditCardDetails); // 2.9
 
@@ -75,9 +72,9 @@ public interface IService {
      * Store Manager requirements - 5
      * can do all of the functions that store owner do, depends on its permissions
      */
-    Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount); // 4.1 - a
+    Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount); // 4.1 - a
 
-    Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount); // 4.1 - b
+    Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount); // 4.1 - b
 
     Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName); // 4.1 - c
 

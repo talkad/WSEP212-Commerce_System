@@ -36,7 +36,7 @@ public class Product {
         this.reviews = Collections.synchronizedCollection(productDTO.getReviews());
     }
 
-    public Product createProduct(ProductDTO productDTO){
+    public static Product createProduct(ProductDTO productDTO){
         Product product = new Product(productDTO);
 
         if(productDTO.getProductID() == -1){

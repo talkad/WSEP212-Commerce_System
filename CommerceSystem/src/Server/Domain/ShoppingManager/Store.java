@@ -2,10 +2,6 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.Purchase;
-
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,12 +37,12 @@ public class Store {
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
-    public void addProduct(Product product, int amount){
-        inventory.addProducts(product, amount);
+    public void addProduct(ProductDTO productDTO, int amount){
+        inventory.addProducts(productDTO, amount);
     }
 
-    public Response<Boolean> removeProduct(Product product, int amount){
-        return inventory.removeProducts(product, amount);
+    public Response<Boolean> removeProduct(int productID, int amount){
+        return inventory.removeProducts(productID, amount);
     }
 
     public String getName() {
@@ -74,7 +70,7 @@ public class Store {
     }
 
     public Response<Boolean> purchase(Product product, int amount) {
-        Response<Boolean> result = inventory.removeProducts(product, amount);
+        Response<Boolean> result = inventory.removeProducts(product, amount); // TODO make it productID in the parameter (and storeID if needed)
 
         readWriteLock.writeLock().lock();
 

@@ -3,6 +3,7 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class ShoppingBasket {
         Response<Boolean> res;
         int productID = product.getProductID();
 
-        if(product.getStoreID() != storeID){
+        if(product.getStoreID() != storeID){ //double check
             res = new Response<>(false, true, "Product "+product.getName()+" isn't from store...");
         }
         else{
@@ -83,37 +84,36 @@ public class ShoppingBasket {
         return storeID;
     }
 
-    public Response<Boolean> updateProductQuantity(Product product, int amount) {
+    public Response<Boolean> updateProductQuantity(int productID, int amount) {
         Response<Boolean> res;
         int prevAmount;
-        int productID = product.getProductID();
+        Response<Product> productRes;
 
         if(amount < 0){
             res = new Response<>(false, true, "amount can't be negative");
         }
-        else if(!products.contains(product)){
-            res = new Response<>(false, true, product.getName()+" is not in the basket");
+        else if(!pAmount.containsKey(productID)){
+            res = new Response<>(false, true, "The product doesn't exists in the given basket");
         }
         else{
             prevAmount =pAmount.get(productID);
             pAmount.put(productID, amount);
+            productRes = StoreController.getInstance().getProduct(storeID, productID);
 
-            if(pAmount.get(productID) == 0)
-                products.remove(product);
+            if(productRes.isFailure()){
+                res = new Response<>(false, true, productRes.getErrMsg());
+            }
+            else {
+                if(pAmount.get(productID) == 0)
+                    products.remove(productRes.getResult());
 
-            totalPrice += (amount - prevAmount)*product.getPrice();
+                totalPrice += (amount - prevAmount)*productRes.getResult().getPrice();
 
-            res = new Response<>(true, false, "Product "+product.getName()+" amount updated");
+                res = new Response<>(true, false, "Product "+productRes.getResult().getName()+" amount updated");
+            }
         }
 
         return res;
-    }
-
-    public Response<Boolean> isProductExists(int productID){
-        if(pAmount.containsKey(productID))
-            return new Response<>(true, false, "Success");
-
-        return new Response<>(false, true, "This product is absent");
     }
 
     public Response<Boolean> addReview(int productID, String review) {
@@ -134,10 +134,13 @@ public class ShoppingBasket {
 
     @Override
     public String toString() {
-        return "ShoppingBasket{" + "\n" +
-                "storeID=" + storeID + "\n" +
-                "products=" + products.toString() + "\n" +
-                "pAmount=" + pAmount.toString() + "\n" +
-                '}';
+        Map<ProductDTO, Integer> products = getProducts();
+        String result = "ShoppingBasket id " + storeID + ":\n";
+
+        for(ProductDTO product: products.keySet()){
+            result += product.toString() + "Amount :" + products.get(product) +"\n";
+        }
+
+        return result;
     }
 }

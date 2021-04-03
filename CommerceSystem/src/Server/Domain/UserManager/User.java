@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.LinkedList;
@@ -96,16 +96,16 @@ public class User{
 //        //@TODO what is the purpose of this function?
 //    }
 
-    public Response<Boolean> addToCart(Product product) {
-        return this.shoppingCart.addProduct(product);
+    public Response<Boolean> addToCart(int storeID, int productID) {
+        return this.shoppingCart.addProduct(storeID, productID);
     }
 
-    public Map<Integer ,Map<Product, Integer>> getShoppingCartContents() {
+    public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents() {
         return this.shoppingCart.getBaskets(); //@TODO SHOULD PROBABLY CHECK
     }
 
-    public Response<Boolean> removeProduct(Product product) {
-        return this.shoppingCart.removeProduct(product); //@TODO SHOULD PROBABLY CHECK
+    public Response<Boolean> removeProduct(int storeID, int productID) {
+        return this.shoppingCart.removeProduct(storeID, productID); //@TODO SHOULD PROBABLY CHECK
     }
 
     public void logout() {
@@ -129,8 +129,8 @@ public class User{
         return this.purchaseHistory.getPurchases();
     }
 
-    public Response<Boolean> updateProductQuantity(Product product, int amount) {
-        return this.shoppingCart.updateProductQuantity(product, amount);
+    public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
+        return this.shoppingCart.updateProductQuantity(storeID, productID, amount);
     }
 
     public Response<Boolean> addProductReview(int productID, String review) {
@@ -143,16 +143,16 @@ public class User{
         }
     }
 
-    public Response<Boolean> addProductsToStore(int storeID, Product product, int amount) {
+    public Response<Boolean> addProductsToStore(int storeID, ProductDTO productDTO, int amount) {
         if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, storeID)){
-            return StoreController.getInstance().addProductToStore(storeID, product, amount);
+            return StoreController.getInstance().addProductToStore(storeID, productDTO, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }
 
-    public Response<Boolean> removeProductsFromStore(int storeID, Product product, int amount) {
+    public Response<Boolean> removeProductsFromStore(int storeID, int productID, int amount) {
         if(this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)){
-            return StoreController.getInstance().removeProductFromStore(storeID, product, amount);
+            return StoreController.getInstance().removeProductFromStore(storeID, productID, amount);
         }
         return new Response<>(false, true, "The user is not allowed to remove products from the store");
     }

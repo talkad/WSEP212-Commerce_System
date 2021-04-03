@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
@@ -8,7 +9,6 @@ import Server.Domain.ShoppingManager.StoreController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -17,15 +17,11 @@ public class ShoppingCart {
     // map storeID to its relevant shopping basket
     private Map<Integer, ShoppingBasket> baskets;
     private ReadWriteLock lock;
-    private Lock writeLock;
-    private Lock readLock;
+
 
     public ShoppingCart(){
         this.baskets = new ConcurrentHashMap<>();
-
-        lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
-        readLock = lock.readLock();
+        this.lock = new ReentrantReadWriteLock();
     }
 
     public Response<Boolean> addProduct(int storeID, int productID){
@@ -37,30 +33,37 @@ public class ShoppingCart {
             res = new Response<>(false, true, productRes.getErrMsg());
         }
         else {
-            writeLock.lock();
+            lock.writeLock().lock();
             baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
             basket = baskets.get(storeID);
             res = basket.addProduct(productRes.getResult());
-            writeLock.unlock();
+            lock.writeLock().unlock();
         }
 
         return res;
     }
 
-    public Response<Boolean> removeProduct(Product product){
+    public Response<Boolean> removeProduct(int storeID, int productID){
         ShoppingBasket basket;
         Response<Boolean> res;
-        int storeID = product.getStoreID();
+        Response<Product> productRes;
 
-        writeLock.lock();
+        lock.writeLock().lock();
         if(!baskets.containsKey(storeID)){
             res = new Response<>(false, true, "This store basket doesn't exists");
         }
         else{
-            basket = baskets.get(storeID);
-            res = basket.removeProduct(product);
+            productRes = StoreController.getInstance().getProduct(storeID, productID);
+
+            if(productRes.isFailure()){
+                res = new Response<>(false, true, productRes.getErrMsg());
+            }
+            else {
+                basket = baskets.get(storeID);
+                res = basket.removeProduct(productRes.getResult());
+            }
         }
-        writeLock.unlock();
+        lock.writeLock().unlock();
 
         return res;
     }
@@ -71,43 +74,55 @@ public class ShoppingCart {
      */
     public Map<Integer, Map<ProductDTO, Integer>> getBaskets(){
         Map<Integer, Map<ProductDTO, Integer>> products = new HashMap<>();
-        readLock.lock();
+        lock.readLock().lock();
 
         for(ShoppingBasket basket: baskets.values()){
             products.put(basket.getStoreID() ,basket.getProducts());
         }
 
-        readLock.unlock();
+        lock.readLock().unlock();
 
         return products;
     }
 
-    public Response<Boolean> updateProductQuantity(Product product, int amount) {
+    public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
         ShoppingBasket basket;
 
-        readLock.lock();
-        basket = baskets.get(product.getProductID());
-        readLock.unlock();
+        lock.readLock().lock();
+        basket = baskets.get(storeID);
+        lock.readLock().unlock();
 
         if(basket == null)
             return new Response<>(false, true, "This basket doesn't exists");
 
-        return basket.updateProductQuantity(product, amount);
+        return basket.updateProductQuantity(productID, amount);
     }
 
-    public Response<Boolean> addReview(int productID, String review) {
-        ShoppingBasket currBasket = null;
+    public Response<Boolean> addReview(int storeID, int productID, String review) {
+        ShoppingBasket basket;
 
-        for (ShoppingBasket basket : baskets.values()) {
-            if (basket.isProductExists(productID).getResult()) {
-                currBasket = basket;
-                break;
-            }
+        lock.readLock().lock();
+        basket = baskets.get(storeID);
+        lock.readLock().unlock();
+
+        if (basket == null)
+            return new Response<>(false, true, "This product doesn't exists in cart");
+        return basket.addReview(productID, review);
+    }
+
+    public Response<Boolean> addRating(int storeID, int productID, Rating rate) {
+        Response<Boolean> res;
+        Response<Product> productRes = StoreController.getInstance().getProduct(storeID, productID);
+
+        if(productRes.isFailure()){
+            res = new Response<>(false, true, productRes.getErrMsg());
+        }
+        else {
+            productRes.getResult().addRating(rate);
+            res = new Response<>(true, false, "Rating has been added");
         }
 
-        if (currBasket == null)
-            return new Response<>(false, true, "This product doesn't exists in cart");
-        return currBasket.addReview(productID, review);
+        return res;
     }
 
     public double getTotalPrice(){
@@ -121,8 +136,8 @@ public class ShoppingCart {
 
     @Override
     public String toString() {
-        return "ShoppingCart{" + "\n" +
-                "baskets=" + baskets.toString() + "\n" +
-                '}';
+        return "ShoppingCart:\n" +
+                "baskets:\n" + baskets.toString();
     }
+
 }

@@ -5,6 +5,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ExternalComponents.PaymentSystem;
 import Server.Domain.ExternalComponents.ProductSupply;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,20 +47,20 @@ public class UserController {
         return UserController.CreateSafeThreadSingleton.INSTANCE;
     }
 
-    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
-        return connectedUsers.get(username).updateProductQuantity(product, amount);
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
+        return connectedUsers.get(username).updateProductQuantity(storeID, productID, amount);
     }
 
     public Response<Boolean> addProductReview(String username, int productID, String review) {
         return connectedUsers.get(username).addProductReview(productID, review);
     }
 
-    public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
-        return connectedUsers.get(username).addProductsToStore(storeID, product, amount);
+    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
+        return connectedUsers.get(username).addProductsToStore(storeID, productDTO, amount);
     }
 
-    public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
-        return connectedUsers.get(username).removeProductsFromStore(storeID, product, amount);
+    public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
+        return connectedUsers.get(username).removeProductsFromStore(storeID, productID, amount);
     }
 
     public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
@@ -99,16 +100,16 @@ public class UserController {
         }
     }
 
-    public Response<Boolean> addToCart(String userName, Product product){
-        return connectedUsers.get(userName).addToCart(product);
+    public Response<Boolean> addToCart(String userName, int storeID, int productID){
+        return connectedUsers.get(userName).addToCart(storeID, productID);
     }
 
-    public Map<Integer ,Map<Product, Integer>> getShoppingCartContents(String userName){
+    public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents(String userName){
         return connectedUsers.get(userName).getShoppingCartContents();
     }
 
-    public Response<Boolean> removeProduct(String userName, Product product){
-        return connectedUsers.get(userName).removeProduct(product);
+    public Response<Boolean> removeProduct(String userName, int storeID, int productID){
+        return connectedUsers.get(userName).removeProduct(storeID, productID);
     }
 
     public Response<String> logout(String name) {

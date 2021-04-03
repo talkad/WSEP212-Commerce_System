@@ -38,24 +38,6 @@ public class StoreController {
         return new Response<>(id, false, "Store with id " + id + " opened successfully");
     }
 
-
-//    public Response<Boolean> addStore(int storeID, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
-//        if(stores.containsKey(storeID))
-//            return new Response<>(false, true, "Store id already exists.");
-//
-//        stores.put(storeID, new Store(storeID, name, discountPolicy, purchasePolicy));
-//        return new Response<>(true, false, "Store has been added successfully.");
-//    }
-//
-//    public Response<Boolean> addStore(Store store){
-//        if(store == null)
-//            return new Response<>(false, true, "Invalid store");
-//        if(stores.containsKey(store.getStoreID()))
-//            return new Response<>(false, true, "Store already exists.");
-//        stores.put(store.getStoreID(), store);
-//        return new Response<>(true, false, "Store has been added successfully.");
-//    }
-
     public List<Product> searchByProductName(String productName){
         return SearchEngine.getInstance().searchByProductName(productName);
     }
@@ -89,7 +71,7 @@ public class StoreController {
         return stores.values();
     }
 
-    public Response<Boolean> addProductToStore(int storeID, Product product, int amount){
+    public Response<Boolean> addProductToStore(int storeID, ProductDTO productDTO, int amount){
         Response<Boolean> result;
         Store store;
 
@@ -101,7 +83,7 @@ public class StoreController {
         }
         else{
             store = stores.get(storeID);
-            store.addProduct(product, amount);
+            store.addProduct(productDTO, amount);
 
             result = new Response<>(false, true, "The product added successfully");
         }
@@ -109,7 +91,7 @@ public class StoreController {
         return result;
     }
 
-    public Response<Boolean> removeProductFromStore(int storeID, Product product, int amount){
+    public Response<Boolean> removeProductFromStore(int storeID, int productID, int amount){
         Response<Boolean> result;
         Store store;
 
@@ -121,7 +103,7 @@ public class StoreController {
         }
         else{
             store = stores.get(storeID);
-            result = store.removeProduct(product, amount);
+            result = store.removeProduct(productID, amount);
         }
 
         return result;
@@ -149,13 +131,13 @@ public class StoreController {
         return (List<Store>) stores.values();
     }
 
-    public Response<List<Purchase>> getStorePurchaseHistory(int storeID) {
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
         Store store = stores.get(storeID);
 
         if(store == null)
-            return null;
+            return new Response<>(null, true, "This store doesn't exists");
 
-        return store.getPurchaseHistory();
+        return  new Response<>(store.getPurchaseHistory(), false, "success");
     }
 
     public String getStoreOwnerName(int storeID){

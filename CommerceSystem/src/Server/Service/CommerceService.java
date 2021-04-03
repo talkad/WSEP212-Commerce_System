@@ -1,10 +1,7 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.*;
 
 import java.util.List;
@@ -51,23 +48,23 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> addToCart(String username, Product product) {
-        return CommerceSystem.getInstance().addToCart(username, product);
+    public Response<Boolean> addToCart(String username, int storeID, int productID) {
+        return CommerceSystem.getInstance().addToCart(username, storeID, productID);
     }
 
     @Override
-    public Response<Boolean> removeFromCart(String username, Product product) {
-        return CommerceSystem.getInstance().removeFromCart(username, product);
+    public Response<Boolean> removeFromCart(String username,  int storeID, int productID) {
+        return CommerceSystem.getInstance().removeFromCart(username, storeID, productID);
     }
 
     @Override
-    public Map<Integer, Map<Product, Integer>> getCartDetails(String username) {
+    public Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username) {
         return CommerceSystem.getInstance().getCartDetails(username);
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
-        return CommerceSystem.getInstance().updateProductQuantity(username, product, amount);
+    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount){
+        return CommerceSystem.getInstance().updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
@@ -101,13 +98,13 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
-        return CommerceSystem.getInstance().addProductsToStore(username, storeID, product, amount);
+    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
+        return CommerceSystem.getInstance().addProductsToStore(username, storeID, productDTO, amount);
     }
 
     @Override
-    public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
-        return CommerceSystem.getInstance().removeProductsFromStore(username, storeID, product, amount);
+    public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
+        return CommerceSystem.getInstance().removeProductsFromStore(username, storeID, productID, amount);
     }
 
     @Override

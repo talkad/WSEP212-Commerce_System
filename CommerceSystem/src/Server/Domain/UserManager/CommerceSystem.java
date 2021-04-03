@@ -64,23 +64,23 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addToCart(String username, Product product) {
-        return userController.addToCart(username, product);
+    public Response<Boolean> addToCart(String username, int storeID, int productID) {
+        return userController.addToCart(username, storeID, productID);
     }
 
     @Override
-    public Response<Boolean> removeFromCart(String username, Product product) {
-        return userController.removeProduct(username, product);
+    public Response<Boolean> removeFromCart(String username,  int storeID, int productID) {
+        return userController.removeProduct(username, storeID, productID);
     }
 
     @Override
-    public Map<Integer, Map<Product, Integer>> getCartDetails(String username) {
+    public Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username) {
         return userController.getShoppingCartContents(username);
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
-        return userController.updateProductQuantity(username, product, amount);
+    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount) {
+        return userController.updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
@@ -114,13 +114,13 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
-        return userController.addProductsToStore(username, storeID, product, amount);
+    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
+        return userController.addProductsToStore(username, storeID, productDTO, amount);
     }
 
     @Override
-    public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
-        return userController.removeProductsFromStore(username, storeID, product, amount);
+    public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
+        return userController.removeProductsFromStore(username, storeID, productID, amount);
     }
 
     @Override

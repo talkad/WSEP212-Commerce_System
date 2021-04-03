@@ -24,9 +24,10 @@ public class Inventory {
     }
 
 
-    public void addProducts(Product product, int amount){
+    public void addProducts(ProductDTO productDTO, int amount){
         int productID;
         Integer result;
+        Product product = Product.createProduct(productDTO);
 
         lock.writeLock().lock();
 
@@ -41,9 +42,8 @@ public class Inventory {
         lock.writeLock().unlock();
     }
 
-    public Response<Boolean> removeProducts(Product product, int amount){
+    public Response<Boolean> removeProducts(int productID, int amount){
         Response<Boolean> res;
-        int productID = product.getProductID();
         int newAmount;
 
         lock.writeLock().lock();
@@ -55,7 +55,7 @@ public class Inventory {
             newAmount = pAmount.get(productID) - amount;
 
             if (newAmount > 0) {
-                pAmount.put(product.getProductID(), newAmount);
+                pAmount.put(productID, newAmount);
                 res = new Response<>(true, false, "Product amount updated successfully");
             }
             else if (newAmount == 0) {
