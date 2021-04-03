@@ -87,4 +87,20 @@ public class ShoppingCart {
 
         return basket.updateProductQuantity(product, amount);
     }
+
+    public Response<Boolean> addReview(int productID, String review) {
+        ShoppingBasket currBasket = null;
+
+        for (ShoppingBasket basket : baskets.values()) {
+            if (basket.isProductExists(productID).getResult()) {
+                currBasket = basket;
+                break;
+            }
+        }
+
+        if (currBasket == null)
+            return new Response<>(false, true, "This product doesn't exists in cart");
+        return currBasket.addReview(productID, review);
+    }
+
 }

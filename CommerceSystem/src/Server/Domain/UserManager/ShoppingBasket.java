@@ -99,4 +99,23 @@ public class ShoppingBasket {
 
         return res;
     }
+
+    public Response<Boolean> isProductExists(int productID){
+        if(pAmount.containsKey(productID))
+            return new Response<>(true, false, "Success");
+
+        return new Response<>(false, true, "This product is absent");
+    }
+
+    public Response<Boolean> addReview(int productID, String review) {
+
+        for(Product product: products){
+            if(product.getProductID() == productID){
+                product.addReview(review);
+                return new Response<>(true, false, "Review has been added");
+            }
+        }
+
+        return new Response<>(false, true, "Failure");
+    }
 }
