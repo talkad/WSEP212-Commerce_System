@@ -1,10 +1,7 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
@@ -24,13 +21,12 @@ public interface IService {
      */
     void init(); // 1.1
 
-
     /**
      * Guest requirements - 2
      */
-    // 2.1 ?
+    Response<String> addGuest(); // 2.1
 
-    // 2.2 ?
+    Response<String> removeGuest(String name); // 2.2
 
     Response<Boolean> register(String prevName, String username, String pwd); // 2.3
 
@@ -48,7 +44,7 @@ public interface IService {
 
     Response<Boolean> removeFromCart(String username, Product product); // 2.8 - a
 
-    Map<Integer, Map<Product, Integer>> getCartDetails(String username); // 2.8 - b
+    Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username); // 2.8 - b
 
     Response<Boolean> updateProductQuantity(String username, Product product, int amount); // 2.8 - c
 

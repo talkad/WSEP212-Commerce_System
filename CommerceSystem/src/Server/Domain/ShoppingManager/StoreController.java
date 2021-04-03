@@ -155,7 +155,7 @@ public class StoreController {
         if(store == null)
             return null;
 
-        return store.getPurchaseHistory();
+        return null;//store.getPurchaseHistory();todo
     }
 
     public String getStoreOwnerName(int storeID){

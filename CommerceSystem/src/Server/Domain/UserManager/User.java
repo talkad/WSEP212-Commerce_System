@@ -2,6 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.LinkedList;
@@ -100,7 +101,7 @@ public class User{
         return this.shoppingCart.addProduct(product);
     }
 
-    public Map<Integer ,Map<Product, Integer>> getShoppingCartContents() {
+    public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents() {
         return this.shoppingCart.getBaskets(); //@TODO SHOULD PROBABLY CHECK
     }
 
@@ -108,9 +109,9 @@ public class User{
         return this.shoppingCart.removeProduct(product); //@TODO SHOULD PROBABLY CHECK
     }
 
-    public void logout() {
-        //@TODO final actions before logout
-    }
+//    public void logout() {
+//        //@TODO final actions before logout
+//    }
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
@@ -167,7 +168,7 @@ public class User{
     public Response<Boolean> appointOwner(String newOwner, int storeId){
         if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)){
             Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
-            if(!exists.isFailure()) {
+            if(exists.getResult()) {
                 this.appointments.addAppointment(storeId, newOwner);
                 UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
                 return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
@@ -179,7 +180,7 @@ public class User{
     public Response<Boolean> appointManager(String newManager, int storeId) {
         if(this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)){
             Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
-            if(!exists.isFailure()) {
+            if(exists.getResult()) {
                 this.appointments.addAppointment(storeId, newManager);
                 UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
                 return UserDAO.getInstance().addStoreManaged(newManager, storeId);
