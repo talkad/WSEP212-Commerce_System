@@ -115,17 +115,17 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
-        return null;
+        return userController.addProductsToStore(username, storeID, product, amount);
     }
 
     @Override
     public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
-        return null;
+        return userController.removeProductsFromStore(username, storeID, product, amount);
     }
 
     @Override
     public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
-        return null;
+        return userController.updateProductPrice(username, storeID, productID, newPrice); //TODO DESCRIPTION EDIT?
     }
 
     @Override
@@ -140,17 +140,22 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID) {
-        return null;
+        return userController.appointOwner(appointerName, appointeeName, storeID);
+    }
+
+    @Override
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        return userController.removeOwnerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
-        return null;
+        return userController.appointManager(appointerName, appointeeName, storeID);
     }
 
     @Override
-    public Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID) {
-        return null;
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        return userController.removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override

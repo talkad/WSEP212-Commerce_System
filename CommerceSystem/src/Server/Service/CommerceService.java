@@ -134,13 +134,18 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        return CommerceSystem.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
+    }
+
+    @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
         return CommerceSystem.getInstance().appointStoreManager(appointerName, appointeeName, storeID);
     }
 
     @Override
-    public Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID) {
-        return CommerceSystem.getInstance().fireStoreManager(appointerName, appointeeName, storeID);
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        return CommerceSystem.getInstance().removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override

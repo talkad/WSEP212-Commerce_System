@@ -1,30 +1,34 @@
 package Server.Domain.UserManager;
 
 import java.util.List;
+import java.util.Map;
 
 public class UserDTO {
     private String name;
     private String password;
-    private List<Integer> storesManaged;
+    private Map<Integer, List<Permissions>> storesManaged;
     private List<Integer> storesOwned;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
+    private Appointment appointments;
 
-    public UserDTO(String name, String password, List<Integer> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory) {
+    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments) {
         this.name = name;
         this.password = password;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
+        this.appointments = appointments;
     }
 
-    public UserDTO(String name, List<Integer> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory) {
+    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments) {
         this.name = name;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
+        this.appointments = appointments;
     }
 
     public String getName() {
@@ -35,7 +39,7 @@ public class UserDTO {
         return password;
     }
 
-    public List<Integer> getStoresManaged() {
+    public Map<Integer, List<Permissions>> getStoresManaged() {
         return storesManaged;
     }
 
@@ -47,5 +51,9 @@ public class UserDTO {
 
     public PurchaseHistory getPurchaseHistory() {
         return purchaseHistory;
+    }
+
+    public Appointment getAppointments() {
+        return appointments;
     }
 }
