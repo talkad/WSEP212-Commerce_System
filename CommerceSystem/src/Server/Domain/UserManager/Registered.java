@@ -6,11 +6,13 @@ import java.util.List;
 
 public class Registered extends UserState {
 
-    private List<Permissions> allowedFunctions;
+    protected final List<Permissions> allowedFunctions;
 
     public Registered() {
         this.allowedFunctions = new LinkedList<>();
+        this.allowedFunctions.add(Permissions.LOGOUT);
         this.allowedFunctions.add(Permissions.OPEN_STORE);
+        this.allowedFunctions.add(Permissions.REVIEW_PRODUCT);
     }
 
     @Override
@@ -19,14 +21,11 @@ public class Registered extends UserState {
     }
 
     @Override
-    public boolean allowed(Permissions func, User user, int storeId) {
+    public boolean allowed(Permissions permission, User user, int storeId) {
         if (user.getStoresOwned().contains(storeId)) {
             return true;
         }
-        else if(user.getStoresManaged().get(storeId).contains(func)) { // @TODO func or permission?
-            return true;
-        }
-        return false;
+        else return user.getStoresManaged().get(storeId).contains(permission);
     }
 
 }

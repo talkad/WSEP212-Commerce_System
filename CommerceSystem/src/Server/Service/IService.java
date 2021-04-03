@@ -5,6 +5,7 @@ import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.Store;
+import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserDetails;
@@ -78,7 +79,7 @@ public interface IService {
 
     Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount); // 4.1 - b
 
-    Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice); // 4.1 - c
+    Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName); // 4.1 - c
 
     List<PurchasePolicy> getPurchasePolicy(String username, int storeID); // 4.2 - a
 
@@ -92,6 +93,8 @@ public interface IService {
 
     Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
 
+    Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission);
+
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
     Response<UserDetails> getWorkersDetails(String username, int storeID); // 4.9
@@ -102,7 +105,7 @@ public interface IService {
     /**
      * System Manager requirements - 6
      */
-    List<Purchase> getUserPurchaseHistory(String username); // 6.4 - a
+    Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    List<Purchase> getStorePurchaseHistory(int storeID); // 6.4 - b
+    Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }

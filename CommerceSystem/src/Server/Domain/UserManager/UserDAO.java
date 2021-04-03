@@ -18,6 +18,7 @@ public class UserDAO {
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
     private Map<String, Appointment> appointments;
+    private List<String> admins;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -31,6 +32,8 @@ public class UserDAO {
         this.shoppingCarts = new ConcurrentHashMap<>();
         this.purchaseHistories = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
+        this.admins = new LinkedList<>();
+        this.admins.add("shaked");
 
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
@@ -108,7 +111,7 @@ public class UserDAO {
         writeLock.lock();
         if(!userExists(name).isFailure()){
             List<Permissions> permissions = new LinkedList<>();
-            permissions.add(Permissions.RECEIVE_STORE_ROLES_INFO);
+            permissions.add(Permissions.RECEIVE_STORE_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
@@ -122,16 +125,25 @@ public class UserDAO {
         if(this.appointments.containsKey(appointeeName)){
             result = this.appointments.get(appointeeName).getAppointees(storeID);
         }
-        else result = new Response<>(null, true, "User doesn't exist");
+        else {
+            result = new Response<>(new LinkedList<>(), true, "User doesn't exist");
+        }
         readLock.unlock();
         return result;
+    }
+
+    public void addAppointment(String name, int storeId, String appointee) {
+        if(!this.appointments.containsKey(name)){
+            this.appointments.put(name, new Appointment());
+        }
+        this.appointments.get(name).addAppointment(storeId, appointee);
     }
 
     public void removeAppointment(String appointerName, String appointeeName, int storeID) {
         writeLock.lock();
         if(this.appointments.containsKey(appointerName))
             this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
-        writeLock.unlock();//todo need to also remove stores owned/managed from the list
+        writeLock.unlock();
     }
 
     public void removeRole(String appointeeName, int storeID) {
@@ -147,4 +159,11 @@ public class UserDAO {
         }
     }
 
+    public void addPermission(int storeId, String permitted, Permissions permission) {
+        this.testManagers.get(permitted).get(storeId).add(permission);
+    }
+
+    public boolean isAdmin(String name){
+        return this.admins.contains(name);
+    }
 }

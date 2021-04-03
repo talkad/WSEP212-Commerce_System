@@ -30,7 +30,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public void init() {
-
+        userController.adminBoot();//todo need to connect to outer systems
     }
 
     @Override
@@ -124,8 +124,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
-        return userController.updateProductPrice(username, storeID, productID, newPrice); //TODO DESCRIPTION EDIT?
+    public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
+        return userController.updateProductInfo(username, storeID, productID, newPrice, newName);
     }
 
     @Override
@@ -154,6 +154,11 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+        return userController.addPermission(permitting, storeId, permitted, permission);
+    }
+
+    @Override
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
         return userController.removeManagerAppointment(appointerName, appointeeName, storeID);
     }
@@ -169,13 +174,13 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public List<Purchase> getUserPurchaseHistory(String username) {
-        return null;
+    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+        return userController.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public List<Purchase> getStorePurchaseHistory(int storeID) {
-        return storeController.getStorePurchaseHistory(storeID);
+    public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
+        return storeController.getStorePurchaseHistory(adminName, storeID);
     }
 
 }
