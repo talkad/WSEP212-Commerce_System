@@ -5,10 +5,7 @@ import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.Store;
-import Server.Domain.UserManager.CommerceSystem;
-import Server.Domain.UserManager.Purchase;
-import Server.Domain.UserManager.User;
-import Server.Domain.UserManager.UserDetails;
+import Server.Domain.UserManager.*;
 
 import java.util.List;
 import java.util.Map;
@@ -114,8 +111,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
-        return CommerceSystem.getInstance().updateProductPrice(username, storeID, productID, newPrice);
+    public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
+        return CommerceSystem.getInstance().updateProductInfo(username, storeID, productID, newPrice, newName);
     }
 
     @Override
@@ -141,6 +138,11 @@ public class CommerceService implements IService{
     @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
         return CommerceSystem.getInstance().appointStoreManager(appointerName, appointeeName, storeID);
+    }
+
+    @Override
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+        return CommerceSystem.getInstance().addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
