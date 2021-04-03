@@ -224,7 +224,7 @@ public class User{
         }
     }
 
-    public boolean appointed(String appointeeName) {
-        this.appointments.
+    public boolean appointed( int storeId, String appointeeName) {
+        return this.appointments.contains(storeId, appointeeName);
     }
 }

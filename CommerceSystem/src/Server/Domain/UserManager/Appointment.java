@@ -64,11 +64,10 @@ public class Appointment {
         return response;
     }
 
-    public boolean contains(int storeId, String apointee){
+    public boolean contains(int storeId, String appointee){
         if(this.storeAppointments.containsKey(storeId)){
-            return this.storeAppointments.get(storeId).contains(apointee);
+            return this.storeAppointments.get(storeId).contains(appointee);
         }
         return false;
     }
-
 }

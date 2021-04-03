@@ -152,7 +152,7 @@ public class UserController {
 
     public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID){
         User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-        if(appointer.appointed(appointeeName)) {
+        if(appointer.appointed(storeID, appointeeName)) {
             User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
             if (appointee.isOwner(storeID)) {
                 if(this.connectedUsers.containsKey(appointerName)) {
@@ -182,7 +182,7 @@ public class UserController {
 
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
         User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-        if(appointer.appointed(appointeeName)) {
+        if(appointer.appointed(storeID, appointeeName)) {
             User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
             if (appointee.isManager(storeID)) {
                 if(this.connectedUsers.containsKey(appointerName)) {
