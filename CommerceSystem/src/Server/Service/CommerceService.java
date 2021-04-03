@@ -161,12 +161,12 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public List<Purchase> getUserPurchaseHistory(String username) {
-        return CommerceSystem.getInstance().getUserPurchaseHistory(username);
+    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+        return CommerceSystem.getInstance().getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public List<Purchase> getStorePurchaseHistory(int storeID) {
-        return CommerceSystem.getInstance().getStorePurchaseHistory(storeID);
+    public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
+        return CommerceSystem.getInstance().getStorePurchaseHistory(adminName, storeID);
     }
 }

@@ -18,6 +18,7 @@ public class UserDAO {
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
     private Map<String, Appointment> appointments;
+    private List<String> admins;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -31,6 +32,8 @@ public class UserDAO {
         this.shoppingCarts = new ConcurrentHashMap<>();
         this.purchaseHistories = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
+        this.admins = new LinkedList<>();
+        this.admins.add("shaked");
 
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
@@ -158,5 +161,9 @@ public class UserDAO {
 
     public void addPermission(int storeId, String permitted, Permissions permission) {
         this.testManagers.get(permitted).get(storeId).add(permission);
+    }
+
+    public boolean isAdmin(String name){
+        return this.admins.contains(name);
     }
 }

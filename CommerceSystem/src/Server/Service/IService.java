@@ -105,7 +105,7 @@ public interface IService {
     /**
      * System Manager requirements - 6
      */
-    List<Purchase> getUserPurchaseHistory(String username); // 6.4 - a
+    Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    List<Purchase> getStorePurchaseHistory(int storeID); // 6.4 - b
+    Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }

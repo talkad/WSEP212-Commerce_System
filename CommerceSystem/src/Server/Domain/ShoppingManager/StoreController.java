@@ -149,7 +149,7 @@ public class StoreController {
         return (List<Store>) stores.values();
     }
 
-    public List<Purchase> getStorePurchaseHistory(int storeID) {
+    public Response<List<Purchase>> getStorePurchaseHistory(int storeID) {
         Store store = stores.get(storeID);
 
         if(store == null)

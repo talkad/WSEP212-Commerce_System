@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.StoreController;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -42,15 +43,18 @@ public class User{
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
-
-        this.state = new Registered();
+        if(UserDAO.getInstance().isAdmin(userDTO.getName())){
+            this.state = new Admin();
+        }
+        else {
+            this.state = new Registered();
+        }
         this.storesOwned = userDTO.getStoresOwned();
         this.storesManaged = userDTO.getStoresManaged();
         this.name = userDTO.getName();
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
         this.appointments = new Appointment();
-        // @TODO roles = loadfromdb
     }
 
     public List<Integer> getStoresOwned() {
@@ -80,17 +84,6 @@ public class User{
     public PurchaseHistory getPurchaseHistory() {
         return purchaseHistory;
     }
-
-    //    public void changeState(FunctionName role){
-//        switch (role){
-//            case GUEST:
-//                state = new Guest();
-//                break;
-////            case REGISTERED:
-////                state = new Registered(); //@TODO Login info???
-////                break;
-//        }
-//    }
 
     public Response<Boolean> register() {
         if(state.allowed(Permissions.REGISTER, this)){
@@ -166,7 +159,7 @@ public class User{
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
         if(this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)){
-            return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName); //TODO ON SHOP SIDE
+            return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
@@ -176,7 +169,7 @@ public class User{
             Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
             if(!exists.isFailure()) {
                 this.appointments.addAppointment(storeId, newOwner);
-                UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);//todo roles?
+                UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
                 return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
             }
         }
@@ -260,5 +253,19 @@ public class User{
 
     public void addSelfPermission(int storeId, Permissions permission){
         this.storesManaged.get(storeId).add(permission);
+    }
+
+    public Response<List<Purchase>> getUserPurchaseHistory(String username) {
+        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)){
+            if(UserDAO.getInstance().userExists(username).getResult()) {
+                return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
+            }
+            else{
+                return new Response<>(new LinkedList<>(), true, "User does not exist");//todo empty list or null
+            }
+        }
+        else{
+            return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+        }
     }
 }

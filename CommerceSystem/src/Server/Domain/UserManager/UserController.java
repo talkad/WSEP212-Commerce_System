@@ -69,7 +69,7 @@ public class UserController {
     private Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
-        return new Response<>(guestName, false, "idk"); //@TODO FIGURE OUT ERR MSG
+        return new Response<>(guestName, false, "added guest");
     }
 
     public Response<Boolean> register(String prevName, String name, String password){
@@ -91,7 +91,7 @@ public class UserController {
         if(UserDAO.getInstance().validUser(name, password)){
             connectedUsers.remove(prevName);
             UserDTO userDTO = UserDAO.getInstance().getUser(name);
-            connectedUsers.put(name, new User(userDTO)); //@TODO what is user?
+            connectedUsers.put(name, new User(userDTO));
             return new Response<>(name, false,"no error");
         }
         else {
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     public Response<String> logout(String name) {
-        connectedUsers.get(name).logout();
+        connectedUsers.get(name).logout();//todo allowed
         connectedUsers.remove(name);
         return addGuest();
     }
@@ -125,7 +125,6 @@ public class UserController {
         return connectedUsers.get(userName).getPurchaseHistoryContents();
     }
 
-    //@TODO appointments need to connect to store's appointment tree
     public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
         Response<Boolean> result = connectedUsers.get(userName).appointOwner(newOwner, storeId);
         if(!result.isFailure()){
@@ -152,7 +151,7 @@ public class UserController {
         return result;
     }
 
-    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID){//todo check if can remove
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID){
         writeLock.lock();
         Response<Boolean> response;
         User appointer = new User(UserDAO.getInstance().getUser(appointerName));
@@ -239,6 +238,17 @@ public class UserController {
             writeLock.unlock();
         }
         return response;
+    }
+
+    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+        return connectedUsers.get(adminName).getUserPurchaseHistory(username);
+    }
+
+    public void adminBoot() {
+        String admin = "shaked";
+        UserDAO.getInstance().registerUser(admin, Integer.toString("jacob".hashCode()));//TODO make this int and g through security scramble password
+        UserDTO userDTO = UserDAO.getInstance().getUser(admin);
+        connectedUsers.put(admin, new User(userDTO));
     }
 }
 
