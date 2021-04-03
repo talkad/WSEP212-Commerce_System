@@ -2,6 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,8 +63,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<Integer, Map<Product, Integer>> getBaskets(){
-        Map<Integer, Map<Product, Integer>> products = new HashMap<>();
+    public Map<Integer, Map<ProductDTO, Integer>> getBaskets(){
+        Map<Integer, Map<ProductDTO, Integer>> products = new HashMap<>();
         readLock.lock();
 
         for(ShoppingBasket basket: baskets.values()){
@@ -103,4 +104,19 @@ public class ShoppingCart {
         return currBasket.addReview(productID, review);
     }
 
+    public double getTotalPrice(){
+        double totalPrice = 0;
+
+        for(ShoppingBasket basket: baskets.values())
+            totalPrice += basket.getTotalPrice();
+
+        return totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingCart{" + "\n" +
+                "baskets=" + baskets.toString() + "\n" +
+                '}';
+    }
 }

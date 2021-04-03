@@ -6,6 +6,8 @@ import Server.Domain.UserManager.Purchase;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,7 +23,7 @@ public class Store {
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
 
-    private List<Purchase> purchaseHistory;
+    private Map<ProductDTO, Integer> purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
 
 
@@ -33,7 +35,7 @@ public class Store {
         this.isActiveStore = true;
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
-        this.purchaseHistory = new LinkedList<>();
+        this.purchaseHistory = new ConcurrentHashMap<>();
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
@@ -77,18 +79,18 @@ public class Store {
         readWriteLock.writeLock().lock();
 
         if(!result.isFailure()){
-            purchaseHistory.add(new Purchase()); //TODO: Purchase isn't implemented
+            purchaseHistory.put(product.getProductDTO(), amount);
         }
 
         readWriteLock.writeLock().unlock();
         return result;
     }
 
-    public List<Purchase> getPurchaseHistory() {
-        List<Purchase> history;
+    public Map<ProductDTO, Integer> getPurchaseHistory() {
+        Map<ProductDTO, Integer> history;
 
         readWriteLock.readLock().lock();
-        history = new LinkedList<>(purchaseHistory);
+        history = new ConcurrentHashMap<>(purchaseHistory);
         readWriteLock.readLock().unlock();
 
         return history;

@@ -2,6 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,11 +16,13 @@ public class ShoppingBasket {
     private List<Product> products;
     // map between productID and its amount in the basket
     private Map<Integer, Integer> pAmount;
+    private double totalPrice;
 
     public ShoppingBasket(int storeID){
         this.storeID = storeID;
         this.products = new LinkedList<>();
         this.pAmount = new HashMap<>();
+        this.totalPrice = 0;
     }
 
     public Response<Boolean> addProduct(Product product){
@@ -39,6 +42,7 @@ public class ShoppingBasket {
                 pAmount.put(productID, pAmount.get(productID) + 1);
             }
 
+            totalPrice += product.getPrice();
             res = new Response<>(true, false, "Product "+product.getName()+" added to shopping basket");
         }
 
@@ -58,17 +62,18 @@ public class ShoppingBasket {
             if(pAmount.get(productID) == 0)
                 products.remove(product);
 
+            totalPrice -= product.getPrice();
             res = new Response<>(true, false, "Product "+product.getName()+" removed from shopping basket");
         }
 
         return res;
     }
 
-    public Map<Product, Integer> getProducts() {
-        Map<Product, Integer> basketProducts = new HashMap<>();
+    public Map<ProductDTO, Integer> getProducts() {
+        Map<ProductDTO, Integer> basketProducts = new HashMap<>();
 
         for(Product product: products){
-            basketProducts.put(product, pAmount.get(product.getProductID()));
+            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
         }
 
         return basketProducts;
@@ -80,6 +85,7 @@ public class ShoppingBasket {
 
     public Response<Boolean> updateProductQuantity(Product product, int amount) {
         Response<Boolean> res;
+        int prevAmount;
         int productID = product.getProductID();
 
         if(amount < 0){
@@ -89,10 +95,13 @@ public class ShoppingBasket {
             res = new Response<>(false, true, product.getName()+" is not in the basket");
         }
         else{
+            prevAmount =pAmount.get(productID);
             pAmount.put(productID, amount);
 
             if(pAmount.get(productID) == 0)
                 products.remove(product);
+
+            totalPrice += (amount - prevAmount)*product.getPrice();
 
             res = new Response<>(true, false, "Product "+product.getName()+" amount updated");
         }
@@ -117,5 +126,18 @@ public class ShoppingBasket {
         }
 
         return new Response<>(false, true, "Failure");
+    }
+
+    public double getTotalPrice(){
+        return totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingBasket{" + "\n" +
+                "storeID=" + storeID + "\n" +
+                "products=" + products.toString() + "\n" +
+                "pAmount=" + pAmount.toString() + "\n" +
+                '}';
     }
 }

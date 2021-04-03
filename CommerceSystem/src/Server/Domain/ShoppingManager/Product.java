@@ -104,4 +104,7 @@ public class Product {
         return keywords != null && keywords.contains(key);
     }
 
+    public ProductDTO getProductDTO(){
+        return new ProductDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get());
+    }
 }
