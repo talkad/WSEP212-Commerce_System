@@ -12,39 +12,68 @@ import java.util.Map;
  * this class also serves as the real Bridge in implementing the acceptance testings
  */
 public class CommerceService implements IService{
+
+    private final CommerceSystem commerceSystem;
+    private CommerceService()
+    {
+        commerceSystem = CommerceSystem.getInstance();
+    }
+
+    // Inner class to provide instance of class
+    private static class CreateThreadSafeSingleton
+    {
+        private static final CommerceService INSTANCE = new CommerceService();
+    }
+
+    public static CommerceService getInstance()
+    {
+        return CreateThreadSafeSingleton.INSTANCE;
+    }
+
+
     @Override
     public void init() {
-        CommerceSystem.getInstance().init();
+        commerceSystem.init();
+    }
+
+    @Override
+    public Response<String> addGuest() {
+        return commerceSystem.addGuest();
+    }
+
+    @Override
+    public Response<String> removeGuest(String name) {
+        return commerceSystem.removeGuest(name);
     }
 
     @Override
     public Response<Boolean> register(String prevName, String username, String pwd) {
-        return CommerceSystem.getInstance().register(prevName, username, pwd);
+        return commerceSystem.register(prevName, username, pwd);
     }
 
     @Override
     public Response<String> login(String prevName, String username, String pwd) {
-        return CommerceSystem.getInstance().login(prevName, username, pwd);
+        return commerceSystem.login(prevName, username, pwd);
     }
 
     @Override
     public List<Store> getContent() {
-        return CommerceSystem.getInstance().getContent();
+        return commerceSystem.getContent();
     }
 
     @Override
     public List<Product> searchByProductName(String productName) {
-        return CommerceSystem.getInstance().searchByProductName(productName);
+        return commerceSystem.searchByProductName(productName);
     }
 
     @Override
     public List<Product> searchByProductCategory(String category) {
-        return CommerceSystem.getInstance().searchByProductCategory(category);
+        return commerceSystem.searchByProductCategory(category);
     }
 
     @Override
     public List<Product> searchByProductKeyword(String keyword) {
-        return CommerceSystem.getInstance().searchByProductKeyword(keyword);
+        return commerceSystem.searchByProductKeyword(keyword);
     }
 
     @Override
@@ -69,32 +98,32 @@ public class CommerceService implements IService{
 
     @Override
     public Response<Boolean> purchaseCartItems(String username, String creditCardDetails) {
-        return CommerceSystem.getInstance().purchaseCartItems(username, creditCardDetails);
+        return commerceSystem.purchaseCartItems(username, creditCardDetails);
     }
 
     @Override
     public User getUserByName(String username) {
-        return CommerceSystem.getInstance().getUserByName(username);
+        return commerceSystem.getUserByName(username);
     }
 
     @Override
     public Response<String> logout(String userName) {
-        return CommerceSystem.getInstance().logout(userName);
+        return commerceSystem.logout(userName);
     }
 
     @Override
     public Response<Integer> openStore(String username, String storeName) {
-        return CommerceSystem.getInstance().openStore(username, storeName);
+        return commerceSystem.openStore(username, storeName);
     }
 
     @Override
     public Response<Boolean> addProductReview(String username, int productID, String review) {
-        return CommerceSystem.getInstance().addProductReview(username, productID, review);
+        return commerceSystem.addProductReview(username, productID, review);
     }
 
     @Override
     public List<Purchase> getPurchaseHistory(String username) {
-        return CommerceSystem.getInstance().getPurchaseHistory(username);
+        return commerceSystem.getPurchaseHistory(username);
     }
 
     @Override
@@ -109,61 +138,61 @@ public class CommerceService implements IService{
 
     @Override
     public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
-        return CommerceSystem.getInstance().updateProductInfo(username, storeID, productID, newPrice, newName);
+        return commerceSystem.updateProductInfo(username, storeID, productID, newPrice, newName);
     }
 
     @Override
     public List<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
-        return CommerceSystem.getInstance().getPurchasePolicy(username, storeID);
+        return commerceSystem.getPurchasePolicy(username, storeID);
     }
 
     @Override
     public List<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
-        return CommerceSystem.getInstance().getDiscountPolicy(username, storeID);
+        return commerceSystem.getDiscountPolicy(username, storeID);
     }
 
     @Override
     public Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID) {
-        return CommerceSystem.getInstance().appointStoreOwner(appointerName, appointeeName, storeID);
+        return commerceSystem.appointStoreOwner(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
-        return CommerceSystem.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
+        return commerceSystem.removeOwnerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
-        return CommerceSystem.getInstance().appointStoreManager(appointerName, appointeeName, storeID);
+        return commerceSystem.appointStoreManager(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
-        return CommerceSystem.getInstance().addPermission(permitting, storeId, permitted, permission);
+        return commerceSystem.addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
-        return CommerceSystem.getInstance().removeManagerAppointment(appointerName, appointeeName, storeID);
+        return commerceSystem.removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<UserDetails> getWorkersDetails(String username, int storeID) {
-        return CommerceSystem.getInstance().getWorkersDetails(username, storeID);
+        return commerceSystem.getWorkersDetails(username, storeID);
     }
 
     @Override
     public Response<Purchase> getPurchaseDetails(String username, int storeID) {
-        return CommerceSystem.getInstance().getPurchaseDetails(username, storeID);
+        return commerceSystem.getPurchaseDetails(username, storeID);
     }
 
     @Override
     public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
-        return CommerceSystem.getInstance().getUserPurchaseHistory(adminName, username);
+        return commerceSystem.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
     public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
-        return CommerceSystem.getInstance().getStorePurchaseHistory(adminName, storeID);
+        return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 }

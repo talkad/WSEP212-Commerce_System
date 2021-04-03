@@ -21,13 +21,12 @@ public interface IService {
      */
     void init(); // 1.1
 
-
     /**
      * Guest requirements - 2
      */
-    // 2.1 ?
+    Response<String> addGuest(); // 2.1
 
-    // 2.2 ?
+    Response<String> removeGuest(String name); // 2.2
 
     Response<Boolean> register(String prevName, String username, String pwd); // 2.3
 

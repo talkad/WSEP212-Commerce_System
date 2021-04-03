@@ -30,7 +30,17 @@ public class CommerceSystem implements IService {
 
     @Override
     public void init() {
-        userController.adminBoot();//todo need to connect to outer systems
+        userController.adminBoot();
+    }
+
+    @Override
+    public Response<String> addGuest() {
+        return userController.addGuest();
+    }
+
+    @Override
+    public Response<String> removeGuest(String name) {
+        return userController.removeGuest(name);
     }
 
     @Override
@@ -180,7 +190,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
-        return storeController.getStorePurchaseHistory(adminName, storeID);
+        return null;//storeController.getStorePurchaseHistory(adminName, storeID);todo
     }
 
 }

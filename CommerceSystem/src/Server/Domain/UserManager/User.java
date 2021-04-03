@@ -108,9 +108,9 @@ public class User{
         return this.shoppingCart.removeProduct(storeID, productID); //@TODO SHOULD PROBABLY CHECK
     }
 
-    public void logout() {
-        //@TODO final actions before logout
-    }
+//    public void logout() {
+//        //@TODO final actions before logout
+//    }
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
@@ -167,7 +167,7 @@ public class User{
     public Response<Boolean> appointOwner(String newOwner, int storeId){
         if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)){
             Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
-            if(!exists.isFailure()) {
+            if(exists.getResult()) {
                 this.appointments.addAppointment(storeId, newOwner);
                 UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
                 return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
@@ -179,7 +179,7 @@ public class User{
     public Response<Boolean> appointManager(String newManager, int storeId) {
         if(this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)){
             Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
-            if(!exists.isFailure()) {
+            if(exists.getResult()) {
                 this.appointments.addAppointment(storeId, newManager);
                 UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
                 return UserDAO.getInstance().addStoreManaged(newManager, storeId);

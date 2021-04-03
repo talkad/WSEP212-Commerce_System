@@ -82,7 +82,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> userExists(String name) {
-        return new Response<>(true, this.registeredUsers.containsKey(name), "username already exists");
+        return new Response<>(this.registeredUsers.containsKey(name), !this.registeredUsers.containsKey(name), "username already exists");
     }
 
     public boolean validUser(String name, String password) {
@@ -98,7 +98,7 @@ public class UserDAO {
     public Response<Boolean> addStoreOwned(String name, int storeId){
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         writeLock.lock();
-        if(!userExists(name).isFailure()){
+        if(userExists(name).getResult()){
             this.testOwners.get(name).add(storeId);
             result = new Response<>(true, false, "Store added to owner's list");
         }
@@ -109,7 +109,7 @@ public class UserDAO {
     public Response<Boolean> addStoreManaged(String name, int storeId) {
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         writeLock.lock();
-        if(!userExists(name).isFailure()){
+        if(userExists(name).getResult()){
             List<Permissions> permissions = new LinkedList<>();
             permissions.add(Permissions.RECEIVE_STORE_INFO);
             this.testManagers.get(name).put(storeId, permissions);

@@ -20,8 +20,8 @@ public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
 
-    PaymentSystemAdapter externalPayment;
-    ProductSupplyAdapter externalDelivery;
+    private PaymentSystemAdapter externalPayment;
+    private ProductSupplyAdapter externalDelivery;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -31,12 +31,21 @@ public class UserController {
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
 
-        this.externalPayment = new PaymentSystemAdapter(new PaymentSystem()); /* communication with external payment system */
-        this.externalDelivery = new ProductSupplyAdapter(new ProductSupply()); /* communication with external delivery system */
-
+        this.externalPayment = PaymentSystemAdapter.getInstance(); /* communication with external payment system */
+        this.externalDelivery = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
+        //todo check if successfully connected
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
+    }
+
+    public Response<String> removeGuest(String name) {
+        String logoutGuest = name;
+        if(UserDAO.getInstance().userExists(name).getResult()){
+            logoutGuest = logout(name).getResult();
+        }
+        connectedUsers.remove(logoutGuest);
+        return new Response<>(name, false, "disconnected user successfully");
     }
 
     private static class CreateSafeThreadSingleton {
@@ -67,7 +76,7 @@ public class UserController {
         return connectedUsers.get(username).updateProductInfo(storeID, productID, newPrice, newName);
     }
 
-    private Response<String> addGuest(){
+    public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
         return new Response<>(guestName, false, "added guest");
@@ -79,7 +88,7 @@ public class UserController {
         if(!result.isFailure()) {
             readLock.lock();
             result = UserDAO.getInstance().userExists(name);
-            if (!result.isFailure()) {
+            if (!result.getResult()) {
                 UserDAO.getInstance().registerUser(name, password);
                 result = new Response<>(true, false, "");
             }
@@ -113,7 +122,7 @@ public class UserController {
     }
 
     public Response<String> logout(String name) {
-        connectedUsers.get(name).logout();//todo allowed
+        //connectedUsers.get(name).logout();//todo allowed
         connectedUsers.remove(name);
         return addGuest();
     }
