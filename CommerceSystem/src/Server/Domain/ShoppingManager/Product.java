@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
+import Server.Domain.CommonClasses.Response;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -102,4 +103,5 @@ public class Product {
     public boolean containsKeyword(String key){
         return keywords != null && keywords.contains(key);
     }
+
 }

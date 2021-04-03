@@ -90,4 +90,19 @@ public class Inventory {
 
         return result == null ? 0 : result;
     }
+
+    public Response<Boolean> updateProductInfo(int productID, double newPrice, String newName) {
+        Product product;
+
+        lock.readLock().lock();
+        product = products.get(productID);
+        lock.readLock().unlock();
+
+        if (product == null)
+            return new Response<>(false, true, "This product doesn't exists");
+
+        product.updatePrice(newPrice);
+        product.updateName(newName);
+        return new Response<>(true, false, "Updated info successfully");
+    }
 }

@@ -161,4 +161,20 @@ public class StoreController {
     public String getStoreOwnerName(int storeID){
         return stores.get(storeID).getOwnerName();
     }
+
+    public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName){
+        Response<Boolean> result;
+        Store store;
+
+        if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            result = store.updateProductInfo(productID, newPrice, newName);
+        }
+
+        return result;
+    }
+
 }

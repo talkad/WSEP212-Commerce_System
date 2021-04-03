@@ -116,4 +116,8 @@ public class Store {
     public String getOwnerName(){
         return ownerName;
     }
+
+    public Response<Boolean> updateProductInfo(int productID, double newPrice, String newName) {
+        return inventory.updateProductInfo(productID, newPrice, newName);
+    }
 }
