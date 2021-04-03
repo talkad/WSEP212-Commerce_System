@@ -55,7 +55,7 @@ public class User{
         this.name = userDTO.getName();
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
-        this.appointments = new Appointment();
+        this.appointments = userDTO.getAppointments();
     }
 
     public List<Integer> getStoresOwned() {
@@ -109,9 +109,9 @@ public class User{
         return this.shoppingCart.removeProduct(product); //@TODO SHOULD PROBABLY CHECK
     }
 
-//    public void logout() {
-//        //@TODO final actions before logout
-//    }
+    public Response<Boolean> logout() {
+        return new Response<>(true, !this.state.allowed(Permissions.LOGOUT, this), "");
+    }
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;

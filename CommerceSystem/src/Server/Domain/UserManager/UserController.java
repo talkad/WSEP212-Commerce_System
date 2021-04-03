@@ -122,9 +122,15 @@ public class UserController {
     }
 
     public Response<String> logout(String name) {
-        //connectedUsers.get(name).logout();//todo allowed
-        connectedUsers.remove(name);
-        return addGuest();
+        Response<String> response;
+        if(!connectedUsers.get(name).logout().isFailure()) {
+            connectedUsers.remove(name);
+            response = addGuest();
+        }
+        else {
+            response = new Response<>(name, true, "User not permitted to logout");
+        }
+        return response;
     }
 
     public Response<Integer> openStore(String userName, String storeName) {
@@ -179,7 +185,8 @@ public class UserController {
                 UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                 UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-                for (String name : appointments.getResult()) {
+                List<String> names = new LinkedList<>(appointments.getResult());
+                for (String name : names) {
                     removeAppointmentRec(appointeeName, name, storeID);
                 }
                 response = new Response<>(true, false, appointments.getErrMsg());
@@ -209,7 +216,8 @@ public class UserController {
                 UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                 UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-                for (String name : appointments.getResult()) {
+                List<String> names = new LinkedList<>(appointments.getResult());
+                for (String name : names) {
                     removeAppointmentRec(appointeeName, name, storeID);
                 }
                 response = new Response<>(true, false, appointments.getErrMsg());
@@ -233,7 +241,8 @@ public class UserController {
         UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);         // remove appointee from the appointers list
         UserDAO.getInstance().removeRole(appointeeName, storeID);                               // remove appointee's role from his list
 
-        for(String name : appointments){
+        List<String> names = new LinkedList<>(appointments);
+        for(String name : names){
             removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
         }
     }

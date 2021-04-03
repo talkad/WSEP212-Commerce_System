@@ -141,21 +141,18 @@ public class UserDAO {
 
     public void removeAppointment(String appointerName, String appointeeName, int storeID) {
         writeLock.lock();
-        if(this.appointments.containsKey(appointerName))
+        if(this.appointments.containsKey(appointerName)) {
             this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
+        }
         writeLock.unlock();
     }
 
     public void removeRole(String appointeeName, int storeID) {
-        if(testOwners.containsKey(appointeeName)) {
-            if (testOwners.get(appointeeName).contains(storeID)) {
-                testOwners.get(appointeeName).remove(storeID);
-            }
+        if(testManagers.containsKey(appointeeName) && testManagers.get(appointeeName).containsKey(storeID)) {
+            testManagers.get(appointeeName).remove(storeID);
         }
-        else if(testManagers.containsKey(appointeeName)) {
-            if (testManagers.get(appointeeName).containsKey(storeID)) {
-                testManagers.get(appointeeName).remove(storeID);
-            }
+        else if(testOwners.containsKey(appointeeName) && testOwners.get(appointeeName).contains(storeID)) {
+            testOwners.get(appointeeName).remove(storeID);
         }
     }
 
