@@ -3,6 +3,7 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,16 +28,21 @@ public class ShoppingCart {
         readLock = lock.readLock();
     }
 
-    public Response<Boolean> addProduct(Product product){
+    public Response<Boolean> addProduct(int storeID, int productID){
         ShoppingBasket basket;
         Response<Boolean> res;
-        int storeID = product.getStoreID();
+        Response<Product> productRes = StoreController.getInstance().getProduct(storeID, productID);
 
-        writeLock.lock();
-        baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
-        basket = baskets.get(storeID);
-        res = basket.addProduct(product);
-        writeLock.unlock();
+        if(productRes.isFailure()){
+            res = new Response<>(false, true, productRes.getErrMsg());
+        }
+        else {
+            writeLock.lock();
+            baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
+            basket = baskets.get(storeID);
+            res = basket.addProduct(productRes.getResult());
+            writeLock.unlock();
+        }
 
         return res;
     }

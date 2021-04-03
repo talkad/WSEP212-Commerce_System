@@ -31,7 +31,7 @@ public class StoreController {
     public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
 
-        // should be a way to add and edit policies
+        // TODO: should be a way to add and edit policies
         Store store = new Store(id, StoreName, ownerName, null, null);
         stores.put(id, store);
 
@@ -177,4 +177,14 @@ public class StoreController {
         return result;
     }
 
+    public Response<Product> getProduct(int storeID, int productID) {
+        Store store = stores.get(storeID);
+
+        if(store == null){
+            return new Response<>(null, true, "store doesn't exists");
+        }
+        else{
+            return store.getProduct(productID);
+        }
+    }
 }

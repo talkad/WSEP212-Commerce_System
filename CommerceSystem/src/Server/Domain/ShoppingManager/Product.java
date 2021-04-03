@@ -1,40 +1,53 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
-import Server.Domain.CommonClasses.Response;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Product {
 
-    private final int productID;
+    private static AtomicInteger indexer = new AtomicInteger(0); //assign productID to new products
+
+    private int productID;
     private final int storeID;
     private AtomicReference<Double> price;
     private AtomicReference<String> name;
     private final List<String> categories;
     private final List<String> keywords;
-
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
     private Collection<String> reviews;
 
 
-    public Product(int productID, int storeID, String name, double price, List<String> categories, List<String> keywords){
-        this.productID = productID;
-        this.storeID = storeID;
-        this.name = new AtomicReference<>(name);
-        this.price = new AtomicReference<>(price);
-        this.categories = categories;
-        this.keywords = keywords;
+    private Product(ProductDTO productDTO){
+        this.productID = productDTO.getProductID();
+        this.storeID = productDTO.getStoreID();
+        this.name = new AtomicReference<>(productDTO.getName());
+        this.price = new AtomicReference<>(productDTO.getPrice());
+        this.categories = productDTO.getCategories();
+        this.keywords = productDTO.getKeywords();
 
-        this.rating = new AtomicReference<>(0.0);
-        this.numRatings = new AtomicInteger(0);
-        this.reviews = Collections.synchronizedCollection(new LinkedList<>());
+        this.rating = new AtomicReference<>(productDTO.getRating());
+        this.numRatings = new AtomicInteger(productDTO.getNumRatings());
+        this.reviews = Collections.synchronizedCollection(productDTO.getReviews());
+    }
+
+    public Product createProduct(ProductDTO productDTO){
+        Product product = new Product(productDTO);
+
+        if(productDTO.getProductID() == -1){
+            product.setProductID(indexer.getAndIncrement());
+        }
+
+        return product;
+    }
+
+    private void setProductID(int id) {
+        this.productID = id;
     }
 
     public void updatePrice(Double newPrice){
@@ -105,6 +118,6 @@ public class Product {
     }
 
     public ProductDTO getProductDTO(){
-        return new ProductDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get());
+        return new ProductDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get(), numRatings.get());
     }
 }

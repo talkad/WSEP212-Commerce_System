@@ -13,8 +13,12 @@ public class ProductDTO {
     private List<String> keywords;
     private Collection<String> reviews;
     private double rating;
+    private int numRatings;
 
-    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, Collection<String> reviews, double rating) {
+    /**
+     *constructor for objects from database
+     */
+    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, Collection<String> reviews, double rating, int numRatings) {
         this.name = name;
         this.productID = productID;
         this.storeID = storeID;
@@ -23,6 +27,22 @@ public class ProductDTO {
         this.keywords = keywords;
         this.reviews = reviews;
         this.rating = rating;
+        this.numRatings = numRatings;
+    }
+
+    /**
+     *constructor for new products
+     */
+    public ProductDTO(String name, int storeID, double price, List<String> categories, List<String> keywords, Collection<String> reviews) {
+        this.name = name;
+        this.productID = -1;
+        this.storeID = storeID;
+        this.price = price;
+        this.categories = categories;
+        this.keywords = keywords;
+        this.reviews = reviews;
+        this.rating = 0;
+        this.numRatings = 0;
     }
 
     public String getName() {
@@ -55,6 +75,10 @@ public class ProductDTO {
 
     public double getRating() {
         return rating;
+    }
+
+    public int getNumRatings() {
+        return numRatings;
     }
 
     @Override

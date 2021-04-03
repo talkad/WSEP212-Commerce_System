@@ -122,4 +122,8 @@ public class Store {
     public Response<Boolean> updateProductInfo(int productID, double newPrice, String newName) {
         return inventory.updateProductInfo(productID, newPrice, newName);
     }
+
+    public Response<Product> getProduct(int productID) {
+        return inventory.getProduct(productID);
+    }
 }

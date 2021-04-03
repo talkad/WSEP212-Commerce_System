@@ -12,6 +12,7 @@ public class Inventory {
 
     // map productID to the amount of it
     private Map<Integer, Integer> pAmount;
+    // map productID to Product
     private Map<Integer, Product> products;
 
     private final ReadWriteLock lock;
@@ -104,5 +105,20 @@ public class Inventory {
         product.updatePrice(newPrice);
         product.updateName(newName);
         return new Response<>(true, false, "Updated info successfully");
+    }
+
+    public Response<Product> getProduct(int productID) {
+        Product product;
+
+        lock.readLock().lock();
+        product = products.get(productID);
+        lock.readLock().unlock();
+
+        if(product == null){
+            return new Response<>(null, true, "This product doesn't exists in the specified store");
+        }
+        else{
+            return new Response<>(product, false, "success");
+        }
     }
 }
