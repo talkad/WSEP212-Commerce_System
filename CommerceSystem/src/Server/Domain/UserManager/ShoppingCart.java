@@ -98,33 +98,6 @@ public class ShoppingCart {
         return basket.updateProductQuantity(productID, amount);
     }
 
-    public Response<Boolean> addReview(int storeID, int productID, String review) {
-        ShoppingBasket basket;
-
-        lock.readLock().lock();
-        basket = baskets.get(storeID);
-        lock.readLock().unlock();
-
-        if (basket == null)
-            return new Response<>(false, true, "This product doesn't exists in cart");
-        return basket.addReview(productID, review);
-    }
-
-    public Response<Boolean> addRating(int storeID, int productID, Rating rate) {
-        Response<Boolean> res;
-        Response<Product> productRes = StoreController.getInstance().getProduct(storeID, productID);
-
-        if(productRes.isFailure()){
-            res = new Response<>(false, true, productRes.getErrMsg());
-        }
-        else {
-            productRes.getResult().addRating(rate);
-            res = new Response<>(true, false, "Rating has been added");
-        }
-
-        return res;
-    }
-
     public double getTotalPrice(){
         double totalPrice = 0;
 

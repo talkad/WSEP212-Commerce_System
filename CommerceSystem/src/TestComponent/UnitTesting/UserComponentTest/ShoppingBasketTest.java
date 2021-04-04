@@ -2,6 +2,7 @@ package TestComponent.UnitTesting.UserComponentTest;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.ShoppingBasket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,14 @@ public class ShoppingBasketTest {
     @BeforeEach
     public void setUp(){
         basket = new ShoppingBasket(10);
-        product1 = new Product(0, 10, "TV", 1299.9, null, null);
-        product2 = new Product(1, 9, "AirPods", 799.9, null, null);
-        product3 = new Product(0, 10, "TV", 1299.9, null, null);
+        product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+        product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
+        product3 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
     }
 
     @Test
     public void addProductLegalTest(){
-        Map<Product, Integer> products;
+        Map<ProductDTO, Integer> products;
         int pNum = 0;
 
         basket.addProduct(product1);
@@ -45,7 +46,7 @@ public class ShoppingBasketTest {
 
     @Test
     public void addProductIllegalTest(){
-        Map<Product, Integer> products;
+        Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
         res = basket.addProduct(product2); // wrong storeID
@@ -56,7 +57,7 @@ public class ShoppingBasketTest {
 
     @Test
     public void removeExistingProductTest(){
-        Map<Product, Integer> products;
+        Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
         basket.addProduct(product1);
@@ -70,7 +71,7 @@ public class ShoppingBasketTest {
 
     @Test
     public void removeAbsentProductTest(){
-        Map<Product, Integer> products;
+        Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
         basket.addProduct(product1);

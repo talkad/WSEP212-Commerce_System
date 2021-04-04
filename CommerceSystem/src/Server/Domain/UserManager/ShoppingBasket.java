@@ -116,17 +116,17 @@ public class ShoppingBasket {
         return res;
     }
 
-    public Response<Boolean> addReview(int productID, String review) {
-
-        for(Product product: products){
-            if(product.getProductID() == productID){
-                product.addReview(review);
-                return new Response<>(true, false, "Review has been added");
-            }
-        }
-
-        return new Response<>(false, true, "Failure");
-    }
+//    public Response<Boolean> addReview(int productID, String review) {
+//
+//        for(Product product: products){
+//            if(product.getProductID() == productID){
+//                product.addReview(review);
+//                return new Response<>(true, false, "Review has been added");
+//            }
+//        }
+//
+//        return new Response<>(false, true, "Failure");
+//    }
 
     public double getTotalPrice(){
         return totalPrice;

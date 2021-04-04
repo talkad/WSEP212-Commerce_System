@@ -133,10 +133,11 @@ public class User{
         return this.shoppingCart.updateProductQuantity(storeID, productID, amount);
     }
 
-    public Response<Boolean> addProductReview(int productID, String review) {
+    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
         if(this.state.allowed(Permissions.REVIEW_PRODUCT,this)){
             // @TODO purchaseHistory.getPurchases().contains(productID) then add product
 
+            // StoreController.getInstance().addProductReview(storeID, productID, review);
             return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
         }
         else{
@@ -144,9 +145,9 @@ public class User{
         }
     }
 
-    public Response<Boolean> addProductsToStore(int storeID, ProductDTO productDTO, int amount) {
-        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, storeID)){
-            return StoreController.getInstance().addProductToStore(storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(ProductDTO productDTO, int amount) {
+        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())){
+            return StoreController.getInstance().addProductToStore(productDTO, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }

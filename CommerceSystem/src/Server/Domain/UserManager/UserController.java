@@ -61,12 +61,12 @@ public class UserController {
         return connectedUsers.get(username).updateProductQuantity(storeID, productID, amount);
     }
 
-    public Response<Boolean> addProductReview(String username, int productID, String review) {
-        return connectedUsers.get(username).addProductReview(productID, review);
+    public Response<Boolean> addProductReview(String username, int storeID, int productID, String review) {
+        return connectedUsers.get(username).addProductReview(storeID, productID, review);
     }
 
-    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
-        return connectedUsers.get(username).addProductsToStore(storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+        return connectedUsers.get(username).addProductsToStore(productDTO, amount);
     }
 
     public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {

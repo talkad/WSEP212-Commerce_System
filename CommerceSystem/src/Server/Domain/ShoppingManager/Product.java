@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
+import Server.Domain.CommonClasses.Response;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -82,8 +83,12 @@ public class Product {
         return price.get();
     }
 
-    public void addReview(String review){
+    public Response<Boolean> addReview(String review){
         reviews.add(review);
+
+        if(review == null || review.length() == 0)
+            return new Response<>(false, true, "Review cannot be empty");
+        return new Response<>(true, false, "Review added successfully");
     }
 
     public Collection<String> getReviews(){

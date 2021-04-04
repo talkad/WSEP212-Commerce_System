@@ -1,6 +1,8 @@
 package Server.Domain.ShoppingManager;
+import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.ShoppingBasket;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,18 +73,18 @@ public class StoreController {
         return stores.values();
     }
 
-    public Response<Boolean> addProductToStore(int storeID, ProductDTO productDTO, int amount){
+    public Response<Boolean> addProductToStore(ProductDTO productDTO, int amount){
         Response<Boolean> result;
         Store store;
 
         if(amount < 0){
             result = new Response<>(false, true, "The amount cannot be negative");
         }
-        else if(!stores.containsKey(storeID)) {
+        else if(!stores.containsKey(productDTO.getStoreID())) {
             result = new Response<>(false, true, "This store does not exists");
         }
         else{
-            store = stores.get(storeID);
+            store = stores.get(productDTO.getStoreID());
             store.addProduct(productDTO, amount);
 
             result = new Response<>(false, true, "The product added successfully");
@@ -169,4 +171,34 @@ public class StoreController {
             return store.getProduct(productID);
         }
     }
+
+    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
+        Response<Boolean> result;
+        Store store;
+
+        if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            result = store.addProductReview(productID, review);
+        }
+
+        return result;
+    }
+
+//    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
+//        Response<Boolean> result;
+//        Store store;
+//
+//        if(!stores.containsKey(storeID)) {
+//            result = new Response<>(false, true, "This store does not exists");
+//        }
+//        else{
+//            store = stores.get(storeID);
+//            result = store.addProductRating(productID, rate);
+//        }
+//
+//        return result;
+//    }
 }
