@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
 
@@ -48,6 +49,9 @@ public class runner {
         //Guest5
         System.out.println(commerceService.login("Guest5", "yoni", "pis").isFailure());
         //commerceService.removeOwnerAppointment("yoni", "tal", res.getResult());
+        for(User user : commerceService.getStoreWorkersDetails("yoni", res.getResult()).getResult()){
+            System.out.println(user.getName());
+        }
         commerceService.logout("yoni");
         //Guest6
 

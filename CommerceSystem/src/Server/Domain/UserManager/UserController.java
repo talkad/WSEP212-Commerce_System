@@ -6,6 +6,7 @@ import Server.Domain.ExternalComponents.PaymentSystem;
 import Server.Domain.ExternalComponents.ProductSupply;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -287,7 +288,32 @@ public class UserController {
     }
 
     public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
-        return connectedUsers.get(username).getStoreWorkersDetails(storeID);
+        if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
+            String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
+            List<User> result = new LinkedList<>();
+            result.add(new User(UserDAO.getInstance().getUser(ownerName)));
+            List<String> appointees = UserDAO.getInstance().getAppointments(username, storeID).getResult();
+            List<String> names = new LinkedList<>(appointees);
+            for(String name : names){
+                appointees.addAll(getAppointeesNamesRec(name, storeID));
+            }
+            for(String name : appointees){
+                result.add(new User(UserDAO.getInstance().getUser(name)));
+            }
+            return new Response<>(result, false, "Workers found");
+        }
+        return new Response<>(null, true, "User not permitted to get worker info");
+    }
+    private List<String> getAppointeesNamesRec(String workerName, int storeID){
+        List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
+        if(appointees != null && !appointees.isEmpty()){
+            List<String> names = new LinkedList<>(appointees);
+            for(String name : names){
+                appointees.addAll(getAppointeesNamesRec(name, storeID));
+            }
+            return appointees;
+        }
+        return new LinkedList<>();
     }
 }
 

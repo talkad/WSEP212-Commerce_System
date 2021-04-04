@@ -270,13 +270,8 @@ public class User{
         }
     }
 
-    public Response<List<User>> getStoreWorkersDetails(int storeID) {       // req 4.9
-        if(this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID)){
-            return null;//todo StoreController.getInstance().getWorkersDetails(storeID);
-        }
-        else {
-            return new Response<>(null, true, "User not allowed to receive store workers information");
-        }
+    public Response<Boolean> getStoreWorkersDetails(int storeID) {       // req 4.9
+        return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
 
     public Response<Purchase> getPurchaseDetails(int storeID) {     // req 4.11
