@@ -8,7 +8,7 @@ public abstract class Driver {
     public static IService getBridge(){
         ProxyBridge bridge = new ProxyBridge(); // proxy bridge
 
-        CommerceService real = new CommerceService(); // real bridge
+        CommerceService real = CommerceService.getInstance(); // real bridge
         bridge.serRealBridge(real);
 
         return bridge;

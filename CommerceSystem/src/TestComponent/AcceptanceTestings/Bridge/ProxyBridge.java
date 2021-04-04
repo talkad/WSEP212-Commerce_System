@@ -1,18 +1,13 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
+import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProxyBridge implements IService {
     private IService real;
@@ -35,6 +30,24 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<String> addGuest() {
+        if (real != null){
+            return real.addGuest();
+        }
+
+        return new Response<>("yossi", false, null);
+    }
+
+    @Override
+    public Response<String> removeGuest(String name) {
+        if (real != null){
+            return real.removeGuest(name);
+        }
+
+        return new Response<>("yossi", false, null);
+    }
+
+    @Override
     public Response<Boolean> register(String prevName, String username, String pwd) {
         if (real != null){
             return real.register(prevName, username, pwd);
@@ -51,65 +64,73 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public List<Store> getContent() {
+    public Response<Collection<Store>> getContent() {
         if (real != null){
             return real.getContent();
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, null);
     }
 
     @Override
-    public List<Product> searchByProductName(String productName) {
+    public Response<List<Store>> searchByStoreName(String storeName) {
+        if (real != null){
+            return real.searchByStoreName(storeName);
+        }
+        return new Response<>(null, true, "not implemented");
+    }
+
+    @Override
+    public Response<List<ProductDTO>> searchByProductName(String productName) {
         if (real != null){
             return real.searchByProductName(productName);
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
-    public List<Product> searchByProductCategory(String category) {
+    public Response<List<ProductDTO>> searchByProductCategory(String category) {
         if (real != null){
             return real.searchByProductCategory(category);
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
-    public List<Product> searchByProductKeyword(String keyword) {
+    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
         if (real != null){
             return real.searchByProductKeyword(keyword);
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
-    public Response<Boolean> addToCart(String username, Product product) {
+    public Response<Boolean> addToCart(String username, int storeID, int productID) {
         if (real != null){
-            return real.addToCart(username, product);
+            return real.addToCart(username, storeID, productID);
         }
         return new Response<>(true, false, null);
     }
 
     @Override
-    public Response<Boolean> removeFromCart(String username, Product product) {
+    public Response<Boolean> removeFromCart(String username, int storeID, int productID) {
         if (real != null){
-            return real.removeFromCart(username, product);
+            return real.removeFromCart(username, storeID, productID);
         }
         return new Response<>(true, false, null);
     }
 
     @Override
-    public Map<Integer, Map<Product, Integer>> getCartDetails(String username) {
+    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
         if (real != null){
             return real.getCartDetails(username);
         }
-        return new HashMap<>();
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username, Product product, int amount) {
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
         if (real != null){
-            return real.updateProductQuantity(username, product, amount);
+            return real.updateProductQuantity(username, storeID, productID, amount);
         }
         return new Response<>(true, false, null);
     }
@@ -127,7 +148,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.getUserByName(username);
         }
-        return new User("yossi");
+        return null;
     }
 
     @Override
@@ -143,45 +164,47 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.openStore(username, storeName);
         }
+
         return new Response<>(1, false, null);
     }
 
     @Override
-    public Response<Boolean> addProductReview(String username, int productID, String review) {
+    public Response<Boolean> addProductReview(String username, int storeID, int productID, String review) {
         if (real != null){
-            return real.addProductReview(username, productID, review);
+            return real.addProductReview(username, storeID, productID, review);
         }
-        return new Response<>(true, false, null);
+
+        return new Response<>(true, true, "not implemented");
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(String username) {
+    public Response<List<Purchase>> getPurchaseHistory(String username) {
         if (real != null){
             return real.getPurchaseHistory(username);
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, int storeID, Product product, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
         if (real != null){
-            return real.addProductsToStore(username, storeID, product, amount);
+            return real.addProductsToStore(username, productDTO, amount);
+        }
+        return new Response<>(true, true, "not implemented");
+    }
+
+    @Override
+    public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
+        if (real != null){
+            return real.removeProductsFromStore(username, storeID, productID, amount);
         }
         return new Response<>(true, false, null);
     }
 
     @Override
-    public Response<Boolean> removeProductsFromStore(String username, int storeID, Product product, int amount) {
+    public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
         if (real != null){
-            return real.removeProductsFromStore(username, storeID, product, amount);
-        }
-        return new Response<>(true, false, null);
-    }
-
-    @Override
-    public Response<Boolean> updateProductPrice(String username, int storeID, int productID, int newPrice) {
-        if (real != null){
-            return real.updateProductPrice(username, storeID, productID, newPrice);
+            return real.updateProductInfo(username, storeID, productID, newPrice, newName);
         }
         return new Response<>(true, false, null);
     }
@@ -211,6 +234,14 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
+        if (real != null){
+            return real.removeOwnerAppointment(appointerName, appointeeName, storeID);
+        }
+        return new Response<>(true, false, null);
+    }
+
+    @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
         if (real != null){
             return real.appointStoreManager(appointerName, appointeeName, storeID);
@@ -219,19 +250,35 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> fireStoreManager(String appointerName, String appointeeName, int storeID) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
         if (real != null){
-            return real.fireStoreManager(appointerName, appointeeName, storeID);
+            return real.addPermission(permitting, storeId, permitted, permission);
         }
         return new Response<>(true, false, null);
     }
 
     @Override
-    public Response<UserDetails> getWorkersDetails(String username, int storeID) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
         if (real != null){
-            return real.getWorkersDetails(username, storeID);
+            return real.removePermission(permitting, storeId, permitted, permission);
         }
-        return new Response<>(new UserDetails(), false, null);
+        return new Response<>(true, false, null);
+    }
+
+    @Override
+    public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        if (real != null){
+            return real.removeManagerAppointment(appointerName, appointeeName, storeID);
+        }
+        return new Response<>(true, false, null);
+    }
+
+    @Override
+    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+        if (real != null){
+            return real.getStoreWorkersDetails(username, storeID);
+        }
+        return new Response<>(new LinkedList<>(), false, null);
     }
 
     @Override
@@ -243,18 +290,18 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public List<Purchase> getUserPurchaseHistory(String username) {
+    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
         if (real != null){
-            return real.getUserPurchaseHistory(username);
+            return real.getUserPurchaseHistory(adminName, username);
         }
-        return new LinkedList<>();
+        return new Response<>(new LinkedList<>(), false, null);
     }
 
     @Override
-    public List<Purchase> getStorePurchaseHistory(int storeID) {
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
         if (real != null){
-            return real.getStorePurchaseHistory(storeID);
+            return real.getStorePurchaseHistory(adminName, storeID);
         }
-        return new LinkedList<>();
+        return new Response<>(null, true, "not implemented");
     }
 }
