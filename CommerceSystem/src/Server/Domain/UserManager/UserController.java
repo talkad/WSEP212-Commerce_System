@@ -158,7 +158,7 @@ public class UserController {
         if(!result.isFailure()){
             writeLock.lock();
             List<Permissions> permissions = new LinkedList<>();
-            permissions.add(Permissions.RECEIVE_STORE_INFO);
+            permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
             if(this.connectedUsers.containsKey(newManager)){
                 connectedUsers.get(newManager).addStoresManaged(storeId, permissions); //@TODO list of permissions
             }
@@ -259,6 +259,18 @@ public class UserController {
         return response;
     }
 
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission){
+        Response<Boolean> response = connectedUsers.get(permitting).removePermission(storeId, permitted, permission);
+        if(!response.isFailure()) {
+            writeLock.lock();
+            if (connectedUsers.containsKey(permitted)) {
+                connectedUsers.get(permitted).removeSelfPermission(storeId, permission);
+            }
+            writeLock.unlock();
+        }
+        return response;
+    }
+
     public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
         return connectedUsers.get(adminName).getUserPurchaseHistory(username);
     }
@@ -268,6 +280,14 @@ public class UserController {
         UserDAO.getInstance().registerUser(admin, Integer.toString("jacob".hashCode()));//TODO make this int and g through security scramble password
         UserDTO userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
+    }
+
+    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+        return connectedUsers.get(username).getPurchaseDetails(storeID);
+    }
+
+    public Response<UserDetails> getWorkersDetails(String username, int storeID) {
+        return connectedUsers.get(username).getWorkersDetails(storeID);
     }
 }
 

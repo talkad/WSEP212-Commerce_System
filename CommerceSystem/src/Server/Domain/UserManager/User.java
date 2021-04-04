@@ -110,7 +110,7 @@ public class User{
     }
 
     public Response<Boolean> logout() {
-        return new Response<>(true, !this.state.allowed(Permissions.LOGOUT, this), "");
+        return new Response<>(true, !this.state.allowed(Permissions.LOGOUT, this), "Cannot logout without being logged in");
     }
 
     public Response<Integer> openStore(String storeName) {
@@ -189,14 +189,6 @@ public class User{
         return new Response<>(false, true, "User isn't allowed to appoint manager");
     }
 
-    public Response<String> removeOwnerAppointment(String appointeeName, int storeId) {
-        return this.appointments.removeAppointment(storeId, appointeeName);
-    }
-
-    public Response<String> removeManagerAppointment(String appointeeName, int storeId) {
-        return this.appointments.removeAppointment(storeId, appointeeName);
-    }
-
     public boolean isOwner(int storeId){
         return this.storesOwned.contains(storeId);
     }
@@ -219,13 +211,7 @@ public class User{
         if(this.storesOwned.contains(storeID)){
             this.storesOwned.remove(storeID);
         }
-        else if(this.storesManaged.containsKey(storeID)){
-            this.storesManaged.remove(storeID);
-        }
-    }
-
-    public boolean appointed(int storeId, String appointeeName) {
-        return this.appointments.contains(storeId, appointeeName);
+        else this.storesManaged.remove(storeID);
     }
 
     public Response<Boolean> appointedAndAllowed(int storeId, String appointeeName, Permissions permission) {
@@ -242,8 +228,8 @@ public class User{
         }
     }
 
-    public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {
-        if(this.state.allowed(Permissions.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)){
+    public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
+        if(this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)){
             UserDAO.getInstance().addPermission(storeId, permitted, permission);
             return new Response<>(true, false, "Added permission");
         }
@@ -252,11 +238,25 @@ public class User{
         }
     }
 
+    public Response<Boolean> removePermission(int storeId, String permitted, Permissions permission) {     // req 4.6
+        if(this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)){
+            UserDAO.getInstance().removePermission(storeId, permitted, permission);
+            return new Response<>(true, false, "Removed permission");
+        }
+        else{
+            return new Response<>(false, true, "User not allowed to remove permissions from this user");
+        }
+    }
+
     public void addSelfPermission(int storeId, Permissions permission){
         this.storesManaged.get(storeId).add(permission);
     }
 
-    public Response<List<Purchase>> getUserPurchaseHistory(String username) {
+    public void removeSelfPermission(int storeId, Permissions permission) {
+        this.storesManaged.get(storeId).remove(permission);
+    }
+
+    public Response<List<Purchase>> getUserPurchaseHistory(String username) {       // req 6.4
         if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)){
             if(UserDAO.getInstance().userExists(username).getResult()) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
@@ -267,6 +267,24 @@ public class User{
         }
         else{
             return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+        }
+    }
+
+    public Response<UserDetails> getWorkersDetails(int storeID) {       // req 4.9
+        if(this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID)){
+            return null;//todo StoreController.getInstance().getWorkersDetails(storeID);
+        }
+        else {
+            return new Response<>(null, true, "User not allowed to receive store workers information");
+        }
+    }
+
+    public Response<Purchase> getPurchaseDetails(int storeID) {     // req 4.11
+        if(this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)){
+            return null;//todo StoreController.getInstance().getPurchaseDetails(storeID);
+        }
+        else {
+            return new Response<>(null, true, "User not allowed to receive store history");
         }
     }
 }

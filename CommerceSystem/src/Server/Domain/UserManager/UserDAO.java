@@ -111,7 +111,7 @@ public class UserDAO {
         writeLock.lock();
         if(userExists(name).getResult()){
             List<Permissions> permissions = new LinkedList<>();
-            permissions.add(Permissions.RECEIVE_STORE_INFO);
+            permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
@@ -158,6 +158,10 @@ public class UserDAO {
 
     public void addPermission(int storeId, String permitted, Permissions permission) {
         this.testManagers.get(permitted).get(storeId).add(permission);
+    }
+
+    public void removePermission(int storeId, String permitted, Permissions permission) {
+        this.testManagers.get(permitted).get(storeId).remove(permission);
     }
 
     public boolean isAdmin(String name){

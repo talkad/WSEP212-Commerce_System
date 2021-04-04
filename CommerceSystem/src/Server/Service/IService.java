@@ -89,7 +89,9 @@ public interface IService {
 
     Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
 
-    Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission);
+    Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission); // 4.6
+
+    Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission); // 4.6
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 

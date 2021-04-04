@@ -36,7 +36,10 @@ public class runner {
         commerceService.appointStoreOwner("tal", "jacob2", res.getResult());
         commerceService.appointStoreManager("tal", "jacob3", res.getResult());
         commerceService.addPermission("tal", res.getResult(), "jacob3", Permissions.ADD_PRODUCT_TO_STORE);
+        commerceService.removePermission("tal", res.getResult(), "jacob3", Permissions.ADD_PRODUCT_TO_STORE);
         commerceService.addPermission("tal", res.getResult(), "jacob3", Permissions.APPOINT_MANAGER);
+        commerceService.removePermission("tal", res.getResult(), "jacob3", Permissions.APPOINT_MANAGER);
+
         commerceService.logout("tal");
         //Guest4
         System.out.println(commerceService.login("Guest4", "jacob3", "lol").isFailure());
@@ -44,7 +47,7 @@ public class runner {
         commerceService.logout("jacob3");
         //Guest5
         System.out.println(commerceService.login("Guest5", "yoni", "pis").isFailure());
-        commerceService.removeOwnerAppointment("yoni", "tal", res.getResult());
+        //commerceService.removeOwnerAppointment("yoni", "tal", res.getResult());
         commerceService.logout("yoni");
         //Guest6
 
