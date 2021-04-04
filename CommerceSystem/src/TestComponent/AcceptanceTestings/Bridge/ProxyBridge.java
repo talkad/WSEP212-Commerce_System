@@ -35,7 +35,7 @@ public class ProxyBridge implements IService {
             return real.addGuest();
         }
 
-        return new Response<>("yossi", false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ProxyBridge implements IService {
             return real.removeGuest(name);
         }
 
-        return new Response<>("yossi", false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.register(prevName, username, pwd);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -60,7 +60,8 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.login(prevName, username, pwd);
         }
-        return new Response<>("yossi", false, null);
+
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.getContent();
         }
-        return new Response<>(null, true, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.addToCart(username, storeID, productID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -116,7 +117,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.removeFromCart(username, storeID, productID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -132,7 +133,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.updateProductQuantity(username, storeID, productID, amount);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -140,7 +141,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.purchaseCartItems(username, creditCardDetails);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -156,7 +157,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.logout(userName);
         }
-        return new Response<>("yossi", false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -165,7 +166,7 @@ public class ProxyBridge implements IService {
             return real.openStore(username, storeName);
         }
 
-        return new Response<>(1, false, null);
+        return new Response<>(-1, true, "not implemented");
     }
 
     @Override
@@ -174,7 +175,7 @@ public class ProxyBridge implements IService {
             return real.addProductReview(username, storeID, productID, review);
         }
 
-        return new Response<>(true, true, "not implemented");
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -188,9 +189,9 @@ public class ProxyBridge implements IService {
     @Override
     public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
         if (real != null){
-            return real.addProductsToStore(username, productDTO, amount);
+            return real.addProductsToStore(username,productDTO, amount);
         }
-        return new Response<>(true, true, "not implemented");
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -198,7 +199,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.removeProductsFromStore(username, storeID, productID, amount);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, false, "not implemented");
     }
 
     @Override
@@ -206,7 +207,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.updateProductInfo(username, storeID, productID, newPrice, newName);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -230,7 +231,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.appointStoreOwner(appointerName, appointeeName, storeID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -238,7 +239,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.removeOwnerAppointment(appointerName, appointeeName, storeID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -246,7 +247,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.appointStoreManager(appointerName, appointeeName, storeID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -254,7 +255,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.addPermission(permitting, storeId, permitted, permission);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -262,7 +263,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.removePermission(permitting, storeId, permitted, permission);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -270,7 +271,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.removeManagerAppointment(appointerName, appointeeName, storeID);
         }
-        return new Response<>(true, false, null);
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
@@ -278,7 +279,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.getStoreWorkersDetails(username, storeID);
         }
-        return new Response<>(new LinkedList<>(), false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -286,7 +287,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.getPurchaseDetails(username, storeID);
         }
-        return new Response<>(new Purchase(), false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
@@ -294,7 +295,7 @@ public class ProxyBridge implements IService {
         if (real != null){
             return real.getUserPurchaseHistory(adminName, username);
         }
-        return new Response<>(new LinkedList<>(), false, null);
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override
