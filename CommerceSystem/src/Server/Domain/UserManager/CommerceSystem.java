@@ -114,8 +114,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addProductReview(String username, int productID, String review) {
-        return userController.addProductReview(username, productID, review);
+    public Response<Boolean> addProductReview(String username, int storeID, int productID, String review) {
+        return userController.addProductReview(username, storeID, productID, review);
     }
 
     @Override

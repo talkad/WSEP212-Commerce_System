@@ -121,4 +121,22 @@ public class Inventory {
             return new Response<>(product, false, "success");
         }
     }
+
+    public Response<Boolean> addProductReview(int productID, String review) {
+        Response<Boolean> res;
+        Product product;
+
+        lock.writeLock().lock();
+        product = products.get(productID);
+
+        if(product == null){
+            res = new Response<>(false, true, "This product doesn't exists");
+        }
+        else{
+            res = product.addReview(review);
+        }
+        lock.writeLock().unlock();
+
+        return res;
+    }
 }

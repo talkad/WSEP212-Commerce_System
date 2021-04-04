@@ -1,6 +1,8 @@
 package Server.Domain.ShoppingManager;
+import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.ShoppingBasket;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -169,4 +171,34 @@ public class StoreController {
             return store.getProduct(productID);
         }
     }
+
+    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
+        Response<Boolean> result;
+        Store store;
+
+        if(!stores.containsKey(storeID)) {
+            result = new Response<>(false, true, "This store does not exists");
+        }
+        else{
+            store = stores.get(storeID);
+            result = store.addProductReview(productID, review);
+        }
+
+        return result;
+    }
+
+//    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
+//        Response<Boolean> result;
+//        Store store;
+//
+//        if(!stores.containsKey(storeID)) {
+//            result = new Response<>(false, true, "This store does not exists");
+//        }
+//        else{
+//            store = stores.get(storeID);
+//            result = store.addProductRating(productID, rate);
+//        }
+//
+//        return result;
+//    }
 }

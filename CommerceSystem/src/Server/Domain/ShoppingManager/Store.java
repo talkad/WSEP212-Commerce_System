@@ -122,4 +122,8 @@ public class Store {
     public Response<Product> getProduct(int productID) {
         return inventory.getProduct(productID);
     }
+
+    public Response<Boolean> addProductReview(int productID, String review) {
+        return inventory.addProductReview(productID, review);
+    }
 }

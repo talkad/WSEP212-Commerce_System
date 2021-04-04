@@ -60,7 +60,7 @@ public interface IService {
 
     Response<Integer> openStore(String username, String storeName); // 3.2
 
-    Response<Boolean> addProductReview(String username, int productID, String review); // 3.3
+    Response<Boolean> addProductReview(String username, int storeID, int productID, String review); // 3.3
 
     List<Purchase> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
 

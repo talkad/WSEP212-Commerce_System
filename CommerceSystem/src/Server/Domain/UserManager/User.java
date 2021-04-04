@@ -133,9 +133,11 @@ public class User{
         return this.shoppingCart.updateProductQuantity(storeID, productID, amount);
     }
 
-    public Response<Boolean> addProductReview(int productID, String review) {
+    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
         if(this.state.allowed(Permissions.REVIEW_PRODUCT,this)){
             // @TODO purchaseHistory.getPurchases().contains(productID) then add product
+
+            // StoreController.getInstance().addProductReview(storeID, productID, review);
             return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
         }
         else{
