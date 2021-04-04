@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StoreTest {
 
     private Store store1;
-    private Product product1;
-    private Product product2;
+    private ProductDTO product1;
+    private ProductDTO product2;
 
 
     @BeforeEach
     public void setUp(){
-        store1 = new Store(0, "h&m", new DiscountPolicy(1), new PurchasePolicy(1));
-        product1 = new Product(0, 10, "TV", 1299.9, null, null);
-        product2 = new Product(1, 9, "AirPods", 799.9, null, null);
+        store1 = new Store(0, "h&m",  "talkad", new DiscountPolicy(1), new PurchasePolicy(1));
+        product1 = new ProductDTO( "TV", 0, 1299.9  , null , null, null);
+        product2 = new ProductDTO("AirPods", 0, 799.9, null , null, null);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class StoreTest {
     public void removeExistingProductLegalTest(){
         store1.addProduct(product1, 5);
         store1.addProduct(product1, 10);
-        store1.removeProduct(product1, 3);
+        store1.removeProduct(product1.getProductID(), 3);
         assertEquals(12, store1.getInventory().getProductAmount(product1.getProductID()));
     }
 
@@ -58,7 +58,7 @@ public class StoreTest {
     public void removeExistingProductLegalTest2(){
         store1.addProduct(product1, 5);
         store1.addProduct(product1, 10);
-        store1.removeProduct(product1, 15);
+        store1.removeProduct(product1.getProductID(), 15);
         assertEquals(0, store1.getInventory().getProductAmount(product1.getProductID()));
     }
 
@@ -66,8 +66,8 @@ public class StoreTest {
     public void removeExistingProductIllegalTest(){
         store1.addProduct(product1, 5);
         store1.addProduct(product1, 10);
-        store1.removeProduct(product1, 20);
-        assertTrue(store1.removeProduct(product1, 20).isFailure());
+        store1.removeProduct(product1.getProductID(), 20);
+        assertTrue(store1.removeProduct(product1.getProductID(), 20).isFailure());
 
     }
 }

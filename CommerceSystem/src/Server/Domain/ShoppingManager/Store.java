@@ -2,6 +2,11 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.ShoppingBasket;
+import Server.Domain.UserManager.ShoppingCart;
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +24,7 @@ public class Store {
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
 
-    private Map<ProductDTO, Integer> purchaseHistory;
+    private List<PurchaseDTO> purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
 
 
@@ -69,28 +74,22 @@ public class Store {
         return purchasePolicy;
     }
 
-    public Response<Boolean> purchase(Product product, int amount) {
-//        Response<Boolean> result = inventory.removeProducts(product, amount); // TODO make it productID in the parameter (and storeID if needed)
-        Response<Boolean> result = null;
+
+     public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) { // TODO : TAL FIX PURCHASE
+        Response<Boolean> result = inventory.removeProducts(productID, amount);
 
                 readWriteLock.writeLock().lock();
 
         if(!result.isFailure()){
-            purchaseHistory.put(product.getProductDTO(), amount);
+            purchaseHistory.put(getProduct(productID).getResult().getProductDTO(), amount);
         }
 
         readWriteLock.writeLock().unlock();
         return result;
     }
 
-    public Map<ProductDTO, Integer> getPurchaseHistory() {
-        Map<ProductDTO, Integer> history;
-
-        readWriteLock.readLock().lock();
-        history = new ConcurrentHashMap<>(purchaseHistory);
-        readWriteLock.readLock().unlock();
-
-        return history;
+    public List<PurchaseDTO> getPurchaseHistory() {
+        return purchaseHistory;
     }
 
     public void addRating(Rating rate){
@@ -127,4 +126,6 @@ public class Store {
     public Response<Boolean> addProductReview(int productID, String review) {
         return inventory.addProductReview(productID, review);
     }
+
+    public void setActiveStore(boolean activeStore) { isActiveStore = activeStore; }
 }

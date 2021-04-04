@@ -3,7 +3,17 @@ import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.ShoppingBasket;
+import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.ShoppingBasket;
+import Server.Domain.UserManager.ShoppingCart;
+import org.xeustechnologies.googleapi.spelling.SpellChecker;
+import org.xeustechnologies.googleapi.spelling.SpellCorrection;
+import org.xeustechnologies.googleapi.spelling.SpellRequest;
+import org.xeustechnologies.googleapi.spelling.SpellResponse;
 
+import javax.swing.text.StyledEditorKit;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,11 +23,14 @@ public class StoreController {
     // map storeID to its corresponding store
     private Map<Integer, Store> stores;
     private AtomicInteger indexer;
-
+    private SpellChecker spellChecker;
+    private SpellRequest spellRequest;
+    private SpellResponse spellRes;
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
         indexer = new AtomicInteger(0);
+        spellChecker = new SpellChecker();
     }
 
     public static StoreController getInstance(){
@@ -48,7 +61,7 @@ public class StoreController {
         return SearchEngine.getInstance().searchByCategory(category);
     }
 
-    public Response<List<ProductDTO>> searchByKeyWord(String keyword){
+    public Response<List<ProductDTO>> searchByKeyWord(String keyword) {
         return SearchEngine.getInstance().searchByKeyWord(keyword);
     }
 
@@ -60,6 +73,16 @@ public class StoreController {
 
     public Response<List<ProductDTO>> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
 
+    private void printSuggestedCorrection(Collection<Product> productsList, String faultWord){
+        if (productsList.isEmpty()){
+            spellRequest.setText(faultWord);
+            spellRequest.setIgnoreDuplicates(true);
+            spellRes = spellChecker.check(spellRequest);
+            System.out.println("Did you refer to one of the following:");
+            for(SpellCorrection spellCorrection : spellRes.getCorrections())
+                System.out.println(spellCorrection.getValue());
+        }
+    }
 
     public Store getStoreById(int storeId) {
         return stores.get(storeId);
@@ -111,19 +134,24 @@ public class StoreController {
         return result;
     }
 
-    public Response<Boolean> purchaseFromStore(int storeID, Product product, int amount){
+    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart){
+        for(Map.Entry<Integer, Map <ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet())
+            if(purchaseFromStore(entry.getKey(), entry.getValue()).isFailure())
+                return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
+        // TODO ALL PAYMENT PROCESS
+       return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase has been successfully made.");
+    }
+
+    public Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
         Response<Boolean> result;
         Store store;
 
-        if(amount < 0){
-            result = new Response<>(false, true, "The amount cannot be negative");
-        }
-        else if(!stores.containsKey(storeID)) {
+       if(!stores.containsKey(storeID)) {
             result = new Response<>(false, true, "This store does not exists");
         }
         else{
             store = stores.get(storeID);
-            result = store.purchase(product, amount);
+            result = store.purchase(shoppingBasket);
         }
 
         return result;
@@ -133,7 +161,7 @@ public class StoreController {
         return new Response<>(stores.values(), false, "all content");
     }
 
-    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
+    public Response<List<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
         Store store = stores.get(storeID);
 
         if(store == null)
