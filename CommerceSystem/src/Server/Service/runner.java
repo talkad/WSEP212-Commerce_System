@@ -35,6 +35,7 @@ public class runner {
         commerceService.appointStoreOwner("tal", "jacob", res.getResult());
         commerceService.appointStoreOwner("tal", "jacob2", res.getResult());
         commerceService.appointStoreManager("tal", "jacob3", res.getResult());
+        System.out.println(commerceService.appointStoreManager("tal", "jacob3", res.getResult()).isFailure() + " aaaaaaaaaaaaaaaa");
         commerceService.addPermission("tal", res.getResult(), "jacob3", Permissions.ADD_PRODUCT_TO_STORE);
         commerceService.removePermission("tal", res.getResult(), "jacob3", Permissions.ADD_PRODUCT_TO_STORE);
         commerceService.addPermission("tal", res.getResult(), "jacob3", Permissions.APPOINT_MANAGER);
