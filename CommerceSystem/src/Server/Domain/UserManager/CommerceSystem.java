@@ -194,8 +194,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
-        return null;//storeController.getStorePurchaseHistory(adminName, storeID);todo
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+        return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
 }

@@ -104,5 +104,5 @@ public interface IService {
      */
     Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
+    Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }

@@ -197,7 +197,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 }

@@ -7,6 +7,7 @@ import Server.Domain.ShoppingManager.StoreController;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -283,6 +284,13 @@ public class User{
         }
     }
 
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
+        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+            return StoreController.getInstance().getStorePurchaseHistory(storeID);
+        }
+        return new Response<>(new ConcurrentHashMap<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+    }
+
     public Response<Boolean> getStoreWorkersDetails(int storeID) {       // req 4.9
         return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
@@ -295,4 +303,5 @@ public class User{
             return new Response<>(null, true, "User not allowed to receive store history");
         }
     }
+
 }

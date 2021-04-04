@@ -276,6 +276,10 @@ public class UserController {
         return connectedUsers.get(adminName).getUserPurchaseHistory(username);
     }
 
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+        return connectedUsers.get(adminName).getStorePurchaseHistory(storeID);
+    }
+
     public void adminBoot() {
         String admin = "shaked";
         UserDAO.getInstance().registerUser(admin, Integer.toString("jacob".hashCode()));//TODO make this int and g through security scramble password
@@ -304,6 +308,7 @@ public class UserController {
         }
         return new Response<>(null, true, "User not permitted to get worker info");
     }
+
     private List<String> getAppointeesNamesRec(String workerName, int storeID){
         List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
         if(appointees != null && !appointees.isEmpty()){
