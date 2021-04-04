@@ -1,5 +1,6 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
+import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,26 +10,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StoreControllerTest {
     private StoreController storeController;
-    private Store store2;
-    private Product product1;
-    private Product product2;
+    private ProductDTO product1;
+    private ProductDTO product2;
+    private  Store store;
 
 
     @BeforeEach
     public void setUp(){
         storeController = StoreController.getInstance();
-        product1 = new Product(0, 10, "TV", 1299.9, null, null);
-        product2 = new Product(1, 9, "AirPods", 799.9, List.of("Apple", "Headphones"), List.of("#Expensive", "#Swag"));
-        store2 = new Store(1, "castro", new DiscountPolicy(2), new PurchasePolicy(2));
-        store2.addProduct(product1, 5);
-        store2.addProduct(product2, 8);
-        storeController.addStore(store2);
-
+        product1 = new ProductDTO("TV", 0, 1299.9, null, null, null);
+        product2 = new ProductDTO("AirPods", 0, 799.9, List.of("Apple", "Headphones"), List.of("#Expensive", "#Swag"), null);
+        Response<Integer> res = storeController.openStore("castro", "shaked");
+        store = storeController.getStoreById(res.getResult());
+        store.addProduct(product1, 5);
+        store.addProduct(product2, 8);
     }
 
     @Test
     public void addStoreTest(){
-        assertFalse(storeController.addStore(2, "zara", new DiscountPolicy(2), new PurchasePolicy(2)).isFailure());
+        assertFalse(storeController.openStore("zara", "aviad").isFailure());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class StoreControllerTest {
 
     @Test
     public void getStoreByIdTest(){
-        Store s = storeController.getStoreById(1);
-        assertSame(s, store2);
+        Store store2 = storeController.getStoreById(0);
+        assertSame(store, store2);
     }
 }
