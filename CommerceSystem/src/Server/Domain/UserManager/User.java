@@ -145,9 +145,9 @@ public class User{
         }
     }
 
-    public Response<Boolean> addProductsToStore(int storeID, ProductDTO productDTO, int amount) {
-        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, storeID)){
-            return StoreController.getInstance().addProductToStore(storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(ProductDTO productDTO, int amount) {
+        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())){
+            return StoreController.getInstance().addProductToStore(productDTO, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }

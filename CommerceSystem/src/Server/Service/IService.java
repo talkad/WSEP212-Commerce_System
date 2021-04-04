@@ -71,7 +71,7 @@ public interface IService {
      * Store Manager requirements - 5
      * can do all of the functions that store owner do, depends on its permissions
      */
-    Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount); // 4.1 - a
+    Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount); // 4.1 - a
 
     Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount); // 4.1 - b
 

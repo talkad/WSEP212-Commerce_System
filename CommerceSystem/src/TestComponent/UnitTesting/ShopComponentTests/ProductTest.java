@@ -2,6 +2,7 @@ package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,8 @@ public class ProductTest {
 
     @BeforeEach
     public void setUp(){
-        product = new Product(0, 0, "Oreo", 22.9, null, null);
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        product = Product.createProduct(productDTO);
     }
 
     @Test

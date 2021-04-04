@@ -2,10 +2,14 @@ package TestComponent.UnitTesting.UserComponentTest;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -18,17 +22,30 @@ public class ShoppingCartTest {
 
     private ShoppingCart cart;
     private Product[] products;
+    private ProductDTO[] productsDTO;
 
     @BeforeEach
     public void setUp(){
         cart = new ShoppingCart();
 
-        products = new Product[]{
-                new Product(0, 10, "TV", 1299.9, null, null),
-                new Product(1, 10, "Watch", 600, null, null),
-                new Product(2, 15, "AirPods", 799.9, null, null),
-                new Product(3, 10, "Watch2", 600, null, null)
+        productsDTO = new ProductDTO[]{
+                new ProductDTO("TV", 10, 1299.9, null, null, null),
+                new ProductDTO("Watch", 10, 600, null, null, null),
+                new ProductDTO("AirPods", 15, 799.9, null, null, null),
+                new ProductDTO("Watch2", 10, 600, null, null, null)
         };
+
+        products = new Product[]{
+                Product.createProduct(productsDTO[0]),
+                Product.createProduct(productsDTO[1]),
+                Product.createProduct(productsDTO[2]),
+                Product.createProduct(productsDTO[3])
+        };
+
+        StoreController.getInstance().addProductToStore(productsDTO[0], 10);
+        StoreController.getInstance().addProductToStore(productsDTO[1], 10);
+        StoreController.getInstance().addProductToStore(productsDTO[2], 10);
+        StoreController.getInstance().addProductToStore(productsDTO[3], 10);
 
     }
 
@@ -36,6 +53,8 @@ public class ShoppingCartTest {
     public void addProductTest(){
         Map<Integer, Map<Product, Integer>> baskets;
         int numProducts = 0;
+
+        List<Store> stores = StoreController.getInstance().getContent();
 
         cart.addProduct(products[0]);
         cart.addProduct(products[0]);

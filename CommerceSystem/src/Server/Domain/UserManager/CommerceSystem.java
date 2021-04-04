@@ -124,8 +124,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
-        return userController.addProductsToStore(username, storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+        return userController.addProductsToStore(username, productDTO, amount);
     }
 
     @Override

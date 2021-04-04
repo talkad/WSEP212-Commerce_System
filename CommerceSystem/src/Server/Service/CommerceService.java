@@ -127,8 +127,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
-        return CommerceSystem.getInstance().addProductsToStore(username, storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+        return CommerceSystem.getInstance().addProductsToStore(username, productDTO, amount);
     }
 
     @Override

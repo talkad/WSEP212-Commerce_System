@@ -73,18 +73,18 @@ public class StoreController {
         return stores.values();
     }
 
-    public Response<Boolean> addProductToStore(int storeID, ProductDTO productDTO, int amount){
+    public Response<Boolean> addProductToStore(ProductDTO productDTO, int amount){
         Response<Boolean> result;
         Store store;
 
         if(amount < 0){
             result = new Response<>(false, true, "The amount cannot be negative");
         }
-        else if(!stores.containsKey(storeID)) {
+        else if(!stores.containsKey(productDTO.getStoreID())) {
             result = new Response<>(false, true, "This store does not exists");
         }
         else{
-            store = stores.get(storeID);
+            store = stores.get(productDTO.getStoreID());
             store.addProduct(productDTO, amount);
 
             result = new Response<>(false, true, "The product added successfully");

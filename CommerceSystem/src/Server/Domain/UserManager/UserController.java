@@ -64,8 +64,8 @@ public class UserController {
         return connectedUsers.get(username).addProductReview(storeID, productID, review);
     }
 
-    public Response<Boolean> addProductsToStore(String username, int storeID, ProductDTO productDTO, int amount) {
-        return connectedUsers.get(username).addProductsToStore(storeID, productDTO, amount);
+    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+        return connectedUsers.get(username).addProductsToStore(productDTO, amount);
     }
 
     public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
