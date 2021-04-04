@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -57,22 +58,27 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public List<Store> getContent() {
+    public Response<Collection<Store>> getContent() {
         return commerceSystem.getContent();
     }
 
     @Override
-    public List<Product> searchByProductName(String productName) {
+    public Response<List<Store>> searchByStoreName(String storeName) {
+        return null;
+    }
+
+    @Override
+    public Response<List<ProductDTO>> searchByProductName(String productName) {
         return commerceSystem.searchByProductName(productName);
     }
 
     @Override
-    public List<Product> searchByProductCategory(String category) {
+    public Response<List<ProductDTO>> searchByProductCategory(String category) {
         return commerceSystem.searchByProductCategory(category);
     }
 
     @Override
-    public List<Product> searchByProductKeyword(String keyword) {
+    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
         return commerceSystem.searchByProductKeyword(keyword);
     }
 

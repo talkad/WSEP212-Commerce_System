@@ -1,9 +1,11 @@
 package Server.Domain.UserManager;
 
+import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Service.IService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ public class CommerceSystem implements IService {
 
     private UserController userController;
     private StoreController storeController;
+    public static Log log = new Log("errors.txt");
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
@@ -54,22 +57,27 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public List<Store> getContent() {
+    public Response<Collection<Store>> getContent() {
         return storeController.getContent();
     }
 
     @Override
-    public List<Product> searchByProductName(String productName) {
+    public Response<List<Store>> searchByStoreName(String storeName) {
+        return storeController.searchByStoreName(storeName);
+    }
+
+    @Override
+    public Response<List<ProductDTO>> searchByProductName(String productName) {
         return storeController.searchByProductName(productName);
     }
 
     @Override
-    public List<Product> searchByProductCategory(String category) {
+    public Response<List<ProductDTO>> searchByProductCategory(String category) {
         return storeController.searchByCategory(category);
     }
 
     @Override
-    public List<Product> searchByProductKeyword(String keyword) {
+    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
         return storeController.searchByKeyWord(keyword);
     }
 
@@ -197,5 +205,6 @@ public class CommerceSystem implements IService {
     public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
         return null;//storeController.getStorePurchaseHistory(adminName, storeID);todo
     }
+
 
 }

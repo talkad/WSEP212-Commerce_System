@@ -1,5 +1,7 @@
 package Server.Domain.CommonClasses;
 
+import Server.Domain.UserManager.CommerceSystem;
+
 // Immutable Response object
 public class Response<T> {
 
@@ -11,6 +13,9 @@ public class Response<T> {
         this.result = result;
         this.isFailure = isFailure;
         this.errMsg = errMsg;
+
+        if(isFailure)
+            CommerceSystem.log.logger.warning(errMsg);
     }
 
     public T getResult() {

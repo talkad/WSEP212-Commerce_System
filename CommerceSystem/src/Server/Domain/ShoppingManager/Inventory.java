@@ -72,7 +72,7 @@ public class Inventory {
         return res;
     }
 
-    public Collection<Product> getInventory(){
+    public Collection<Product> getProducts(){
         Collection<Product> result;
 
         lock.readLock().lock();

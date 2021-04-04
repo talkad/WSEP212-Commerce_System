@@ -6,6 +6,7 @@ import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +32,15 @@ public interface IService {
 
     Response<String> login(String prevName, String username, String pwd); // 2.4
 
-    List<Store>  getContent(); // 2.5
+    Response<Collection<Store>>  getContent(); // 2.5 - a
 
-    List<Product> searchByProductName(String productName); // 2.6 - a
+    Response<List<Store>> searchByStoreName(String storeName); // 2.5 - b
 
-    List<Product> searchByProductCategory(String category); // 2.6 - b
+    Response<List<ProductDTO>> searchByProductName(String productName); // 2.6 - a
 
-    List<Product> searchByProductKeyword(String keyword); // 2.6 - c
+    Response<List<ProductDTO>> searchByProductCategory(String category); // 2.6 - b
+
+    Response<List<ProductDTO>> searchByProductKeyword(String keyword); // 2.6 - c
 
     Response<Boolean> addToCart(String username, int storeID, int productID); // 2.7
 

@@ -40,25 +40,25 @@ public class StoreController {
         return new Response<>(id, false, "Store with id " + id + " opened successfully");
     }
 
-    public List<Product> searchByProductName(String productName){
+    public Response<List<ProductDTO>> searchByProductName(String productName){
         return SearchEngine.getInstance().searchByProductName(productName);
     }
 
-    public List<Product> searchByCategory(String category){
+    public Response<List<ProductDTO>> searchByCategory(String category){
         return SearchEngine.getInstance().searchByCategory(category);
     }
 
-    public List<Product> searchByKeyWord(String keyword){
+    public Response<List<ProductDTO>> searchByKeyWord(String keyword){
         return SearchEngine.getInstance().searchByKeyWord(keyword);
     }
 
-    public List<Product> filterByRating(double rating){ return SearchEngine.getInstance().filterByRating(rating);}
+    public Response<List<ProductDTO>> filterByRating(double rating){ return SearchEngine.getInstance().filterByRating(rating);}
 
-    public List<Product> filterByPriceRange(double lowRate, double highRate){ return SearchEngine.getInstance().filterByPriceRange(lowRate, highRate);}
+    public Response<List<ProductDTO>> filterByPriceRange(double lowRate, double highRate){ return SearchEngine.getInstance().filterByPriceRange(lowRate, highRate);}
 
-    public List<Product> filterByStoreRating(double rating){ return SearchEngine.getInstance().filterByStoreRating(rating);}
+    public Response<List<ProductDTO>> filterByStoreRating(double rating){ return SearchEngine.getInstance().filterByStoreRating(rating);}
 
-    public List<Product> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
+    public Response<List<ProductDTO>> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
 
 
     public Store getStoreById(int storeId) {
@@ -129,8 +129,8 @@ public class StoreController {
         return result;
     }
 
-    public List<Store> getContent() {
-        return (List<Store>) stores.values();
+    public Response<Collection<Store>> getContent() {
+        return new Response<>(stores.values(), false, "all content");
     }
 
     public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
@@ -185,6 +185,17 @@ public class StoreController {
         }
 
         return result;
+    }
+
+    public Response<List<Store>> searchByStoreName(String storeName) {
+        List<Store> storeList = new LinkedList<>();
+
+        for(Store store: stores.values()){
+            if(store.getName().equals(storeName))
+                storeList.add(store);
+        }
+
+        return new Response<>(storeList, false, "all stores with name " + storeName);
     }
 
 //    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version

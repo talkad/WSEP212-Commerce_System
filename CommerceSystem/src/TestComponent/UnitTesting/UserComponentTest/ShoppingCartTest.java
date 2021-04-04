@@ -9,7 +9,6 @@ import Server.Domain.UserManager.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,51 +20,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ShoppingCartTest {
 
     private ShoppingCart cart;
-    private Product[] products;
     private ProductDTO[] productsDTO;
 
     @BeforeEach
     public void setUp(){
         cart = new ShoppingCart();
 
+        Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
+        Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
+
         productsDTO = new ProductDTO[]{
-                new ProductDTO("TV", 10, 1299.9, null, null, null),
-                new ProductDTO("Watch", 10, 600, null, null, null),
-                new ProductDTO("AirPods", 15, 799.9, null, null, null),
-                new ProductDTO("Watch2", 10, 600, null, null, null)
+                new ProductDTO("TV", res1.getResult(), 1299.9, null, null, null),
+                new ProductDTO("Watch", res1.getResult(), 600, null, null, null),
+                new ProductDTO("AirPods", res2.getResult(), 799.9, null, null, null),
+                new ProductDTO("Watch2", res1.getResult(), 600, null, null, null)
         };
 
-        products = new Product[]{
-                Product.createProduct(productsDTO[0]),
-                Product.createProduct(productsDTO[1]),
-                Product.createProduct(productsDTO[2]),
-                Product.createProduct(productsDTO[3])
-        };
+        StoreController.getInstance().openStore("American Eagle", "Yoni");
 
         StoreController.getInstance().addProductToStore(productsDTO[0], 10);
         StoreController.getInstance().addProductToStore(productsDTO[1], 10);
         StoreController.getInstance().addProductToStore(productsDTO[2], 10);
         StoreController.getInstance().addProductToStore(productsDTO[3], 10);
-
     }
 
     @Test
     public void addProductTest(){
-        Map<Integer, Map<Product, Integer>> baskets;
+        Map<Integer, Map<ProductDTO, Integer>> baskets;
         int numProducts = 0;
 
-        List<Store> stores = StoreController.getInstance().getContent();
-
-        cart.addProduct(products[0]);
-        cart.addProduct(products[0]);
-        cart.addProduct(products[1]);
-        cart.addProduct(products[2]);
+        for(Store store: StoreController.getInstance().getContent().getResult()){
+            for(Product product: store.getInventory().getProducts()){
+                cart.addProduct(product.getStoreID(), product.getProductID());
+            }
+        }
 
         baskets = cart.getBaskets();
         assertEquals(2, baskets.size());
 
-
-        for(Map<Product, Integer> basket: baskets.values()){
+        for(Map<ProductDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -76,18 +69,28 @@ public class ShoppingCartTest {
 
     @Test
     public void removeExistingProductTest(){
-        Map<Integer, Map<Product, Integer>> baskets;
+        Map<Integer, Map<ProductDTO, Integer>> baskets;
         Response<Boolean> res;
         int numProducts = 0;
+        Product lastProduct = null;
 
-        cart.addProduct(products[0]);
-        cart.addProduct(products[1]);
+        for(Store store: StoreController.getInstance().getContent().getResult()){
+            for(Product product: store.getInventory().getProducts()){
+                cart.addProduct(product.getStoreID(), product.getProductID());
+                lastProduct = product;
+            }
+        }
 
-        res = cart.removeProduct(products[1]);
-        assertTrue(res.getResult());
+        if(lastProduct != null) {
+            res = cart.removeProduct(lastProduct.getStoreID(), lastProduct.getProductID());
+            assertTrue(res.getResult());
+        }
+        else{
+            assertEquals(1, 2); // error
+        }
 
         baskets = cart.getBaskets();
-        for(Map<Product, Integer> basket: baskets.values()){
+        for(Map<ProductDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -100,10 +103,7 @@ public class ShoppingCartTest {
     public void removeAbsentProductTest(){
         Response<Boolean> res;
 
-        res = cart.removeProduct(products[2]); // no basket exist for this product
-        assertTrue(res.isFailure());
-
-        res = cart.removeProduct(products[3]); // does not belong to the relevant basket
+        res = cart.removeProduct(2, 202); // no basket exist for this product
         assertTrue(res.isFailure());
     }
 
@@ -112,14 +112,14 @@ public class ShoppingCartTest {
         int numProducts = 0;
         int numberOfThreads1 = 100;
         int numberOfThreads2 = 50;
-        Map<Integer, Map<Product, Integer>> baskets;
+        Map<Integer, Map<ProductDTO, Integer>> baskets;
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads1 + numberOfThreads2);
 
         ExecutorService service1 = Executors.newFixedThreadPool(numberOfThreads1);
         for (int i = 0; i < numberOfThreads1; i++) {
             service1.execute(() -> {
-                cart.addProduct(products[3]);
+                cart.addProduct(0,0);
                 latch.countDown();
             });
         }
@@ -127,7 +127,7 @@ public class ShoppingCartTest {
         ExecutorService service2 = Executors.newFixedThreadPool(numberOfThreads2);
         for (int i = 0; i < numberOfThreads2; i++) {
             service2.execute(() -> {
-                cart.removeProduct(products[3]);
+                cart.removeProduct(0,0);
                 latch.countDown();
             });
         }
@@ -135,7 +135,7 @@ public class ShoppingCartTest {
         latch.await();
         baskets = cart.getBaskets();
 
-        for(Map<Product, Integer> basket: baskets.values()){
+        for(Map<ProductDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }

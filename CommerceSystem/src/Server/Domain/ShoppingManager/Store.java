@@ -70,9 +70,10 @@ public class Store {
     }
 
     public Response<Boolean> purchase(Product product, int amount) {
-        Response<Boolean> result = inventory.removeProducts(product, amount); // TODO make it productID in the parameter (and storeID if needed)
+//        Response<Boolean> result = inventory.removeProducts(product, amount); // TODO make it productID in the parameter (and storeID if needed)
+        Response<Boolean> result = null;
 
-        readWriteLock.writeLock().lock();
+                readWriteLock.writeLock().lock();
 
         if(!result.isFailure()){
             purchaseHistory.put(product.getProductDTO(), amount);
