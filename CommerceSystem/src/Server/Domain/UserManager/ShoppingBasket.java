@@ -5,10 +5,7 @@ import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShoppingBasket {
 
@@ -21,7 +18,7 @@ public class ShoppingBasket {
 
     public ShoppingBasket(int storeID){
         this.storeID = storeID;
-        this.products = new LinkedList<>();
+        this.products = new Vector<>();
         this.pAmount = new HashMap<>();
         this.totalPrice = 0;
     }

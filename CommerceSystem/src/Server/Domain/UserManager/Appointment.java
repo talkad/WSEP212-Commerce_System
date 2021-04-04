@@ -2,9 +2,9 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -32,7 +32,7 @@ public class Appointment {
         if(this.storeAppointments.containsKey(storeId))
             this.storeAppointments.get(storeId).add(name);
         else{
-            List<String> appsList = new LinkedList<>();
+            List<String> appsList = new Vector<>();
             appsList.add(name);
             this.storeAppointments.put(storeId, appsList);
         }
@@ -65,9 +65,13 @@ public class Appointment {
     }
 
     public boolean contains(int storeId, String appointee){
+        readLock.lock();
         if(this.storeAppointments.containsKey(storeId)){
-            return this.storeAppointments.get(storeId).contains(appointee);
+            boolean result = this.storeAppointments.get(storeId).contains(appointee);
+            readLock.unlock();
+            return result;
         }
+        readLock.unlock();
         return false;
     }
 }

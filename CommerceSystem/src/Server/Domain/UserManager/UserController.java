@@ -8,9 +8,9 @@ import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -46,7 +46,9 @@ public class UserController {
         if(UserDAO.getInstance().userExists(name).getResult()){
             logoutGuest = logout(name).getResult();
         }
+        writeLock.lock();   // TODO check if write lock needed here
         connectedUsers.remove(logoutGuest);
+        writeLock.unlock();
         return new Response<>(name, false, "disconnected user successfully");
     }
 
@@ -59,37 +61,57 @@ public class UserController {
     }
 
     public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).updateProductQuantity(storeID, productID, amount);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.updateProductQuantity(storeID, productID, amount);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> addProductReview(String username, int storeID, int productID, String review) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).addProductReview(storeID, productID, review);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.addProductReview(storeID, productID, review);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).addProductsToStore(productDTO, amount);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.addProductsToStore(productDTO, amount);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).removeProductsFromStore(storeID, productID, amount);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.removeProductsFromStore(storeID, productID, amount);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).updateProductInfo(storeID, productID, newPrice, newName);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.updateProductInfo(storeID, productID, newPrice, newName);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
@@ -101,20 +123,24 @@ public class UserController {
 
     public Response<Boolean> register(String prevName, String name, String password){
         //@TODO prevent invalid usernames (Guest...)
+        readLock.lock();
         if(connectedUsers.containsKey(prevName)) {
-            Response<Boolean> result = connectedUsers.get(prevName).register();
+            User user = connectedUsers.get(prevName);
+            readLock.unlock();
+            Response<Boolean> result = user.register();
             if (!result.isFailure()) {
-                readLock.lock();
+                //readLock.lock();  // TODO check if needed
                 result = UserDAO.getInstance().userExists(name);
                 if (!result.getResult()) {
                     UserDAO.getInstance().registerUser(name, password);
                     result = new Response<>(true, false, "");
                 }
-                readLock.unlock();
+                //readLock.unlock();
             }
             return result;
         }
         else {
+            readLock.unlock();
             return new Response<>(null, true, "User not connected");
         }
     }
@@ -122,9 +148,11 @@ public class UserController {
     public Response<String> login(String prevName, String name, String password){
         if (connectedUsers.containsKey(prevName)) {
             if (UserDAO.getInstance().validUser(name, password)) {
+                writeLock.lock();
                 connectedUsers.remove(prevName);
                 UserDTO userDTO = UserDAO.getInstance().getUser(name);
                 connectedUsers.put(name, new User(userDTO));
+                writeLock.unlock();
                 return new Response<>(name, false, "no error");
             } else {
                 return new Response<>(name, true, "Failed to login user");
@@ -136,29 +164,42 @@ public class UserController {
     }
 
     public Response<Boolean> addToCart(String userName, int storeID, int productID){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            return connectedUsers.get(userName).addToCart(storeID, productID);
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            return user.addToCart(storeID, productID);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents(String userName){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            return connectedUsers.get(userName).getShoppingCartContents();
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            return user.getShoppingCartContents();
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> removeProduct(String userName, int storeID, int productID){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            return connectedUsers.get(userName).removeProduct(storeID, productID);
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            return user.removeProduct(storeID, productID);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
 
     }
 
     public Response<String> logout(String name) {
         Response<String> response;
+        writeLock.lock();
         if(connectedUsers.containsKey(name)) {
             if (!connectedUsers.get(name).logout().isFailure()) {
                 connectedUsers.remove(name);
@@ -166,28 +207,41 @@ public class UserController {
             } else {
                 response = new Response<>(name, true, "User not permitted to logout");
             }
+            writeLock.unlock();
             return response;
         }
+        writeLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Integer> openStore(String userName, String storeName) {
+        readLock.unlock();
         if(connectedUsers.containsKey(userName)) {
-            return connectedUsers.get(userName).openStore(storeName);
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            return user.openStore(storeName);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<List<Purchase>> getPurchaseHistoryContents(String userName){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            return connectedUsers.get(userName).getPurchaseHistoryContents();
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            return user.getPurchaseHistoryContents();
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            Response<Boolean> result = connectedUsers.get(userName).appointOwner(newOwner, storeId);
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            Response<Boolean> result = user.appointOwner(newOwner, storeId);
             if (!result.isFailure()) {
                 writeLock.lock();
                 if (this.connectedUsers.containsKey(newOwner)) {
@@ -198,16 +252,20 @@ public class UserController {
             return result;
         }
         else{
+            readLock.unlock();
             return new Response<>(null, true, "User not connected");
         }
     }
 
     public Response<Boolean> appointManager(String userName, String newManager, int storeId) {
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
-            Response<Boolean> result = connectedUsers.get(userName).appointManager(newManager, storeId);
+            User user = connectedUsers.get(userName);
+            readLock.unlock();
+            Response<Boolean> result = user.appointManager(newManager, storeId);
             if (!result.isFailure()) {
                 writeLock.lock();
-                List<Permissions> permissions = new LinkedList<>();
+                List<Permissions> permissions = new Vector<>();
                 permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
                 if (this.connectedUsers.containsKey(newManager)) {
                     connectedUsers.get(newManager).addStoresManaged(storeId, permissions); //@TODO list of permissions
@@ -216,12 +274,14 @@ public class UserController {
             }
             return result;
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID){
+        writeLock.lock();
         if(connectedUsers.containsKey(appointerName)) {
-            writeLock.lock();
+            //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
             response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_OWNER_APPOINTMENT);
@@ -238,7 +298,7 @@ public class UserController {
                     UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                     UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-                    List<String> names = new LinkedList<>(appointments.getResult());
+                    List<String> names = new Vector<>(appointments.getResult());
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
@@ -250,12 +310,14 @@ public class UserController {
             writeLock.unlock();
             return response;
         }
+        writeLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
+        writeLock.lock();
         if(connectedUsers.containsKey(appointerName)) {
-            writeLock.lock();
+            //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
             response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_MANAGER_APPOINTMENT);
@@ -272,7 +334,7 @@ public class UserController {
                     UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                     UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-                    List<String> names = new LinkedList<>(appointments.getResult());
+                    List<String> names = new Vector<>(appointments.getResult());
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
@@ -284,6 +346,7 @@ public class UserController {
             writeLock.unlock();
             return response;
         }
+        writeLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
@@ -298,17 +361,20 @@ public class UserController {
         UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);         // remove appointee from the appointers list
         UserDAO.getInstance().removeRole(appointeeName, storeID);                               // remove appointee's role from his list
 
-        List<String> names = new LinkedList<>(appointments);
+        List<String> names = new Vector<>(appointments);
         for(String name : names){
             removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
         }
     }
 
     public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission){
+        readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
-            Response<Boolean> response = connectedUsers.get(permitting).addPermission(storeId, permitted, permission);
+            User user = connectedUsers.get(permitting);
+            readLock.unlock();
+            Response<Boolean> response = user.addPermission(storeId, permitted, permission);
             if (!response.isFailure()) {
-                writeLock.lock();
+                writeLock.lock();   // TODO read or write lock?
                 if (connectedUsers.containsKey(permitted)) {
                     connectedUsers.get(permitted).addSelfPermission(storeId, permission);
                 }
@@ -316,12 +382,16 @@ public class UserController {
             }
             return response;
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission){
+        readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
-            Response<Boolean> response = connectedUsers.get(permitting).removePermission(storeId, permitted, permission);
+            User user = connectedUsers.get(permitting);
+            readLock.unlock();
+            Response<Boolean> response = user.removePermission(storeId, permitted, permission);
             if (!response.isFailure()) {
                 writeLock.lock();
                 if (connectedUsers.containsKey(permitted)) {
@@ -331,20 +401,29 @@ public class UserController {
             }
             return response;
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+        readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
-            return connectedUsers.get(adminName).getUserPurchaseHistory(username);
+            User user = connectedUsers.get(adminName);
+            readLock.unlock();
+            return user.getUserPurchaseHistory(username);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+        readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
-            return connectedUsers.get(adminName).getStorePurchaseHistory(storeID);
+            User user = connectedUsers.get(adminName);
+            readLock.unlock();
+            return user.getStorePurchaseHistory(storeID);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
@@ -356,19 +435,23 @@ public class UserController {
     }
 
     public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+        readLock.lock();
         if(connectedUsers.containsKey(username)) {
-            return connectedUsers.get(username).getPurchaseDetails(storeID);
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getPurchaseDetails(storeID);
         }
+        readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
 
     public Response<List<User>> getStoreWorkersDetails(String username,int storeID) {
         if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
             String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
-            List<User> result = new LinkedList<>();
+            List<User> result = new Vector<>();
             result.add(new User(UserDAO.getInstance().getUser(ownerName)));
             List<String> appointees = UserDAO.getInstance().getAppointments(username, storeID).getResult();
-            List<String> names = new LinkedList<>(appointees);
+            List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
@@ -383,13 +466,13 @@ public class UserController {
     private List<String> getAppointeesNamesRec(String workerName, int storeID){
         List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
         if(appointees != null && !appointees.isEmpty()){
-            List<String> names = new LinkedList<>(appointees);
+            List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             return appointees;
         }
-        return new LinkedList<>();
+        return new Vector<>();
     }
 
     public Map<String, User> getConnectedUsers() {

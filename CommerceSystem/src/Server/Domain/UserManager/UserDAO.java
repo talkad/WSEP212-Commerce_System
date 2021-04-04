@@ -2,10 +2,11 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -20,9 +21,33 @@ public class UserDAO {
     private Map<String, Appointment> appointments;
     private List<String> admins;
 
-    private ReadWriteLock lock;
-    private Lock writeLock;
-    private Lock readLock;
+    private ReadWriteLock registeredLock;
+    private Lock registeredWriteLock;
+    private Lock registeredReadLock;
+
+    private ReadWriteLock managersLock;
+    private Lock managersWriteLock;
+    private Lock managersReadLock;
+
+    private ReadWriteLock ownersLock;
+    private Lock ownersWriteLock;
+    private Lock ownersReadLock;
+
+    private ReadWriteLock cartsLock;
+    private Lock cartsWriteLock;
+    private Lock cartsReadLock;
+
+    private ReadWriteLock historiesLock;
+    private Lock historiesWriteLock;
+    private Lock historiesReadLock;
+
+    private ReadWriteLock appointmentsLock;
+    private Lock appointmentsWriteLock;
+    private Lock appointmentsReadLock;
+
+    private ReadWriteLock adminsLock;
+    private Lock adminsWriteLock;
+    private Lock adminsReadLock;
 
     private UserDAO(){
 
@@ -32,36 +57,74 @@ public class UserDAO {
         this.shoppingCarts = new ConcurrentHashMap<>();
         this.purchaseHistories = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
-        this.admins = new LinkedList<>();
+        this.admins = new Vector<>();
         this.admins.add("shaked");
 
-        lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
-        readLock = lock.readLock();
+        registeredLock = new ReentrantReadWriteLock();
+        registeredWriteLock = registeredLock.writeLock();
+        registeredReadLock = registeredLock.readLock();
+
+        managersLock = new ReentrantReadWriteLock();
+        managersWriteLock = managersLock.writeLock();
+        managersReadLock = managersLock.readLock();
+
+        ownersLock = new ReentrantReadWriteLock();
+        ownersWriteLock = ownersLock.writeLock();
+        ownersReadLock = ownersLock.readLock();
+
+        cartsLock = new ReentrantReadWriteLock();
+        cartsWriteLock = cartsLock.writeLock();
+        cartsReadLock = cartsLock.readLock();
+
+        historiesLock = new ReentrantReadWriteLock();
+        historiesWriteLock = historiesLock.writeLock();
+        historiesReadLock = historiesLock.readLock();
+
+        appointmentsLock = new ReentrantReadWriteLock();
+        appointmentsWriteLock = appointmentsLock.writeLock();
+        appointmentsReadLock = appointmentsLock.readLock();
+
+        adminsLock = new ReentrantReadWriteLock();
+        adminsWriteLock = adminsLock.writeLock();
+        adminsReadLock = adminsLock.readLock();
     }
 
     public UserDTO getUser(String name){
-        if(!registeredUsers.containsKey(name))
-            return null;
-        List<Integer> storesOwned = testOwners.get(name);
-        if (storesOwned == null)
-            storesOwned = new LinkedList<>();
-        Map<Integer, List<Permissions>> storesManaged = testManagers.get(name);
-        if (storesManaged == null)
-            storesManaged = new ConcurrentHashMap<>();
-        ShoppingCart shoppingCart = shoppingCarts.get(name);
-        if (shoppingCart == null){
-            shoppingCart = new ShoppingCart();
+        UserDTO user = null;
+        registeredReadLock.lock();
+        ownersReadLock.lock();
+        managersReadLock.lock();
+        cartsReadLock.lock();
+        historiesReadLock.lock();
+        appointmentsReadLock.lock();
+        if(registeredUsers.containsKey(name)) {
+            List<Integer> storesOwned = testOwners.get(name);
+            if (storesOwned == null)
+                storesOwned = new Vector<>();
+            Map<Integer, List<Permissions>> storesManaged = testManagers.get(name);
+            if (storesManaged == null)
+                storesManaged = new ConcurrentHashMap<>();
+            ShoppingCart shoppingCart = shoppingCarts.get(name);
+            if (shoppingCart == null) {
+                shoppingCart = new ShoppingCart();
+            }
+            PurchaseHistory purchaseHistory = purchaseHistories.get(name);
+            if (purchaseHistory == null) {
+                purchaseHistory = new PurchaseHistory();
+            }
+            Appointment appointment = appointments.get(name);
+            if (appointment == null) {
+                appointment = new Appointment();
+            }
+            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment);
         }
-        PurchaseHistory purchaseHistory = purchaseHistories.get(name);
-        if (purchaseHistory == null){
-            purchaseHistory = new PurchaseHistory();
-        }
-        Appointment appointment = appointments.get(name);
-        if(appointment == null){
-            appointment = new Appointment();
-        }
-        return new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment);
+        appointmentsReadLock.unlock();
+        historiesReadLock.unlock();
+        cartsReadLock.unlock();
+        managersReadLock.unlock();
+        ownersReadLock.unlock();
+        registeredReadLock.unlock();
+        return user;
     }
 
     private static class CreateSafeThreadSingleton {
@@ -74,106 +137,145 @@ public class UserDAO {
     }
 
     public void registerUser(String name, String password){
+        registeredWriteLock.lock();
         this.registeredUsers.put(name, password);
+        registeredWriteLock.unlock();
+
+        managersWriteLock.lock();
         this.testManagers.put(name, new ConcurrentHashMap<>());
-        this.testOwners.put(name, new LinkedList<>());
+        managersWriteLock.unlock();
+
+        ownersWriteLock.lock();
+        this.testOwners.put(name, new Vector<>());
+        ownersWriteLock.unlock();
+
+        cartsWriteLock.lock();
         this.shoppingCarts.put(name, new ShoppingCart());
+        cartsWriteLock.unlock();
+
+        historiesWriteLock.lock();
         this.purchaseHistories.put(name, new PurchaseHistory());
+        historiesWriteLock.unlock();
     }
 
     public Response<Boolean> userExists(String name) {
-        return new Response<>(this.registeredUsers.containsKey(name), !this.registeredUsers.containsKey(name), "username already exists");
+        boolean result = this.registeredUsers.containsKey(name);
+        return new Response<>(result, !result, "username already exists");
     }
 
     public boolean validUser(String name, String password) {
-        readLock.lock();
+        registeredReadLock.lock();
         boolean isValid = false;
         if(registeredUsers.get(name) != null) {
             isValid = registeredUsers.get(name).equals(password);
         }
-        readLock.unlock();
+        registeredReadLock.unlock();
         return isValid;
     }
 
     public Response<Boolean> addStoreOwned(String name, int storeId){
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
-        writeLock.lock();
+        ownersWriteLock.lock();
         if(userExists(name).getResult()){
             this.testOwners.get(name).add(storeId);
             result = new Response<>(true, false, "Store added to owner's list");
         }
-        writeLock.unlock();
+        ownersWriteLock.unlock();
         return result;
     }
 
     public Response<Boolean> addStoreManaged(String name, int storeId) {
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
-        writeLock.lock();
+        managersWriteLock.lock();
         if(userExists(name).getResult()){
-            List<Permissions> permissions = new LinkedList<>();
+            List<Permissions> permissions = new Vector<>();
             permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
-        writeLock.unlock();
+        managersWriteLock.unlock();
         return result;
     }
 
     public Response<List<String>> getAppointments(String appointeeName, int storeID) {
         Response<List<String>> result;
-        readLock.lock();
+        appointmentsReadLock.lock();
         if(this.appointments.containsKey(appointeeName)){
             result = this.appointments.get(appointeeName).getAppointees(storeID);
         }
         else {
-            result = new Response<>(new LinkedList<>(), true, "User doesn't exist");
+            result = new Response<>(new Vector<>(), true, "User doesn't exist");
         }
-        readLock.unlock();
+        appointmentsReadLock.unlock();
         return result;
     }
 
     public void addAppointment(String name, int storeId, String appointee) {
+        appointmentsWriteLock.lock();
         if(!this.appointments.containsKey(name)){
             this.appointments.put(name, new Appointment());
         }
         this.appointments.get(name).addAppointment(storeId, appointee);
+        appointmentsWriteLock.unlock();
     }
 
     public void removeAppointment(String appointerName, String appointeeName, int storeID) {
-        writeLock.lock();
+        appointmentsWriteLock.lock();
         if(this.appointments.containsKey(appointerName)) {
             this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
         }
-        writeLock.unlock();
+        appointmentsWriteLock.unlock();
     }
 
     public void removeRole(String appointeeName, int storeID) {
+        managersWriteLock.lock();
         if(testManagers.containsKey(appointeeName) && testManagers.get(appointeeName).containsKey(storeID)) {
             testManagers.get(appointeeName).remove(storeID);
+            managersWriteLock.unlock();
         }
-        else if(testOwners.containsKey(appointeeName) && testOwners.get(appointeeName).contains(storeID)) {
-            testOwners.get(appointeeName).remove(storeID);
+        else {
+            managersWriteLock.unlock();
+            ownersWriteLock.lock();
+            if(testOwners.containsKey(appointeeName) && testOwners.get(appointeeName).contains(storeID)) {
+                testOwners.get(appointeeName).remove(storeID);
+            }
+            ownersWriteLock.unlock();
         }
     }
 
     public void addPermission(int storeId, String permitted, Permissions permission) {
-        this.testManagers.get(permitted).get(storeId).add(permission);
+        managersWriteLock.lock();
+        if(this.testManagers.containsKey(permitted)) {
+            this.testManagers.get(permitted).get(storeId).add(permission);
+        }
+        managersWriteLock.unlock();
     }
 
     public void removePermission(int storeId, String permitted, Permissions permission) {
-        this.testManagers.get(permitted).get(storeId).remove(permission);
+        managersWriteLock.lock();
+        if(this.testManagers.containsKey(permitted)) {
+            this.testManagers.get(permitted).get(storeId).remove(permission);
+        }
+        managersWriteLock.unlock();
     }
 
     public boolean ownedOrManaged(int storeId, String newOwnerOrManager){
         boolean result = false;
+        managersReadLock.lock();
         if(this.testManagers.containsKey(newOwnerOrManager)){
             result = this.testManagers.get(newOwnerOrManager).containsKey(storeId);
+            managersReadLock.unlock();
             if (result) {
                 return result;
             }
         }
-        else if(this.testOwners.containsKey(newOwnerOrManager)){
-            result = this.testOwners.get(newOwnerOrManager).contains(storeId);
+        else {
+            managersReadLock.unlock();
+            ownersReadLock.lock();
+            if(this.testOwners.containsKey(newOwnerOrManager)){
+                result = this.testOwners.get(newOwnerOrManager).contains(storeId);
+            }
+            ownersReadLock.unlock();
         }
         return result;
     }

@@ -3,15 +3,15 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 public class Registered extends UserState {
 
     protected final List<Permissions> allowedFunctions;
 
     public Registered() {
-        this.allowedFunctions = new LinkedList<>();
+        this.allowedFunctions = new Vector<>();
         this.allowedFunctions.add(Permissions.LOGOUT);
         this.allowedFunctions.add(Permissions.OPEN_STORE);
         this.allowedFunctions.add(Permissions.REVIEW_PRODUCT);

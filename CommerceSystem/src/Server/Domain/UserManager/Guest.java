@@ -1,13 +1,13 @@
 package Server.Domain.UserManager;
 
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 public class Guest extends UserState {
     private final List<Permissions> allowedFunctions;
     public Guest(){
-        this.allowedFunctions = new LinkedList<>();
+        this.allowedFunctions = new Vector<>();
         this.allowedFunctions.add(Permissions.REGISTER);
     }
 

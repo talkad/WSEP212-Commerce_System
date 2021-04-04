@@ -4,9 +4,9 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -22,16 +22,24 @@ public class User{
     private PurchaseHistory purchaseHistory;
     private Appointment appointments;
 
-    private ReadWriteLock lock;
-    private Lock writeLock;
-    private Lock readLock;
+    private ReadWriteLock ownedLock;
+    private Lock ownedWriteLock;
+    private Lock ownedReadLock;
+
+    private ReadWriteLock managedLock;
+    private Lock managedWriteLock;
+    private Lock managedReadLock;
 
     public User(){
         this.state = new Guest();
 
-        lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
-        readLock = lock.readLock();
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
 
         this.storesOwned = null;
         this.storesManaged = null;
@@ -41,9 +49,14 @@ public class User{
     }
 
     public User(UserDTO userDTO){
-        lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
-        readLock = lock.readLock();
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
+
         if(UserDAO.getInstance().isAdmin(userDTO.getName())){
             this.state = new Admin();
         }
@@ -63,7 +76,9 @@ public class User{
     }
 
     public void addStoresOwned(int storeId) {
+        ownedWriteLock.lock();
         this.storesOwned.add(storeId);
+        ownedWriteLock.unlock();
     }
 
     public Map<Integer, List<Permissions>> getStoresManaged() {
@@ -71,7 +86,9 @@ public class User{
     }
 
     public void addStoresManaged(int storeId, List<Permissions> permission) {
+        managedWriteLock.lock();
         this.storesManaged.put(storeId, permission);
+        managedWriteLock.unlock();
     }
 
     public String getName() {
@@ -121,7 +138,9 @@ public class User{
 
         result = StoreController.getInstance().openStore(storeName, this.name);
         if(!result.isFailure()) {
+            ownedWriteLock.lock();
             this.storesOwned.add(result.getResult());
+            ownedWriteLock.unlock();
         }
         return result;
     }
@@ -207,11 +226,17 @@ public class User{
     }
 
     public boolean isOwner(int storeId){
-        return this.storesOwned.contains(storeId);
+        ownedReadLock.lock();
+        boolean result = this.storesOwned.contains(storeId);
+        ownedReadLock.unlock();
+        return result;
     }
 
     public boolean isManager(int storeId){
-        return this.storesManaged.containsKey(storeId);
+        managedReadLock.lock();
+        boolean result = this.storesManaged.containsKey(storeId);
+        managedReadLock.unlock();
+        return result;
     }
 
     public Response<String> removeAppointment(String appointeeName, int storeID) {
@@ -225,10 +250,17 @@ public class User{
     }
 
     public void removeRole(int storeID) {
+        ownedWriteLock.lock();
         if(this.storesOwned.contains(storeID)){
             this.storesOwned.remove(storeID);
+            ownedWriteLock.unlock();
         }
-        else this.storesManaged.remove(storeID);
+        else {
+            ownedWriteLock.unlock();
+            managedWriteLock.lock();
+            this.storesManaged.remove(storeID);
+            managedWriteLock.unlock();
+        }
     }
 
     public Response<Boolean> appointedAndAllowed(int storeId, String appointeeName, Permissions permission) {
@@ -266,11 +298,15 @@ public class User{
     }
 
     public void addSelfPermission(int storeId, Permissions permission){
+        managedWriteLock.lock();
         this.storesManaged.get(storeId).add(permission);
+        managedWriteLock.unlock();
     }
 
     public void removeSelfPermission(int storeId, Permissions permission) {
+        managedWriteLock.lock();
         this.storesManaged.get(storeId).remove(permission);
+        managedWriteLock.unlock();
     }
 
     public Response<List<Purchase>> getUserPurchaseHistory(String username) {       // req 6.4
@@ -279,11 +315,11 @@ public class User{
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
             }
             else{
-                return new Response<>(new LinkedList<>(), true, "User does not exist");//todo empty list or null
+                return new Response<>(new Vector<>(), true, "User does not exist");//todo empty list or null
             }
         }
         else{
-            return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+            return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");//todo empty list or null
         }
     }
 

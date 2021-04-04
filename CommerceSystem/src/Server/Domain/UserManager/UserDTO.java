@@ -47,7 +47,9 @@ public class UserDTO {
         return storesOwned;
     }
 
-    public ShoppingCart getShoppingCart() { return shoppingCart; }
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
 
     public PurchaseHistory getPurchaseHistory() {
         return purchaseHistory;
