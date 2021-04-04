@@ -72,6 +72,25 @@ public class Inventory {
         return res;
     }
 
+    public Response<Boolean> removeProducts(Map<ProductDTO, Integer> shoppingBasket){
+
+        for(ProductDTO productDTO: shoppingBasket.keySet()){ // check if no product exceeding current amount in inventory
+            if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID()))
+                return new Response<>(false, true, "Product " + productDTO.getName() + " exceeding to inventory capacity");
+        }
+
+        lock.writeLock().lock();
+
+        for(ProductDTO productDTO: shoppingBasket.keySet()){
+            if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID()))
+                removeProducts(productDTO.getProductID(), shoppingBasket.get(productDTO));
+        }
+
+        lock.writeLock().unlock();
+
+        return new Response<>(true, false, "success");
+    }
+
     public Collection<Product> getProducts(){
         Collection<Product> result;
 

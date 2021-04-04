@@ -142,7 +142,7 @@ public class StoreController {
        return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase has been successfully made.");
     }
 
-    public Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
+    private Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
         Response<Boolean> result;
         Store store;
 
@@ -161,13 +161,13 @@ public class StoreController {
         return new Response<>(stores.values(), false, "all content");
     }
 
-    public Response<List<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
+    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
         Store store = stores.get(storeID);
 
         if(store == null)
             return new Response<>(null, true, "This store doesn't exists");
 
-        return  new Response<>(store.getPurchaseHistory(), false, "success");
+        return new Response<>(store.getPurchaseHistory(), false, "success");
     }
 
     public String getStoreOwnerName(int storeID){

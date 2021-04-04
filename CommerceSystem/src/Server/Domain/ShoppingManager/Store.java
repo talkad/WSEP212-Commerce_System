@@ -6,8 +6,8 @@ import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.ShoppingBasket;
 import Server.Domain.UserManager.ShoppingCart;
 
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,7 +24,7 @@ public class Store {
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
 
-    private List<PurchaseDTO> purchaseHistory;
+    private Collection<PurchaseDTO> purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
 
 
@@ -36,7 +36,7 @@ public class Store {
         this.isActiveStore = true;
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
-        this.purchaseHistory = new ConcurrentHashMap<>();
+        this.purchaseHistory = Collections.synchronizedCollection(new LinkedList<>());
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
@@ -74,21 +74,28 @@ public class Store {
         return purchasePolicy;
     }
 
+     public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) {
+        Response<Boolean> result = inventory.removeProducts(shoppingBasket);
+        PurchaseDTO purchaseDTO;
+        double price = 0;
 
-     public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) { // TODO : TAL FIX PURCHASE
-        Response<Boolean> result = inventory.removeProducts(productID, amount);
+        for(ProductDTO productDTO: shoppingBasket.keySet()){
+            price += productDTO.getPrice() * shoppingBasket.get(productDTO);
+        }
 
-                readWriteLock.writeLock().lock();
+        readWriteLock.writeLock().lock();
 
         if(!result.isFailure()){
-            purchaseHistory.put(getProduct(productID).getResult().getProductDTO(), amount);
+            purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
+
+            purchaseHistory.add(purchaseDTO);
         }
 
         readWriteLock.writeLock().unlock();
         return result;
     }
 
-    public List<PurchaseDTO> getPurchaseHistory() {
+    public Collection<PurchaseDTO> getPurchaseHistory() {
         return purchaseHistory;
     }
 

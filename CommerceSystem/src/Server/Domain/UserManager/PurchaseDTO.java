@@ -1,25 +1,28 @@
 package Server.Domain.UserManager;
 
+import Server.Domain.ShoppingManager.ProductDTO;
+
 import java.time.LocalDate;
+import java.util.Map;
 
 public class PurchaseDTO {
 
-    private ShoppingCart cart;
+    private Map<ProductDTO, Integer> basket;
     private double totalPrice;
     private LocalDate purchaseDate;
 
-    public PurchaseDTO(ShoppingCart cart, double totalPrice, LocalDate purchaseDate) {
-        this.cart = cart;
+    public PurchaseDTO(Map<ProductDTO, Integer> basket, double totalPrice, LocalDate purchaseDate) {
+        this.basket = basket;
         this.totalPrice = totalPrice;
         this.purchaseDate = purchaseDate;
     }
 
     @Override
     public String toString() {
-        return "PurchaseDTO{" + "\n" +
-                "cart=" + cart.toString() + "\n" +
-                ", totalPrice=" + totalPrice + "\n" +
-                ", purchaseDate=" + purchaseDate.toString() + "\n" +
+        return "PurchaseDTO{" +
+                "basket=" + basket +
+                ", totalPrice=" + totalPrice +
+                ", purchaseDate=" + purchaseDate +
                 '}';
     }
 }
