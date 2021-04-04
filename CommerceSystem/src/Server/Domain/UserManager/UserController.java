@@ -159,14 +159,16 @@ public class UserController {
 
     public Response<String> logout(String name) {
         Response<String> response;
-        if(!connectedUsers.get(name).logout().isFailure()) {
-            connectedUsers.remove(name);
-            response = addGuest();
+        if(connectedUsers.containsKey(name)) {
+            if (!connectedUsers.get(name).logout().isFailure()) {
+                connectedUsers.remove(name);
+                response = addGuest();
+            } else {
+                response = new Response<>(name, true, "User not permitted to logout");
+            }
+            return response;
         }
-        else {
-            response = new Response<>(name, true, "User not permitted to logout");
-        }
-        return response;
+        return new Response<>(null, true, "User not connected");
     }
 
     public Response<Integer> openStore(String userName, String storeName) {

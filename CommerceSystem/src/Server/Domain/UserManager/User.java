@@ -127,7 +127,10 @@ public class User{
     }
 
     public Response<List<Purchase>> getPurchaseHistoryContents() {
-        return new Response<>(this.purchaseHistory.getPurchases(), false, null);
+        if(this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
+            return new Response<>(this.purchaseHistory.getPurchases(), false, null);
+        }
+        return new Response<>(null, true, "User not allowed to view purchase history");
     }
 
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {

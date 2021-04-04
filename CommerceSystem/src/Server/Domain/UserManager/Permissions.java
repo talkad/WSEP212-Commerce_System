@@ -10,6 +10,7 @@ public enum Permissions {
     LOGOUT,                    /* Use Case: 3.1 */
     OPEN_STORE,                /* Use Case: 3.2 */
     REVIEW_PRODUCT,            /* Use Case: 3.3 */
+    GET_PURCHASE_HISTORY,        /*Use Case: 3.7 */
 
     /** Store Owner **/
     //MANAGE_PRODUCTS,           /* Use Case: 4.1 - includes 4.1.1, 4.1.2, 4.1.3 */
