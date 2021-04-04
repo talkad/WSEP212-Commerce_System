@@ -42,7 +42,6 @@ public class StoreController {
     public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
 
-        // TODO: should be a way to add and edit policies
         Store store = new Store(id, StoreName, ownerName, null, null);
         stores.put(id, store);
 
@@ -136,11 +135,21 @@ public class StoreController {
         return result;
     }
 
-    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart){
-        for(Map.Entry<Integer, Map <ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet())
-            if(purchaseFromStore(entry.getKey(), entry.getValue()).isFailure())
+    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart) {
+        Store s;
+        Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
+        for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet()) {
+            if (purchaseFromStore(entry.getKey(), entry.getValue()).isFailure()) {
+                for (Map.Entry<Integer, Map<ProductDTO, Integer>> refundEntries : prods.entrySet()) {
+                    s = getStoreById(refundEntries.getKey());
+                    for (Map.Entry<ProductDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
+                        s.addProduct(shopRefund.getKey(), shopRefund.getValue());
+                }
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
-       return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
+            }
+            prods.put(entry.getKey(), entry.getValue());
+        }
+        return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
     }
 
     public Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
