@@ -164,6 +164,20 @@ public class UserDAO {
         this.testManagers.get(permitted).get(storeId).remove(permission);
     }
 
+    public boolean ownedOrManaged(int storeId, String newOwnerOrManager){
+        boolean result = false;
+        if(this.testManagers.containsKey(newOwnerOrManager)){
+            result = this.testManagers.get(newOwnerOrManager).containsKey(storeId);
+            if (result) {
+                return result;
+            }
+        }
+        else if(this.testOwners.containsKey(newOwnerOrManager)){
+            result = this.testOwners.get(newOwnerOrManager).contains(storeId);
+        }
+        return result;
+    }
+
     public boolean isAdmin(String name){
         return this.admins.contains(name);
     }

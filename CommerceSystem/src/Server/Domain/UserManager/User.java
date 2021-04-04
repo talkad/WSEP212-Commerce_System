@@ -101,11 +101,11 @@ public class User{
     }
 
     public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents() {
-        return this.shoppingCart.getBaskets(); //@TODO SHOULD PROBABLY CHECK
+        return this.shoppingCart.getBaskets();
     }
 
     public Response<Boolean> removeProduct(int storeID, int productID) {
-        return this.shoppingCart.removeProduct(storeID, productID); //@TODO SHOULD PROBABLY CHECK
+        return this.shoppingCart.removeProduct(storeID, productID);
     }
 
     public Response<Boolean> logout() {
@@ -166,12 +166,18 @@ public class User{
     }
 
     public Response<Boolean> appointOwner(String newOwner, int storeId){
-        if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)){
+        if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
             Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
-            if(exists.getResult()) {
-                this.appointments.addAppointment(storeId, newOwner);
-                UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
-                return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+            if (exists.getResult()){
+                if (UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
+                    this.appointments.addAppointment(storeId, newOwner);
+                    UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
+                    return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+                }
+                return new Response<>(false, true, "User was already appointed in this store");
+            }
+            else {
+                return new Response<>(false, true, "User does not exist in the system");
             }
         }
         return new Response<>(false, true, "User isn't allowed to appoint owner");
@@ -181,9 +187,15 @@ public class User{
         if(this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)){
             Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
             if(exists.getResult()) {
-                this.appointments.addAppointment(storeId, newManager);
-                UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
-                return UserDAO.getInstance().addStoreManaged(newManager, storeId);
+                if(UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
+                    this.appointments.addAppointment(storeId, newManager);
+                    UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
+                    return UserDAO.getInstance().addStoreManaged(newManager, storeId);
+                }
+                return new Response<>(false, true, "User was already appointed in this store");
+            }
+            else {
+                return new Response<>(false, true, "User does not exist in the system");
             }
         }
         return new Response<>(false, true, "User isn't allowed to appoint manager");
