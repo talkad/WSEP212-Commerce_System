@@ -179,8 +179,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<UserDetails> getWorkersDetails(String username, int storeID) {
-        return userController.getWorkersDetails(username, storeID);
+    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+        return userController.getStoreWorkersDetails(username, storeID);
     }
 
     @Override

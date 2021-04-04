@@ -5,7 +5,6 @@ import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
-import Server.Domain.UserManager.UserDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -95,7 +94,7 @@ public interface IService {
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
-    Response<UserDetails> getWorkersDetails(String username, int storeID); // 4.9
+    Response<List<User>> getStoreWorkersDetails(String username, int storeID); // 4.9
 
     Response<Purchase> getPurchaseDetails(String username, int storeID); // 4.11
 

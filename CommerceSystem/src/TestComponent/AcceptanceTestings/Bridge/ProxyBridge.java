@@ -7,7 +7,6 @@ import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.User;
-import Server.Domain.UserManager.UserDetails;
 import Server.Service.IService;
 
 import java.util.HashMap;

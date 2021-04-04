@@ -286,8 +286,8 @@ public class UserController {
         return connectedUsers.get(username).getPurchaseDetails(storeID);
     }
 
-    public Response<UserDetails> getWorkersDetails(String username, int storeID) {
-        return connectedUsers.get(username).getWorkersDetails(storeID);
+    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+        return connectedUsers.get(username).getStoreWorkersDetails(storeID);
     }
 }
 

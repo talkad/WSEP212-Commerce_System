@@ -136,6 +136,7 @@ public class User{
     public Response<Boolean> addProductReview(int productID, String review) {
         if(this.state.allowed(Permissions.REVIEW_PRODUCT,this)){
             // @TODO purchaseHistory.getPurchases().contains(productID) then add product
+
             return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
         }
         else{
@@ -269,7 +270,7 @@ public class User{
         }
     }
 
-    public Response<UserDetails> getWorkersDetails(int storeID) {       // req 4.9
+    public Response<List<User>> getStoreWorkersDetails(int storeID) {       // req 4.9
         if(this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID)){
             return null;//todo StoreController.getInstance().getWorkersDetails(storeID);
         }
