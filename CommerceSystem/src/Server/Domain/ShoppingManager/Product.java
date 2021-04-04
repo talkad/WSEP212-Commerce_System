@@ -84,10 +84,10 @@ public class Product {
     }
 
     public Response<Boolean> addReview(String review){
-        reviews.add(review);
-
         if(review == null || review.length() == 0)
             return new Response<>(false, true, "Review cannot be empty");
+
+        reviews.add(review);
         return new Response<>(true, false, "Review added successfully");
     }
 
