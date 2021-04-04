@@ -125,7 +125,7 @@ public class User{
         return result;
     }
 
-    public List<Purchase> getPurchaseHistoryContents() {
+    public List<PurchaseDTO> getPurchaseHistoryContents() {
         return this.purchaseHistory.getPurchases();
     }
 
@@ -256,7 +256,7 @@ public class User{
         this.storesManaged.get(storeId).remove(permission);
     }
 
-    public Response<List<Purchase>> getUserPurchaseHistory(String username) {       // req 6.4
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String username) {       // req 6.4
         if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)){
             if(UserDAO.getInstance().userExists(username).getResult()) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
@@ -279,7 +279,7 @@ public class User{
         }
     }
 
-    public Response<Purchase> getPurchaseDetails(int storeID) {     // req 4.11
+    public Response<PurchaseDTO> getPurchaseDetails(int storeID) {     // req 4.11
         if(this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)){
             return null;//todo StoreController.getInstance().getPurchaseDetails(storeID);
         }

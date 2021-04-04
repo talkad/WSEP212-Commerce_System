@@ -1,20 +1,18 @@
 package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Response;
 
-import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.PurchaseDTO;
-import Server.Domain.UserManager.ShoppingBasket;
 import Server.Domain.UserManager.ShoppingCart;
 import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
 import org.xeustechnologies.googleapi.spelling.SpellRequest;
 import org.xeustechnologies.googleapi.spelling.SpellResponse;
 
-import javax.swing.text.StyledEditorKit;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
@@ -142,8 +140,7 @@ public class StoreController {
         for(Map.Entry<Integer, Map <ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet())
             if(purchaseFromStore(entry.getKey(), entry.getValue()).isFailure())
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
-        // TODO ALL PAYMENT PROCESS
-       return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase has been successfully made.");
+       return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
     }
 
     public Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
@@ -165,13 +162,13 @@ public class StoreController {
         return (List<Store>) stores.values();
     }
 
-    public Response<List<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
+    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
         Store store = stores.get(storeID);
 
         if(store == null)
             return new Response<>(null, true, "This store doesn't exists");
 
-        return  new Response<>(store.getPurchaseHistory(), false, "success");
+        return  new Response<>(store.getPurchaseHistory().stream().collect(Collectors.toList()), false, "success");
     }
 
     public String getStoreOwnerName(int storeID){

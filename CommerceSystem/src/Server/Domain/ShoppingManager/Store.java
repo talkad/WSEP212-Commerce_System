@@ -6,8 +6,7 @@ import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.ShoppingBasket;
 import Server.Domain.UserManager.ShoppingCart;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,7 +23,7 @@ public class Store {
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
 
-    private List<PurchaseDTO> purchaseHistory;
+    private Collection<PurchaseDTO> purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
 
 
@@ -36,7 +35,7 @@ public class Store {
         this.isActiveStore = true;
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
-        this.purchaseHistory = new ConcurrentHashMap<>();
+        this.purchaseHistory = Collections.synchronizedCollection(new LinkedList<>());
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
@@ -75,19 +74,10 @@ public class Store {
     }
 
      public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) { // TODO : TAL FIX PURCHASE
-        Response<Boolean> result = inventory.removeProducts(productID, amount);
-
-        readWriteLock.writeLock().lock();
-
-        if(!result.isFailure()){
-            purchaseHistory.put(getProduct(productID).getResult().getProductDTO(), amount);
-        }
-
-        readWriteLock.writeLock().unlock();
-        return result;
+        return new Response<>(true, false, "");
     }
 
-    public List<PurchaseDTO> getPurchaseHistory() {
+    public Collection<PurchaseDTO> getPurchaseHistory() {
         return purchaseHistory;
     }
 

@@ -5,7 +5,7 @@ import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.Store;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseController;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
 
@@ -155,7 +155,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(String username) {
+    public List<PurchaseController> getPurchaseHistory(String username) {
         if (real != null){
             return real.getPurchaseHistory(username);
         }
@@ -235,15 +235,15 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+    public Response<PurchaseController> getPurchaseDetails(String username, int storeID) {
         if (real != null){
             return real.getPurchaseDetails(username, storeID);
         }
-        return new Response<>(new Purchase(), false, null);
+        return new Response<>(new PurchaseController(), false, null);
     }
 
     @Override
-    public List<Purchase> getUserPurchaseHistory(String username) {
+    public List<PurchaseController> getUserPurchaseHistory(String username) {
         if (real != null){
             return real.getUserPurchaseHistory(username);
         }
@@ -251,7 +251,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public List<Purchase> getStorePurchaseHistory(int storeID) {
+    public List<PurchaseController> getStorePurchaseHistory(int storeID) {
         if (real != null){
             return real.getStorePurchaseHistory(storeID);
         }

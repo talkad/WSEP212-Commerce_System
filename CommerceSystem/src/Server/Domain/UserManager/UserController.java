@@ -2,9 +2,6 @@ package Server.Domain.UserManager;
 
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ExternalComponents.PaymentSystem;
-import Server.Domain.ExternalComponents.ProductSupply;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.LinkedList;
@@ -19,7 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
-
+    private PurchaseController purchaseController;
     private PaymentSystemAdapter externalPayment;
     private ProductSupplyAdapter externalDelivery;
 
@@ -30,7 +27,7 @@ public class UserController {
     private UserController(){
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
-
+        this.purchaseController = PurchaseController.getInstance();
         this.externalPayment = PaymentSystemAdapter.getInstance(); /* communication with external payment system */
         this.externalDelivery = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
         //todo check if successfully connected
@@ -137,7 +134,7 @@ public class UserController {
         return connectedUsers.get(userName).openStore(storeName);
     }
 
-    public List<Purchase> getPurchaseHistoryContents(String userName){
+    public List<PurchaseDTO> getPurchaseHistoryContents(String userName){
         return connectedUsers.get(userName).getPurchaseHistoryContents();
     }
 
@@ -271,7 +268,7 @@ public class UserController {
         return response;
     }
 
-    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         return connectedUsers.get(adminName).getUserPurchaseHistory(username);
     }
 
@@ -282,7 +279,11 @@ public class UserController {
         connectedUsers.put(admin, new User(userDTO));
     }
 
-    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+    public Response<Boolean> purchase (int bankAccount, User user){
+        return purchaseController.handlePayment(bankAccount, user);
+    }
+
+    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
         return connectedUsers.get(username).getPurchaseDetails(storeID);
     }
 

@@ -3,7 +3,8 @@ package Server.Service;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseController;
+import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public interface IService {
 
     Response<Boolean> addProductReview(String username, int productID, String review); // 3.3
 
-    List<Purchase> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
+    List<PurchaseDTO> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
 
 
     /**
@@ -96,13 +97,13 @@ public interface IService {
 
     Response<List<User>> getStoreWorkersDetails(String username, int storeID); // 4.9
 
-    Response<Purchase> getPurchaseDetails(String username, int storeID); // 4.11
+    Response<PurchaseDTO> getPurchaseDetails(String username, int storeID); // 4.11
 
 
     /**
      * System Manager requirements - 6
      */
-    Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
+    Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
+    Response<List<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }
