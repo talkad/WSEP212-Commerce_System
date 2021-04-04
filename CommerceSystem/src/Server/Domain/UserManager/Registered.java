@@ -1,6 +1,8 @@
 package Server.Domain.UserManager;
 
 
+import Server.Domain.CommonClasses.Response;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,5 +29,4 @@ public class Registered extends UserState {
         }
         else return user.getStoresManaged().get(storeId).contains(permission);
     }
-
 }

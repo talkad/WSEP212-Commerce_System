@@ -111,7 +111,7 @@ public class UserDAO {
         writeLock.lock();
         if(userExists(name).getResult()){
             List<Permissions> permissions = new LinkedList<>();
-            permissions.add(Permissions.RECEIVE_STORE_INFO);
+            permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
@@ -141,26 +141,27 @@ public class UserDAO {
 
     public void removeAppointment(String appointerName, String appointeeName, int storeID) {
         writeLock.lock();
-        if(this.appointments.containsKey(appointerName))
+        if(this.appointments.containsKey(appointerName)) {
             this.appointments.get(appointerName).removeAppointment(storeID, appointeeName);
+        }
         writeLock.unlock();
     }
 
     public void removeRole(String appointeeName, int storeID) {
-        if(testOwners.containsKey(appointeeName)) {
-            if (testOwners.get(appointeeName).contains(storeID)) {
-                testOwners.get(appointeeName).remove(storeID);
-            }
+        if(testManagers.containsKey(appointeeName) && testManagers.get(appointeeName).containsKey(storeID)) {
+            testManagers.get(appointeeName).remove(storeID);
         }
-        else if(testManagers.containsKey(appointeeName)) {
-            if (testManagers.get(appointeeName).containsKey(storeID)) {
-                testManagers.get(appointeeName).remove(storeID);
-            }
+        else if(testOwners.containsKey(appointeeName) && testOwners.get(appointeeName).contains(storeID)) {
+            testOwners.get(appointeeName).remove(storeID);
         }
     }
 
     public void addPermission(int storeId, String permitted, Permissions permission) {
         this.testManagers.get(permitted).get(storeId).add(permission);
+    }
+
+    public void removePermission(int storeId, String permitted, Permissions permission) {
+        this.testManagers.get(permitted).get(storeId).remove(permission);
     }
 
     public boolean isAdmin(String name){

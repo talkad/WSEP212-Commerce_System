@@ -23,9 +23,9 @@ public enum Permissions {
     APPOINT_OWNER,              /* Use Case: 4.3 */
     REMOVE_OWNER_APPOINTMENT,   /* Use Case: 4.4 */
     APPOINT_MANAGER,            /* Use Case: 4.5 */
-    ADD_PERMISSION,             /* Use Case: 4.6 */
+    EDIT_PERMISSION,             /* Use Case: 4.6 */
     REMOVE_MANAGER_APPOINTMENT, /* Use Case: 4.7 */
-    RECEIVE_STORE_INFO,         /* Use Case: 4.9 */
+    RECEIVE_STORE_WORKER_INFO,         /* Use Case: 4.9 */
     RECEIVE_STORE_HISTORY,      /* Use Case: 4.11 */
 
     /** Store Manager **/

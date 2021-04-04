@@ -169,18 +169,23 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+        return userController.removePermission(permitting, storeId, permitted, permission);
+    }
+
+    @Override
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
         return userController.removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<UserDetails> getWorkersDetails(String username, int storeID) {
-        return null;
+        return userController.getWorkersDetails(username, storeID);
     }
 
     @Override
     public Response<Purchase> getPurchaseDetails(String username, int storeID) {
-        return null;
+        return userController.getPurchaseDetails(username, storeID);
     }
 
     @Override
