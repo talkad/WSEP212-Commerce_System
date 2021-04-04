@@ -389,5 +389,9 @@ public class UserController {
         }
         return new LinkedList<>();
     }
+
+    public Map<String, User> getConnectedUsers() {
+        return this.connectedUsers;
+    }
 }
 
