@@ -92,7 +92,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username) {
+    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
         return userController.getShoppingCartContents(username);
     }
 
@@ -127,7 +127,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(String username) {
+    public Response<List<Purchase>> getPurchaseHistory(String username) {
         return userController.getPurchaseHistoryContents(username);
     }
 
@@ -202,8 +202,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID) {
-        return null;//storeController.getStorePurchaseHistory(adminName, storeID);todo
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+        return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
 

@@ -46,7 +46,7 @@ public interface IService {
 
     Response<Boolean> removeFromCart(String username,  int storeID, int productID); // 2.8 - a
 
-    Map<Integer, Map<ProductDTO, Integer>> getCartDetails(String username); // 2.8 - b
+    Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username); // 2.8 - b
 
     Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount); // 2.8 - c
 
@@ -64,7 +64,7 @@ public interface IService {
 
     Response<Boolean> addProductReview(String username, int storeID, int productID, String review); // 3.3
 
-    List<Purchase> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
+    Response<List<Purchase>> getPurchaseHistory(String username); // 3.7 //@TODO NEED TO FIGURE OUT RETURN VALUES
 
 
     /**
@@ -107,5 +107,5 @@ public interface IService {
      */
     Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    Response<List<Purchase>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
+    Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }

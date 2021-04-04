@@ -7,6 +7,7 @@ import Server.Domain.ShoppingManager.StoreController;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -100,8 +101,8 @@ public class User{
         return this.shoppingCart.addProduct(storeID, productID);
     }
 
-    public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents() {
-        return this.shoppingCart.getBaskets();
+    public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents() {
+        return new Response<>(this.shoppingCart.getBaskets(), false, null);
     }
 
     public Response<Boolean> removeProduct(int storeID, int productID) {
@@ -125,8 +126,11 @@ public class User{
         return result;
     }
 
-    public List<Purchase> getPurchaseHistoryContents() {
-        return this.purchaseHistory.getPurchases();
+    public Response<List<Purchase>> getPurchaseHistoryContents() {
+        if(this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
+            return new Response<>(this.purchaseHistory.getPurchases(), false, null);
+        }
+        return new Response<>(null, true, "User not allowed to view purchase history");
     }
 
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
@@ -283,6 +287,13 @@ public class User{
         }
     }
 
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
+        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+            return StoreController.getInstance().getStorePurchaseHistory(storeID);
+        }
+        return new Response<>(new ConcurrentHashMap<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+    }
+
     public Response<Boolean> getStoreWorkersDetails(int storeID) {       // req 4.9
         return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
@@ -295,4 +306,5 @@ public class User{
             return new Response<>(null, true, "User not allowed to receive store history");
         }
     }
+
 }
