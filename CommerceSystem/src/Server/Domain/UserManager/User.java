@@ -101,8 +101,8 @@ public class User{
         return this.shoppingCart.addProduct(storeID, productID);
     }
 
-    public Map<Integer ,Map<ProductDTO, Integer>> getShoppingCartContents() {
-        return this.shoppingCart.getBaskets();
+    public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents() {
+        return new Response<>(this.shoppingCart.getBaskets(), false, null);
     }
 
     public Response<Boolean> removeProduct(int storeID, int productID) {
@@ -126,8 +126,8 @@ public class User{
         return result;
     }
 
-    public List<Purchase> getPurchaseHistoryContents() {
-        return this.purchaseHistory.getPurchases();
+    public Response<List<Purchase>> getPurchaseHistoryContents() {
+        return new Response<>(this.purchaseHistory.getPurchases(), false, null);
     }
 
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
