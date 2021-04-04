@@ -3,12 +3,8 @@ package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.PurchaseDTO;
-import Server.Domain.UserManager.ShoppingBasket;
-import Server.Domain.UserManager.ShoppingCart;
-
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

@@ -1,22 +1,25 @@
 package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
+<<<<<<< HEAD
 import Server.Domain.UserManager.Purchase;
 import Server.Domain.UserManager.ShoppingBasket;
 import Server.Domain.UserManager.Purchase;
+=======
+
+>>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
 import Server.Domain.UserManager.PurchaseDTO;
-import Server.Domain.UserManager.ShoppingBasket;
 import Server.Domain.UserManager.ShoppingCart;
 import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
 import org.xeustechnologies.googleapi.spelling.SpellRequest;
 import org.xeustechnologies.googleapi.spelling.SpellResponse;
 
-import javax.swing.text.StyledEditorKit;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
@@ -46,7 +49,6 @@ public class StoreController {
     public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
 
-        // TODO: should be a way to add and edit policies
         Store store = new Store(id, StoreName, ownerName, null, null);
         stores.put(id, store);
 
@@ -134,12 +136,21 @@ public class StoreController {
         return result;
     }
 
-    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart){
-        for(Map.Entry<Integer, Map <ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet())
-            if(purchaseFromStore(entry.getKey(), entry.getValue()).isFailure())
+    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart) {
+        Store s;
+        Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
+        for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet()) {
+            if (purchaseFromStore(entry.getKey(), entry.getValue()).isFailure()) {
+                for (Map.Entry<Integer, Map<ProductDTO, Integer>> refundEntries : prods.entrySet()) {
+                    s = getStoreById(refundEntries.getKey());
+                    for (Map.Entry<ProductDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
+                        s.addProduct(shopRefund.getKey(), shopRefund.getValue());
+                }
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
-        // TODO ALL PAYMENT PROCESS
-       return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase has been successfully made.");
+            }
+            prods.put(entry.getKey(), entry.getValue());
+        }
+        return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
     }
 
     private Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
@@ -167,7 +178,7 @@ public class StoreController {
         if(store == null)
             return new Response<>(null, true, "This store doesn't exists");
 
-        return new Response<>(store.getPurchaseHistory(), false, "success");
+        return  new Response<>(store.getPurchaseHistory().stream().collect(Collectors.toList()), false, "success");
     }
 
     public String getStoreOwnerName(int storeID){

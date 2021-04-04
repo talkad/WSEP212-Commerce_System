@@ -2,9 +2,6 @@ package Server.Domain.UserManager;
 
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ExternalComponents.PaymentSystem;
-import Server.Domain.ExternalComponents.ProductSupply;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
@@ -20,7 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
-
+    private PurchaseController purchaseController;
     private PaymentSystemAdapter externalPayment;
     private ProductSupplyAdapter externalDelivery;
 
@@ -31,7 +28,7 @@ public class UserController {
     private UserController(){
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
-
+        this.purchaseController = PurchaseController.getInstance();
         this.externalPayment = PaymentSystemAdapter.getInstance(); /* communication with external payment system */
         this.externalDelivery = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
         //todo check if successfully connected
@@ -178,11 +175,16 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
+<<<<<<< HEAD
     public Response<List<Purchase>> getPurchaseHistoryContents(String userName){
         if(connectedUsers.containsKey(userName)) {
             return connectedUsers.get(userName).getPurchaseHistoryContents();
         }
         return new Response<>(null, true, "User not connected");
+=======
+    public List<PurchaseDTO> getPurchaseHistoryContents(String userName){
+        return connectedUsers.get(userName).getPurchaseHistoryContents();
+>>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
     }
 
     public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
@@ -334,6 +336,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
+<<<<<<< HEAD
     public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
         if(connectedUsers.containsKey(adminName)) {
             return connectedUsers.get(adminName).getUserPurchaseHistory(username);
@@ -346,6 +349,10 @@ public class UserController {
             return connectedUsers.get(adminName).getStorePurchaseHistory(storeID);
         }
         return new Response<>(null, true, "User not connected");
+=======
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+        return connectedUsers.get(adminName).getUserPurchaseHistory(username);
+>>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
     }
 
     public void adminBoot() {
@@ -355,6 +362,7 @@ public class UserController {
         connectedUsers.put(admin, new User(userDTO));
     }
 
+<<<<<<< HEAD
     public Response<Purchase> getPurchaseDetails(String username, int storeID) {
         if(connectedUsers.containsKey(username)) {
             return connectedUsers.get(username).getPurchaseDetails(storeID);
@@ -390,6 +398,14 @@ public class UserController {
             return appointees;
         }
         return new LinkedList<>();
+=======
+    public Response<Boolean> purchase (int bankAccount, User user){
+        return purchaseController.handlePayment(bankAccount, user);
+    }
+
+    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
+        return connectedUsers.get(username).getPurchaseDetails(storeID);
+>>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
     }
 
     public Map<String, User> getConnectedUsers() {

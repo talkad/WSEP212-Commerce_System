@@ -30,7 +30,7 @@ public class PaymentSystemAdapter
     /*
     pay --amount-- shekels taken from --bankAccount--
      */
-    public boolean pay (int amount, int bankAccount){
+    public boolean pay (double amount, int bankAccount){
         return externalSystem.pay(amount, bankAccount);
     }
 }
