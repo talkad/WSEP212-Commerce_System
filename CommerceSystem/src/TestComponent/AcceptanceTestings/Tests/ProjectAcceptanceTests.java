@@ -8,5 +8,6 @@ public abstract class ProjectAcceptanceTests {
 
     public void setUp(){
         this.bridge = Driver.getBridge();
+        this.bridge.init();
     }
 }

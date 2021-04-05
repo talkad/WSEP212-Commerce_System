@@ -26,6 +26,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         // opening some stores for later use
         int storeID = this.bridge.openStore("aviad", "stam hanut").getResult();
 
+        // adding products to the store
         ProductDTO product = new ProductDTO("kchichat perot", storeID, 20,
                 new LinkedList<String>(Arrays.asList("food", "tasty")),
                 new LinkedList<String>(Arrays.asList("kchicha")),
