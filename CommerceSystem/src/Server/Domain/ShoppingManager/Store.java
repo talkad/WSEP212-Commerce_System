@@ -3,12 +3,9 @@ package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.PurchaseDTO;
-import Server.Domain.UserManager.ShoppingBasket;
-import Server.Domain.UserManager.ShoppingCart;
-
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -18,7 +15,7 @@ public class Store {
     private String name;
     private String ownerName;
     private Inventory inventory;
-    private boolean isActiveStore;
+    private AtomicBoolean isActiveStore;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private AtomicReference<Double> rating;
@@ -33,7 +30,7 @@ public class Store {
         this.storeID = id;
         this.ownerName = ownerName;
         this.inventory = new Inventory();
-        this.isActiveStore = true;
+        this.isActiveStore = new AtomicBoolean(true);
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         this.purchaseHistory = Collections.synchronizedCollection(new LinkedList<>());
@@ -63,7 +60,7 @@ public class Store {
     }
 
     public boolean isActiveStore() {
-        return isActiveStore;
+        return isActiveStore.get();
     }
 
     public DiscountPolicy getDiscountPolicy() {
@@ -73,6 +70,8 @@ public class Store {
     public PurchasePolicy getPurchasePolicy() {
         return purchasePolicy;
     }
+
+    // todo: add policies
 
      public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) {
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
@@ -134,5 +133,12 @@ public class Store {
         return inventory.addProductReview(productID, review);
     }
 
-    public void setActiveStore(boolean activeStore) { isActiveStore = activeStore; }
+    public void setActiveStore(boolean activeStore) {
+        boolean currentActive;
+
+        do {
+            currentActive = isActiveStore.get();
+        }while (!isActiveStore.compareAndSet(currentActive, activeStore));
+    }
+
 }

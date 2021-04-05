@@ -127,7 +127,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<Purchase>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
         return userController.getPurchaseHistoryContents(username);
     }
 
@@ -192,12 +192,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
         return userController.getPurchaseDetails(username, storeID);
     }
 
     @Override
-    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         return userController.getUserPurchaseHistory(adminName, username);
     }
 

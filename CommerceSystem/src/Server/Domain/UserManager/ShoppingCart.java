@@ -1,11 +1,9 @@
 package Server.Domain.UserManager;
 
-import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,9 +32,11 @@ public class ShoppingCart {
         }
         else {
             lock.writeLock().lock();
+
             baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
             basket = baskets.get(storeID);
-            res = basket.addProduct(productRes.getResult());
+            res = basket.addProduct(productRes.getResult().getProductDTO());
+
             lock.writeLock().unlock();
         }
 
@@ -46,24 +46,26 @@ public class ShoppingCart {
     public Response<Boolean> removeProduct(int storeID, int productID){
         ShoppingBasket basket;
         Response<Boolean> res;
-        Response<Product> productRes;
+        boolean guard;
 
-        lock.writeLock().lock();
-        if(!baskets.containsKey(storeID)){
+        lock.readLock().lock();
+        guard = !baskets.containsKey(storeID);
+        lock.readLock().unlock();
+
+        if(guard){
             res = new Response<>(false, true, "This store basket doesn't exists");
         }
         else{
-            productRes = StoreController.getInstance().getProduct(storeID, productID);
+            lock.writeLock().lock();
 
-            if(productRes.isFailure()){
-                res = new Response<>(false, true, productRes.getErrMsg());
-            }
-            else {
-                basket = baskets.get(storeID);
-                res = basket.removeProduct(productRes.getResult());
-            }
+            basket = baskets.get(storeID);
+            res = basket.removeProduct(productID);
+
+            if(!res.isFailure() && basket.numOfProducts() == 0) // remove basket if it's empty
+                baskets.remove(storeID);
+
+            lock.writeLock().unlock();
         }
-        lock.writeLock().unlock();
 
         return res;
     }
@@ -74,6 +76,7 @@ public class ShoppingCart {
      */
     public Map<Integer, Map<ProductDTO, Integer>> getBaskets(){
         Map<Integer, Map<ProductDTO, Integer>> products = new HashMap<>();
+
         lock.readLock().lock();
 
         for(ShoppingBasket basket: baskets.values()){
@@ -101,8 +104,12 @@ public class ShoppingCart {
     public double getTotalPrice(){
         double totalPrice = 0;
 
+        lock.readLock().lock();
+
         for(ShoppingBasket basket: baskets.values())
             totalPrice += basket.getTotalPrice();
+
+        lock.readLock().unlock();
 
         return totalPrice;
     }

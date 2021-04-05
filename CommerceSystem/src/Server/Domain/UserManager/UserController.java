@@ -2,12 +2,9 @@ package Server.Domain.UserManager;
 
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ExternalComponents.PaymentSystem;
-import Server.Domain.ExternalComponents.ProductSupply;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -20,7 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
-
+    private PurchaseController purchaseController;
     private PaymentSystemAdapter externalPayment;
     private ProductSupplyAdapter externalDelivery;
 
@@ -31,7 +28,7 @@ public class UserController {
     private UserController(){
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
-
+        this.purchaseController = PurchaseController.getInstance();
         this.externalPayment = PaymentSystemAdapter.getInstance(); /* communication with external payment system */
         this.externalDelivery = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
         //todo check if successfully connected
@@ -225,8 +222,8 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<List<Purchase>> getPurchaseHistoryContents(String userName){
-        readLock.lock();
+
+    public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
@@ -405,8 +402,8 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
-        readLock.lock();
+
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
             readLock.unlock();
@@ -434,7 +431,8 @@ public class UserController {
         connectedUsers.put(admin, new User(userDTO));
     }
 
-    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+
+    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -463,16 +461,22 @@ public class UserController {
         return new Response<>(null, true, "User not permitted to get worker info");
     }
 
-    private List<String> getAppointeesNamesRec(String workerName, int storeID){
+    private List<String> getAppointeesNamesRec(String workerName, int storeID) {
         List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
+
         if(appointees != null && !appointees.isEmpty()){
             List<String> names = new Vector<>(appointees);
             for(String name : names){
+
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             return appointees;
         }
         return new Vector<>();
+    }
+
+    public Response<Boolean> purchase (int bankAccount, User user){
+        return purchaseController.handlePayment(bankAccount, user);
     }
 
     public Map<String, User> getConnectedUsers() {

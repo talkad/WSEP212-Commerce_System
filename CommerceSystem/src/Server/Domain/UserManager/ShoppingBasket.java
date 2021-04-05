@@ -1,29 +1,33 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.ShoppingManager.StoreController;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ShoppingBasket {
 
     // the store these products are belong to
     private final int storeID;
-    private List<Product> products;
+    private Map<Integer, ProductDTO> products;
     // map between productID and its amount in the basket
     private Map<Integer, Integer> pAmount;
     private double totalPrice;
+    private ReadWriteLock lock;
 
     public ShoppingBasket(int storeID){
         this.storeID = storeID;
-        this.products = new Vector<>();
-        this.pAmount = new HashMap<>();
+
+        this.products = new ConcurrentHashMap<>();
+        this.pAmount = new ConcurrentHashMap<>();
         this.totalPrice = 0;
+        this.lock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(Product product){
+    public Response<Boolean> addProduct(ProductDTO product){
         Response<Boolean> res;
         int productID = product.getProductID();
 
@@ -32,8 +36,9 @@ public class ShoppingBasket {
         }
         else{
 
+            lock.writeLock().lock();
             if(!pAmount.containsKey(productID)){
-                products.add(product);
+                products.put(productID, product);
                 pAmount.put(productID, 1);
             }
             else{
@@ -41,24 +46,32 @@ public class ShoppingBasket {
             }
 
             totalPrice += product.getPrice();
+            lock.writeLock().unlock();
+
             res = new Response<>(true, false, "Product "+product.getName()+" added to shopping basket");
         }
 
         return res;
     }
 
-    public Response<Boolean> removeProduct(Product product) {
+    public Response<Boolean> removeProduct(int productID) {
         Response<Boolean> res;
-        int productID = product.getProductID();
+        ProductDTO product;
 
-        if(!products.contains(product)){
-            res = new Response<>(false, true, product.getName()+" is not in the basket");
+        lock.readLock().lock();
+        product = products.get(productID);
+        lock.readLock().unlock();
+
+        if(product == null){
+            res = new Response<>(false, true, "The given product doesn't exists");
         }
         else{
+            lock.writeLock().lock();
+
             pAmount.put(productID, pAmount.get(productID) - 1);
 
             if(pAmount.get(productID) == 0)
-                products.remove(product);
+                products.remove(productID);
 
             totalPrice -= product.getPrice();
             res = new Response<>(true, false, "Product "+product.getName()+" removed from shopping basket");
@@ -70,9 +83,11 @@ public class ShoppingBasket {
     public Map<ProductDTO, Integer> getProducts() {
         Map<ProductDTO, Integer> basketProducts = new HashMap<>();
 
-        for(Product product: products){
-            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
+        lock.readLock().lock();
+        for(ProductDTO product: products.values()){
+            basketProducts.put(product, pAmount.get(product.getProductID()));
         }
+        lock.readLock().unlock();
 
         return basketProducts;
     }
@@ -84,7 +99,7 @@ public class ShoppingBasket {
     public Response<Boolean> updateProductQuantity(int productID, int amount) {
         Response<Boolean> res;
         int prevAmount;
-        Response<Product> productRes;
+        ProductDTO product;
 
         if(amount < 0){
             res = new Response<>(false, true, "amount can't be negative");
@@ -93,37 +108,29 @@ public class ShoppingBasket {
             res = new Response<>(false, true, "The product doesn't exists in the given basket");
         }
         else{
+            lock.writeLock().lock();
+
             prevAmount =pAmount.get(productID);
             pAmount.put(productID, amount);
-            productRes = StoreController.getInstance().getProduct(storeID, productID);
+            product = products.get(productID);
 
-            if(productRes.isFailure()){
-                res = new Response<>(false, true, productRes.getErrMsg());
+            if(product == null){
+                res = new Response<>(false, true, "The given product doesn't exists");
             }
             else {
                 if(pAmount.get(productID) == 0)
-                    products.remove(productRes.getResult());
+                    products.remove(productID);
 
-                totalPrice += (amount - prevAmount)*productRes.getResult().getPrice();
+                totalPrice += (amount - prevAmount)*product.getPrice();
 
-                res = new Response<>(true, false, "Product "+productRes.getResult().getName()+" amount updated");
+                res = new Response<>(true, false, "Product "+product.getName()+" amount updated");
             }
+
+            lock.writeLock().unlock();
         }
 
         return res;
     }
-
-//    public Response<Boolean> addReview(int productID, String review) {
-//
-//        for(Product product: products){
-//            if(product.getProductID() == productID){
-//                product.addReview(review);
-//                return new Response<>(true, false, "Review has been added");
-//            }
-//        }
-//
-//        return new Response<>(false, true, "Failure");
-//    }
 
     public double getTotalPrice(){
         return totalPrice;
@@ -132,12 +139,22 @@ public class ShoppingBasket {
     @Override
     public String toString() {
         Map<ProductDTO, Integer> products = getProducts();
-        String result = "ShoppingBasket id " + storeID + ":\n";
+        StringBuilder result = new StringBuilder("ShoppingBasket id " + storeID + ":\n");
 
         for(ProductDTO product: products.keySet()){
-            result += product.toString() + "Amount :" + products.get(product) +"\n";
+            result.append(product.toString()).append("Amount :").append(products.get(product)).append("\n");
         }
 
-        return result;
+        return result.toString();
+    }
+
+    public int numOfProducts() {
+        int length;
+
+        lock.readLock();
+        length = products.size();
+        lock.readLock().unlock();
+
+        return length;
     }
 }
