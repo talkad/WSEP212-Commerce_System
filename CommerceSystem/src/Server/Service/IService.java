@@ -51,7 +51,7 @@ public interface IService {
 
     Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount); // 2.8 - c
 
-    Response<Boolean> purchaseCartItems(String username, String creditCardDetails); // 2.9
+    Response<Boolean> directPurchase(String username, int bankAccount); // 2.9
 
     User getUserByName(String username); // for tests purposes
 
@@ -111,5 +111,5 @@ public interface IService {
      */
     Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
-    Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
+    Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
 }

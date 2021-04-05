@@ -4,10 +4,8 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -413,7 +411,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
@@ -475,8 +473,23 @@ public class UserController {
         return new Vector<>();
     }
 
-    public Response<Boolean> purchase (int bankAccount, User user){
-        return purchaseController.handlePayment(bankAccount, user);
+    public Response<Boolean> purchase(String username, int bankAccount){
+        Response<List<PurchaseDTO>> purchaseRes;
+
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            purchaseRes = PurchaseController.getInstance().handlePayment(bankAccount, user.getShoppingCart());
+            readLock.unlock();
+
+            if(purchaseRes.isFailure())
+                return new Response<>(false, true, purchaseRes.getErrMsg());
+
+            user.addToPurchaseHistory(purchaseRes.getResult());
+            return new Response<>(true, false, "The purchase occurred");
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
     }
 
     public Map<String, User> getConnectedUsers() {

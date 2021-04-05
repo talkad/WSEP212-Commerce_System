@@ -4,7 +4,6 @@ import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Service.IService;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -102,8 +101,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> purchaseCartItems(String username, String creditCardDetails) {
-        return null;
+    public Response<Boolean> directPurchase(String username, int bankAccount) {
+        return userController.purchase(username, bankAccount);
     }
 
     @Override
@@ -202,9 +201,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
-
 
 }

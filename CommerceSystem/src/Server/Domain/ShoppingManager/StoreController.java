@@ -1,5 +1,4 @@
 package Server.Domain.ShoppingManager;
-import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.ShoppingCart;
@@ -7,12 +6,9 @@ import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
 import org.xeustechnologies.googleapi.spelling.SpellRequest;
 import org.xeustechnologies.googleapi.spelling.SpellResponse;
-
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
@@ -129,11 +125,16 @@ public class StoreController {
         return result;
     }
 
-    public Response<PurchaseDTO> purchase (ShoppingCart shoppingCart) {
+    public Response<List<PurchaseDTO>> purchase (ShoppingCart shoppingCart) {
         Store s;
         Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
+        List<PurchaseDTO> purchases = new LinkedList<>();
+        Response<PurchaseDTO> resPurchase;
+
         for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet()) {
-            if (purchaseFromStore(entry.getKey(), entry.getValue()).isFailure()) {
+            resPurchase = purchaseFromStore(entry.getKey(), entry.getValue());
+
+            if (resPurchase.isFailure()) {
                 for (Map.Entry<Integer, Map<ProductDTO, Integer>> refundEntries : prods.entrySet()) {
                     s = getStoreById(refundEntries.getKey());
                     for (Map.Entry<ProductDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
@@ -141,18 +142,20 @@ public class StoreController {
                 }
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
             }
+
+            purchases.add(resPurchase.getResult());
             prods.put(entry.getKey(), entry.getValue());
         }
 
-        return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
+        return new Response<>(purchases, false, "Purchase can be made.");
     }
 
-    private Response<Boolean> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
-        Response<Boolean> result;
+    private Response<PurchaseDTO> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
+        Response<PurchaseDTO> result;
         Store store;
 
        if(!stores.containsKey(storeID)) {
-            result = new Response<>(false, true, "This store does not exists");
+            result = new Response<>(null, true, "This store does not exists");
         }
         else{
             store = stores.get(storeID);
@@ -172,7 +175,7 @@ public class StoreController {
         if(store == null)
             return new Response<>(null, true, "This store doesn't exists");
 
-        return  new Response<>(store.getPurchaseHistory().stream().collect(Collectors.toList()), false, "success");
+        return  new Response<>(store.getPurchaseHistory(), false, "success");
     }
 
     public String getStoreOwnerName(int storeID){

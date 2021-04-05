@@ -17,6 +17,10 @@ public class PurchaseDTO {
         this.purchaseDate = purchaseDate;
     }
 
+    public Map<ProductDTO, Integer> getBasket() {
+        return basket;
+    }
+
     @Override
     public String toString() {
         return "PurchaseDTO{" +

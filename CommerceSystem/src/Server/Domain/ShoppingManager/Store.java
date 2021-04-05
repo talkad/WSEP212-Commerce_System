@@ -73,15 +73,18 @@ public class Store {
 
     // todo: add policies
 
-     public Response<Boolean> purchase(Map<ProductDTO, Integer> shoppingBasket) {
+     public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
-        PurchaseDTO purchaseDTO;
+        PurchaseDTO purchaseDTO = null;
         double price = 0;
 
         for(ProductDTO productDTO: shoppingBasket.keySet()){
             price += productDTO.getPrice() * shoppingBasket.get(productDTO);
         }
 
+        if(result.isFailure()){
+            return new Response<>(null, true, "Product deletion failed successfully");
+        }
         readWriteLock.writeLock().lock();
 
         if(!result.isFailure()){
@@ -91,7 +94,7 @@ public class Store {
         }
 
         readWriteLock.writeLock().unlock();
-        return result;
+        return new Response<>(purchaseDTO, false, "purchase occurred");
     }
 
     public Collection<PurchaseDTO> getPurchaseHistory() {

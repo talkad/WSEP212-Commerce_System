@@ -3,11 +3,7 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -158,10 +154,13 @@ public class User{
 
     public Response<Boolean> addProductReview(int storeID, int productID, String review) {
         if(this.state.allowed(Permissions.REVIEW_PRODUCT,this)){
-            // @TODO purchaseHistory.getPurchases().contains(productID) then add product
 
-            // StoreController.getInstance().addProductReview(storeID, productID, review);
-            return new Response<>(false, true, review); // @TODO THIS IS BAD FIX IT GODAMNIT
+            if(purchaseHistory.isPurchased(productID)){
+                StoreController.getInstance().addProductReview(storeID, productID, review);
+                return new Response<>(true, false, "The review added successfully");
+            }
+
+            return new Response<>(false, true, "The given product wasn't purchased before");
         }
         else{
             return new Response<>(false, true, "User not allowed to review product");
@@ -323,11 +322,11 @@ public class User{
         }
     }
 
-    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(int storeID) {
+    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
         if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
             return StoreController.getInstance().getStorePurchaseHistory(storeID);
         }
-        return new Response<>(new ConcurrentHashMap<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+        return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
     }
 
     public Response<Boolean> getStoreWorkersDetails(int storeID) {       // req 4.9
@@ -343,4 +342,7 @@ public class User{
         }
     }
 
+    public void addToPurchaseHistory(List<PurchaseDTO> result) {
+        purchaseHistory.addPurchase(result);
+    }
 }
