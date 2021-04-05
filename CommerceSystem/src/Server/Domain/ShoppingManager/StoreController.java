@@ -143,6 +143,7 @@ public class StoreController {
             }
             prods.put(entry.getKey(), entry.getValue());
         }
+
         return new Response<>(new PurchaseDTO(shoppingCart, shoppingCart.getTotalPrice(), LocalDate.now()), false, "Purchase can be made.");
     }
 
