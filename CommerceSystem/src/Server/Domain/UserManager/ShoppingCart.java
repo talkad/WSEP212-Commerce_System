@@ -35,7 +35,7 @@ public class ShoppingCart {
 
             baskets.putIfAbsent(storeID, new ShoppingBasket(storeID));
             basket = baskets.get(storeID);
-            res = basket.addProduct(productRes.getResult());
+            res = basket.addProduct(productRes.getResult().getProductDTO());
 
             lock.writeLock().unlock();
         }

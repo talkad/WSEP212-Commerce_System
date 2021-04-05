@@ -145,8 +145,9 @@ public class Inventory {
         Response<Boolean> res;
         Product product;
 
-        lock.writeLock().lock();
+        lock.readLock().lock();
         product = products.get(productID);
+        lock.readLock().unlock();
 
         if(product == null){
             res = new Response<>(false, true, "This product doesn't exists");
@@ -154,7 +155,6 @@ public class Inventory {
         else{
             res = product.addReview(review);
         }
-        lock.writeLock().unlock();
 
         return res;
     }

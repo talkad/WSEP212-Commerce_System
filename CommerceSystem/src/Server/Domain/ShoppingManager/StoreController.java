@@ -1,13 +1,6 @@
 package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
-<<<<<<< HEAD
-import Server.Domain.UserManager.Purchase;
-import Server.Domain.UserManager.ShoppingBasket;
-import Server.Domain.UserManager.Purchase;
-=======
-
->>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.ShoppingCart;
 import org.xeustechnologies.googleapi.spelling.SpellChecker;

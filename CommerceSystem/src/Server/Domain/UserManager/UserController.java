@@ -4,7 +4,6 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -175,16 +174,11 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-<<<<<<< HEAD
-    public Response<List<Purchase>> getPurchaseHistoryContents(String userName){
+    public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
         if(connectedUsers.containsKey(userName)) {
             return connectedUsers.get(userName).getPurchaseHistoryContents();
         }
         return new Response<>(null, true, "User not connected");
-=======
-    public List<PurchaseDTO> getPurchaseHistoryContents(String userName){
-        return connectedUsers.get(userName).getPurchaseHistoryContents();
->>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
     }
 
     public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
@@ -336,8 +330,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-<<<<<<< HEAD
-    public Response<List<Purchase>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         if(connectedUsers.containsKey(adminName)) {
             return connectedUsers.get(adminName).getUserPurchaseHistory(username);
         }
@@ -345,14 +338,10 @@ public class UserController {
     }
 
     public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
-        if(connectedUsers.containsKey(adminName)) {
+        if (connectedUsers.containsKey(adminName)) {
             return connectedUsers.get(adminName).getStorePurchaseHistory(storeID);
         }
         return new Response<>(null, true, "User not connected");
-=======
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
-        return connectedUsers.get(adminName).getUserPurchaseHistory(username);
->>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
     }
 
     public void adminBoot() {
@@ -362,8 +351,7 @@ public class UserController {
         connectedUsers.put(admin, new User(userDTO));
     }
 
-<<<<<<< HEAD
-    public Response<Purchase> getPurchaseDetails(String username, int storeID) {
+    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
         if(connectedUsers.containsKey(username)) {
             return connectedUsers.get(username).getPurchaseDetails(storeID);
         }
@@ -388,24 +376,20 @@ public class UserController {
         return new Response<>(null, true, "User not permitted to get worker info");
     }
 
-    private List<String> getAppointeesNamesRec(String workerName, int storeID){
+    private List<String> getAppointeesNamesRec(String workerName, int storeID) {
         List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
-        if(appointees != null && !appointees.isEmpty()){
+        if (appointees != null && !appointees.isEmpty()) {
             List<String> names = new LinkedList<>(appointees);
-            for(String name : names){
+            for (String name : names) {
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             return appointees;
         }
         return new LinkedList<>();
-=======
-    public Response<Boolean> purchase (int bankAccount, User user){
-        return purchaseController.handlePayment(bankAccount, user);
     }
 
-    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
-        return connectedUsers.get(username).getPurchaseDetails(storeID);
->>>>>>> a7a17bb0774d376bdb93ffb4f05835d1e3997021
+    public Response<Boolean> purchase (int bankAccount, User user){
+        return purchaseController.handlePayment(bankAccount, user);
     }
 
     public Map<String, User> getConnectedUsers() {

@@ -13,7 +13,7 @@ public class ShoppingBasket {
 
     // the store these products are belong to
     private final int storeID;
-    private Map<Integer, Product> products;
+    private Map<Integer, ProductDTO> products;
     // map between productID and its amount in the basket
     private Map<Integer, Integer> pAmount;
     private double totalPrice;
@@ -27,7 +27,7 @@ public class ShoppingBasket {
         this.lock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(Product product){
+    public Response<Boolean> addProduct(ProductDTO product){
         Response<Boolean> res;
         int productID = product.getProductID();
 
@@ -56,7 +56,7 @@ public class ShoppingBasket {
 
     public Response<Boolean> removeProduct(int productID) {
         Response<Boolean> res;
-        Product product;
+        ProductDTO product;
 
         lock.readLock().lock();
         product = products.get(productID);
@@ -84,8 +84,8 @@ public class ShoppingBasket {
         Map<ProductDTO, Integer> basketProducts = new HashMap<>();
 
         lock.readLock().lock();
-        for(Product product: products.values()){
-            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
+        for(ProductDTO product: products.values()){
+            basketProducts.put(product, pAmount.get(product.getProductID()));
         }
         lock.readLock().unlock();
 
@@ -99,7 +99,7 @@ public class ShoppingBasket {
     public Response<Boolean> updateProductQuantity(int productID, int amount) {
         Response<Boolean> res;
         int prevAmount;
-        Product product;
+        ProductDTO product;
 
         if(amount < 0){
             res = new Response<>(false, true, "amount can't be negative");

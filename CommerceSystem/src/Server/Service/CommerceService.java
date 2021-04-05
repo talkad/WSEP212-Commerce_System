@@ -203,10 +203,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-//<<<<<<< HEAD
-//    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
-//=======
-    public Response<List<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Map<ProductDTO, Integer>> getStorePurchaseHistory(String adminName, int storeID) {
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 }
