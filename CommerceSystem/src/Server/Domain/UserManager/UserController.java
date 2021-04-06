@@ -16,6 +16,7 @@ public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
+    private Security security;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -25,6 +26,8 @@ public class UserController {
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
         this.purchaseController = PurchaseController.getInstance();
+        this.security = Security.getInstance();
+
         //todo check if successfully connected
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
@@ -126,6 +129,9 @@ public class UserController {
                     UserDAO.getInstance().registerUser(name, password);
                     result = new Response<>(true, false, "");
                 }
+                else{
+                    return new Response<>(false, true, "username already exists");
+                }
                 //readLock.unlock();
             }
             return result;
@@ -146,7 +152,7 @@ public class UserController {
                 writeLock.unlock();
                 return new Response<>(name, false, "no error");
             } else {
-                return new Response<>(name, true, "Failed to login user");
+                return new Response<>(prevName, true, "Failed to login user");
             }
         }
         else {
@@ -206,7 +212,7 @@ public class UserController {
     }
 
     public Response<Integer> openStore(String userName, String storeName) {
-        readLock.unlock();
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
@@ -218,6 +224,7 @@ public class UserController {
 
 
     public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
@@ -365,7 +372,7 @@ public class UserController {
             readLock.unlock();
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
             if (!response.isFailure()) {
-                writeLock.lock();   // TODO read or write lock?
+                writeLock.lock();   // TODO read or write lock? write because addSelfPermission
                 if (connectedUsers.containsKey(permitted)) {
                     connectedUsers.get(permitted).addSelfPermission(storeId, permission);
                 }

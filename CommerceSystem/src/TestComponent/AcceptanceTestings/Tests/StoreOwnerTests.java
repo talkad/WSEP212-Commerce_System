@@ -8,6 +8,7 @@ import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     private int storeID; // the store id of the store we are going to test on
 
-    @Before
+    @BeforeClass
     public void setUp(){
         super.setUp();
 

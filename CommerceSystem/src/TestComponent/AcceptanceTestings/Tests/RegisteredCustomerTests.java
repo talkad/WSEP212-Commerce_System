@@ -6,6 +6,7 @@ import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
 import org.junit.jupiter.api.RepeatedTest;
@@ -16,37 +17,44 @@ import java.util.List;
 
 public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
+    private static boolean initialized = false;
+
     @Before
     public void setUp(){
-        super.setUp();
+        if(!initialized) {
+            super.setUp();
 
-        String guestName = this.bridge.addGuest().getResult();
-        this.bridge.register(guestName, "aviad", "123456");
-        this.bridge.register(guestName, "shalom", "123456");
+            String guestName = this.bridge.addGuest().getResult();
+            this.bridge.register(guestName, "aviad", "123456");
+            this.bridge.register(guestName, "shalom", "123456");
 
-        this.bridge.login(guestName, "aviad", "123456");
-        int storeID = this.bridge.openStore("aviad", "hacol la sefer").getResult();
+            this.bridge.login(guestName, "aviad", "123456");
+            int storeID = this.bridge.openStore("aviad", "hacol la sefer").getResult();
 
-        ProductDTO product = new ProductDTO("simania zoheret", storeID, 20,
-                new LinkedList<String>(Arrays.asList("bookmark")),
-                new LinkedList<String>(Arrays.asList("simania")),
-                null);
+            ProductDTO product = new ProductDTO("simania zoheret", storeID, 20,
+                    new LinkedList<String>(Arrays.asList("bookmark")),
+                    new LinkedList<String>(Arrays.asList("simania")),
+                    null);
 
-        this.bridge.addProductsToStore("aviad", product, 20);
+            this.bridge.addProductsToStore("aviad", product, 20);
 
-        product = new ProductDTO("mavrik sfarim", storeID, 30,
-                new LinkedList<String>(Arrays.asList("polish")),
-                new LinkedList<String>(Arrays.asList("mavrik")),
-                null);
+            product = new ProductDTO("mavrik sfarim", storeID, 30,
+                    new LinkedList<String>(Arrays.asList("polish")),
+                    new LinkedList<String>(Arrays.asList("mavrik")),
+                    null);
 
-        this.bridge.addProductsToStore("aviad", product, 100);
+            this.bridge.addProductsToStore("aviad", product, 100);
+
+            initialized = true;
+        }
     }
 
     @Test
-    public void logout(){ // 3.1
+    public void logoutTest(){ // 3.1
         // logging in to an existing user.
         String guestName = this.bridge.addGuest().getResult();
         this.bridge.login(guestName, "shalom", "123456");
+
         // logging out
         Response<String> logoutResponse = this.bridge.logout("shalom");
         Assert.assertFalse(logoutResponse.isFailure());
@@ -60,15 +68,15 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void createStoreTest(){ // 3.2
         // opening a store from a logged in user
-        Response<Integer> openStoreResponse = bridge.openStore("aviad", "hacol la even");
+        Response<Integer> openStoreResponse = this.bridge.openStore("aviad", "hacol la even");
         Assert.assertFalse(openStoreResponse.isFailure());
 
         // looking the store up on the search just to be sure
         Response<List<Store>> searchResult = this.bridge.searchByStoreName("hacol la even");
-        boolean exists = true;
+        boolean exists = false;
         for(Store store: searchResult.getResult()){
             if(!store.getName().equals("hacol la even")){ // todo: equals or a substring matches?
-                exists = false;
+                exists = true;
             }
         }
 
@@ -139,8 +147,16 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
         // looking the purchase in the purchase history
         Response<List<PurchaseDTO>> historyResult = this.bridge.getPurchaseHistory("shalom");
+        Assert.assertFalse(historyResult.isFailure());
 
-        // TODO: look it up
+        boolean exists = false;
+        for(PurchaseDTO purchased: historyResult.getResult()){
+            if(purchased.getBasket().containsKey(productDTO)){
+                exists = true;
+            }
+        }
+
+        Assert.assertTrue(exists);
 
 
         // logging out and trying to view the purchase history as a guest. should fail

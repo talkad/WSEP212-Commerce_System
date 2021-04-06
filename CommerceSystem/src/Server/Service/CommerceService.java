@@ -64,7 +64,7 @@ public class CommerceService implements IService{
 
     @Override
     public Response<List<Store>> searchByStoreName(String storeName) {
-        return null;
+        return commerceSystem.searchByStoreName(storeName);
     }
 
     @Override

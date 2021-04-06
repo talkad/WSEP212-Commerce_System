@@ -15,6 +15,7 @@ public class Registered extends UserState {
         this.allowedFunctions.add(Permissions.LOGOUT);
         this.allowedFunctions.add(Permissions.OPEN_STORE);
         this.allowedFunctions.add(Permissions.REVIEW_PRODUCT);
+        this.allowedFunctions.add(Permissions.GET_PURCHASE_HISTORY);
     }
 
     @Override

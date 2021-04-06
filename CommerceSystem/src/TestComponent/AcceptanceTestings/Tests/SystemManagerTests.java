@@ -5,6 +5,7 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -13,7 +14,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
 
     int storeID;
 
-    @Before
+    @BeforeClass
     public void setUp(){
         super.setUp();
 

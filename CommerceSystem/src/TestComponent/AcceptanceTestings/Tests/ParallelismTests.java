@@ -6,6 +6,7 @@ import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -14,7 +15,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
     private int storeID;
 
-    @Before
+    @BeforeClass
     public void setUp(){
         super.setUp();
 
