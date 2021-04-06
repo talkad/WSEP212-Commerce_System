@@ -33,12 +33,26 @@ public class StoreControllerTest {
 
     @Test
     public void searchByProductNameTest1(){
-        assertTrue(storeController.searchByProductName("TV").getResult().contains(product1));
+        boolean result = false;
+        List<ProductDTO> products = storeController.searchByProductName("TV").getResult();
+
+        for(ProductDTO productDTO: products)
+            if(productDTO.getProductID() == 0)
+                result = true;
+
+        assertTrue(result);
     }
 
     @Test
     public void searchByProductNameTest2(){
-        assertTrue(storeController.searchByProductName("AirPods").getResult().contains(product2));
+        boolean result = false;
+        List<ProductDTO> products = storeController.searchByProductName("AirPods").getResult();
+
+        for(ProductDTO productDTO: products)
+            if(productDTO.getProductID() == 1)
+                result = true;
+
+        assertTrue(result);
     }
 
     @Test
@@ -48,7 +62,14 @@ public class StoreControllerTest {
 
     @Test
     public void searchByCategoryTest2(){
-        assertTrue(storeController.searchByCategory("Apple").getResult().contains(product2));
+        boolean result = false;
+        List<ProductDTO> products = storeController.searchByCategory("Apple").getResult();
+
+        for(ProductDTO productDTO: products)
+            if(productDTO.getProductID() == 1)
+                result = true;
+
+        assertTrue(result);
     }
 
     @Test
@@ -58,7 +79,14 @@ public class StoreControllerTest {
 
     @Test
     public void searchByKeyWordTest2(){
-        assertTrue(storeController.searchByKeyWord("#Swag").getResult().contains(product2));
+        boolean result = false;
+        List<ProductDTO> products = storeController.searchByKeyWord("#Swag").getResult();
+
+        for(ProductDTO productDTO: products)
+            if(productDTO.getProductID() == 1)
+                result = true;
+
+        assertTrue(result);
     }
 
     @Test
