@@ -234,6 +234,10 @@ public class StoreController {
         return new Response<>(storeList, false, "all stores with name " + storeName);
     }
 
+    public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {
+        return new Response<>(stores.get(storeID).getPurchaseHistory(), false, "StoreController: get purchase");
+    }
+
 //    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
 //        Response<Boolean> result;
 //        Store store;

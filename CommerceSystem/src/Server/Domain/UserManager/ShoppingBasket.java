@@ -75,6 +75,8 @@ public class ShoppingBasket {
 
             totalPrice -= product.getPrice();
             res = new Response<>(true, false, "ShoppingBasket: Product "+product.getName()+" removed from shopping basket");
+
+            lock.writeLock().unlock();
         }
 
         return res;

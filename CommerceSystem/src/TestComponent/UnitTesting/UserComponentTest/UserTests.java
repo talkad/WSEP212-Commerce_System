@@ -57,7 +57,7 @@ public class UserTests {
         List<String> keyword = new LinkedList<>();
         keyword.add("meat");
         Collection<String> review = new LinkedList<>();
-        assertTrue(guest.addProductsToStore(new ProductDTO("beef", 0, 5, categories, keyword, review), 5).isFailure());
+        registeredUsers.get("almog").addProductsToStore(new ProductDTO("beef", 1, 5, categories, keyword, review), 5);
     }
 
     @Test
@@ -97,20 +97,15 @@ public class UserTests {
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
         Collection<String> review = new LinkedList<>();
-        review.add("good product");
-        assertTrue(guest.addProductsToStore(new ProductDTO("bread", 0, 5, categories, keyword, review), 5).isFailure());
-        assertFalse(registeredUsers.get("almog").addProductsToStore(new ProductDTO("bread", 1, 5, categories, keyword, review), 5).isFailure());
+        //review.add("good product");
+        assertTrue(registeredUsers.get("yaakov").addProductsToStore(new ProductDTO("chicken", 0, 5, categories, keyword, review), 5).isFailure());
+        assertFalse(registeredUsers.get("almog").addProductsToStore(new ProductDTO("steak", 1, 5, categories, keyword, review), 5).isFailure());
     }
 
-//    @Test //todo kaki test need to redo
-//    public void removeProductsFromStoreState() {//todo add to purchase history
-//        List<String> categories = new LinkedList<>();
-//        categories.add("food");
-//        List<String> keyword = new LinkedList<>();
-//        keyword.add("bread");
-//        Collection<String> review = new LinkedList<>();
-//        review.add("good product");
-//        assertTrue(guest.removeProductsFromStore(-1, 5).isFailure());
-//        assertFalse(registeredUsers.get("almog").addProductsToStore(new ProductDTO("bread", 1, 5, categories, keyword, review), 5).isFailure());
-//    }
+    @Test
+    public void removeProductsFromStoreState() {//todo add to purchase history
+        //assertTrue(guest.removeProductsFromStore(-1, 5).isFailure());
+        assertFalse(registeredUsers.get("yaakov").removeProductsFromStore(1, -1, 5).isFailure());
+        assertFalse(registeredUsers.get("almog").removeProductsFromStore(1, -1, 5).isFailure());
+    }
 }

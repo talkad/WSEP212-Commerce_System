@@ -32,7 +32,7 @@ public class PurchaseController {
          * @param cart of the user
          * @return positive response if the payment occurred successfully.
          */
-        public Response<List<PurchaseDTO>> handlePayment(int bankAccount, ShoppingCart cart, String location) {
+        public Response<List<PurchaseDTO>> handlePayment(String bankAccount, ShoppingCart cart, String location) {
                 boolean isPurchased = false;
 
                 Response<List<PurchaseDTO>> res = storeController.purchase(cart);

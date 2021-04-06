@@ -103,7 +103,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, int bankAccount, String location) {
+    public Response<Boolean> directPurchase(String username, String bankAccount, String location) {
         return commerceSystem.directPurchase(username, bankAccount, location);
     }
 
@@ -193,7 +193,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
         return commerceSystem.getPurchaseDetails(username, storeID);
     }
 

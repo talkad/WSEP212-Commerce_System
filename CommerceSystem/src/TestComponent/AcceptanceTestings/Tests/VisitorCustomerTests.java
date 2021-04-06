@@ -3,7 +3,7 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,7 +85,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(loginResponse.isFailure());
 
         // trying to do an action only a logged in user can do. should fail
-        Response<List<Purchase>> actionResponse =  this.bridge.getPurchaseHistory("shlomi");
+        Response<List<PurchaseDTO>> actionResponse =  this.bridge.getPurchaseHistory("shlomi");
         Assert.assertTrue(actionResponse.isFailure());
 
 
@@ -331,11 +331,11 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(addResult.getResult());
 
         // the user buying them
-        Response<Boolean> purchaseResult = this.bridge.purchaseCartItems(guestName, "4580-1234-5678-9010");
+        Response<Boolean> purchaseResult = this.bridge.directPurchase(guestName, "4580-1234-5678-9010", "shinovar");
         Assert.assertTrue(purchaseResult.getResult());
 
         // since after buying the cart should be empty then buying again would fail
-        purchaseResult = this.bridge.purchaseCartItems(guestName, "4580-1234-5678-9010");
+        purchaseResult = this.bridge.directPurchase(guestName, "4580-1234-5678-9010", "kholin");
         Assert.assertFalse(purchaseResult.getResult());
     }
 }

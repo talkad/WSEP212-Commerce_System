@@ -4,16 +4,13 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * also Store Manager tests
@@ -376,7 +373,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 Permissions.GET_PURCHASE_HISTORY);
         Assert.assertTrue(actionResult.getResult());
 
-        Response<Purchase> newActionResult = this.bridge.getPurchaseDetails("f", this.storeID);
+        Response<Collection<PurchaseDTO>> newActionResult = this.bridge.getPurchaseDetails("f", this.storeID);
         Assert.assertFalse(newActionResult.isFailure());
 
         //permission to remove a manager appointment
@@ -552,7 +549,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 Permissions.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
-        Response<Purchase> historyResult = this.bridge.getPurchaseDetails("x", this.storeID); //TODO: why return only one and not a list?
+        Response<Collection<PurchaseDTO>> historyResult = this.bridge.getPurchaseDetails("x", this.storeID);
         Assert.assertTrue(historyResult.isFailure());
     }
 
@@ -677,7 +674,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         // manager and owner trying to view it
-        Response<Purchase> historyResult = this.bridge.getPurchaseDetails("bibi", this.storeID);
+        Response<Collection<PurchaseDTO>> historyResult = this.bridge.getPurchaseDetails("bibi", this.storeID);
         Assert.assertFalse(historyResult.isFailure());
         Assert.assertNotNull(historyResult.getResult());
 

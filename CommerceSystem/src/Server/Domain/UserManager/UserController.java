@@ -426,7 +426,7 @@ public class UserController {
     }
 
 
-    public Response<PurchaseDTO> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -469,7 +469,7 @@ public class UserController {
         return new Vector<>();
     }
 
-    public Response<Boolean> purchase(String username, int bankAccount, String location){
+    public Response<Boolean> purchase(String username, String bankAccount, String location){
         Response<List<PurchaseDTO>> purchaseRes;
 
         readLock.lock();

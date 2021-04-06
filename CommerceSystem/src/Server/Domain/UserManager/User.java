@@ -333,9 +333,9 @@ public class User{
         return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
 
-    public Response<PurchaseDTO> getPurchaseDetails(int storeID) {     // req 4.11
+    public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {     // req 4.11
         if(this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)){
-            return null;//todo StoreController.getInstance().getPurchaseDetails(storeID);
+            return StoreController.getInstance().getPurchaseDetails(storeID);
         }
         else {
             return new Response<>(null, true, "User not allowed to receive store history");

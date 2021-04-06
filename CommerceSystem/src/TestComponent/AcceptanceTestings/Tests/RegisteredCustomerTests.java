@@ -3,7 +3,7 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,7 +99,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         this.bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        this.bridge.purchaseCartItems("shalom", "4580-1234-5678-9010");
+        this.bridge.directPurchase("shalom", "4580-1234-5678-9010", "natanya");
 
         // now he reviews it
         Response<Boolean> reviewResult = this.bridge.addProductReview("shalom", productDTO.getStoreID(),
@@ -135,10 +135,11 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("mavrik sfarim");
         ProductDTO productDTO = searchResult.getResult().get(0);
         this.bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        this.bridge.purchaseCartItems("shalom", "4580-1234-5678-9010");
+        this.bridge.directPurchase("shalom", "4580-1234-5678-9010", "natanya");
 
         // looking the purchase in the purchase history
-        Response<List<Purchase>> historyResult = this.bridge.getPurchaseHistory("shalom");
+        Response<List<PurchaseDTO>> historyResult = this.bridge.getPurchaseHistory("shalom");
+
         // TODO: look it up
 
 

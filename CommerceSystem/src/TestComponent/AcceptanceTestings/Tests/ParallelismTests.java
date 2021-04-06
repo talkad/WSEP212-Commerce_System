@@ -3,15 +3,12 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ParallelismTests extends ProjectAcceptanceTests{
 
@@ -78,8 +75,8 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
-                        Response<Boolean> purchaseResult =bridge.purchaseCartItems("bolin",
-                                "4580-1234-5678-9010");
+                        Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
+                                "4580-1234-5678-9010", "republic city");
                         if(!purchaseResult.isFailure()){
                             buyer1Result[0] = 1;
                         }
@@ -97,8 +94,8 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                   Response<Boolean> cartResponse = bridge.addToCart("tenzin",
                           productToAdd.getStoreID(), productToAdd.getProductID());
                   if(!cartResponse.isFailure()) {
-                      Response<Boolean> purchaseResult =bridge.purchaseCartItems("tenzin",
-                              "4580-1234-5678-9010");
+                      Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
+                              "4580-1234-5678-9010", "republic city");
                       if(!purchaseResult.isFailure()){
                           buyer2Result[0] = 1;
                       }
@@ -140,8 +137,8 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
-                        Response<Boolean> purchaseResult =bridge.purchaseCartItems("bolin",
-                                "4580-1234-5678-9010");
+                        Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
+                                "4580-1234-5678-9010", "republic city");
                         if(!purchaseResult.isFailure()){
                             buyerResult[0] = 1;
                         }
@@ -238,7 +235,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         final int[] actorResult = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread actor = new Thread(){
             public void run(){
-                Response<Purchase> historyResult = bridge.getPurchaseDetails("jinora", storeID);
+                Response<Collection<PurchaseDTO>> historyResult = bridge.getPurchaseDetails("jinora", storeID);
                 if(!historyResult.isFailure()){
                     actorResult[0] = 1;
                 }

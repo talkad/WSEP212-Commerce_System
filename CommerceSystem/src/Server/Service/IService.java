@@ -51,7 +51,7 @@ public interface IService {
 
     Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount); // 2.8 - c
 
-    Response<Boolean> directPurchase(String username, int bankAccount, String location); // 2.9
+    Response<Boolean> directPurchase(String username, String bankAccount, String location); // 2.9
 
     User getUserByName(String username); // for tests purposes
 
@@ -100,7 +100,7 @@ public interface IService {
 
     Response<List<User>> getStoreWorkersDetails(String username, int storeID); // 4.9
 
-    Response<PurchaseDTO> getPurchaseDetails(String username, int storeID); // 4.11
+    Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 
 
     /**

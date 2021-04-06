@@ -2,15 +2,12 @@ package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.UserManager.Purchase;
+import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SystemManagerTests extends ProjectAcceptanceTests{
 
@@ -56,13 +53,13 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         productToAdd = this.bridge.searchByProductName("mitz petel").getResult().get(0);
         this.bridge.addToCart("avi", productToAdd.getStoreID(), productToAdd.getProductID());
 
-        this.bridge.purchaseCartItems("avi", "4580-1234-5678-9010");
+        this.bridge.directPurchase("avi", "4580-1234-5678-9010", "narnia");
     }
 
     @Test
     public void getUserPurchaseHistoryTest(){ // 6.4 - a
         // getting the purchase history of a user as an admin
-        Response<List<Purchase>> userPurchaseHistoryResult = this.bridge.getUserPurchaseHistory("shaked", "avi");
+        Response<List<PurchaseDTO>> userPurchaseHistoryResult = this.bridge.getUserPurchaseHistory("shaked", "avi");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
         Assert.assertFalse(userPurchaseHistoryResult.getResult().isEmpty());
 
@@ -79,7 +76,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void getStorePurchaseHistory(){ // 6.4 - b
         // getting the purchase history of a store as an admin
-        Response<Map<ProductDTO, Integer>> storeHistoryResult = this.bridge.getStorePurchaseHistory("shaken",
+        Response<Collection<PurchaseDTO>> storeHistoryResult = this.bridge.getStorePurchaseHistory("shaken",
                 this.storeID);
         Assert.assertFalse(storeHistoryResult.isFailure());
         Assert.assertFalse(storeHistoryResult.getResult().isEmpty());
