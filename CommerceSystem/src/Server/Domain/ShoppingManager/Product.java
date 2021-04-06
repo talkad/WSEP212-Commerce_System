@@ -5,6 +5,7 @@ import Server.Domain.CommonClasses.Response;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,7 +35,8 @@ public class Product {
 
         this.rating = new AtomicReference<>(productDTO.getRating());
         this.numRatings = new AtomicInteger(productDTO.getNumRatings());
-        this.reviews = Collections.synchronizedCollection(productDTO.getReviews());
+
+        this.reviews = Collections.synchronizedCollection(productDTO.getReviews()!=null? productDTO.getReviews(): new LinkedList<>());
     }
 
     public static Product createProduct(ProductDTO productDTO){
@@ -85,10 +87,10 @@ public class Product {
 
     public Response<Boolean> addReview(String review){
         if(review == null || review.length() == 0)
-            return new Response<>(false, true, "Review cannot be empty");
+            return new Response<>(false, true, "Product: Review cannot be empty");
 
         reviews.add(review);
-        return new Response<>(true, false, "Review added successfully");
+        return new Response<>(true, false, "Product: Review added successfully");
     }
 
     public Collection<String> getReviews(){

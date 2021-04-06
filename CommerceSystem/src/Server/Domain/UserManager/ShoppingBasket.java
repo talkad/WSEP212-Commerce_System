@@ -32,7 +32,7 @@ public class ShoppingBasket {
         int productID = product.getProductID();
 
         if(product.getStoreID() != storeID){ //double check
-            res = new Response<>(false, true, "Product "+product.getName()+" isn't from store...");
+            res = new Response<>(false, true, "ShoppingBasket: Product "+product.getName()+" isn't from store");
         }
         else{
 
@@ -48,7 +48,7 @@ public class ShoppingBasket {
             totalPrice += product.getPrice();
             lock.writeLock().unlock();
 
-            res = new Response<>(true, false, "Product "+product.getName()+" added to shopping basket");
+            res = new Response<>(true, false, "ShoppingBasket: Product "+product.getName()+" added to shopping basket");
         }
 
         return res;
@@ -63,7 +63,7 @@ public class ShoppingBasket {
         lock.readLock().unlock();
 
         if(product == null){
-            res = new Response<>(false, true, "The given product doesn't exists");
+            res = new Response<>(false, true, "ShoppingBasket: The given product doesn't exists");
         }
         else{
             lock.writeLock().lock();
@@ -74,7 +74,7 @@ public class ShoppingBasket {
                 products.remove(productID);
 
             totalPrice -= product.getPrice();
-            res = new Response<>(true, false, "Product "+product.getName()+" removed from shopping basket");
+            res = new Response<>(true, false, "ShoppingBasket: Product "+product.getName()+" removed from shopping basket");
         }
 
         return res;
@@ -102,10 +102,10 @@ public class ShoppingBasket {
         ProductDTO product;
 
         if(amount < 0){
-            res = new Response<>(false, true, "amount can't be negative");
+            res = new Response<>(false, true, "ShoppingBasket: The amount can't be negative");
         }
         else if(!pAmount.containsKey(productID)){
-            res = new Response<>(false, true, "The product doesn't exists in the given basket");
+            res = new Response<>(false, true, "ShoppingBasket: The product doesn't exists in the given basket");
         }
         else{
             lock.writeLock().lock();
@@ -115,7 +115,7 @@ public class ShoppingBasket {
             product = products.get(productID);
 
             if(product == null){
-                res = new Response<>(false, true, "The given product doesn't exists");
+                res = new Response<>(false, true, "ShoppingBasket: The given product doesn't exists");
             }
             else {
                 if(pAmount.get(productID) == 0)
@@ -123,7 +123,7 @@ public class ShoppingBasket {
 
                 totalPrice += (amount - prevAmount)*product.getPrice();
 
-                res = new Response<>(true, false, "Product "+product.getName()+" amount updated");
+                res = new Response<>(true, false, "ShoppingBasket: Product "+product.getName()+" amount updated");
             }
 
             lock.writeLock().unlock();
@@ -151,7 +151,7 @@ public class ShoppingBasket {
     public int numOfProducts() {
         int length;
 
-        lock.readLock();
+        lock.readLock().lock();
         length = products.size();
         lock.readLock().unlock();
 

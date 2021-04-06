@@ -83,7 +83,7 @@ public class Store {
         }
 
         if(result.isFailure()){
-            return new Response<>(null, true, "Product deletion failed successfully");
+            return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
         readWriteLock.writeLock().lock();
 
@@ -94,7 +94,7 @@ public class Store {
         }
 
         readWriteLock.writeLock().unlock();
-        return new Response<>(purchaseDTO, false, "purchase occurred");
+        return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
 
     public Collection<PurchaseDTO> getPurchaseHistory() {

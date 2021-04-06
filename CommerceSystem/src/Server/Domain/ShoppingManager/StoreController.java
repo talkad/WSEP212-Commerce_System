@@ -101,7 +101,7 @@ public class StoreController {
             store = stores.get(productDTO.getStoreID());
             store.addProduct(productDTO, amount);
 
-            result = new Response<>(false, true, "The product added successfully");
+            result = new Response<>(true, false, "The product added successfully to store");
         }
 
         return result;

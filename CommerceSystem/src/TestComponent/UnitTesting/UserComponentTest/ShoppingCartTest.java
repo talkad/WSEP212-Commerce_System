@@ -96,7 +96,7 @@ public class ShoppingCartTest {
             }
         }
 
-        assertTrue(baskets.size() == 1 && numProducts == 1);
+        assertTrue(baskets.size() == 1 && numProducts == 3);
     }
 
     @Test

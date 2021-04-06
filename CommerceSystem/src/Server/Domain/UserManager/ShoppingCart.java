@@ -53,7 +53,7 @@ public class ShoppingCart {
         lock.readLock().unlock();
 
         if(guard){
-            res = new Response<>(false, true, "This store basket doesn't exists");
+            res = new Response<>(false, true, "ShoppingCart: This store basket doesn't exists");
         }
         else{
             lock.writeLock().lock();
@@ -96,7 +96,7 @@ public class ShoppingCart {
         lock.readLock().unlock();
 
         if(basket == null)
-            return new Response<>(false, true, "This basket doesn't exists");
+            return new Response<>(false, true, "ShoppingCart: This basket doesn't exists");
 
         return basket.updateProductQuantity(productID, amount);
     }

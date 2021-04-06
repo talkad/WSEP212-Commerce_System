@@ -1,7 +1,6 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,22 +48,22 @@ public class Inventory {
         lock.writeLock().lock();
 
         if(!pAmount.containsKey(productID)){
-            res = new Response<>(false, true, "This product doesn't exist");
+            res = new Response<>(false, true, "Inventory: This product doesn't exist");
         }
         else {
             newAmount = pAmount.get(productID) - amount;
 
             if (newAmount > 0) {
                 pAmount.put(productID, newAmount);
-                res = new Response<>(true, false, "Product amount updated successfully");
+                res = new Response<>(true, false, "Inventory: Product amount updated successfully");
             }
             else if (newAmount == 0) {
                 pAmount.remove(productID);
                 products.remove(productID);
-                res = new Response<>(true, false, "Product is out of stock");
+                res = new Response<>(true, false, "Inventory: Product is out of stock");
             }
             else {
-                res = new Response<>(false, true, "Amount to remove exceeds amount in stock");
+                res = new Response<>(false, true, "Inventory: Amount to remove exceeds the amount in stock");
             }
         }
 
@@ -76,7 +75,7 @@ public class Inventory {
 
         for(ProductDTO productDTO: shoppingBasket.keySet()){ // check if no product exceeding current amount in inventory
             if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID()))
-                return new Response<>(false, true, "Product " + productDTO.getName() + " exceeding to inventory capacity");
+                return new Response<>(false, true, "Inventory: Product " + productDTO.getName() + " exceeding to inventory capacity");
         }
 
         lock.writeLock().lock();
@@ -88,7 +87,7 @@ public class Inventory {
 
         lock.writeLock().unlock();
 
-        return new Response<>(true, false, "success");
+        return new Response<>(true, false, "Inventory: Products removed successfully");
     }
 
     public Collection<Product> getProducts(){
@@ -119,11 +118,11 @@ public class Inventory {
         lock.readLock().unlock();
 
         if (product == null)
-            return new Response<>(false, true, "This product doesn't exists");
+            return new Response<>(false, true, "Inventory: This product doesn't exists");
 
         product.updatePrice(newPrice);
         product.updateName(newName);
-        return new Response<>(true, false, "Updated info successfully");
+        return new Response<>(true, false, "Inventory: Updated info successfully");
     }
 
     public Response<Product> getProduct(int productID) {
@@ -134,10 +133,10 @@ public class Inventory {
         lock.readLock().unlock();
 
         if(product == null){
-            return new Response<>(null, true, "This product doesn't exists in the specified store");
+            return new Response<>(null, true, "Inventory: This product doesn't exists in the specified store");
         }
         else{
-            return new Response<>(product, false, "success");
+            return new Response<>(product, false, "Inventory: Product found");
         }
     }
 
@@ -150,7 +149,7 @@ public class Inventory {
         lock.readLock().unlock();
 
         if(product == null){
-            res = new Response<>(false, true, "This product doesn't exists");
+            res = new Response<>(false, true, "Inventory: This product doesn't exists");
         }
         else{
             res = product.addReview(review);
