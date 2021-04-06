@@ -8,10 +8,12 @@ import java.util.List;
 public class PurchaseController {
         private StoreController storeController;
         private PaymentSystemAdapter paymentSystemAdapter;
+        private ProductSupplyAdapter supplySystemAdapter;
 
         private PurchaseController() {
                 this.storeController = StoreController.getInstance();
                 this.paymentSystemAdapter = PaymentSystemAdapter.getInstance();
+                this.supplySystemAdapter = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
         }
 
         private static class CreateSafeThreadSingleton {
@@ -30,12 +32,19 @@ public class PurchaseController {
          * @param cart of the user
          * @return positive response if the payment occurred successfully.
          */
-        public Response<List<PurchaseDTO>> handlePayment(int bankAccount, ShoppingCart cart) {
+        public Response<List<PurchaseDTO>> handlePayment(int bankAccount, ShoppingCart cart, String location) {
+                boolean isPurchased = false;
+
                 Response<List<PurchaseDTO>> res = storeController.purchase(cart);
                 if (res.isFailure())
                         return new Response<>(null, true, res.getErrMsg());
 
+                isPurchased = paymentSystemAdapter.pay(cart.getTotalPrice(), bankAccount);
+
                 if (paymentSystemAdapter.pay(cart.getTotalPrice(), bankAccount)) {
+                        if(isPurchased)
+                                supplySystemAdapter.deliver(location, cart.getBaskets()); // assume the delivery is always successful
+
                         return new Response<>(res.getResult(), false, "Payment successfully made.");
                 }
 

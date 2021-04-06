@@ -1,5 +1,7 @@
 package Server.Domain.ExternalComponents;
 
+import Server.Domain.ShoppingManager.ProductDTO;
+
 import java.util.Map;
 
 
@@ -12,7 +14,7 @@ public class ProductSupply {
     Actual delivery from the external system
     requires map of <Product ID, Amount>
      */
-    public boolean deliver (Map<Integer,Integer> products){
+    public boolean deliver (String location, Map<Integer,Map<ProductDTO, Integer>> products){
         return true; /* as to version 1, this delivery will always work */
     }
 }

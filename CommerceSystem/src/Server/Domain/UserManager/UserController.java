@@ -16,7 +16,6 @@ public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
-    private ProductSupplyAdapter externalDelivery;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -26,7 +25,6 @@ public class UserController {
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
         this.purchaseController = PurchaseController.getInstance();
-        this.externalDelivery = ProductSupplyAdapter.getInstance(); /* communication with external delivery system */
         //todo check if successfully connected
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
@@ -471,13 +469,13 @@ public class UserController {
         return new Vector<>();
     }
 
-    public Response<Boolean> purchase(String username, int bankAccount){
+    public Response<Boolean> purchase(String username, int bankAccount, String location){
         Response<List<PurchaseDTO>> purchaseRes;
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
-            purchaseRes = purchaseController.handlePayment(bankAccount, user.getShoppingCart());
+            purchaseRes = purchaseController.handlePayment(bankAccount, user.getShoppingCart(), location);
             readLock.unlock();
 
             if(purchaseRes.isFailure())

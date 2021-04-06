@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.ExternalComponents.ProductSupply;
+import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class ProductSupplyAdapter
         return CreateThreadSafeSingleton.INSTANCE;
     }
 
-    public boolean deliver (Map<Integer,Integer> details){ /* change this map to delivery details as we with */
-        return externalSupplier.deliver(details);
+    public boolean deliver (String location, Map<Integer,Map<ProductDTO, Integer>> details){ /* change this map to delivery details as we with */
+        return externalSupplier.deliver(location, details);
     }
 }

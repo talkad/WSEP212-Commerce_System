@@ -103,8 +103,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, int bankAccount) {
-        return commerceSystem.directPurchase(username, bankAccount);
+    public Response<Boolean> directPurchase(String username, int bankAccount, String location) {
+        return commerceSystem.directPurchase(username, bankAccount, location);
     }
 
     @Override
