@@ -14,52 +14,59 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
     private int storeID;
 
+    private static boolean initialized = false;
+
     @Before
     public void setUp(){
-        super.setUp();
 
-        String guestName = this.bridge.addGuest().getResult();
+        if(!initialized) {
+            super.setUp();
 
-        this.bridge.register(guestName, "korra", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "korra", "123456");
-        this.storeID = this.bridge.openStore("korra", "the legend of korra").getResult();
+            String guestName = bridge.addGuest().getResult();
 
-        // adding a product which is last in stock
-        ProductDTO product = new ProductDTO("air bending", storeID, 10,
-                new LinkedList<String>(Arrays.asList("air", "bending")),
-                new LinkedList<String>(Arrays.asList("bending")),
-                null);
+            bridge.register(guestName, "korra", "123456");
+            bridge.login(bridge.addGuest().getResult(), "korra", "123456");
+            this.storeID = bridge.openStore("korra", "the legend of korra").getResult();
 
-        this.bridge.addProductsToStore("korra", product, 1);
+            // adding a product which is last in stock
+            ProductDTO product = new ProductDTO("air bending", storeID, 10,
+                    new LinkedList<String>(Arrays.asList("air", "bending")),
+                    new LinkedList<String>(Arrays.asList("bending")),
+                    null);
 
-        // a product which the owner will try to remove while someone buys
-        product = new ProductDTO("earth bending", storeID, 50,
-                new LinkedList<String>(Arrays.asList("earth", "bending")),
-                new LinkedList<String>(Arrays.asList("bending")),
-                null);
+            bridge.addProductsToStore("korra", product, 1);
 
-        this.bridge.addProductsToStore("korra", product, 42);
+            // a product which the owner will try to remove while someone buys
+            product = new ProductDTO("earth bending", storeID, 50,
+                    new LinkedList<String>(Arrays.asList("earth", "bending")),
+                    new LinkedList<String>(Arrays.asList("bending")),
+                    null);
 
-        // creating another 2 users for later use
-        this.bridge.register(guestName, "bolin", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "bolin", "123456");
-        this.bridge.register(guestName, "tenzin", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "tenzin", "123456");
+            bridge.addProductsToStore("korra", product, 42);
 
-        // creating user who's going to be an owner in the store
-        this.bridge.register(guestName, "mako", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "mako", "123456");
-        this.bridge.appointStoreOwner("korra", "mako", storeID);
+            // creating another 2 users for later use
+            bridge.register(guestName, "bolin", "123456");
+            bridge.login(bridge.addGuest().getResult(), "bolin", "123456");
+            bridge.register(guestName, "tenzin", "123456");
+            bridge.login(bridge.addGuest().getResult(), "tenzin", "123456");
 
-        // creating a user who's going to be appointed to the store
-        this.bridge.register(guestName, "asami", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "asami", "123456");
+            // creating user who's going to be an owner in the store
+            bridge.register(guestName, "mako", "123456");
+            bridge.login(bridge.addGuest().getResult(), "mako", "123456");
+            bridge.appointStoreOwner("korra", "mako", storeID);
 
-        // creating a user who's going to be a manager with a permission to view purchase history of a store
-        this.bridge.register(guestName, "jinora", "123456");
-        this.bridge.login(this.bridge.addGuest().getResult(), "jinora", "123456");
-        this.bridge.appointStoreOwner("korra", "jinora", storeID);
-        this.bridge.addPermission("korra", storeID, "jinora", Permissions.RECEIVE_STORE_HISTORY);
+            // creating a user who's going to be appointed to the store
+            bridge.register(guestName, "asami", "123456");
+            bridge.login(bridge.addGuest().getResult(), "asami", "123456");
+
+            // creating a user who's going to be a manager with a permission to view purchase history of a store
+            bridge.register(guestName, "jinora", "123456");
+            bridge.login(bridge.addGuest().getResult(), "jinora", "123456");
+            bridge.appointStoreManager("korra", "jinora", storeID);
+            bridge.addPermission("korra", storeID, "jinora", Permissions.RECEIVE_STORE_HISTORY);
+
+            initialized = true;
+        }
     }
 
     @Test
@@ -70,7 +77,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         Thread buyer1 = new Thread(){
             public void run(){
                 Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
-                if(!searchResponse.isFailure()) {
+                if(!searchResponse.getResult().isEmpty()) {
                     ProductDTO productToAdd = searchResponse.getResult().get(0);
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
@@ -85,11 +92,39 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             }
         };
 
+//        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
+//        if(!searchResponse.getResult().isEmpty()) {
+//            ProductDTO productToAdd = searchResponse.getResult().get(0);
+//            Response<Boolean> cartResponse = bridge.addToCart("bolin",
+//                    productToAdd.getStoreID(), productToAdd.getProductID());
+//            if(!cartResponse.isFailure()) {
+//                Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
+//                        "4580-1234-5678-9010", "republic city");
+//                if(!purchaseResult.isFailure()){
+//                    System.out.println("hey");
+//                    buyer1Result[0] = 1;
+//                }
+//            }
+//        }
+
+//        Response<List<PurchaseDTO>> historyResult = this.bridge.getPurchaseHistory("bolin");
+//
+//        boolean exists = false;
+//        for(PurchaseDTO purchase: historyResult.getResult()){
+//            for(ProductDTO product: purchase.getBasket().keySet()){
+//                if(product.getName().equals("air bending")){
+//                    exists = true;
+//                }
+//            }
+//        }
+//
+//        System.out.println(exists);
+
         final int[] buyer2Result = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread buyer2 = new Thread(){
           public void run(){
               Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
-              if(!searchResponse.isFailure()) {
+              if(!searchResponse.getResult().isEmpty()) {
                   ProductDTO productToAdd = searchResponse.getResult().get(0);
                   Response<Boolean> cartResponse = bridge.addToCart("tenzin",
                           productToAdd.getStoreID(), productToAdd.getProductID());
@@ -103,6 +138,36 @@ public class ParallelismTests extends ProjectAcceptanceTests{
               }
           }
         };
+
+//        searchResponse = bridge.searchByProductName("air bending");
+//        if(!searchResponse.getResult().isEmpty()) {
+//            System.out.println("heyoooooo");
+//            ProductDTO productToAdd = searchResponse.getResult().get(0);
+//            Response<Boolean> cartResponse = bridge.addToCart("tenzin",
+//                    productToAdd.getStoreID(), productToAdd.getProductID());
+//            if(!cartResponse.isFailure()) {
+//                Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
+//                        "4580-1234-5678-9010", "republic city");
+//                if(!purchaseResult.isFailure()){
+//                    buyer2Result[0] = 1;
+//                }
+//            }
+//        }
+
+
+//        historyResult = this.bridge.getPurchaseHistory("tenzin");
+//
+//        exists = false;
+//        for(PurchaseDTO purchase: historyResult.getResult()){
+//            for(ProductDTO product: purchase.getBasket().keySet()){
+//                if(product.getName().equals("air bending")){
+//                    exists = true;
+//                }
+//            }
+//        }
+//
+//        System.out.println(exists);
+
 
         // now that we have our threads ready we'll start them in random manner
         Random random = new Random();
@@ -121,6 +186,8 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
         // one needs to succeed while the other to fail
         if((buyer1Result[0] == 0 && buyer2Result[0] == 0) || (buyer1Result[0] == 1 && buyer2Result[0] == 1)){
+            System.out.println(buyer1Result[0]);
+            System.out.println(buyer2Result[0]);
             Assert.fail();
         }
     }
@@ -137,7 +204,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
-                        Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
+                        Response<Boolean> purchaseResult = bridge.directPurchase("bolin",
                                 "4580-1234-5678-9010", "republic city");
                         if(!purchaseResult.isFailure()){
                             buyerResult[0] = 1;
@@ -222,7 +289,6 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         //waiting for them to terminate
         appointer1.join();
         appointer2.join();
-
         // one needs to succeed while the other to fail
         if((appointer1Result[0] == 0 && appointer2Result[0] == 0) || (appointer1Result[0] == 1 && appointer2Result[0] == 1)){
             Assert.fail();

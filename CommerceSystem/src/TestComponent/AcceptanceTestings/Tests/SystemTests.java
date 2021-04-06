@@ -3,6 +3,7 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SystemTests extends ProjectAcceptanceTests {

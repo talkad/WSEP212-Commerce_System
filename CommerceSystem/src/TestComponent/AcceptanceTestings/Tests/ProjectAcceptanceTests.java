@@ -4,10 +4,11 @@ import Server.Service.IService;
 import TestComponent.AcceptanceTestings.Bridge.Driver;
 
 public abstract class ProjectAcceptanceTests {
-    protected IService bridge;
+
+    protected static IService bridge;
 
     public void setUp(){
-        this.bridge = Driver.getBridge();
-        this.bridge.init();
+        bridge = Driver.getBridge();
+        bridge.init();
     }
 }

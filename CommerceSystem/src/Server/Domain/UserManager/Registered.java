@@ -1,8 +1,5 @@
 package Server.Domain.UserManager;
 
-
-import Server.Domain.CommonClasses.Response;
-
 import java.util.List;
 import java.util.Vector;
 
@@ -15,6 +12,7 @@ public class Registered extends UserState {
         this.allowedFunctions.add(Permissions.LOGOUT);
         this.allowedFunctions.add(Permissions.OPEN_STORE);
         this.allowedFunctions.add(Permissions.REVIEW_PRODUCT);
+        this.allowedFunctions.add(Permissions.GET_PURCHASE_HISTORY);
     }
 
     @Override
@@ -27,6 +25,9 @@ public class Registered extends UserState {
         if (user.getStoresOwned().contains(storeId)) {
             return true;
         }
-        else return user.getStoresManaged().get(storeId).contains(permission);
+        else if(user.getStoresManaged().containsKey(storeId)){
+            return user.getStoresManaged().get(storeId).contains(permission);
+        }
+        else return false;
     }
 }

@@ -26,11 +26,6 @@ public class IntegrationTests {
     Response<Integer> store1;
     Response<Integer> store2;
 
-    private Map<String, Map<Integer, List<Permissions>>> testManagers;
-    private Map<String, List<Integer>> testOwners;
-    private Map<String, ShoppingCart> shoppingCarts;
-    private Map<String, PurchaseHistory> purchaseHistories;
-    private Map<String, Appointment> appointments;
     private List<String> admins;
     private User guest;
 
@@ -42,11 +37,6 @@ public class IntegrationTests {
 
         guest = new User();
         registeredUsers = new ConcurrentHashMap<>();
-        testManagers = new ConcurrentHashMap<>();
-        testOwners = new ConcurrentHashMap<>();
-        shoppingCarts = new ConcurrentHashMap<>();
-        purchaseHistories = new ConcurrentHashMap<>();
-        appointments = new ConcurrentHashMap<>();
         admins = new LinkedList<>();
 
         registeredUsers.put("shaked", new User(new UserDTO("shaked", new ConcurrentHashMap<>(),
@@ -72,17 +62,33 @@ public class IntegrationTests {
     /** External Systems **/
     @Test
     public void externalPaymentTest(){
+        //manually
+        PaymentSystemAdapter payment = PaymentSystemAdapter.getInstance();
+        payment.pay(10,"123456");
+
+        //using handler
         PurchaseController pc = PurchaseController.getInstance();
         ShoppingCart shoppingCart = new ShoppingCart();
-        Response r = pc.handlePayment("121212",shoppingCart,"shoham");
+        Response r = pc.handlePayment("123456",shoppingCart,"Shoham");
         assertFalse(r.isFailure());
     }
 
     @Test
     public void externalDeliveryTest(){
-//        Map<Integer,Integer> someProducts = new ConcurrentHashMap<>();
-//        someProducts.put(1,1); someProducts.put(2,2);
-//        assertTrue(userController.AskForDelivery(someProducts));
+        //manually
+        Map<Integer,Map<ProductDTO, Integer>> toDeliver = new ConcurrentHashMap<>();
+        ProductDTO productDTO = new ProductDTO("chocolate", 12, 12, 33, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), 33, 33);
+        Map<ProductDTO,Integer> map1 = new ConcurrentHashMap<>();
+        map1.put(productDTO, 1);
+        toDeliver.put(2, map1);
+        ProductSupplyAdapter supplier = ProductSupplyAdapter.getInstance();
+        supplier.deliver("Beer Sheba",toDeliver);
+
+        //using handler
+        PurchaseController pc = PurchaseController.getInstance();
+        ShoppingCart shoppingCart = new ShoppingCart();
+        Response r = pc.handlePayment("654321",shoppingCart,"Beer Sheba");
+        assertFalse(r.isFailure());
     }
 
     /** Search features **/
@@ -91,16 +97,18 @@ public class IntegrationTests {
         Response r1 = searchEngine.searchByKeyWord("beef");
         assertFalse(r1.isFailure());
 
-        Response r2 = searchEngine.searchByKeyWord("banana");
-        assertTrue(r2.isFailure());
+        //empty list will be returned
+        Response<List<ProductDTO>> r2 = searchEngine.searchByKeyWord("banana");
+        assertTrue(r2.getResult().isEmpty());
     }
 
     @Test
-    public void SearchByCatagoryTest(){
+    public void SearchByCategoryTest(){
         Response r1 = searchEngine.searchByCategory("food");
         assertFalse(r1.isFailure());
 
-        Response r2 = searchEngine.searchByKeyWord("electronics");
-        assertTrue(r2.isFailure());
+        //empty list will be returned
+        Response<List<ProductDTO>> r2 = searchEngine.searchByCategory("electronics");
+        assertTrue(r2.getResult().isEmpty());
     }
 }

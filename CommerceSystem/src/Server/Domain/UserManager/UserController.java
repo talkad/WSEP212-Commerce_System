@@ -4,7 +4,6 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -129,6 +128,9 @@ public class UserController {
                     UserDAO.getInstance().registerUser(name, security.sha256(password));
                     result = new Response<>(true, false, "");
                 }
+                else{
+                    return new Response<>(false, true, "username already exists");
+                }
                 //readLock.unlock();
             }
             return result;
@@ -149,7 +151,7 @@ public class UserController {
                 writeLock.unlock();
                 return new Response<>(name, false, "no error");
             } else {
-                return new Response<>(name, true, "Failed to login user");
+                return new Response<>(prevName, true, "Failed to login user");
             }
         }
         else {
@@ -209,7 +211,7 @@ public class UserController {
     }
 
     public Response<Integer> openStore(String userName, String storeName) {
-        readLock.unlock();
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
@@ -221,6 +223,7 @@ public class UserController {
 
 
     public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
+        readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
@@ -235,14 +238,15 @@ public class UserController {
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
+            writeLock.lock();
             Response<Boolean> result = user.appointOwner(newOwner, storeId);
             if (!result.isFailure()) {
-                writeLock.lock();
                 if (this.connectedUsers.containsKey(newOwner)) {
                     connectedUsers.get(newOwner).addStoresOwned(storeId); //@TODO what about his permissions
                 }
-                writeLock.unlock();
+
             }
+            writeLock.unlock();
             return result;
         }
         else{
@@ -256,16 +260,16 @@ public class UserController {
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
             readLock.unlock();
+            writeLock.lock();
             Response<Boolean> result = user.appointManager(newManager, storeId);
             if (!result.isFailure()) {
-                writeLock.lock();
                 List<Permissions> permissions = new Vector<>();
                 permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
                 if (this.connectedUsers.containsKey(newManager)) {
                     connectedUsers.get(newManager).addStoresManaged(storeId, permissions); //@TODO list of permissions
                 }
-                writeLock.unlock();
             }
+            writeLock.unlock();
             return result;
         }
         readLock.unlock();
@@ -366,14 +370,14 @@ public class UserController {
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
             readLock.unlock();
+            writeLock.lock();   // TODO read or write lock? write because addSelfPermission
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
             if (!response.isFailure()) {
-                writeLock.lock();   // TODO read or write lock?
                 if (connectedUsers.containsKey(permitted)) {
                     connectedUsers.get(permitted).addSelfPermission(storeId, permission);
                 }
-                writeLock.unlock();
             }
+            writeLock.unlock();
             return response;
         }
         readLock.unlock();
@@ -385,14 +389,14 @@ public class UserController {
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
             readLock.unlock();
+            writeLock.lock();
             Response<Boolean> response = user.removePermission(storeId, permitted, permission);
             if (!response.isFailure()) {
-                writeLock.lock();
                 if (connectedUsers.containsKey(permitted)) {
                     connectedUsers.get(permitted).removeSelfPermission(storeId, permission);
                 }
-                writeLock.unlock();
             }
+            writeLock.unlock();
             return response;
         }
         readLock.unlock();
@@ -401,6 +405,7 @@ public class UserController {
 
 
     public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+        readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
             readLock.unlock();
@@ -485,6 +490,7 @@ public class UserController {
                 return new Response<>(false, true, purchaseRes.getErrMsg());
 
             user.addToPurchaseHistory(purchaseRes.getResult());
+            user.emptyCart();
             return new Response<>(true, false, "The purchase occurred");
         }
         readLock.unlock();
