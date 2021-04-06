@@ -125,7 +125,7 @@ public class UserController {
                 //readLock.lock();  // TODO check if needed
                 result = UserDAO.getInstance().userExists(name);
                 if (!result.getResult()) {
-                    UserDAO.getInstance().registerUser(name, password);
+                    UserDAO.getInstance().registerUser(name, security.sha256(password));
                     result = new Response<>(true, false, "");
                 }
                 else{
@@ -143,7 +143,7 @@ public class UserController {
 
     public Response<String> login(String prevName, String name, String password){
         if (connectedUsers.containsKey(prevName)) {
-            if (UserDAO.getInstance().validUser(name, password)) {
+            if (UserDAO.getInstance().validUser(name, security.sha256(password))) {
                 writeLock.lock();
                 connectedUsers.remove(prevName);
                 UserDTO userDTO = UserDAO.getInstance().getUser(name);
@@ -428,7 +428,7 @@ public class UserController {
 
     public void adminBoot() {
         String admin = "shaked";
-        UserDAO.getInstance().registerUser(admin, Integer.toString("jacob".hashCode()));//TODO make this int and g through security scramble password
+        UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
         UserDTO userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
     }
