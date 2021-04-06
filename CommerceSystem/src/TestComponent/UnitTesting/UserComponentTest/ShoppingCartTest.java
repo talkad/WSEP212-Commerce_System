@@ -6,10 +6,6 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
-import jdk.swing.interop.SwingInterOpUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,22 +15,25 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class ShoppingCartTest {
 
-    private ShoppingCart cart;
+    private ShoppingCart cart = new ShoppingCart();
     private ProductDTO[] productsDTO;
+    private static boolean setUpIsDone = false;
 
-    @BeforeClass
+    @BeforeEach
     public void setUp(){
-        cart = new ShoppingCart();
+        if(setUpIsDone)
+            return;
 
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
         Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
 
-        productsDTO = new ProductDTO[]{
+        this.productsDTO = new ProductDTO[]{
                 new ProductDTO("TV", res1.getResult(), 1299.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>()),
                 new ProductDTO("Watch", res1.getResult(), 600, new LinkedList<>(),
@@ -49,14 +48,15 @@ public class ShoppingCartTest {
         StoreController.getInstance().addProductToStore(productsDTO[1], 10);
         StoreController.getInstance().addProductToStore(productsDTO[2], 10);
         StoreController.getInstance().addProductToStore(productsDTO[3], 10);
-        System.out.println("+++++_----------"+productsDTO.length);
 
+        setUpIsDone = true;
     }
 
     @Test
     public void addProductTest(){
         Map<Integer, Map<ProductDTO, Integer>> baskets;
         int numProducts = 0;
+
 
         for(Store store: StoreController.getInstance().getContent().getResult()){
             for(Product product: store.getInventory().getProducts()){
@@ -65,8 +65,6 @@ public class ShoppingCartTest {
         }
 
         baskets = cart.getBaskets();
-        System.out.println(baskets);
-        System.out.println(baskets.size());
         assertEquals(2, baskets.size());
 
         for(Map<ProductDTO, Integer> basket: baskets.values()){
