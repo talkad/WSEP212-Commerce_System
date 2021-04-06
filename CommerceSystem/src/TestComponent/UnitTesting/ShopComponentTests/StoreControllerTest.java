@@ -33,32 +33,32 @@ public class StoreControllerTest {
 
     @Test
     public void searchByProductNameTest1(){
-        assertTrue(storeController.searchByProductName("TV").contains(product1));
+        assertTrue(storeController.searchByProductName("TV").getResult().contains(product1));
     }
 
     @Test
     public void searchByProductNameTest2(){
-        assertTrue(storeController.searchByProductName("AirPods").contains(product2));
+        assertTrue(storeController.searchByProductName("AirPods").getResult().contains(product2));
     }
 
     @Test
     public void searchByCategoryTest1(){
-        assertTrue(storeController.searchByCategory(null).isEmpty());
+        assertTrue(storeController.searchByCategory(null).getResult().isEmpty());
     }
 
     @Test
     public void searchByCategoryTest2(){
-        assertTrue(storeController.searchByCategory("Apple").contains(product2));
+        assertTrue(storeController.searchByCategory("Apple").getResult().contains(product2));
     }
 
     @Test
     public void searchByKeyWordTest1(){
-        assertTrue(storeController.searchByKeyWord(null).isEmpty());
+        assertTrue(storeController.searchByKeyWord(null).getResult().isEmpty());
     }
 
     @Test
     public void searchByKeyWordTest2(){
-        assertTrue(storeController.searchByKeyWord("#Swag").contains(product2));
+        assertTrue(storeController.searchByKeyWord("#Swag").getResult().contains(product2));
     }
 
     @Test

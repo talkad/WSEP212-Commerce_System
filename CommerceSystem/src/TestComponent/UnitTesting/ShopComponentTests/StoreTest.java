@@ -24,7 +24,7 @@ public class StoreTest {
         int pAmount = 0;
         store1.addProduct(product1, 5);
         store1.addProduct(product2, 4);
-        for(Product product : store1.getInventory().getInventory())
+        for(Product product : store1.getInventory().getProducts())
             pAmount += store1.getInventory().getProductAmount(product.getProductID());
         assertEquals(9, pAmount);
     }
@@ -34,7 +34,7 @@ public class StoreTest {
         int inventorySize = 0;
         store1.addProduct(product1, 5);
         store1.addProduct(product1, 10);
-        for(Product product : store1.getInventory().getInventory())
+        for(Product product : store1.getInventory().getProducts())
             ++inventorySize;
         assertEquals(1, inventorySize);
     }

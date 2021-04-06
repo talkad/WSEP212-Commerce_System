@@ -31,10 +31,10 @@ public class ShoppingBasketTest {
         Map<ProductDTO, Integer> products;
         int pNum = 0;
 
-        basket.addProduct(product1);
-        basket.addProduct(product1);
-        basket.addProduct(product3);
-        basket.addProduct(product3);
+        basket.addProduct(product1.getProductDTO());
+        basket.addProduct(product1.getProductDTO());
+        basket.addProduct(product3.getProductDTO());
+        basket.addProduct(product3.getProductDTO());
 
         products = basket.getProducts();
         for(Integer amount: products.values()) {
@@ -49,7 +49,7 @@ public class ShoppingBasketTest {
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
-        res = basket.addProduct(product2); // wrong storeID
+        res = basket.addProduct(product2.getProductDTO()); // wrong storeID
         products = basket.getProducts();
         assertTrue(res.isFailure());
         assertEquals(0, products.size());
@@ -60,9 +60,9 @@ public class ShoppingBasketTest {
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
-        basket.addProduct(product1);
+        basket.addProduct(product1.getProductDTO());
 
-        res = basket.removeProduct(product1);
+        res = basket.removeProduct(product1.getProductID());
         assertTrue(res.getResult());
 
         products = basket.getProducts();
@@ -74,9 +74,9 @@ public class ShoppingBasketTest {
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
-        basket.addProduct(product1);
+        basket.addProduct(product1.getProductDTO());
 
-        res = basket.removeProduct(product2);
+        res = basket.removeProduct(product2.getProductID());
         assertFalse(res.getResult());
 
         products = basket.getProducts();
