@@ -236,7 +236,7 @@ public class UserDAO {
             managersWriteLock.unlock();
             ownersWriteLock.lock();
             if(testOwners.containsKey(appointeeName) && testOwners.get(appointeeName).contains(storeID)) {
-                testOwners.get(appointeeName).remove(storeID);
+                testOwners.get(appointeeName).remove(Integer.valueOf(storeID));
             }
             ownersWriteLock.unlock();
         }
@@ -263,19 +263,17 @@ public class UserDAO {
         managersReadLock.lock();
         if(this.testManagers.containsKey(newOwnerOrManager)){
             result = this.testManagers.get(newOwnerOrManager).containsKey(storeId);
-            managersReadLock.unlock();
             if (result) {
+                managersReadLock.unlock();
                 return result;
             }
         }
-        else {
-            managersReadLock.unlock();
-            ownersReadLock.lock();
-            if(this.testOwners.containsKey(newOwnerOrManager)){
-                result = this.testOwners.get(newOwnerOrManager).contains(storeId);
-            }
-            ownersReadLock.unlock();
+        managersReadLock.unlock();
+        ownersReadLock.lock();
+        if(this.testOwners.containsKey(newOwnerOrManager)){
+            result = this.testOwners.get(newOwnerOrManager).contains(storeId);
         }
+        ownersReadLock.unlock();
         return result;
     }
 

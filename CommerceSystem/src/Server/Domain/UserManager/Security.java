@@ -15,7 +15,6 @@ public class Security {
         byte[] bytes = plainText.getBytes();
 
 
-
         return Integer.toString(plainText.hashCode());
     }
 }

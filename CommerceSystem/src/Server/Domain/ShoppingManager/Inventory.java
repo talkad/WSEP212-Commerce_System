@@ -15,11 +15,13 @@ public class Inventory {
     private Map<Integer, Product> products;
 
     private final ReadWriteLock lock;
+    private final ReadWriteLock purchaseLock; // changed to regular lock
 
     public Inventory(){
         pAmount = new HashMap<>();
         products = new HashMap<>();
         lock = new ReentrantReadWriteLock();
+        purchaseLock = new ReentrantReadWriteLock();
     }
 
 
@@ -73,20 +75,20 @@ public class Inventory {
     }
 
     public Response<Boolean> removeProducts(Map<ProductDTO, Integer> shoppingBasket){
+        purchaseLock.writeLock().lock();
 
         for(ProductDTO productDTO: shoppingBasket.keySet()){ // check if no product exceeding current amount in inventory
-            if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID()))
+            if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID())) {
+                purchaseLock.writeLock().unlock();
                 return new Response<>(false, true, "Inventory: Product " + productDTO.getName() + " exceeding to inventory capacity");
+            }
         }
-
-        lock.writeLock().lock();
 
         for(ProductDTO productDTO: shoppingBasket.keySet()){
-            if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID()))
-                removeProducts(productDTO.getProductID(), shoppingBasket.get(productDTO));
+            removeProducts(productDTO.getProductID(), shoppingBasket.get(productDTO));
         }
 
-        lock.writeLock().unlock();
+        purchaseLock.writeLock().unlock();
 
         return new Response<>(true, false, "Inventory: Products removed successfully");
     }

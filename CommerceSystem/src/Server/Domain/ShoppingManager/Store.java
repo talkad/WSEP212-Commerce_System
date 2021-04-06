@@ -75,7 +75,7 @@ public class Store {
 
      public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
-        PurchaseDTO purchaseDTO = null;
+        PurchaseDTO purchaseDTO;
         double price = 0;
 
         for(ProductDTO productDTO: shoppingBasket.keySet()){
@@ -85,16 +85,15 @@ public class Store {
         if(result.isFailure()){
             return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
+
         readWriteLock.writeLock().lock();
 
-        if(!result.isFailure()){
-            purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
+        purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
+        purchaseHistory.add(purchaseDTO);
 
-            purchaseHistory.add(purchaseDTO);
-        }
+         readWriteLock.writeLock().unlock();
 
-        readWriteLock.writeLock().unlock();
-        return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
+         return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
 
     public Collection<PurchaseDTO> getPurchaseHistory() {

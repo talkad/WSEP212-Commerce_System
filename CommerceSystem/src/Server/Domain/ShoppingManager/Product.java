@@ -117,7 +117,14 @@ public class Product {
     }
 
     public boolean containsCategory(String category){
-        return categories != null && categories.contains(category);
+        if(categories == null || category == null || category.length() == 0)
+            return false;
+
+        for(String c: categories)
+            if(c.contains(category))
+                return true;
+
+        return false;
     }
 
     public boolean containsKeyword(String key){

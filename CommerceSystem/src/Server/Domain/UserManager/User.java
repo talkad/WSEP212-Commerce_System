@@ -8,7 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class User{
+public class User {
 
     private UserState state;
     private List<Integer> storesOwned;
@@ -26,7 +26,7 @@ public class User{
     private Lock managedWriteLock;
     private Lock managedReadLock;
 
-    public User(){
+    public User() {
         this.state = new Guest();
 
         ownedLock = new ReentrantReadWriteLock();
@@ -44,7 +44,7 @@ public class User{
         this.appointments = null;
     }
 
-    public User(UserDTO userDTO){
+    public User(UserDTO userDTO) {
         ownedLock = new ReentrantReadWriteLock();
         ownedWriteLock = ownedLock.writeLock();
         ownedReadLock = ownedLock.readLock();
@@ -53,10 +53,9 @@ public class User{
         managedWriteLock = managedLock.writeLock();
         managedReadLock = managedLock.readLock();
 
-        if(UserDAO.getInstance().isAdmin(userDTO.getName())){
+        if (UserDAO.getInstance().isAdmin(userDTO.getName())) {
             this.state = new Admin();
-        }
-        else {
+        } else {
             this.state = new Registered();
         }
         this.storesOwned = userDTO.getStoresOwned();
@@ -100,7 +99,7 @@ public class User{
     }
 
     public Response<Boolean> register() {
-        if(state.allowed(Permissions.REGISTER, this)){
+        if (state.allowed(Permissions.REGISTER, this)) {
             return new Response<>(true, false, "User is allowed to register");
         }
         return new Response<>(false, true, "User is not allowed to register");
@@ -114,7 +113,7 @@ public class User{
         return this.shoppingCart.addProduct(storeID, productID);
     }
 
-    public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents() {
+    public Response<Map<Integer, Map<ProductDTO, Integer>>> getShoppingCartContents() {
         return new Response<>(this.shoppingCart.getBaskets(), false, null);
     }
 
@@ -133,7 +132,7 @@ public class User{
         }
 
         result = StoreController.getInstance().openStore(storeName, this.name);
-        if(!result.isFailure()) {
+        if (!result.isFailure()) {
             ownedWriteLock.lock();
             this.storesOwned.add(result.getResult());
             ownedWriteLock.unlock();
@@ -142,7 +141,7 @@ public class User{
     }
 
     public Response<List<PurchaseDTO>> getPurchaseHistoryContents() {
-        if(this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
+        if (this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
             return new Response<>(this.purchaseHistory.getPurchases(), false, null);
         }
         return new Response<>(null, true, "User not allowed to view purchase history");
@@ -153,53 +152,51 @@ public class User{
     }
 
     public Response<Boolean> addProductReview(int storeID, int productID, String review) {
-        if(this.state.allowed(Permissions.REVIEW_PRODUCT,this)){
+        if (this.state.allowed(Permissions.REVIEW_PRODUCT, this)) {
 
-            if(purchaseHistory.isPurchased(productID)){
+            if (purchaseHistory.isPurchased(productID)) {
                 StoreController.getInstance().addProductReview(storeID, productID, review);
                 return new Response<>(true, false, "The review added successfully");
             }
 
             return new Response<>(false, true, "The given product wasn't purchased before");
-        }
-        else{
+        } else {
             return new Response<>(false, true, "User not allowed to review product");
         }
     }
 
     public Response<Boolean> addProductsToStore(ProductDTO productDTO, int amount) {
-        if(this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())){
+        if (this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
             return StoreController.getInstance().addProductToStore(productDTO, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }
 
     public Response<Boolean> removeProductsFromStore(int storeID, int productID, int amount) {
-        if(this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)){
+        if (this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)) {
             return StoreController.getInstance().removeProductFromStore(storeID, productID, amount);
         }
         return new Response<>(false, true, "The user is not allowed to remove products from the store");
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
-        if(this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)){
+        if (this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)) {
             return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
 
-    public Response<Boolean> appointOwner(String newOwner, int storeId){
-        if(this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
+    public Response<Boolean> appointOwner(String newOwner, int storeId) {
+        if (this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
             Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
-            if (exists.getResult()){
+            if (exists.getResult()) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
                     this.appointments.addAppointment(storeId, newOwner);
                     UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
                     return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
                 }
                 return new Response<>(false, true, "User was already appointed in this store");
-            }
-            else {
+            } else {
                 return new Response<>(false, true, "User does not exist in the system");
             }
         }
@@ -207,31 +204,30 @@ public class User{
     }
 
     public Response<Boolean> appointManager(String newManager, int storeId) {
-        if(this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)){
+        if (this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)) {
             Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
-            if(exists.getResult()) {
-                if(!UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
+            if (exists.getResult()) {
+                if (!UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
                     this.appointments.addAppointment(storeId, newManager);
                     UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
                     return UserDAO.getInstance().addStoreManaged(newManager, storeId);
                 }
                 return new Response<>(false, true, "User was already appointed in this store");
-            }
-            else {
+            } else {
                 return new Response<>(false, true, "User does not exist in the system");
             }
         }
         return new Response<>(false, true, "User isn't allowed to appoint manager");
     }
 
-    public boolean isOwner(int storeId){
+    public boolean isOwner(int storeId) {
         ownedReadLock.lock();
         boolean result = this.storesOwned.contains(storeId);
         ownedReadLock.unlock();
         return result;
     }
 
-    public boolean isManager(int storeId){
+    public boolean isManager(int storeId) {
         managedReadLock.lock();
         boolean result = this.storesManaged.containsKey(storeId);
         managedReadLock.unlock();
@@ -239,10 +235,9 @@ public class User{
     }
 
     public Response<String> removeAppointment(String appointeeName, int storeID) {
-        if(this.storesOwned.contains(storeID)){
+        if (this.storesOwned.contains(storeID)) {
             return this.appointments.removeAppointment(storeID, appointeeName);
-        }
-        else if(this.storesManaged.containsKey(storeID)){
+        } else if (this.storesManaged.containsKey(storeID)) {
             return this.appointments.removeAppointment(storeID, appointeeName);
         }
         return new Response<>("problem", true, "user not appointed by this appointer");
@@ -250,11 +245,10 @@ public class User{
 
     public void removeRole(int storeID) {
         ownedWriteLock.lock();
-        if(this.storesOwned.contains(storeID)){
-            this.storesOwned.remove(storeID);
+        if (this.storesOwned.contains(storeID)) {
+            this.storesOwned.remove(Integer.valueOf(storeID));
             ownedWriteLock.unlock();
-        }
-        else {
+        } else {
             ownedWriteLock.unlock();
             managedWriteLock.lock();
             this.storesManaged.remove(storeID);
@@ -263,40 +257,39 @@ public class User{
     }
 
     public Response<Boolean> appointedAndAllowed(int storeId, String appointeeName, Permissions permission) {
-        if(this.state.allowed(permission, this, storeId)){
-            if(this.appointments.contains(storeId, appointeeName)){
+        if (this.state.allowed(permission, this, storeId)) {
+            if (this.appointments.contains(storeId, appointeeName)) {
                 return new Response<>(true, false, "success");
-            }
-            else {
+            } else {
                 return new Response<>(false, true, "Attempted to remove a user that wasn't appointed by him");
             }
-        }
-        else {
+        } else {
             return new Response<>(false, true, "User not allowed to " + permission.name());
         }
     }
 
     public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if(this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)){
-            UserDAO.getInstance().addPermission(storeId, permitted, permission);
-            return new Response<>(true, false, "Added permission");
-        }
-        else{
+        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+            if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
+                UserDAO.getInstance().addPermission(storeId, permitted, permission);
+                return new Response<>(true, false, "Added permission");
+            }
+            else return new Response<>(false, true, "The user already has the permission");
+        } else {
             return new Response<>(false, true, "User not allowed to add permissions to this user");
         }
     }
 
     public Response<Boolean> removePermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if(this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)){
+        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             UserDAO.getInstance().removePermission(storeId, permitted, permission);
             return new Response<>(true, false, "Removed permission");
-        }
-        else{
+        } else {
             return new Response<>(false, true, "User not allowed to remove permissions from this user");
         }
     }
 
-    public void addSelfPermission(int storeId, Permissions permission){
+    public void addSelfPermission(int storeId, Permissions permission) {
         managedWriteLock.lock();
         this.storesManaged.get(storeId).add(permission);
         managedWriteLock.unlock();
@@ -309,21 +302,19 @@ public class User{
     }
 
     public Response<List<PurchaseDTO>> getUserPurchaseHistory(String username) {       // req 6.4
-        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)){
-            if(UserDAO.getInstance().userExists(username).getResult()) {
+        if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+            if (UserDAO.getInstance().userExists(username).getResult()) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
-            }
-            else{
+            } else {
                 return new Response<>(new Vector<>(), true, "User does not exist");//todo empty list or null
             }
-        }
-        else{
+        } else {
             return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");//todo empty list or null
         }
     }
 
     public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
-        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+        if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
             return StoreController.getInstance().getStorePurchaseHistory(storeID);
         }
         return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
@@ -334,15 +325,20 @@ public class User{
     }
 
     public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {     // req 4.11
-        if(this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)){
+        if (this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)) {
             return StoreController.getInstance().getPurchaseDetails(storeID);
-        }
-        else {
+        } else {
             return new Response<>(null, true, "User not allowed to receive store history");
         }
     }
 
     public void addToPurchaseHistory(List<PurchaseDTO> result) {
-        purchaseHistory.addPurchase(result);
+        if (this.purchaseHistory != null){
+            purchaseHistory.addPurchase(result);
+        }
+    }
+
+    public void emptyCart(){
+        this.shoppingCart = new ShoppingCart();
     }
 }

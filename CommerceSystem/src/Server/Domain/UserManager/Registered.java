@@ -1,8 +1,5 @@
 package Server.Domain.UserManager;
 
-
-import Server.Domain.CommonClasses.Response;
-
 import java.util.List;
 import java.util.Vector;
 
@@ -28,6 +25,9 @@ public class Registered extends UserState {
         if (user.getStoresOwned().contains(storeId)) {
             return true;
         }
-        else return user.getStoresManaged().get(storeId).contains(permission);
+        else if(user.getStoresManaged().containsKey(storeId)){
+            return user.getStoresManaged().get(storeId).contains(permission);
+        }
+        else return false;
     }
 }

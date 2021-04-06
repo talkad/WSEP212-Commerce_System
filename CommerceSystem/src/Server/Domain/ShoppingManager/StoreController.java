@@ -9,6 +9,9 @@ import org.xeustechnologies.googleapi.spelling.SpellResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class StoreController {
     private static volatile StoreController storeController = null;
@@ -18,11 +21,19 @@ public class StoreController {
     private SpellChecker spellChecker;
     private SpellRequest spellRequest;
     private SpellResponse spellRes;
+    private ReadWriteLock lock;
+    private Lock writeLock;
+    private Lock readLock;
+
+
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
         indexer = new AtomicInteger(0);
         spellChecker = new SpellChecker();
+        lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
+        readLock = lock.readLock();
     }
 
     public static StoreController getInstance(){
@@ -91,8 +102,8 @@ public class StoreController {
         Response<Boolean> result;
         Store store;
 
-        if(amount < 0){
-            result = new Response<>(false, true, "The amount cannot be negative");
+        if(amount <= 0){
+            result = new Response<>(false, true, "The amount cannot be negative or zero");
         }
         else if(!stores.containsKey(productDTO.getStoreID())) {
             result = new Response<>(false, true, "This store does not exists");
@@ -125,13 +136,17 @@ public class StoreController {
         return result;
     }
 
-    public Response<List<PurchaseDTO>> purchase (ShoppingCart shoppingCart) {
+    public Response<List<PurchaseDTO>> purchase(ShoppingCart shoppingCart) {
         Store s;
         Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
         List<PurchaseDTO> purchases = new LinkedList<>();
         Response<PurchaseDTO> resPurchase;
+        Map<Integer, Map<ProductDTO, Integer>> baskets = shoppingCart.getBaskets();
 
-        for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : shoppingCart.getBaskets().entrySet()) {
+        if(baskets.isEmpty())
+            return new Response<>(null, true, "You cannot purchase an empty cart");
+
+        for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : baskets.entrySet()) {
             resPurchase = purchaseFromStore(entry.getKey(), entry.getValue());
 
             if (resPurchase.isFailure()) {
@@ -146,7 +161,6 @@ public class StoreController {
             purchases.add(resPurchase.getResult());
             prods.put(entry.getKey(), entry.getValue());
         }
-
         return new Response<>(purchases, false, "Purchase can be made.");
     }
 

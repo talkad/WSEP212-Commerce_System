@@ -4,6 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.PurchaseDTO;
+import Server.Service.IService;
+import TestComponent.AcceptanceTestings.Bridge.Driver;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,22 +16,24 @@ import java.util.*;
 public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
     private static boolean initialized = false;
+    //private static IService bridge = Driver.getBridge();
 
     @Before
     public void setUp(){
         if(!initialized) {
 
             super.setUp();
+            //bridge.init();
 
             // pre-registered user in the system
-            String guestName = this.bridge.addGuest().getResult();
-            this.bridge.register(guestName, "aviad", "123456");
-            this.bridge.register(guestName, "jacob", "123456");
+            String guestName = bridge.addGuest().getResult();
+            bridge.register(guestName, "aviad", "123456");
+            bridge.register(guestName, "jacob", "123456");
 
-            this.bridge.login(guestName, "aviad", "123456"); // aviad is logged in before the tests starts
+            bridge.login(guestName, "aviad", "123456"); // aviad is logged in before the tests starts
 
             // opening some stores for later use
-            int storeID = this.bridge.openStore("aviad", "stam hanut").getResult();
+            int storeID = bridge.openStore("aviad", "stam hanut").getResult();
 
             // adding products to the store
             ProductDTO product = new ProductDTO("kchichat perot", storeID, 20,
@@ -37,24 +41,24 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
                     new LinkedList<String>(Arrays.asList("kchicha")),
                     null);
 
-            this.bridge.addProductsToStore("aviad", product, 20);
+            bridge.addProductsToStore("aviad", product, 20);
 
             product = new ProductDTO("kchichat basar", storeID, 20,
                     new LinkedList<String>(Arrays.asList("food", "tasty")),
                     new LinkedList<String>(Arrays.asList("kchicha")),
                     null);
 
-            this.bridge.addProductsToStore("aviad", product, 0); // out of stock product
+            bridge.addProductsToStore("aviad", product, 0); // out of stock product
 
-            storeID = this.bridge.openStore("aviad", "lo yodea").getResult();
+            storeID = bridge.openStore("aviad", "lo yodea").getResult();
             product = new ProductDTO("matos krav", storeID, 200000,
                     new LinkedList<String>(Arrays.asList("aviation", "fly")),
                     new LinkedList<String>(Arrays.asList("matos")),
                     null);
 
-            this.bridge.addProductsToStore("aviad", product, 2);
+            bridge.addProductsToStore("aviad", product, 2);
 
-            initialized = true;
+            this.initialized = true;
         }
     }
 
@@ -71,44 +75,44 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void registerTest(){ // 2.3
         // registering with a unique username
-        String guestName = this.bridge.addGuest().getResult();
-        Response<Boolean> registerResponse = this.bridge.register(guestName, "issac", "123456");
+        String guestName = bridge.addGuest().getResult();
+        Response<Boolean> registerResponse = bridge.register(guestName, "issac", "123456");
         Assert.assertFalse(registerResponse.isFailure());
 
         // trying to log in with the newly registered user
-        Response<String> loginResponse = this.bridge.login(guestName, "issac", "123456");
+        Response<String> loginResponse = bridge.login(guestName, "issac", "123456");
         Assert.assertFalse(loginResponse.isFailure());
 
         // now logging out and trying to register a new user with the same username
-        Response<String> logoutResponse = this.bridge.logout(loginResponse.getResult());
-        registerResponse = this.bridge.register(logoutResponse.getResult(), "issac", "654321");
+        Response<String> logoutResponse = bridge.logout(loginResponse.getResult());
+        registerResponse = bridge.register(logoutResponse.getResult(), "issac", "654321");
         Assert.assertTrue(registerResponse.isFailure());
     }
 
     @Test
     public void loginTest(){ // 2.4
         // trying to login to a user which does not exit
-        String guestName = this.bridge.addGuest().getResult();
-        Response<String> loginResponse = this.bridge.login(guestName, "shlomi", "123456");
+        String guestName = bridge.addGuest().getResult();
+        Response<String> loginResponse = bridge.login(guestName, "shlomi", "123456");
         Assert.assertTrue(loginResponse.isFailure());
 
         // trying to do an action only a logged in user can do. should fail
-        Response<List<PurchaseDTO>> actionResponse =  this.bridge.getPurchaseHistory("shlomi");
+        Response<List<PurchaseDTO>> actionResponse =  bridge.getPurchaseHistory("shlomi");
         Assert.assertTrue(actionResponse.isFailure());
 
         // logging in to the pre-registered user
-        loginResponse = this.bridge.login(guestName, "jacob", "123456");
+        loginResponse = bridge.login(guestName, "jacob", "123456");
         Assert.assertFalse(loginResponse.isFailure());
 
         // trying to do an action only a logged in user can do. should pass
-        actionResponse =  this.bridge.getPurchaseHistory("jacob");
+        actionResponse =  bridge.getPurchaseHistory("jacob");
         Assert.assertFalse(actionResponse.isFailure());
     }
 
     @Test
     public void searchStoreTest(){ // 2.5
         // searching for an existing store
-        Response<List<Store>> searchResult = this.bridge.searchByStoreName("stam hanut");
+        Response<List<Store>> searchResult = bridge.searchByStoreName("stam hanut");
         Assert.assertFalse(searchResult.isFailure());
 
         // checking if all the stores we got have that name
@@ -123,14 +127,14 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
 
         // now looking for an non-existing store
-        searchResult = this.bridge.searchByStoreName("mefo li");
+        searchResult = bridge.searchByStoreName("mefo li");
         Assert.assertTrue(searchResult.getResult().isEmpty());
     }
 
     @Test
     public void searchProductTest(){ // 2.6
         // search by name - existing product
-        Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("kchichat perot");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         Assert.assertFalse(searchResult.isFailure());
 
         // checking if all the products we got have that name
@@ -144,12 +148,12 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(exists);
 
         // search by name - non-existing product
-        searchResult = this.bridge.searchByProductName("tarnegolet");
+        searchResult = bridge.searchByProductName("tarnegolet");
         Assert.assertTrue(searchResult.getResult().isEmpty());
 
 
         // search by category - existing product
-        searchResult = this.bridge.searchByProductCategory("aviation");
+        searchResult = bridge.searchByProductCategory("aviation");
         Assert.assertFalse(searchResult.isFailure());
 
         // checking if all the products we got are in that category
@@ -167,12 +171,12 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(exists);
 
         // search by category - non-existing product
-        searchResult = this.bridge.searchByProductCategory("spinners");
+        searchResult = bridge.searchByProductCategory("spinners");
         Assert.assertTrue(searchResult.getResult().isEmpty());
 
 
         // search by keyword - existing product
-        searchResult = this.bridge.searchByProductKeyword("matos");
+        searchResult = bridge.searchByProductKeyword("matos");
         Assert.assertFalse(searchResult.isFailure());
 
         // checking if all the products we got are related to the keyword
@@ -190,22 +194,22 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(exists);
 
         // search by category - non-existing product
-        searchResult = this.bridge.searchByProductKeyword("nigmero li ha ra'ayonot");
+        searchResult = bridge.searchByProductKeyword("nigmero li ha ra'ayonot");
         Assert.assertTrue(searchResult.getResult().isEmpty());
     }
 
     @Test
     public void addToCartTest(){ // 2.7
-        String guestName = this.bridge.addGuest().getResult();
+        String guestName = bridge.addGuest().getResult();
 
         // adding to cart a product which is in stock
-        Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("kchichat perot");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductDTO product = searchResult.getResult().get(0);
-        Response<Boolean> addResult = this.bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(addResult.getResult());
 
         // checking if it's added to the cart
-        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = this.bridge.getCartDetails(guestName);
+        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = bridge.getCartDetails(guestName);
         Map<ProductDTO, Integer> basket = cartResult.getResult().get(product.getStoreID());
         boolean exists = false;
         for(ProductDTO productDTO: basket.keySet()){
@@ -219,12 +223,12 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
 
 //        // trying to add an out of stock product
-//        searchResult = this.bridge.searchByProductName("kchichat basar");
+//        searchResult = bridge.searchByProductName("kchichat basar");
 //        product = searchResult.getResult().get(0);
-//        addResult = this.bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+//        addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
 //        Assert.assertFalse(addResult.getResult());
 //
-//        cartResult = this.bridge.getCartDetails(guestName);
+//        cartResult = bridge.getCartDetails(guestName);
 //        basket = cartResult.getResult().get(product.getStoreID());
 //        exists = false;
 //        for(ProductDTO productDTO: basket.keySet()){
@@ -245,53 +249,56 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void removeProductTest(){ // 2.8.2
         // a guest is adding a product to his cart
-        String guestName = this.bridge.addGuest().getResult();
+        String guestName = bridge.addGuest().getResult();
 
         // adding to cart a product which is in stock
-        Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("kchichat perot");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductDTO product = searchResult.getResult().get(0);
-        Response<Boolean> addResult = this.bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(addResult.getResult());
 
         // removing the product from the cart
-        Response<Boolean> removeResult = this.bridge.removeFromCart(guestName, product.getStoreID(), product.getProductID());
+        Response<Boolean> removeResult = bridge.removeFromCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(removeResult.getResult());
 
         // checking if the product is not there
-        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = this.bridge.getCartDetails(guestName);
+        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = bridge.getCartDetails(guestName);
         Map<ProductDTO, Integer> basket = cartResult.getResult().get(product.getStoreID());
-        boolean exists = false;
-        for(ProductDTO productDTO: basket.keySet()){
-            if(productDTO.getProductID() == product.getProductID()){
-                exists = true;
-                break;
+
+        if(basket != null) { // if the basket is null then it still means it works
+            boolean exists = false;
+            for (ProductDTO productDTO : basket.keySet()) {
+                if (productDTO.getProductID() == product.getProductID()) {
+                    exists = true;
+                    break;
+                }
             }
+
+            Assert.assertFalse(exists);
         }
 
-        Assert.assertFalse(exists);
-
         // now trying to remove the same product again
-        removeResult = this.bridge.removeFromCart(guestName, product.getStoreID(), product.getProductID());
+        removeResult = bridge.removeFromCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertFalse(removeResult.getResult());
     }
 
     @Test
     public void updateProductQuantityTest(){ // 2.8.3
         // a guest is adding a product to his cart
-        String guestName = this.bridge.addGuest().getResult();
+        String guestName = bridge.addGuest().getResult();
 
         // adding to cart a product which is in stock
-        Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("kchichat perot");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductDTO product = searchResult.getResult().get(0);
-        Response<Boolean> addResult = this.bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(addResult.getResult());
 
         // updating the quantity to a valid amount (the new amount is in stock)
-        Response<Boolean> updateResult = this.bridge.updateProductQuantity(guestName, product.getStoreID(), product.getProductID(), 5);
+        Response<Boolean> updateResult = bridge.updateProductQuantity(guestName, product.getStoreID(), product.getProductID(), 5);
         Assert.assertTrue(updateResult.getResult());
 
         // checking if it was updated
-        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = this.bridge.getCartDetails(guestName);
+        Response<Map<Integer, Map<ProductDTO, Integer>>> cartResult = bridge.getCartDetails(guestName);
         Map<ProductDTO, Integer> basket = cartResult.getResult().get(product.getStoreID());
         boolean updated = false;
         for(ProductDTO productDTO: basket.keySet()){
@@ -305,11 +312,11 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         Assert.assertTrue(updated);
 
-        // not trying to update to a quantity which is invalid (the new amount is out of stock)
-        updateResult = this.bridge.updateProductQuantity(guestName, product.getStoreID(), product.getProductID(), 200);
+        // not trying to update to a quantity which is invalid (negative amount)
+        updateResult = bridge.updateProductQuantity(guestName, product.getStoreID(), product.getProductID(), -5);
         Assert.assertFalse(updateResult.getResult());
 
-        cartResult = this.bridge.getCartDetails(guestName);
+        cartResult = bridge.getCartDetails(guestName);
         basket = cartResult.getResult().get(product.getStoreID());
         updated = false;
         for(ProductDTO productDTO: basket.keySet()){
@@ -327,20 +334,20 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void directPurchaseTest(){ // 2.9
         // a guest is adding a product to his cart
-        String guestName = this.bridge.addGuest().getResult();
+        String guestName = bridge.addGuest().getResult();
 
         // adding to cart a product which is in stock
-        Response<List<ProductDTO>> searchResult = this.bridge.searchByProductName("kchichat perot");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductDTO product = searchResult.getResult().get(0);
-        Response<Boolean> addResult = this.bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(addResult.getResult());
 
         // the user buying them
-        Response<Boolean> purchaseResult = this.bridge.directPurchase(guestName, "4580-1234-5678-9010", "shinovar");
+        Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "shinovar");
         Assert.assertTrue(purchaseResult.getResult());
 
         // since after buying the cart should be empty then buying again would fail
-        purchaseResult = this.bridge.directPurchase(guestName, "4580-1234-5678-9010", "kholin");
+        purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "kholin");
         Assert.assertFalse(purchaseResult.getResult());
     }
 }
