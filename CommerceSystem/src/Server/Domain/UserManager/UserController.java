@@ -16,6 +16,7 @@ public class UserController {
     private AtomicInteger availableId;
     private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
+    private Security security;
 
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -25,6 +26,8 @@ public class UserController {
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
         this.purchaseController = PurchaseController.getInstance();
+        this.security = Security.getInstance();
+
         //todo check if successfully connected
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
@@ -123,7 +126,7 @@ public class UserController {
                 //readLock.lock();  // TODO check if needed
                 result = UserDAO.getInstance().userExists(name);
                 if (!result.getResult()) {
-                    UserDAO.getInstance().registerUser(name, password);
+                    UserDAO.getInstance().registerUser(name, security.sha256(password));
                     result = new Response<>(true, false, "");
                 }
                 //readLock.unlock();
@@ -420,7 +423,7 @@ public class UserController {
 
     public void adminBoot() {
         String admin = "shaked";
-        UserDAO.getInstance().registerUser(admin, Integer.toString("jacob".hashCode()));//TODO make this int and g through security scramble password
+        UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
         UserDTO userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
     }
