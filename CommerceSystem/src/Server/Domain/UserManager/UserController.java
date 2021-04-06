@@ -141,7 +141,7 @@ public class UserController {
 
     public Response<String> login(String prevName, String name, String password){
         if (connectedUsers.containsKey(prevName)) {
-            if (UserDAO.getInstance().validUser(name, password)) {
+            if (UserDAO.getInstance().validUser(name, security.sha256(password))) {
                 writeLock.lock();
                 connectedUsers.remove(prevName);
                 UserDTO userDTO = UserDAO.getInstance().getUser(name);
