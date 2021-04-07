@@ -1,0 +1,62 @@
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: user doesn't exist
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: user doesn't exist
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product air bending exceeding to inventory capacity
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: user doesn't exist
+Apr 07, 2021 11:39:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User was already appointed in this store
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: The user is not allowed to add products to the store
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: The user is not allowed to add products to the store
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: The user is not allowed to add products to the store
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 07, 2021 11:40:32 AM Server.Domain.CommonClasses.Response <init>
+WARNING: The user is not allowed to add products to the store

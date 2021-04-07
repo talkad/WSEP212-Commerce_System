@@ -46,6 +46,8 @@ public class PurchaseController {
                         return new Response<>(res.getResult(), false, "Payment successfully made.");
                 }
 
+                // abort the purchase
+                storeController.addProductsToInventories(cart);
                 return new Response<>(null, true, "Payment was unsuccessful.");
         }
 }

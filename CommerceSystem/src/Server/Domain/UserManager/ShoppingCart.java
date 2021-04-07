@@ -88,6 +88,20 @@ public class ShoppingCart {
         return products;
     }
 
+    /**
+     * get DTO products from cart
+     * @return map contains the storeID of a basket and its content
+     */
+    public Map<ProductDTO, Integer> getBasket(int storeID){
+        Map<ProductDTO, Integer> products;
+
+        lock.readLock().lock();
+        products = new HashMap<>(baskets.get(storeID).getProducts());
+        lock.readLock().unlock();
+
+        return products;
+    }
+
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
         ShoppingBasket basket;
 
