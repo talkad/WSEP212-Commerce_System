@@ -9,9 +9,7 @@ import org.xeustechnologies.googleapi.spelling.SpellResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 
 public class StoreController {
     private static volatile StoreController storeController = null;
@@ -21,19 +19,13 @@ public class StoreController {
     private SpellChecker spellChecker;
     private SpellRequest spellRequest;
     private SpellResponse spellRes;
-    private ReadWriteLock lock;
-    private Lock writeLock;
-    private Lock readLock;
-
 
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
         indexer = new AtomicInteger(0);
         spellChecker = new SpellChecker();
-        lock = new ReentrantReadWriteLock();
-        writeLock = lock.writeLock();
-        readLock = lock.readLock();
+        spellRequest = new SpellRequest();
     }
 
     public static StoreController getInstance(){
@@ -122,8 +114,8 @@ public class StoreController {
         Response<Boolean> result;
         Store store;
 
-        if(amount < 0){
-            result = new Response<>(false, true, "The amount cannot be negative");
+        if(amount <= 0){
+            result = new Response<>(false, true, "The amount cannot be negative or zero");
         }
         else if(!stores.containsKey(storeID)) {
             result = new Response<>(false, true, "This store does not exists");
@@ -134,6 +126,20 @@ public class StoreController {
         }
 
         return result;
+    }
+
+    // activated when purchase aborted and all products need to be added to their inventories
+    public void addProductsToInventories(ShoppingCart shoppingCart) {
+        Map<ProductDTO, Integer> basket;
+
+        for(Integer storeID : shoppingCart.getBaskets().keySet()){
+
+            basket = shoppingCart.getBasket(storeID);
+
+            for(ProductDTO productDTO : basket.keySet()){
+                addProductToStore(productDTO, basket.get(productDTO));
+            }
+        }
     }
 
     public Response<List<PurchaseDTO>> purchase(ShoppingCart shoppingCart) {

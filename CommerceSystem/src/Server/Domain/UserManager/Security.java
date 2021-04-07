@@ -17,7 +17,7 @@ public class Security {
 
     // Copyright - https://techexpertise.medium.com/java-cryptographic-hash-functions-a7ae28f3fa42
     public String sha256(String plainText){
-        String hashText;
+        StringBuilder hashText;
 
         try {
             //MessageDigest classes Static getInstance method is called with MD5 hashing
@@ -32,19 +32,19 @@ public class Security {
             BigInteger inputDigestBigInt = new BigInteger(1, inputDigest);
 
             // Convert the input digest into hex value
-            hashText = inputDigestBigInt.toString(16);
+            hashText = new StringBuilder(inputDigestBigInt.toString(16));
 
             //Add preceding 0's to pad the hashtext to make it 32 bit
             while (hashText.length() < 32) {
-                hashText = "0" + hashText;
+                hashText.insert(0, "0");
             }
-            return hashText;
+            return hashText.toString();
         }
         // Catch block to handle the scenarios when an unsupported message digest algorithm is provided.
         catch (NoSuchAlgorithmException e) {
-            hashText = Integer.toString(plainText.hashCode());
+            hashText = new StringBuilder(Integer.toString(plainText.hashCode()));
         }
 
-        return hashText;
+        return hashText.toString();
     }
 }
