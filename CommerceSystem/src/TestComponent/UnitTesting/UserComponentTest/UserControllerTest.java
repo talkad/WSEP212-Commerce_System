@@ -2,17 +2,15 @@ package TestComponent.UnitTesting.UserComponentTest;
 
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
 import Server.Domain.UserManager.Permissions;
 import Server.Service.CommerceService;
 import java.util.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Assert;
 
 public class UserControllerTest {
 
@@ -21,7 +19,7 @@ public class UserControllerTest {
     private UserDAO userDAO;
     private String initialUserName;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         commerceService = CommerceService.getInstance();
         commerceService.init();
@@ -33,40 +31,40 @@ public class UserControllerTest {
     @Test
     public void removeGuestTest(){
         userController.addGuest();
-        assertTrue(userController.getConnectedUsers().containsKey("Guest2"));
+        Assert.assertTrue(userController.getConnectedUsers().containsKey("Guest2"));
         userController.removeGuest("Guest2");
-        assertFalse(userController.getConnectedUsers().containsKey("Guest2"));
+        Assert.assertFalse(userController.getConnectedUsers().containsKey("Guest2"));
     }
 
     @Test
     public void addGuestTest(){
         String guestName = userController.addGuest().getResult();
-        assertTrue(userController.getConnectedUsers().containsKey(guestName));
+        Assert.assertTrue(userController.getConnectedUsers().containsKey(guestName));
     }
 
     @Test
     public void registerTest(){
-        assertFalse(userDAO.userExists("Jacob2").getResult());
-        assertFalse(userController.register(initialUserName, "Jacob2", "12345").isFailure());
-        assertTrue(userDAO.userExists("Jacob2").getResult());
-        assertTrue(userController.register(initialUserName, "Jacob2", "12345").isFailure());
+        Assert.assertFalse(userDAO.userExists("Jacob2").getResult());
+        Assert.assertFalse(userController.register(initialUserName, "Jacob2", "12345").isFailure());
+        Assert.assertTrue(userDAO.userExists("Jacob2").getResult());
+        Assert.assertTrue(userController.register(initialUserName, "Jacob2", "12345").isFailure());
     }
 
     @Test
     public void loginTest(){
         userController.register(initialUserName, "Jacob3", "12345");
-        assertFalse(userController.getConnectedUsers().containsKey("Jacob3"));
+        Assert.assertFalse(userController.getConnectedUsers().containsKey("Jacob3"));
         // login for non-existent user
-        assertFalse(userDAO.userExists("Alice").getResult());
-        assertTrue(userController.login(initialUserName, "Alice", "abcd").isFailure());
+        Assert.assertFalse(userDAO.userExists("Alice").getResult());
+        Assert.assertTrue(userController.login(initialUserName, "Alice", "abcd").isFailure());
         // login for existing user w/ incorrect password
-        assertTrue(userController.login(initialUserName, "Jacob3", "incorrect").isFailure());
-        assertFalse(userController.getConnectedUsers().containsKey("Jacob3"));
+        Assert.assertTrue(userController.login(initialUserName, "Jacob3", "incorrect").isFailure());
+        Assert.assertFalse(userController.getConnectedUsers().containsKey("Jacob3"));
         // login for existing user w/ correct password
         Response<String> response = userController.login(initialUserName, "Jacob3", "12345");
-        assertFalse(response.isFailure());
-        assertEquals("Jacob3", response.getResult());
-        assertTrue(userController.getConnectedUsers().containsKey("Jacob3"));
+        Assert.assertFalse(response.isFailure());
+        Assert.assertEquals("Jacob3", response.getResult());
+        Assert.assertTrue(userController.getConnectedUsers().containsKey("Jacob3"));
     }
 
     @Test
@@ -74,15 +72,15 @@ public class UserControllerTest {
         userController.register(initialUserName, "Jacob", "24680");
         Response<String> loginResult = userController.login(initialUserName, "Jacob", "24680");
         String newUserName = loginResult.getResult();
-        assertEquals("Jacob", newUserName);
+        Assert.assertEquals("Jacob", newUserName);
 
-        assertTrue(userController.getConnectedUsers().containsKey("Jacob"));
+        Assert.assertTrue(userController.getConnectedUsers().containsKey("Jacob"));
 
         Response<String> logoutResult = userController.logout(newUserName);
         String logoutName = logoutResult.getResult();
-        assertNotEquals("Jacob", logoutName);
+        Assert.assertNotEquals("Jacob", logoutName);
 
-        assertFalse(userController.getConnectedUsers().containsKey("Jacob"));
+        Assert.assertFalse(userController.getConnectedUsers().containsKey("Jacob"));
     }
 
     @Test
@@ -99,12 +97,12 @@ public class UserControllerTest {
         int storeID = storeRes.getResult();
 
         User tal = userController.getConnectedUsers().get("tal");
-        assertFalse(tal.isOwner(storeID));
+        Assert.assertFalse(tal.isOwner(storeID));
 
         userController.appointOwner(newUserName, "tal", storeID);
 
         tal = userController.getConnectedUsers().get("tal");
-        assertTrue(tal.isOwner(storeID));
+        Assert.assertTrue(tal.isOwner(storeID));
     }
 
     @Test
@@ -121,12 +119,12 @@ public class UserControllerTest {
         int storeID = storeRes.getResult();
 
         User tal = userController.getConnectedUsers().get("tal");
-        assertFalse(tal.isManager(storeID));
+        Assert.assertFalse(tal.isManager(storeID));
 
         userController.appointManager(newUserName, "tal", storeID);
 
         tal = userController.getConnectedUsers().get("tal");
-        assertTrue(tal.isManager(storeID));
+        Assert.assertTrue(tal.isManager(storeID));
     }
 
     @Test
@@ -143,17 +141,17 @@ public class UserControllerTest {
         int storeID = storeRes.getResult();
 
         User tal = userController.getConnectedUsers().get("tal9");
-        assertFalse(tal.isOwner(storeID));
+        Assert.assertFalse(tal.isOwner(storeID));
 
         userController.appointOwner(newUserName, "tal9", storeID);
 
         tal = userController.getConnectedUsers().get("tal9");
-        assertTrue(tal.isOwner(storeID));
+        Assert.assertTrue(tal.isOwner(storeID));
 
         userController.removeOwnerAppointment(newUserName, "tal9", storeID);
 
         tal = userController.getConnectedUsers().get("tal9");
-        assertFalse(tal.isOwner(storeID));
+        Assert.assertFalse(tal.isOwner(storeID));
 
     }
 
@@ -171,17 +169,17 @@ public class UserControllerTest {
         int storeID = storeRes.getResult();
 
         User tal = userController.getConnectedUsers().get("tal8");
-        assertFalse(tal.isManager(storeID));
+        Assert.assertFalse(tal.isManager(storeID));
 
         userController.appointManager(newUserName, "tal8", storeID);
 
         tal = userController.getConnectedUsers().get("tal8");
-        assertTrue(tal.isManager(storeID));
+        Assert.assertTrue(tal.isManager(storeID));
 
         userController.removeManagerAppointment(newUserName, "tal8", storeID);
 
         tal = userController.getConnectedUsers().get("tal8");
-        assertFalse(tal.isManager(storeID));
+        Assert.assertFalse(tal.isManager(storeID));
     }
 
     @Test
@@ -219,21 +217,21 @@ public class UserControllerTest {
         userController.appointOwner(talUserName, "almog7", storeID);
         userController.appointManager(jacobUserName, "shaked67", storeID);
 
-        assertTrue(userController.getConnectedUsers().get("yoni7").isOwner(storeID));
-        assertTrue(userController.getConnectedUsers().get("tal7").isOwner(storeID));
-        assertTrue(userController.getConnectedUsers().get("jacob7").isManager(storeID));
-        assertTrue(userController.getConnectedUsers().get("aviad7").isOwner(storeID));
-        assertTrue(userController.getConnectedUsers().get("almog7").isOwner(storeID));
-        assertTrue(userController.getConnectedUsers().get("shaked67").isManager(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("yoni7").isOwner(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal7").isOwner(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("jacob7").isManager(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("aviad7").isOwner(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("almog7").isOwner(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("shaked67").isManager(storeID));
 
         userController.removeOwnerAppointment(yoniUserName, "tal7", storeID);
 
-        assertTrue(userController.getConnectedUsers().get("yoni7").isOwner(storeID));
-        assertFalse(userController.getConnectedUsers().get("tal7").isOwner(storeID));
-        assertFalse(userController.getConnectedUsers().get("jacob7").isManager(storeID));
-        assertFalse(userController.getConnectedUsers().get("aviad7").isOwner(storeID));
-        assertFalse(userController.getConnectedUsers().get("almog7").isOwner(storeID));
-        assertFalse(userController.getConnectedUsers().get("shaked67").isManager(storeID));
+        Assert.assertTrue(userController.getConnectedUsers().get("yoni7").isOwner(storeID));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal7").isOwner(storeID));
+        Assert.assertFalse(userController.getConnectedUsers().get("jacob7").isManager(storeID));
+        Assert.assertFalse(userController.getConnectedUsers().get("aviad7").isOwner(storeID));
+        Assert.assertFalse(userController.getConnectedUsers().get("almog7").isOwner(storeID));
+        Assert.assertFalse(userController.getConnectedUsers().get("shaked67").isManager(storeID));
     }
 
     @Test
@@ -252,11 +250,11 @@ public class UserControllerTest {
 
         userController.appointManager(yoniUserName, "tal6", storeID);
 
-        assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
 
         userController.addPermission(yoniUserName, storeID, "tal6", Permissions.ADD_PRODUCT_TO_STORE);
 
-        assertTrue(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
 
     }
 
@@ -277,11 +275,11 @@ public class UserControllerTest {
         userController.appointManager(yoniUserName, "tal5", storeID);
         userController.addPermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE);
 
-        assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
 
         userController.removePermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE);
 
-        assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
     }
 
     @Test
@@ -320,7 +318,7 @@ public class UserControllerTest {
         userController.appointManager(jacobUserName, "shaked64", storeID);
 
         Response<List<User>> result = userController.getStoreWorkersDetails(yoniUserName, storeID);
-        assertFalse(result.isFailure());
+        Assert.assertFalse(result.isFailure());
         List<User> actualUsers = result.getResult();
 
         List<String> users = new Vector<>();
@@ -331,9 +329,9 @@ public class UserControllerTest {
         users.add("almog4");
         users.add("shaked64");
 
-        assertEquals(6, users.size());
+        Assert.assertEquals(6, users.size());
         for(User user : actualUsers){
-            assertTrue(users.contains(user.getName()));
+            Assert.assertTrue(users.contains(user.getName()));
         }
     }
 }

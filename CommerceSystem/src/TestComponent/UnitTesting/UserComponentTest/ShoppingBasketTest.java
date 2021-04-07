@@ -4,12 +4,10 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.ShoppingBasket;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Assert;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ShoppingBasketTest {
 
@@ -18,7 +16,7 @@ public class ShoppingBasketTest {
     private Product product2;
     private Product product3;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         basket = new ShoppingBasket(10);
         product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
@@ -41,7 +39,7 @@ public class ShoppingBasketTest {
             pNum += amount;
         }
 
-        assertEquals(4, pNum);
+        Assert.assertEquals(4, pNum);
     }
 
     @Test
@@ -51,8 +49,8 @@ public class ShoppingBasketTest {
 
         res = basket.addProduct(product2.getProductDTO()); // wrong storeID
         products = basket.getProducts();
-        assertTrue(res.isFailure());
-        assertEquals(0, products.size());
+        Assert.assertTrue(res.isFailure());
+        Assert.assertEquals(0, products.size());
     }
 
     @Test
@@ -63,10 +61,10 @@ public class ShoppingBasketTest {
         basket.addProduct(product1.getProductDTO());
 
         res = basket.removeProduct(product1.getProductID());
-        assertTrue(res.getResult());
+        Assert.assertTrue(res.getResult());
 
         products = basket.getProducts();
-        assertEquals(0, products.size());
+        Assert.assertEquals(0, products.size());
     }
 
     @Test
@@ -77,9 +75,9 @@ public class ShoppingBasketTest {
         basket.addProduct(product1.getProductDTO());
 
         res = basket.removeProduct(product2.getProductID());
-        assertFalse(res.getResult());
+        Assert.assertFalse(res.getResult());
 
         products = basket.getProducts();
-        assertEquals(1, products.size());
+        Assert.assertEquals(1, products.size());
     }
 }

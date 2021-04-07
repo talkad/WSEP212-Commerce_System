@@ -51,6 +51,8 @@ public class ProductTest {
 
         latch.await();
         Assert.assertTrue(product.getPrice() == price + 10 || product.getPrice() == price + 35.2);
+        service1.shutdownNow();
+        service2.shutdownNow();
     }
 
     @Test
@@ -101,5 +103,7 @@ public class ProductTest {
         latch.await();
         // This range is for the numerical floating error
         Assert.assertEquals(3, product.getRating(), 0.001);
+        service1.shutdownNow();
+        service2.shutdownNow();
     }
 }

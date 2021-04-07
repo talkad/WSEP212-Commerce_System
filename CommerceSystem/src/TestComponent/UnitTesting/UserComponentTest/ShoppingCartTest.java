@@ -6,17 +6,14 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Assert;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ShoppingCartTest {
@@ -25,7 +22,7 @@ public class ShoppingCartTest {
     private ProductDTO[] productsDTO;
     private static boolean setUpIsDone = false;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         if(setUpIsDone)
             return;
@@ -34,14 +31,14 @@ public class ShoppingCartTest {
         Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
 
         this.productsDTO = new ProductDTO[]{
-                new ProductDTO("TV", res1.getResult(), 1299.9, new LinkedList<>(),
-                        new LinkedList<>(), new LinkedList<>()),
-                new ProductDTO("Watch", res1.getResult(), 600, new LinkedList<>(),
-                        new LinkedList<>(), new LinkedList<>()),
-                new ProductDTO("AirPods", res2.getResult(), 799.9, new LinkedList<>(),
-                        new LinkedList<>(), new LinkedList<>()),
-                new ProductDTO("Watch2", res1.getResult(), 600, new LinkedList<>(),
-                        new LinkedList<>(), new LinkedList<>())
+                new ProductDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("Watch",2222, res1.getResult(), 600, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("AirPods",3333, res2.getResult(), 799.9, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("Watch2",4444, res1.getResult(), 600, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0)
         };
 
         StoreController.getInstance().addProductToStore(productsDTO[0], 10);
@@ -65,7 +62,7 @@ public class ShoppingCartTest {
         }
 
         baskets = cart.getBaskets();
-        assertEquals(2, baskets.size());
+        Assert.assertEquals(2, baskets.size());
 
         for(Map<ProductDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
@@ -73,7 +70,7 @@ public class ShoppingCartTest {
             }
         }
 
-        assertEquals(4, numProducts);
+        Assert.assertEquals(4, numProducts);
     }
 
     @Test
@@ -92,10 +89,10 @@ public class ShoppingCartTest {
 
         if(lastProduct != null) {
             res = cart.removeProduct(lastProduct.getStoreID(), lastProduct.getProductID());
-            assertTrue(res.getResult());
+            Assert.assertTrue(res.getResult());
         }
         else{
-            assertEquals(1, 2); // error
+            Assert.assertEquals(1, 2); // error
         }
 
         baskets = cart.getBaskets();
@@ -105,15 +102,15 @@ public class ShoppingCartTest {
             }
         }
 
-        assertTrue(baskets.size() == 1 && numProducts == 3);
+        Assert.assertTrue(baskets.size() == 1 && numProducts == 3);
     }
 
     @Test
     public void removeAbsentProductTest(){
         Response<Boolean> res;
 
-        res = cart.removeProduct(2, 202); // no basket exist for this product
-        assertTrue(res.isFailure());
+        res = cart.removeProduct(2, 78321); // no basket exist for this product
+        Assert.assertTrue(res.isFailure());
     }
 
     @Test
@@ -127,7 +124,7 @@ public class ShoppingCartTest {
         ExecutorService service1 = Executors.newFixedThreadPool(numberOfThreads1);
         for (int i = 0; i < numberOfThreads1; i++) {
             service1.execute(() -> {
-                cart.addProduct(0,0);
+                cart.addProduct(0,1111);
                 latch.countDown();
             });
         }
@@ -135,7 +132,7 @@ public class ShoppingCartTest {
         ExecutorService service2 = Executors.newFixedThreadPool(numberOfThreads2);
         for (int i = 0; i < numberOfThreads2; i++) {
             service2.execute(() -> {
-                cart.removeProduct(0,0);
+                cart.removeProduct(0,1111);
                 latch.countDown();
             });
         }
@@ -143,6 +140,8 @@ public class ShoppingCartTest {
         latch.await();
         baskets = cart.getBaskets();
 
-        assertEquals(1, baskets.size());
+        Assert.assertEquals(1, baskets.size());
+        service1.shutdownNow();
+        service2.shutdownNow();
     }
 }
