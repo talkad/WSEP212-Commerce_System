@@ -3,19 +3,19 @@ package TestComponent.UnitTesting.ShopComponentTests;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.Before;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductTest {
 
     private Product product;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
         product = Product.createProduct(productDTO);
@@ -24,7 +24,7 @@ public class ProductTest {
     @Test
     public void simplePriceUpdateTest(){
         product.updatePrice(19.9);
-        assertEquals(19.9, product.getPrice());
+        Assert.assertEquals(19.9, product.getPrice(), 0.0);
     }
 
     @Test
@@ -50,13 +50,13 @@ public class ProductTest {
         }
 
         latch.await();
-        assertTrue(product.getPrice() == price + 10 || product.getPrice() == price + 35.2);
+        Assert.assertTrue(product.getPrice() == price + 10 || product.getPrice() == price + 35.2);
     }
 
     @Test
     public void simpleAddRateTest(){
         product.addRating(Rating.HIGH);
-        assertEquals(4, product.getRating());
+        Assert.assertEquals(4, product.getRating(), 0);
     }
 
     @Test
@@ -64,17 +64,17 @@ public class ProductTest {
         for(int i=0; i < 20; i++)
             product.addRating(Rating.HIGH);
 
-        assertEquals(4, product.getRating());
+        Assert.assertEquals(4, product.getRating(), 0.0);
 
         for(int i=0; i < 10; i++)
             product.addRating(Rating.VERY_HIGH);
 
-        assertEquals((double)130/30, product.getRating());
+        Assert.assertEquals((double)130/30, product.getRating(), 0);
 
         for(int i=0; i < 5; i++)
             product.addRating(Rating.VERY_BAD);
 
-        assertEquals((double)135/35, product.getRating());
+        Assert.assertEquals((double)135/35, product.getRating(), 0);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class ProductTest {
 
         latch.await();
         // This range is for the numerical floating error
-        assertTrue(product.getRating() >= 2.99 && product.getRating() <= 3.001);
+        Assert.assertEquals(3, product.getRating(), 0.001);
     }
 }

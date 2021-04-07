@@ -1,9 +1,9 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.ShoppingManager.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class StoreTest {
 
@@ -12,7 +12,7 @@ public class StoreTest {
     private ProductDTO product2;
     private ProductDTO product3;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         store1 = new Store(0, "h&m",  "talkad", new DiscountPolicy(1), new PurchasePolicy(1));
         product1 = new ProductDTO( "TV", 0, 1299.9  , null , null, null);
@@ -27,7 +27,7 @@ public class StoreTest {
         store1.addProduct(product2, 4);
         for(Product product : store1.getInventory().getProducts())
             pAmount += store1.getInventory().getProductAmount(product.getProductID());
-        assertEquals(9, pAmount);
+        Assert.assertEquals(9, pAmount, 0);
     }
 
     @Test
@@ -37,14 +37,14 @@ public class StoreTest {
         store1.addProduct(product1, 10);
         for(Product product : store1.getInventory().getProducts())
             ++inventorySize;
-        assertEquals(2, inventorySize);
+        Assert.assertEquals(2, inventorySize, 0);
     }
 
     @Test
     public void addExistingProductTest2(){
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
-        assertEquals(15, store1.getInventory().getProductAmount(product3.getProductID()));
+        Assert.assertEquals(15, store1.getInventory().getProductAmount(product3.getProductID()), 0);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class StoreTest {
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
         store1.removeProduct(product3.getProductID(), 3);
-        assertEquals(12, store1.getInventory().getProductAmount(product3.getProductID()));
+        Assert.assertEquals(12, store1.getInventory().getProductAmount(product3.getProductID()), 0);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class StoreTest {
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
         store1.removeProduct(product3.getProductID(), 15);
-        assertEquals(0, store1.getInventory().getProductAmount(product3.getProductID()));
+        Assert.assertEquals(0, store1.getInventory().getProductAmount(product3.getProductID()), 0);
     }
 
     @Test
@@ -68,7 +68,6 @@ public class StoreTest {
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
         store1.removeProduct(product3.getProductID(), 20);
-        assertTrue(store1.removeProduct(product3.getProductID(), 20).isFailure());
-
+        Assert.assertTrue(store1.removeProduct(product3.getProductID(), 20).isFailure());
     }
 }

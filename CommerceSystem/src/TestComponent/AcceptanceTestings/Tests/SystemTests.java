@@ -18,8 +18,7 @@ public class SystemTests extends ProjectAcceptanceTests {
     public void systemBootTest(){ // 1.1
         // checking if there exists an admin. there's a built in admin and we'll try to log into his account
         String guestName = this.bridge.addGuest().getResult();
-        Response<String> loginResponse = this.bridge.login(guestName, "shaked",
-                Integer.toString("jacob".hashCode()));
+        Response<String> loginResponse = this.bridge.login(guestName, "shaked", "jacob");
         Assert.assertFalse(loginResponse.isFailure());
     }
 }
