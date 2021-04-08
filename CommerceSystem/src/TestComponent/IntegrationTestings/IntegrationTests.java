@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/***
+ * These tests will mainly check interactions of out system with external systems
+ * like payment, delivery etc..
+ * as to version 1 these classes always success but that will change in future versions
+ */
 public class IntegrationTests {
 
     UserController userController;
@@ -61,33 +66,24 @@ public class IntegrationTests {
     /** External Systems **/
     @Test
     public void externalPaymentTest(){
-        //manually
+        //manually check our system with external payment system
         PaymentSystemAdapter payment = PaymentSystemAdapter.getInstance();
-        payment.pay(10,"123456");
-
-        //using handler
-        PurchaseController pc = PurchaseController.getInstance();
-        ShoppingCart shoppingCart = new ShoppingCart();
-        Response r = pc.handlePayment("123456",shoppingCart,"Shoham");
-        Assert.assertFalse(r.isFailure());
+        boolean b = payment.pay(10,"123456");
+        Assert.assertTrue(b);
     }
 
     @Test
     public void externalDeliveryTest(){
-        //manually
+        //manually check our system with external payment system
         Map<Integer,Map<ProductDTO, Integer>> toDeliver = new ConcurrentHashMap<>();
         ProductDTO productDTO = new ProductDTO("chocolate", 12, 12, 33, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), 33, 33);
         Map<ProductDTO,Integer> map1 = new ConcurrentHashMap<>();
         map1.put(productDTO, 1);
         toDeliver.put(2, map1);
         ProductSupplyAdapter supplier = ProductSupplyAdapter.getInstance();
-        supplier.deliver("Beer Sheba",toDeliver);
-
-        //using handler
-        PurchaseController pc = PurchaseController.getInstance();
-        ShoppingCart shoppingCart = new ShoppingCart();
-        Response r = pc.handlePayment("654321",shoppingCart,"Beer Sheba");
-        Assert.assertFalse(r.isFailure());
+        boolean b = supplier.deliver("Beer Sheba",toDeliver);
+        Assert.assertTrue(b);
+//
     }
 
     /** Search features **/
