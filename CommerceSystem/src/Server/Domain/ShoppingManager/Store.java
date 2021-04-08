@@ -39,11 +39,20 @@ public class Store {
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
-    public void addProduct(ProductDTO productDTO, int amount){
+    public Response<Boolean> addProduct(ProductDTO productDTO, int amount){
+        if(amount <= 0){
+            return new Response<>(false, true, "The amount cannot be negative or zero");
+        }
+
         inventory.addProducts(productDTO, amount);
+        return new Response<>(true, false, "The product added successfully to store");
     }
 
     public Response<Boolean> removeProduct(int productID, int amount){
+        if(amount <= 0){
+            return new Response<>(false, true, "The amount cannot be negative or zero");
+        }
+
         return inventory.removeProducts(productID, amount);
     }
 
@@ -96,8 +105,8 @@ public class Store {
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
 
-    public Collection<PurchaseDTO> getPurchaseHistory() {
-        return purchaseHistory;
+    public Response<Collection<PurchaseDTO>> getPurchaseHistory() {
+        return new Response<>(purchaseHistory, false, "OK");
     }
 
     public void addRating(Rating rate){
