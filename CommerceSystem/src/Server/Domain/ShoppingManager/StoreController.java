@@ -26,7 +26,6 @@ public class StoreController {
         indexer = new AtomicInteger(0);
         spellChecker = new SpellChecker();
         spellRequest = new SpellRequest();
-        spellRes = new SpellResponse();
     }
 
     public static StoreController getInstance(){
