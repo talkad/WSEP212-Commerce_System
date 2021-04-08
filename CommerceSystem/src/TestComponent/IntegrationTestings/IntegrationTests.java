@@ -5,17 +5,16 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.SearchEngine;
 import Server.Domain.UserManager.*;
 import Server.Service.CommerceService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.Assert;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IntegrationTests {
 
@@ -29,7 +28,7 @@ public class IntegrationTests {
     private List<String> admins;
     private User guest;
 
-    @BeforeEach
+    @Before
     public void setUp(){
         userController = UserController.getInstance();
         searchEngine = SearchEngine.getInstance();
@@ -70,7 +69,7 @@ public class IntegrationTests {
         PurchaseController pc = PurchaseController.getInstance();
         ShoppingCart shoppingCart = new ShoppingCart();
         Response r = pc.handlePayment("123456",shoppingCart,"Shoham");
-        assertFalse(r.isFailure());
+        Assert.assertFalse(r.isFailure());
     }
 
     @Test
@@ -88,27 +87,27 @@ public class IntegrationTests {
         PurchaseController pc = PurchaseController.getInstance();
         ShoppingCart shoppingCart = new ShoppingCart();
         Response r = pc.handlePayment("654321",shoppingCart,"Beer Sheba");
-        assertFalse(r.isFailure());
+        Assert.assertFalse(r.isFailure());
     }
 
     /** Search features **/
     @Test
     public void SearchByNameTest(){
         Response r1 = searchEngine.searchByKeyWord("beef");
-        assertFalse(r1.isFailure());
+        Assert.assertFalse(r1.isFailure());
 
         //empty list will be returned
         Response<List<ProductDTO>> r2 = searchEngine.searchByKeyWord("banana");
-        assertTrue(r2.getResult().isEmpty());
+        Assert.assertTrue(r2.getResult().isEmpty());
     }
 
     @Test
     public void SearchByCategoryTest(){
         Response r1 = searchEngine.searchByCategory("food");
-        assertFalse(r1.isFailure());
+        Assert.assertFalse(r1.isFailure());
 
         //empty list will be returned
         Response<List<ProductDTO>> r2 = searchEngine.searchByCategory("electronics");
-        assertTrue(r2.getResult().isEmpty());
+        Assert.assertTrue(r2.getResult().isEmpty());
     }
 }
