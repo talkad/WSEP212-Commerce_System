@@ -90,44 +90,6 @@ public class StoreController {
         return stores.values();
     }
 
-    public Response<Boolean> addProductToStore(ProductDTO productDTO, int amount){
-        Response<Boolean> result;
-        Store store;
-
-        if(amount <= 0){
-            result = new Response<>(false, true, "The amount cannot be negative or zero");
-        }
-        else if(!stores.containsKey(productDTO.getStoreID())) {
-            result = new Response<>(false, true, "This store does not exists");
-        }
-        else{
-            store = stores.get(productDTO.getStoreID());
-            store.addProduct(productDTO, amount);
-
-            result = new Response<>(true, false, "The product added successfully to store");
-        }
-
-        return result;
-    }
-
-    public Response<Boolean> removeProductFromStore(int storeID, int productID, int amount){
-        Response<Boolean> result;
-        Store store;
-
-        if(amount <= 0){
-            result = new Response<>(false, true, "The amount cannot be negative or zero");
-        }
-        else if(!stores.containsKey(storeID)) {
-            result = new Response<>(false, true, "This store does not exists");
-        }
-        else{
-            store = stores.get(storeID);
-            result = store.removeProduct(productID, amount);
-        }
-
-        return result;
-    }
-
     // activated when purchase aborted and all products need to be added to their inventories
     public void addProductsToInventories(ShoppingCart shoppingCart) {
         Map<ProductDTO, Integer> basket;
@@ -137,7 +99,7 @@ public class StoreController {
             basket = shoppingCart.getBasket(storeID);
 
             for(ProductDTO productDTO : basket.keySet()){
-                addProductToStore(productDTO, basket.get(productDTO));
+                stores.get(storeID).addProduct(productDTO, basket.get(productDTO));
             }
         }
     }
@@ -189,15 +151,6 @@ public class StoreController {
         return new Response<>(stores.values(), false, "all content");
     }
 
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
-        Store store = stores.get(storeID);
-
-        if(store == null)
-            return new Response<>(null, true, "This store doesn't exists");
-
-        return  new Response<>(store.getPurchaseHistory(), false, "success");
-    }
-
     public String getStoreOwnerName(int storeID){
         return stores.get(storeID).getOwnerName();
     }
@@ -228,21 +181,6 @@ public class StoreController {
         }
     }
 
-    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
-        Response<Boolean> result;
-        Store store;
-
-        if(!stores.containsKey(storeID)) {
-            result = new Response<>(false, true, "This store does not exists");
-        }
-        else{
-            store = stores.get(storeID);
-            result = store.addProductReview(productID, review);
-        }
-
-        return result;
-    }
-
     public Response<List<Store>> searchByStoreName(String storeName) {
         List<Store> storeList = new LinkedList<>();
 
@@ -252,10 +190,6 @@ public class StoreController {
         }
 
         return new Response<>(storeList, false, "all stores with name " + storeName);
-    }
-
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {
-        return new Response<>(stores.get(storeID).getPurchaseHistory(), false, "StoreController: get purchase");
     }
 
 //    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
@@ -272,4 +206,5 @@ public class StoreController {
 //
 //        return result;
 //    }
+
 }

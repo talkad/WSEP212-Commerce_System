@@ -2,6 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -152,11 +153,21 @@ public class User {
     }
 
     public Response<Boolean> addProductReview(int storeID, int productID, String review) {
+        Store store;
+
         if (this.state.allowed(Permissions.REVIEW_PRODUCT, this)) {
 
             if (purchaseHistory.isPurchased(productID)) {
-                StoreController.getInstance().addProductReview(storeID, productID, review);
-                return new Response<>(true, false, "The review added successfully");
+                store = StoreController.getInstance().getStoreById(storeID);
+
+                if(store == null){
+                    return new Response<>(false, true, "This store doesn't exists");
+                }
+
+                return store.addProductReview(productID,review);
+
+//                StoreController.getInstance().addProductReview(storeID, productID, review);
+//                return new Response<>(true, false, "The review added successfully"); // todo: it may be wrong when the product doesn't exists
             }
 
             return new Response<>(false, true, "The given product wasn't purchased before");
@@ -166,15 +177,31 @@ public class User {
     }
 
     public Response<Boolean> addProductsToStore(ProductDTO productDTO, int amount) {
+        Store store;
+
         if (this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
-            return StoreController.getInstance().addProductToStore(productDTO, amount);
+            store = StoreController.getInstance().getStoreById(productDTO.getStoreID());
+
+            if(store == null){
+                return new Response<>(false, true, "This store doesn't exists");
+            }
+
+            return store.addProduct(productDTO, amount);
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }
 
     public Response<Boolean> removeProductsFromStore(int storeID, int productID, int amount) {
+        Store store;
+
         if (this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)) {
-            return StoreController.getInstance().removeProductFromStore(storeID, productID, amount);
+            store = StoreController.getInstance().getStoreById(storeID);
+
+            if(store == null){
+                return new Response<>(false, true, "This store doesn't exists");
+            }
+
+            return store.removeProduct(productID, amount);
         }
         return new Response<>(false, true, "The user is not allowed to remove products from the store");
     }
@@ -314,8 +341,16 @@ public class User {
     }
 
     public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
+        Store store;
+
         if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
-            return StoreController.getInstance().getStorePurchaseHistory(storeID);
+            store = StoreController.getInstance().getStoreById(storeID);
+
+            if(store == null){
+                return new Response<>(null, true, "This store doesn't exists");
+            }
+
+            return store.getPurchaseHistory();
         }
         return new Response<>(new LinkedList<>(), true, "User not allowed to view user's purchase");//todo empty list or null
     }
@@ -325,8 +360,16 @@ public class User {
     }
 
     public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {     // req 4.11
+        Store store;
+
         if (this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)) {
-            return StoreController.getInstance().getPurchaseDetails(storeID);
+            store = StoreController.getInstance().getStoreById(storeID);
+
+            if(store == null){
+                return new Response<>(null, true, "This store doesn't exists");
+            }
+
+            return store.getPurchaseHistory();
         } else {
             return new Response<>(null, true, "User not allowed to receive store history");
         }

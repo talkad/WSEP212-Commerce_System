@@ -41,10 +41,18 @@ public class ShoppingCartTest {
                         new LinkedList<>(), new LinkedList<>(),0,0)
         };
 
-        StoreController.getInstance().addProductToStore(productsDTO[0], 10);
-        StoreController.getInstance().addProductToStore(productsDTO[1], 10);
-        StoreController.getInstance().addProductToStore(productsDTO[2], 10);
-        StoreController.getInstance().addProductToStore(productsDTO[3], 10);
+        Store store1 = StoreController.getInstance().getStoreById(res1.getResult());
+        Store store2 = StoreController.getInstance().getStoreById(res2.getResult());
+
+        store1.addProduct(productsDTO[0], 10);
+        store1.addProduct(productsDTO[1], 10);
+        store1.addProduct(productsDTO[3], 10);
+
+        store2.addProduct(productsDTO[2], 10);
+//        StoreController.getInstance().addProductToStore(productsDTO[0], 10);
+//        StoreController.getInstance().addProductToStore(productsDTO[1], 10);
+//        StoreController.getInstance().addProductToStore(productsDTO[2], 10);
+//        StoreController.getInstance().addProductToStore(productsDTO[3], 10);
 
         setUpIsDone = true;
     }

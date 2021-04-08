@@ -26,7 +26,6 @@ class RegressionTesting {
         Class[] shopUnitTests = {StoreControllerTest.class, StoreTest.class, InventoryTest.class, ProductTest.class};
         Class[] userUnitTests = {ShoppingCartTest.class, ShoppingBasketTest.class, UserTests.class};
 
-
         System.out.println("Test Shop Component");
         for(Class test: shopUnitTests){
             System.out.println("Class "+test.getName()+ " Testing ...");
@@ -35,7 +34,6 @@ class RegressionTesting {
             resultReport(result);
         }
 
-
         System.out.println("Test User Component");
         for(Class test: userUnitTests){
             System.out.println("Class "+test.getName()+ " Testing ...");
@@ -43,23 +41,5 @@ class RegressionTesting {
             Result result = JUnitCore.runClasses(test);
             resultReport(result);
         }
-
-//        System.out.println("Test User Component");
-//        for(Class test: userUnitTests){
-//            System.out.println("Class "+test.getName()+ " Testing ...");
-//
-//            Result result = JUnitCore.runClasses(test);
-//            resultReport(result);
-//
-////            if(result.getFailureCount() > 0)
-////                break;
-//        }
-
     }
-
-//    @RunWith(Suite.class)
-//    @Suite.SuiteClasses({ProductTest.class, StoreControllerTest.class})
-//    public class MyTestSuite {
-//    }
-
 }
