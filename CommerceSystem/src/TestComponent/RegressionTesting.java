@@ -24,7 +24,7 @@ class RegressionTesting {
     public static void main(String[] args) {
 
         Class[] shopUnitTests = {StoreControllerTest.class, StoreTest.class, InventoryTest.class, ProductTest.class};
-        Class[] userUnitTests = {ShoppingCartTest.class, ShoppingBasketTest.class, UserTests.class};
+        Class[] userUnitTests = {ShoppingCartTest.class, ShoppingBasketTest.class, UserTests.class, UserControllerTest.class};
 
         System.out.println("Test Shop Component");
         for(Class test: shopUnitTests){
