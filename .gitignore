@@ -1,1 +1,5 @@
 *.idea
+*.iml
+CommerceSystem/out
+**/error.txt
+CommerceSystem/errors.txt
