@@ -97,12 +97,7 @@ public class Store {
             return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
 
-        readWriteLock.writeLock().lock();
-
         purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
-        purchaseHistory.addSinglePurchase(purchaseDTO);
-
-         readWriteLock.writeLock().unlock();
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
@@ -154,4 +149,9 @@ public class Store {
         }while (!isActiveStore.compareAndSet(currentActive, activeStore));
     }
 
+    public void addPurchaseHistory(PurchaseDTO purchaseDTO) {
+        readWriteLock.writeLock().lock();
+        purchaseHistory.addSinglePurchase(purchaseDTO);
+        readWriteLock.writeLock().unlock();
+    }
 }

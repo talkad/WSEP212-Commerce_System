@@ -1,0 +1,260 @@
+Apr 12, 2021 4:01:32 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed
+Apr 12, 2021 4:01:32 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed
+Apr 12, 2021 4:05:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed
+Apr 12, 2021 4:05:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed
+Apr 12, 2021 4:17:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 12, 2021 4:17:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 4:17:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:17:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:17:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:23:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 4:23:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 4:23:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:23:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:23:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product sword exceeding to inventory capacity
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:28:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:11 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 4:47:11 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 4:47:11 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:11 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:11 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:24 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 4:47:24 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 4:47:24 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:24 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:24 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 4:47:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 4:47:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 4:47:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product IHateTestInator exceeding to inventory capacity
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:12:52 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not allowed to view purchase history
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:17:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 5:18:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:18:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:18:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:18:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:18:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:18 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:21:43 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:24:23 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
