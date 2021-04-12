@@ -2,6 +2,7 @@ package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.SearchEngine;
 import Server.Domain.UserManager.*;
 import Server.Service.CommerceService;
@@ -59,7 +60,7 @@ public class IntegrationTests {
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("meat");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
         guest.addProductsToStore(new ProductDTO("beef", 0, 5, categories, keyword, review), 5).isFailure();
     }
 

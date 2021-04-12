@@ -143,7 +143,7 @@ public class Inventory {
         }
     }
 
-    public Response<Boolean> addProductReview(int productID, String review) {
+    public Response<Boolean> addProductReview(int productID, Review review) {
         Response<Boolean> res;
         Product product;
 

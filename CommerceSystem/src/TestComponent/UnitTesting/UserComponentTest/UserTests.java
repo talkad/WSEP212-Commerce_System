@@ -3,6 +3,7 @@ package TestComponent.UnitTesting.UserComponentTest;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.*;
 import Server.Service.CommerceService;
@@ -58,7 +59,7 @@ public class UserTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
@@ -142,7 +143,7 @@ public class UserTests {
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
 
         Assert.assertFalse(yaakov.addProductsToStore(new ProductDTO("XL eggs", store1ID, 5, categories, keyword, review), 5).isFailure());
         Assert.assertTrue(yaakov.addProductsToStore(new ProductDTO("steak", store2ID, 5, categories, keyword, review), 5).isFailure());
@@ -154,7 +155,7 @@ public class UserTests {
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
         yaakov.addProductsToStore(new ProductDTO("XXL eggs", store1ID, 10, categories, keyword, review), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("XXL eggs");
         ProductDTO productDTO = result.getResult().get(0);
@@ -169,7 +170,7 @@ public class UserTests {
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
         almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword, review), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("chicken");
         ProductDTO productDTO = result.getResult().get(0);
@@ -229,7 +230,7 @@ public class UserTests {
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
-        Collection<String> review = new LinkedList<>();
+        Collection<Review> review = new LinkedList<>();
 
         yaakov.appointManager("shaked", store1ID);
         Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());

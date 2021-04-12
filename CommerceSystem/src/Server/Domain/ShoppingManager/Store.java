@@ -140,7 +140,7 @@ public class Store {
         return inventory.getProduct(productID);
     }
 
-    public Response<Boolean> addProductReview(int productID, String review) {
+    public Response<Boolean> addProductReview(int productID, Review review) {
         return inventory.addProductReview(productID, review);
     }
 

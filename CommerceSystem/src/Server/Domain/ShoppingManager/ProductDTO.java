@@ -12,14 +12,14 @@ public class ProductDTO {
     private double price;
     private List<String> categories;
     private List<String> keywords;
-    private Collection<String> reviews;
+    private Collection<Review> reviews;
     private double rating;
     private int numRatings;
 
     /**
      *constructor for objects from database
      */
-    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, Collection<String> reviews, double rating, int numRatings) {
+    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, Collection<Review> reviews, double rating, int numRatings) {
         this.name = name;
         this.productID = productID;
         this.storeID = storeID;
@@ -34,7 +34,7 @@ public class ProductDTO {
     /**
      *constructor for new products
      */
-    public ProductDTO(String name, int storeID, double price, List<String> categories, List<String> keywords, Collection<String> reviews) {
+    public ProductDTO(String name, int storeID, double price, List<String> categories, List<String> keywords, Collection<Review> reviews) {
         this.name = name;
         this.productID = -1;
         this.storeID = storeID;
@@ -70,7 +70,7 @@ public class ProductDTO {
         return keywords;
     }
 
-    public Collection<String> getReviews() {
+    public Collection<Review> getReviews() {
         return reviews;
     }
 
