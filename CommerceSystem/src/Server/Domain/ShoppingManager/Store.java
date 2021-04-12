@@ -3,6 +3,8 @@ package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.PurchaseHistory;
+
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,7 +23,7 @@ public class Store {
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
 
-    private Collection<PurchaseDTO> purchaseHistory;
+    private PurchaseHistory purchaseHistory;
     private ReentrantReadWriteLock readWriteLock;
 
 
@@ -33,7 +35,7 @@ public class Store {
         this.isActiveStore = new AtomicBoolean(true);
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
-        this.purchaseHistory = Collections.synchronizedCollection(new LinkedList<>());
+        this.purchaseHistory = new PurchaseHistory();
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
@@ -98,7 +100,7 @@ public class Store {
         readWriteLock.writeLock().lock();
 
         purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
-        purchaseHistory.add(purchaseDTO);
+        purchaseHistory.addSinglePurchase(purchaseDTO);
 
          readWriteLock.writeLock().unlock();
 
@@ -106,7 +108,7 @@ public class Store {
     }
 
     public Response<Collection<PurchaseDTO>> getPurchaseHistory() {
-        return new Response<>(purchaseHistory, false, "OK");
+        return new Response<>(purchaseHistory.getPurchases(), false, "OK");
     }
 
     public void addRating(Rating rate){
