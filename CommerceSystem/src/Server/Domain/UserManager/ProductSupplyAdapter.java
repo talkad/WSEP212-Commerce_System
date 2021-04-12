@@ -29,7 +29,11 @@ public class ProductSupplyAdapter
         return CreateThreadSafeSingleton.INSTANCE;
     }
 
-    public boolean deliver (String location, Map<Integer,Map<ProductDTO, Integer>> details){
-        return externalSupplier.deliver(location, details);
+    public void deliver(String location, Map<Integer,Map<ProductDTO, Integer>> details){
+        externalSupplier.deliver(location, details);
+    }
+
+    public boolean canDeliver(String location, Map<Integer,Map<ProductDTO, Integer>> details){
+        return externalSupplier.canDeliver(location, details);
     }
 }

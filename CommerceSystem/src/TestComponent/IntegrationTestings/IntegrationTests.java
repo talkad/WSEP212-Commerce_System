@@ -69,7 +69,7 @@ public class IntegrationTests {
     public void externalPaymentTest(){
         //manually check our system with external payment system
         PaymentSystemAdapter payment = PaymentSystemAdapter.getInstance();
-        boolean b = payment.pay(10,"123456");
+        boolean b = payment.canPay(10,"4580-1111-1111-1111");
         Assert.assertTrue(b);
     }
 
@@ -82,7 +82,7 @@ public class IntegrationTests {
         map1.put(productDTO, 1);
         toDeliver.put(2, map1);
         ProductSupplyAdapter supplier = ProductSupplyAdapter.getInstance();
-        boolean b = supplier.deliver("Beer Sheba",toDeliver);
+        boolean b = supplier.canDeliver("Israel, Beer Sheba",toDeliver);
         Assert.assertTrue(b);
 //
     }
