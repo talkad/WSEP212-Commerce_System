@@ -36,20 +36,20 @@ public class PurchaseController {
                 Response<List<PurchaseDTO>> res = storeController.purchase(cart);
 
                 if (res.isFailure())
-                        return new Response<>(null, true, res.getErrMsg());
+                        return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
 
                 if(!supplySystemAdapter.canDeliver(location, cart.getBaskets())) {
                         storeController.addProductsToInventories(cart);
-                        return new Response<>(null, true, "Delivery failed");
+                        return new Response<>(null, true, "Delivery failed" + " | created external connection");
                 }
 
                 if(!paymentSystemAdapter.canPay(cart.getTotalPrice(), bankAccount)) {
                         storeController.addProductsToInventories(cart);
-                        return new Response<>(null, true, "Payment failed");
+                        return new Response<>(null, true, "Payment failed" + " | created external connection");
                 }
 
                 paymentSystemAdapter.pay(cart.getTotalPrice(), bankAccount);
                 supplySystemAdapter.deliver(location, cart.getBaskets()); // assume the delivery is always successful
-                return new Response<>(res.getResult(), false, "The purchase was successful");
+                return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
         }
 }

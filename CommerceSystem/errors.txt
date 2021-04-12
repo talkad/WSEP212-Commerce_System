@@ -258,3 +258,173 @@ Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
 WARNING: User not connected
 Apr 12, 2021 5:24:48 PM Server.Domain.CommonClasses.Response <init>
 WARNING: User is not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product sword exceeding to inventory capacity
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed
+Apr 12, 2021 5:33:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed
+Apr 12, 2021 5:51:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 12, 2021 5:51:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:51:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 12, 2021 5:51:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 12, 2021 5:51:48 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product sword exceeding to inventory capacity
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User is not connected
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7.
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 12, 2021 5:52:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 12, 2021 6:26:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: ShoppingBasket: The given product doesn't exists
+Apr 12, 2021 6:26:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: CRITICAL: Product AirPods isn't from store
+Apr 12, 2021 6:26:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: ShoppingBasket: The amount can't be negative

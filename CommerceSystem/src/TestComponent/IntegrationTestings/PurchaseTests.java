@@ -7,7 +7,6 @@ import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.UserController;
 import org.junit.Test;
 import org.junit.Assert;
-
 import java.util.Map;
 
 
@@ -158,7 +157,22 @@ public class PurchaseTests {
     }
 
     @Test
-    public void failedPurchaseNoExternalConnectionsTest(){
-        //todo: idk
+    public void badPurchaseNoExternalConnectionsTest(){
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 7537864;
+        int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
+        ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+
+        store.addProduct(productDTO, 5);
+
+        for(int i = 0; i < 10; i++)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Eilat");
+        Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
     }
+
+    // todo: purchase policy test when it will be implemented
 }
