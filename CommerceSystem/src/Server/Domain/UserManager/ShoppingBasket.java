@@ -32,7 +32,7 @@ public class ShoppingBasket {
         int productID = product.getProductID();
 
         if(product.getStoreID() != storeID){ //double check
-            res = new Response<>(false, true, "ShoppingBasket: Product "+product.getName()+" isn't from store");
+            res = new Response<>(false, true, "CRITICAL: Product "+product.getName()+" isn't from store");
         }
         else{
 
@@ -158,5 +158,15 @@ public class ShoppingBasket {
         lock.readLock().unlock();
 
         return length;
+    }
+
+    public int getProductAmount(int productID){
+        int amount;
+
+        lock.readLock().lock();
+        amount = pAmount.get(productID);
+        lock.readLock().unlock();
+
+        return amount;
     }
 }

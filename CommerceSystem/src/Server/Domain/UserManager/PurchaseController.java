@@ -33,21 +33,23 @@ public class PurchaseController {
          * @return positive response if the payment occurred successfully.
          */
         public Response<List<PurchaseDTO>> handlePayment(String bankAccount, ShoppingCart cart, String location) {
-                boolean isPurchased;
-
                 Response<List<PurchaseDTO>> res = storeController.purchase(cart);
+
                 if (res.isFailure())
-                        return new Response<>(null, true, res.getErrMsg());
+                        return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
 
-                isPurchased = paymentSystemAdapter.pay(cart.getTotalPrice(), bankAccount);
-
-                if (isPurchased) {
-                        supplySystemAdapter.deliver(location, cart.getBaskets()); // assume the delivery is always successful
-                        return new Response<>(res.getResult(), false, "Payment successfully made.");
+                if(!supplySystemAdapter.canDeliver(location, cart.getBaskets())) {
+                        storeController.addProductsToInventories(cart);
+                        return new Response<>(null, true, "Delivery failed" + " | created external connection");
                 }
 
-                // abort the purchase
-                storeController.addProductsToInventories(cart);
-                return new Response<>(null, true, "Payment was unsuccessful.");
+                if(!paymentSystemAdapter.canPay(cart.getTotalPrice(), bankAccount)) {
+                        storeController.addProductsToInventories(cart);
+                        return new Response<>(null, true, "Payment failed" + " | created external connection");
+                }
+
+                paymentSystemAdapter.pay(cart.getTotalPrice(), bankAccount);
+                supplySystemAdapter.deliver(location, cart.getBaskets()); // assume the delivery is always successful
+                return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
         }
 }

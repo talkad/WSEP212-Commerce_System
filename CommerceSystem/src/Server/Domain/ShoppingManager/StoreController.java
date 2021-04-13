@@ -107,7 +107,7 @@ public class StoreController {
     public Response<List<PurchaseDTO>> purchase(ShoppingCart shoppingCart) {
         Store s;
         Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
-        List<PurchaseDTO> purchases = new LinkedList<>();
+        Map<Integer, PurchaseDTO> purchases = new HashMap<>();
         Response<PurchaseDTO> resPurchase;
         Map<Integer, Map<ProductDTO, Integer>> baskets = shoppingCart.getBaskets();
 
@@ -126,10 +126,15 @@ public class StoreController {
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
             }
 
-            purchases.add(resPurchase.getResult());
+            purchases.put(entry.getKey(), resPurchase.getResult());
             prods.put(entry.getKey(), entry.getValue());
         }
-        return new Response<>(purchases, false, "Purchase can be made.");
+
+        for(Integer storeID: purchases.keySet()){
+            stores.get(storeID).addPurchaseHistory(purchases.get(storeID));
+        }
+
+        return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
     }
 
     private Response<PurchaseDTO> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){

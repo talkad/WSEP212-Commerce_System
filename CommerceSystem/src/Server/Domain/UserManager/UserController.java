@@ -494,7 +494,7 @@ public class UserController {
             return new Response<>(true, false, "The purchase occurred");
         }
         readLock.unlock();
-        return new Response<>(null, true, "User not connected");
+        return new Response<>(null, true, "User is not connected");
     }
 
     public Map<String, User> getConnectedUsers() {

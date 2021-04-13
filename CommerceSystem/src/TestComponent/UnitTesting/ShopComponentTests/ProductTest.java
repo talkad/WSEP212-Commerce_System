@@ -5,30 +5,26 @@ import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Before;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ProductTest {
 
-    private Product product;
-
-    @Before
-    public void setUp(){
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
-        product = Product.createProduct(productDTO);
-    }
-
     @Test
     public void simplePriceUpdateTest(){
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        Product product = Product.createProduct(productDTO);
+
         product.updatePrice(19.9);
         Assert.assertEquals(19.9, product.getPrice(), 0.0);
     }
 
     @Test
     public void complexPriceUpdateTest()  throws InterruptedException {
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        Product product = Product.createProduct(productDTO);
+
         int numberOfThreads = 100;
         double price = product.getPrice();
         CountDownLatch latch = new CountDownLatch(numberOfThreads*2);
@@ -57,12 +53,18 @@ public class ProductTest {
 
     @Test
     public void simpleAddRateTest(){
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        Product product = Product.createProduct(productDTO);
+
         product.addRating(Rating.HIGH);
         Assert.assertEquals(4, product.getRating(), 0);
     }
 
     @Test
     public void mediumAddRateTest(){
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        Product product = Product.createProduct(productDTO);
+
         for(int i=0; i < 20; i++)
             product.addRating(Rating.HIGH);
 
@@ -81,6 +83,9 @@ public class ProductTest {
 
     @Test
     public void complexAddRateTest() throws InterruptedException {
+        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null, null);
+        Product product = Product.createProduct(productDTO);
+
         int numberOfThreads = 100;
         CountDownLatch latch = new CountDownLatch(numberOfThreads*2);
 
