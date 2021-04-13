@@ -58,7 +58,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void addProductToStoreTest(){ // 4.1.1
+    public void addProductToStoreWithPermissionsTest(){ // 4.1.1 good
         // a user with permissions of a store adding a products to the store
 
         ProductDTO productDTO = new ProductDTO("masmer yarok", this.storeID, 20,
@@ -80,19 +80,22 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         Assert.assertTrue(exists);
+    }
 
+    @Test
+    public void addProductToStoreWithoutPermissionsTest() { // 4.1.1 bad
         // now a user which doesn't have permissions will try to add a product
-        productDTO = new ProductDTO("masmer shahor", this.storeID, 20,
+        ProductDTO productDTO = new ProductDTO("masmer shahor", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("black", "nail")),
                 new LinkedList<String>(Arrays.asList("masmer")),
                 null);
-        addResponse = bridge.addProductsToStore("jacob", productDTO, 20);
+        Response<Boolean> addResponse = bridge.addProductsToStore("jacob", productDTO, 20);
         Assert.assertTrue(addResponse.isFailure());
 
         // making sure it wasn't added
-        searchResponse = bridge.searchByProductName("masmer shahor");
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer shahor");
 
-        exists = false;
+        boolean exists = false;
         for(ProductDTO product: searchResponse.getResult()){
             if(product.getStoreID() == this.storeID){
                 exists = true;
@@ -103,7 +106,30 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void removeProductFromStore(){ // 4.1.2
+    public void addProductToStoreInvalidProductAmountTest() { // 4.1.1 bad
+        // now a user which doesn't have permissions will try to add a product
+        ProductDTO productDTO = new ProductDTO("masmer masmeri", this.storeID, 20,
+                new LinkedList<String>(Arrays.asList("nail")),
+                new LinkedList<String>(Arrays.asList("masmer")),
+                null);
+        Response<Boolean> addResponse = bridge.addProductsToStore("aviad", productDTO, -20);
+        Assert.assertTrue(addResponse.isFailure());
+
+        // making sure it wasn't added
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer shahor");
+
+        boolean exists = false;
+        for(ProductDTO product: searchResponse.getResult()){
+            if(product.getStoreID() == this.storeID){
+                exists = true;
+            }
+        }
+
+        Assert.assertFalse(exists);
+    }
+
+    @Test
+    public void removeProductFromStoreWithPermissionsTest(){ // 4.1.2 good
         // a permitted user trying to remove a non-existing product
         Response<Boolean> deletionResponse = bridge.removeProductsFromStore("aviad", this.storeID,
                 -1, 1);
@@ -126,17 +152,20 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         Assert.assertFalse(exists);
+    }
 
+    @Test
+    public void removeProductFromStoreWithoutPermissionsTest() { // 4.1.2 bad
         // now a user without permissions will try to remove an existing product
-        searchResponse = bridge.searchByProductName("masmer varod");
-        productID = searchResponse.getResult().get(0).getProductID();
-        deletionResponse = bridge.removeProductsFromStore("jacob", this.storeID, productID, 20);
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer varod");
+        int productID = searchResponse.getResult().get(0).getProductID();
+        Response<Boolean> deletionResponse = bridge.removeProductsFromStore("jacob", this.storeID, productID, 20);
         Assert.assertTrue(deletionResponse.isFailure());
 
         // making sure it's not deleted
         searchResponse = bridge.searchByProductName("masmer varod");
 
-        exists = false;
+        boolean exists = false;
         for(ProductDTO product: searchResponse.getResult()){
             if(product.getStoreID() == this.storeID){
                 exists = true;
@@ -147,7 +176,28 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void updateProductInfoTest(){
+    public void removeProductFromStoreInvalidAmountTest() { // 4.1.2 bad
+        // now a user without permissions will try to remove an existing product
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer varod");
+        int productID = searchResponse.getResult().get(0).getProductID();
+        Response<Boolean> deletionResponse = bridge.removeProductsFromStore("aviad", this.storeID, productID, -20);
+        Assert.assertTrue(deletionResponse.isFailure());
+
+        // making sure it's not deleted
+        searchResponse = bridge.searchByProductName("masmer varod");
+
+        boolean exists = false;
+        for(ProductDTO product: searchResponse.getResult()){
+            if(product.getStoreID() == this.storeID){
+                exists = true;
+            }
+        }
+
+        Assert.assertTrue(exists);
+    }
+
+    @Test
+    public void updateProductInfoWithPermissionsTest(){ // 4.1.3 good
         // a user with permissions trying to update
         Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer varod");
         int productID = searchResponse.getResult().get(0).getProductID();
@@ -169,16 +219,21 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         Assert.assertTrue(updated);
+    }
 
+    @Test
+    public void updateProductInfoWithoutPermissionsTest() { // 4.1.3 bad
         // now a user without permissions will try to update
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer varod");
+        int productID = searchResponse.getResult().get(0).getProductID();
         int newerPrice = 200;
-        updateResponse = bridge.updateProductInfo("jacob", this.storeID,
+        Response<Boolean> updateResponse = bridge.updateProductInfo("jacob", this.storeID,
                 productID, newerPrice, "masmer varod");
 
         // making sure it's not changed
         searchResponse = bridge.searchByProductName("masmer varod");
 
-        updated = false;
+        boolean updated = false;
         for(ProductDTO product: searchResponse.getResult()){
             if(product.getStoreID() == this.storeID){
                 if(product.getPrice() == newerPrice) {
@@ -191,7 +246,31 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void appointStoreOwnerTest(){ // 4.3.1
+    public void updateProductInfoInvalidPriceTest() { // 4.1.3 bad
+        // now a user without permissions will try to update
+        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("masmer varod");
+        int productID = searchResponse.getResult().get(0).getProductID();
+        int newerPrice = -200;
+        Response<Boolean> updateResponse = bridge.updateProductInfo("aviad", this.storeID,
+                productID, newerPrice, "masmer varod");
+
+        // making sure it's not changed
+        searchResponse = bridge.searchByProductName("masmer varod");
+
+        boolean updated = false;
+        for(ProductDTO product: searchResponse.getResult()){
+            if(product.getStoreID() == this.storeID){
+                if(product.getPrice() == newerPrice) {
+                    updated = true;
+                }
+            }
+        }
+
+        Assert.assertFalse(updated);
+    }
+
+    @Test
+    public void appointStoreOwnerWithPermissionTest(){ // 4.3.1 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "abraham", "123456");
         bridge.register(guestName, "issac", "123456");
@@ -212,19 +291,24 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         // now an owner will try to appoint the original store owner. should fail
         appointResult = bridge.appointStoreOwner("abraham", "aviad", this.storeID);
         Assert.assertFalse(appointResult.getResult());
+    }
 
+    @Test
+    public void appointStoreOwnerWithoutPermissionTest() { // 4.3.1 bad
+        String guestName = bridge.addGuest().getResult();
         // now a user without any permissions will try to appoint another user
         bridge.register(guestName, "abraham2", "123456");
         bridge.register(guestName, "issac2", "123456");
         bridge.login(bridge.addGuest().getResult(), "abraham2", "123456");
         bridge.login(bridge.addGuest().getResult(), "issac2", "123456");
 
-        appointResult = bridge.appointStoreOwner("abraham2", "issac2", this.storeID);
+        Response<Boolean>appointResult = bridge.appointStoreOwner("abraham2", "issac2", this.storeID);
         Assert.assertFalse(appointResult.getResult());
     }
 
+
     @Test
-    public void removeOwnerAppointmentTest(){ // 4.4.1
+    public void removeOwnerAppointmentWithPermissionsTest(){ // 4.4.1 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "aaa", "123456");
         bridge.register(guestName, "bbb", "123456");
@@ -266,7 +350,20 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void appointStoreManager(){ // 4.5.1
+    public void removeOwnerAppointmentWithoutPermissionsTest() { // 4.4.1 bad
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "rrr", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "rrr", "123456");
+
+        // a user without any permissions tried to remove the ownership of an owner
+        Response<Boolean> removeResult = bridge.removeOwnerAppointment("rrr", "aviad",
+                this.storeID);
+        Assert.assertFalse(removeResult.getResult());
+    }
+
+    @Test
+    public void appointStoreManagerWithPermissions(){ // 4.5.1 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "aa", "123456");
         bridge.register(guestName, "bb", "123456");
@@ -299,7 +396,26 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void addPermissionTest(){ // 4.6.1
+    public void appointStoreManagerWithoutPermissions() { // 4.5.1 good
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "rr", "123456");
+        bridge.register(guestName, "tt", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "rr", "123456");
+        bridge.login(bridge.addGuest().getResult(), "tt", "123456");
+
+        // a user without permissions appoints a manager
+        Response<Boolean> appointResult = bridge.appointStoreManager("rr", "tt",
+                this.storeID);
+        Assert.assertFalse(appointResult.getResult());
+
+        // new appointee should not be able to see the workers
+        Response<List<User>> workersResult = bridge.getStoreWorkersDetails("tt", this.storeID);
+        Assert.assertTrue(workersResult.isFailure());
+    }
+
+    @Test
+    public void addPermissionWithPermissionsTest(){ // 4.6.1 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "d", "123456");
         bridge.register(guestName, "e", "123456");
@@ -393,7 +509,31 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void removePermissionTest(){ // 4.6.2
+    public void addPermissionWithoutPermissionsTest() { // 4.6.1 bad
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "h", "123456");
+        bridge.register(guestName, "j", "123456");
+
+
+        bridge.login(bridge.addGuest().getResult(), "h", "123456");
+        bridge.login(bridge.addGuest().getResult(), "j", "123456");
+
+        // owner will appoint a new manager and another user without permissions will give him permission to view the purchase history. should fail
+        Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "h",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        Response<Boolean> actionResult = bridge.addPermission("j", this.storeID, "h",
+                Permissions.RECEIVE_STORE_HISTORY);
+        Assert.assertFalse(actionResult.getResult());
+
+        // making sure he can't do that
+        Response<Collection<PurchaseDTO>> newActionResult = bridge.getPurchaseDetails("h", this.storeID);
+        Assert.assertTrue(newActionResult.isFailure());
+    }
+
+    @Test
+    public void removePermissionWithPermissionTest(){ // 4.6.2 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "x", "123456");
         bridge.register(guestName, "y", "123456");
@@ -561,7 +701,36 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void removeManagerAppointmentTest(){ // 4.7
+    public void removePermissionWithoutPermissionTest() { // 4.6.2 bad
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "xx", "123456");
+        bridge.register(guestName, "yy", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "xx", "123456");
+        bridge.login(bridge.addGuest().getResult(), "yy", "123456");
+
+        // the owner will give a manager a permission and a user without permissions will try to take the permission from him
+        Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "xx",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // receive store history permission
+        Response<Boolean> permissionResult = bridge.addPermission("aviad", this.storeID, "xx",
+                Permissions.RECEIVE_STORE_HISTORY);
+        Assert.assertTrue(permissionResult.getResult());
+
+        // a user without permissions trying to take the permission. should fail
+        permissionResult = bridge.removePermission("yy", this.storeID, "xx",
+                Permissions.RECEIVE_STORE_HISTORY);
+        Assert.assertFalse(permissionResult.getResult());
+
+        // making sure he still has the permission
+        Response<Collection<PurchaseDTO>> newActionResult = bridge.getPurchaseDetails("xx", this.storeID);
+        Assert.assertFalse(newActionResult.isFailure());
+    }
+
+    @Test
+    public void removeManagerAppointmentWithPermissionsTest(){ // 4.7 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "a", "123456");
         bridge.register(guestName, "b", "123456");
@@ -606,42 +775,73 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void getStoreWorkersDetailsTest(){ // 4.9
+    public void removeManagerAppointmentWithoutPermissionsTest() { // 4.7 bad
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "uu", "123456");
+        bridge.register(guestName, "kk", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "uu", "123456");
+        bridge.login(bridge.addGuest().getResult(), "kk", "123456");
+
+        // owner appoints a new manager
+        Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "uu",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // a user without permissions will try to remove his appointment. should fail
+        Response<Boolean> removeResult = bridge.removeManagerAppointment("kk", "uu",
+                this.storeID);
+        Assert.assertFalse(removeResult.getResult());
+
+        // manager still should be able to look up the workers of the store
+        Response<List<User>> workersDetails = bridge.getStoreWorkersDetails("uu", this.storeID);
+        Assert.assertFalse(workersDetails.isFailure());
+    }
+
+
+    @Test
+    public void getStoreWorkersDetailsWithPermissionsTest(){ // 4.9 good
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "irina", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "irina", "123456");
+
+
+        // appointing a manager (has the permission to view it by default)
+        Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "irina",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // manager and owner trying to view it
+        Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("irina", this.storeID);
+        Assert.assertFalse(workerDetailsResult.isFailure());
+        Assert.assertFalse(workerDetailsResult.getResult().isEmpty());
+
+        workerDetailsResult = bridge.getStoreWorkersDetails("aviad", this.storeID);
+        Assert.assertFalse(workerDetailsResult.isFailure());
+        Assert.assertFalse(workerDetailsResult.getResult().isEmpty());
+    }
+
+    @Test
+    public void getStoreWorkersDetailsWithoutPermissionsTest() { // 4.9 bad
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "shaoli", "123456");
-        bridge.register(guestName, "irina", "123456");
         bridge.register(guestName, "hector", "123456");
 
         bridge.login(bridge.addGuest().getResult(), "shaoli", "123456");
-        bridge.login(bridge.addGuest().getResult(), "irina", "123456");
         bridge.login(bridge.addGuest().getResult(), "hector", "123456");
-
 
         // appointing a manager (has the permission to view it by default)
         Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "shaoli",
                 this.storeID);
         Assert.assertTrue(appointResult.getResult());
 
-        // appointing a manager (has the permission to view it by default)
-        appointResult = bridge.appointStoreOwner("aviad", "irina",
-                this.storeID);
-        Assert.assertTrue(appointResult.getResult());
-
-        // manager and owner trying to view it
-        Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
-        Assert.assertFalse(workerDetailsResult.isFailure());
-        Assert.assertFalse(workerDetailsResult.getResult().isEmpty());
-
-        workerDetailsResult = bridge.getStoreWorkersDetails("irina", this.storeID);
-        Assert.assertFalse(workerDetailsResult.isFailure());
-        Assert.assertFalse(workerDetailsResult.getResult().isEmpty());
-
         // taking the permission to view it from the manager and he tries to view it. should fail
         Response<Boolean> permissionResult = bridge.removePermission("aviad", this.storeID,
                 "shaoli", Permissions.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
-        workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
+        Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
         Assert.assertTrue(workerDetailsResult.isFailure());
 
         // now a user which is not a manger or an owner will try to view it
@@ -654,16 +854,11 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void getPurchaseDetails(){ // 4.11
+    public void getPurchaseDetailsWithPermissions(){ // 4.11 good
         String guestName = bridge.addGuest().getResult();
         bridge.register(guestName, "bibi", "123456");
-        bridge.register(guestName, "benet", "123456");
-        bridge.register(guestName, "lapid", "123456");
 
         bridge.login(bridge.addGuest().getResult(), "bibi", "123456");
-        bridge.login(bridge.addGuest().getResult(), "benet", "123456");
-        bridge.login(bridge.addGuest().getResult(), "lapid", "123456");
-
 
         // appointing a manager (doesn't have the permission by default)
         Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "bibi",
@@ -675,26 +870,32 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 "bibi", Permissions.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
-        // appointing a manager (has the permission to view it by default)
-        appointResult = bridge.appointStoreOwner("aviad", "benet",
-                this.storeID);
-        Assert.assertTrue(appointResult.getResult());
-
         // manager and owner trying to view it
         Response<Collection<PurchaseDTO>> historyResult = bridge.getPurchaseDetails("bibi", this.storeID);
         Assert.assertFalse(historyResult.isFailure());
         Assert.assertNotNull(historyResult.getResult());
 
-        historyResult = bridge.getPurchaseDetails("benet", this.storeID);
+        historyResult = bridge.getPurchaseDetails("aviad", this.storeID);
         Assert.assertFalse(historyResult.isFailure());
         Assert.assertNotNull(historyResult.getResult());
+    }
 
-        // taking the permission to view it from the manager and he tries to view it. should fail
-        permissionResult = bridge.removePermission("aviad", this.storeID,
-                "bibi", Permissions.RECEIVE_STORE_HISTORY);
-        Assert.assertTrue(permissionResult.getResult());
+    @Test
+    public void getPurchaseDetailsWithoutPermissions() { // 4.11 bad
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "benet", "123456");
+        bridge.register(guestName, "lapid", "123456");
 
-        historyResult = bridge.getPurchaseDetails("bibi", this.storeID);
+        bridge.login(bridge.addGuest().getResult(), "benet", "123456");
+        bridge.login(bridge.addGuest().getResult(), "lapid", "123456");
+
+        // appointing a manager (doesn't have the permission by default)
+        Response<Boolean> appointResult = bridge.appointStoreManager("aviad", "benet",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // the manager tries to view it. should fail
+        Response<Collection<PurchaseDTO>> historyResult = bridge.getPurchaseDetails("benet", this.storeID);
         Assert.assertTrue(historyResult.isFailure());
 
         // now a user which is not a manger or an owner will try to view it
