@@ -95,7 +95,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void registerTestFail(){ // 2.3 bad
+    public void registeringWithExistingUsernameTest(){ // 2.3 bad
         // trying to register a new user with an already existing username
         String guestName = bridge.addGuest().getResult();
         Response<Boolean> registerResponse = bridge.register(guestName, "aviad", "654321");
@@ -115,7 +115,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void loginTestFail(){ // 2.4 bad
+    public void loginToNonExistentUserTest(){ // 2.4 bad
         // trying to login to a user which does not exit
         String guestName = bridge.addGuest().getResult();
         Response<String> loginResponse = bridge.login(guestName, "shlomi", "123456");
@@ -144,7 +144,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void searchStoreTestFail(){ // 2.5 good
+    public void searchNonExistentStoreTest(){ // 2.5 good
         // now looking for an non-existing store
         Response<List<Store>> searchResult = bridge.searchByStoreName("mefo li");
         Assert.assertTrue(searchResult.getResult().isEmpty());
@@ -168,14 +168,14 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void searchByNameTestFail(){ // 2.6-a bad
+    public void searchNonExistentProductByNameTest(){ // 2.6-a bad
         // search by name - non-existing product
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("tarnegolet");
         Assert.assertTrue(searchResult.getResult().isEmpty());
     }
 
     @Test
-    public void searchByCategoryTestSuccess(){ //2.6-b good
+    public void searchProductByCategoryTestSuccess(){ //2.6-b good
         // search by category - existing product
         Response<List<ProductDTO>> searchResult = bridge.searchByProductCategory("aviation");
         Assert.assertFalse(searchResult.isFailure());
@@ -196,7 +196,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void searchByCategoryTestFail() { //2.6-b bad
+    public void searchNonExistentProductByCategoryTest() { //2.6-b bad
         // search by category - non-existing product
         Response<List<ProductDTO>> searchResult = bridge.searchByProductCategory("spinners");
         Assert.assertTrue(searchResult.getResult().isEmpty());
@@ -225,7 +225,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void searchProductByKeywordTestFail() { // 2.6-c bad
+    public void searchNonExistentProductByKeywordTest() { // 2.6-c bad
         // search by category - non-existing product
         Response<List<ProductDTO>> searchResult = bridge.searchByProductKeyword("nigmero li ha ra'ayonot");
         Assert.assertTrue(searchResult.getResult().isEmpty());
@@ -256,7 +256,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void addToCartTestFail(){ // 2.7 bad
+    public void addToCartOutOfStockProductTest(){ // 2.7 bad
         // opening a store and adding a product to it
         int storeID = bridge.openStore("aviad", "lala lili").getResult();
         ProductDTO product = new ProductDTO("kchichat basar", storeID, 20,
@@ -331,7 +331,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void removeProductTestFail() { // 2.8.2 bad
+    public void removeNonExistentProductTest() { // 2.8.2 bad
         // a guest is removing a product to his cart
         String guestName = bridge.addGuest().getResult();
 
@@ -372,7 +372,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void updateProductQuantityTestFail() { // 2.8.3 bad
+    public void updateProductQuantityToNegativeAmountTest() { // 2.8.3 bad
         // searching to product the user bought
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductDTO product = searchResult.getResult().get(0);
