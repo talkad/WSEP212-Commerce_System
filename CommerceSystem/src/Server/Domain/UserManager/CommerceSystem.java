@@ -13,7 +13,7 @@ public class CommerceSystem implements IService {
 
     private UserController userController;
     private StoreController storeController;
-    public static Log log = new Log("errors.txt");
+    public static Log log = new Log("logs.txt");
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();

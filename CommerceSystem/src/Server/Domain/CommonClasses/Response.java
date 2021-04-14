@@ -13,9 +13,7 @@ public class Response<T> {
         this.result = result;
         this.isFailure = isFailure;
         this.errMsg = errMsg;
-
-        if(isFailure)
-            CommerceSystem.log.logger.warning(errMsg);
+        LogWriter(isFailure, errMsg);
     }
 
     public T getResult() {
@@ -28,5 +26,11 @@ public class Response<T> {
 
     public String getErrMsg() {
         return errMsg;
+    }
+
+    private void LogWriter (boolean isFailure, String errMsg){
+        if(!isFailure) CommerceSystem.log.logger.info(errMsg);
+        else if (errMsg.startsWith("CRITICAL")) CommerceSystem.log.logger.severe(errMsg);
+        else CommerceSystem.log.logger.warning(errMsg);
     }
 }

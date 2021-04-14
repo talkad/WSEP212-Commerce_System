@@ -35,6 +35,7 @@ public class PaymentSystemAdapter
     }
 
     public boolean canPay(double price, String bankAccount){
+        if (price<0) return false;
         return externalSystem.canPay(price, bankAccount);
     }
 
