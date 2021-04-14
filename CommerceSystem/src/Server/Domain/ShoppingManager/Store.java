@@ -46,6 +46,14 @@ public class Store {
             return new Response<>(false, true, "The amount cannot be negative or zero");
         }
 
+        if(productDTO == null){
+            return new Response<>(false, true, "Cannot add NULL product");
+        }
+
+        if(productDTO.getPrice() <= 0){
+            return new Response<>(false, true, "Price cannot be negative");
+        }
+
         inventory.addProducts(productDTO, amount);
         return new Response<>(true, false, "The product added successfully to store");
     }

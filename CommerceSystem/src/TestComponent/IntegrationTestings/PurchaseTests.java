@@ -106,7 +106,7 @@ public class PurchaseTests {
     }
 
     @Test
-    public void badPurchaseHistoryDoesntChangedTest(){
+    public void badPurchaseUserHistoryDoesntChangedTest(){
         String guestName = UserController.getInstance().addGuest().getResult();
         int productID = 12568634;
         int storeID = StoreController.getInstance().openStore("Evil Inc.", "Dufenshmirtz").getResult();
@@ -121,7 +121,7 @@ public class PurchaseTests {
         for(int i = 0; i < 10; i++)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel");
+        UserController.getInstance().purchase("faruk", "4580-1111-1111-1111", "Israel");
 
         Assert.assertEquals(0, UserController.getInstance().getPurchaseHistoryContents("faruk").getResult().size());
         Assert.assertEquals(0, store.getPurchaseHistory().getResult().size());
