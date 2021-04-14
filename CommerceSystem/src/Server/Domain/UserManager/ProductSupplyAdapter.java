@@ -34,6 +34,7 @@ public class ProductSupplyAdapter
     }
 
     public boolean canDeliver(String location, Map<Integer,Map<ProductDTO, Integer>> details){
+        if (location==null) return false;
         return externalSupplier.canDeliver(location, details);
     }
 }
