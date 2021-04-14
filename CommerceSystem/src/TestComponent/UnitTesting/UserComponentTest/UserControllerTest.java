@@ -1,6 +1,7 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
 
+import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
@@ -8,6 +9,13 @@ import Server.Domain.UserManager.UserDAO;
 import Server.Domain.UserManager.Permissions;
 import Server.Service.CommerceService;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
@@ -19,6 +27,8 @@ public class UserControllerTest {
     private UserDAO userDAO;
     private String initialUserName;
 
+    private ReadWriteLock lock;
+
     @Before
     public void setUp(){
         commerceService = CommerceService.getInstance();
@@ -26,6 +36,7 @@ public class UserControllerTest {
         userController = UserController.getInstance();
         userDAO = UserDAO.getInstance();
         initialUserName = commerceService.addGuest().getResult();
+        lock = new ReentrantReadWriteLock();
     }
 
     @Test
@@ -108,5 +119,58 @@ public class UserControllerTest {
         Assert.assertTrue(userController.getConnectedUsers().containsKey(initialUserName));
         Assert.assertTrue(userController.logout(initialUserName).isFailure());
         Assert.assertTrue(userController.getConnectedUsers().containsKey(initialUserName));
+    }
+
+    @Test
+    public void concurrencyRegistrationTest() throws InterruptedException{
+        AtomicInteger successes = new AtomicInteger(0);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                String name = userController.addGuest().getResult();
+                Response<Boolean> response = userController.register(name, "John", "Doe");
+                if(!response.isFailure()){
+                    successes.incrementAndGet();
+                }
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that only one thread succeeded to register
+        Assert.assertEquals(1, successes.get());
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyAddGuestTest() throws InterruptedException{
+        AtomicInteger duplicates = new AtomicInteger(0);
+        List<String> names = new Vector<>();
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                String name = userController.addGuest().getResult();
+                lock.writeLock().lock();
+                if(names.contains(name)){
+                    duplicates.incrementAndGet();
+                }
+                else{
+                    names.add(name);
+                }
+                lock.writeLock().unlock();
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that there were no duplicate guest names returned
+        Assert.assertEquals(0, duplicates.get());
+        service.shutdownNow();
     }
 }

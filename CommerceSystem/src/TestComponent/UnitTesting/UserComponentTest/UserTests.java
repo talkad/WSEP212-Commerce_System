@@ -13,6 +13,10 @@ import org.junit.Test;
 import org.junit.Assert;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
@@ -182,5 +186,128 @@ public class UserTests {
         Assert.assertTrue(yaakov.getPurchaseDetails(store2ID).isFailure());
     }
 
+    @Test
+    public void concurrencyAddAppointmentTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(1000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                if(currentId % 2 == 0){
+                    yaakov.addStoresOwned(currentId);
+                }
+                else{
+                    yaakov.addStoresManaged(currentId, new Vector<>());
+                }
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every appointment was added
+        for(int storeId = 1000; storeId < 1100; storeId++){
+            if(storeId % 2 == 0) {
+                Assert.assertTrue(yaakov.isOwner(storeId));
+            }
+            else{
+                Assert.assertTrue(yaakov.isManager(storeId));
+            }
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyRemoveAppointmentTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(3000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 3000; storeId < 3100; storeId++){
+            if(storeId % 2 == 0){
+                yaakov.addStoresOwned(storeId);
+            }
+            else{
+                yaakov.addStoresManaged(storeId, new Vector<>());
+            }
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.removeRole(currentId);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every appointment was removed
+        for(int storeId = 3000; storeId < 3100; storeId++){
+            if(storeId % 2 == 0) {
+                Assert.assertFalse(yaakov.isOwner(storeId));
+            }
+            else{
+                Assert.assertFalse(yaakov.isManager(storeId));
+            }
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyAddPermissionTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(2000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 2000; storeId < 2100; storeId++){
+            yaakov.addStoresManaged(storeId, new Vector<>());
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.addSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every permission was added
+        for(int storeId = 2000; storeId < 2100; storeId++){
+            Assert.assertTrue(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyRemovePermissionTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(4000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 4000; storeId < 4100; storeId++){
+            yaakov.addStoresManaged(storeId, new Vector<>());
+            yaakov.addSelfPermission(storeId, Permissions.ADD_PRODUCT_TO_STORE);
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.removeSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every permission was removed
+        for(int storeId = 4000; storeId < 4100; storeId++){
+            Assert.assertFalse(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        }
+        service.shutdownNow();
+    }
 }
