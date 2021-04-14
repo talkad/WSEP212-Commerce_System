@@ -123,7 +123,7 @@ public class StoreController {
                     for (Map.Entry<ProductDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
                         s.addProduct(shopRefund.getKey(), shopRefund.getValue());
                 }
-                return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + ".");
+                return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + " " + resPurchase.getErrMsg());
             }
 
             purchases.put(entry.getKey(), resPurchase.getResult());

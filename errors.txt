@@ -4036,3 +4036,1423 @@ Apr 08, 2021 5:14:19 PM Server.Domain.CommonClasses.Response <init>
 WARNING: username already exists
 Apr 08, 2021 5:14:19 PM Server.Domain.CommonClasses.Response <init>
 WARNING: User not allowed to receive store history
+Apr 14, 2021 3:43:25 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 3:43:25 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 3:47:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 3:47:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 3:51:53 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 3:51:53 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:18:16 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The amount cannot be negative or zero
+Apr 14, 2021 4:18:57 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The amount cannot be negative or zero
+Apr 14, 2021 4:19:22 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:21:05 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:21:16 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:16 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:16 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:21:20 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:20 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:21:20 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:23:07 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:23:07 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:23:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:23:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 4:23:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:23:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: The product amount cannot be negative or zero
+Apr 14, 2021 4:23:21 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Amount to remove exceeds the amount in stock
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:02:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:02:56 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product sword exceeding to inventory capacity
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7.
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:04:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product sword exceeding to inventory capacity
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2.
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 2. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Payment failed | created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Delivery failed | created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7.
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:10:39 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:20:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:20:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:20:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:20:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:20:00 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:21:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:21:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:21:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:21:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:21:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:24:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:24:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:24:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:24:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:24:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:25:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:25:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:25:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:25:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:25:14 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:26:33 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:26:33 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:26:33 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:26:33 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:26:33 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8.
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:27:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8.
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:02 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9.
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:28:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:28:27 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9.
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:28:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9.
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:29:06 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9. | doesn't created external connection
+Apr 14, 2021 5:29:55 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:55 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:29:55 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:29:55 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:29:55 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:30:30 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:30:30 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:30:30 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:30:30 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:30:30 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:32:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:32:38 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:34:42 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:34:42 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:34:42 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:35:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:35:01 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:36:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:36:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:36:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:36:17 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:36:35 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:36:40 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:40:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0.
+Apr 14, 2021 5:40:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:40:08 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0. | doesn't created external connection
+Apr 14, 2021 5:40:12 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:40:12 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:40:12 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands.
+Apr 14, 2021 5:40:12 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:40:12 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:03 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:03 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:03 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands.
+Apr 14, 2021 5:41:03 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:03 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 0 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6 Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 6 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8 Not qualified of policy demands.
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 8 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Store: Product deletion failed successfully
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 5:41:19 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands.
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:28 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands.
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:29 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands.
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:46 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product tehini exceeding to inventory capacity
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 1 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: This product doesn't exists in the specified store
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 3 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product jellyfish exceeding to inventory capacity
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 4 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 5 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 7 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: username already exists
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: User not connected
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: You cannot purchase an empty cart | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands.
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 9 Not qualified of policy demands. | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Inventory: Product scar exceeding to inventory capacity
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection
+Apr 14, 2021 6:07:51 PM Server.Domain.CommonClasses.Response <init>
+WARNING: Problem with purchase from store 10 Store: Product deletion failed successfully | doesn't created external connection

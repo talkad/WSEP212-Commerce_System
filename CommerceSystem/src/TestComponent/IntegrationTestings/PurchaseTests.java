@@ -1,13 +1,12 @@
 package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.ShoppingManager.Store;
-import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.UserController;
 import org.junit.Test;
 import org.junit.Assert;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class PurchaseTests {
@@ -20,9 +19,12 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 5);
-        UserController.getInstance().addToCart(guestName, storeID, productID);
+        for(int i = 0; i < 5; i++)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
 
         response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
         Assert.assertTrue(response.getResult());
@@ -36,6 +38,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Rami levi", "Rami levi").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -52,6 +56,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("ABU fahrizade", "Abu jihad").getResult();
         ProductDTO productDTO = new ProductDTO("sheep", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -69,6 +75,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("KFC", "Ned Stark").getResult();
         ProductDTO productDTO = new ProductDTO("sword", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 1);
         UserController.getInstance().addToCart(guestName1, storeID, 482163215); // product doesn't exists
@@ -93,6 +101,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Spongebob", "mr. krab").getResult();
         ProductDTO productDTO = new ProductDTO("jellyfish", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 5);
 
@@ -112,6 +122,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Evil Inc.", "Dufenshmirtz").getResult();
         ProductDTO productDTO = new ProductDTO("IHateTestInator", productID, storeID, 99999.99, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         UserController.getInstance().register(guestName, "faruk", "doda lola");
         UserController.getInstance().login(guestName, "faruk", "doda lola");
@@ -138,6 +150,9 @@ public class PurchaseTests {
         ProductDTO productDTO2 = new ProductDTO("tehini", productID2, storeID, 20, null, null, null, 0, 0);
 
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
         store.addProduct(productDTO1, 1);
         store.addProduct(productDTO2, 1);
 
@@ -164,6 +179,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
         ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         store.addProduct(productDTO, 5);
 
@@ -172,6 +189,83 @@ public class PurchaseTests {
 
         response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Eilat");
         Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
+    }
+
+    @Test
+    public void purchasePurchasePolicyTestSuccess() {
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 65482;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
+        store.addProduct(productDTO, 5);
+        for (int i = 0; i < 3; ++i)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        Assert.assertTrue(response.getResult());
+    }
+
+    @Test
+    public void purchasePurchasePolicyTestFailure(){
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 65482;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
+        store.addProduct(productDTO, 5);
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        Assert.assertTrue(response.getErrMsg().contains("Not qualified of policy demands."));
+    }
+
+    @Test
+    public void purchaseDiscountPolicyTestFailure() {
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 65482;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
+        store.addProduct(productDTO, 5);
+        for (int i = 0; i < 3; ++i)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+
+        double purchasePrice = store.getPurchaseHistory().getResult().stream().collect(Collectors.toList()).get(0).getTotalPrice();
+        Assert.assertEquals(15000, purchasePrice, 0);
+    }
+
+    @Test
+    public void purchaseDiscountPolicyTestSuccess() {
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 65482;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
+        store.addProduct(productDTO, 5);
+        for (int i = 0; i < 5; ++i)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+
+        double purchasePrice = store.getPurchaseHistory().getResult().stream().collect(Collectors.toList()).get(0).getTotalPrice();
+        Assert.assertEquals(22500, purchasePrice, 0);
     }
 
     // todo: purchase policy test when it will be implemented
