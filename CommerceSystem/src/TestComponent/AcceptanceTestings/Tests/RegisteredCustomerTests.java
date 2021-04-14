@@ -2,6 +2,7 @@ package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
@@ -25,6 +26,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
             String guestName = bridge.addGuest().getResult();
             bridge.register(guestName, "aviad", "123456");
             bridge.register(guestName, "shalom", "123456");
+            bridge.register(guestName, "tzemah", "123456");
 
             bridge.login(guestName, "aviad", "123456");
             int storeID = bridge.openStore("aviad", "hacol la sefer").getResult();
@@ -55,7 +57,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void logoutTest(){ // 3.1
+    public void logoutTestSuccess(){ // 3.1 good
         // logging in to an existing user.
         String guestName = bridge.addGuest().getResult();
         bridge.login(guestName, "shalom", "123456");
@@ -71,7 +73,15 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void createStoreTest(){ // 3.2
+    public void guestLoggingOutTest(){ // 3.1 bad
+        String guestName = bridge.addGuest().getResult();
+        // logging out
+        Response<String> logoutResponse = bridge.logout(guestName);
+        Assert.assertTrue(logoutResponse.isFailure());
+    }
+
+    @Test
+    public void createStoreTestSuccess(){ // 3.2 good
         // opening a store from a logged in user
         Response<Integer> openStoreResponse = bridge.openStore("aviad", "hacol la even");
         Assert.assertFalse(openStoreResponse.isFailure());
@@ -80,23 +90,26 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<Store>> searchResult = bridge.searchByStoreName("hacol la even");
         boolean exists = true;
         for(Store store: searchResult.getResult()){
-            if(!store.getName().equals("hacol la even")){ // todo: equals or a substring matches?
+            if(!store.getName().contains("hacol la even")){
                 exists = false;
             }
         }
 
         Assert.assertTrue(exists);
+    }
 
+    @Test
+    public void notRegisteredUserCreatesStore() { // 3.2 good
         // trying to open a store from a user which is a guest. should fail
         String guestName = bridge.addGuest().getResult();
-        openStoreResponse = bridge.openStore(guestName, "bug");
+        Response<Integer> openStoreResponse = bridge.openStore(guestName, "bug");
         Assert.assertTrue(openStoreResponse.isFailure());
 
         // making sure we can't find it
-        searchResult = bridge.searchByStoreName("bug");
-        exists = false;
+        Response<List<Store>> searchResult = bridge.searchByStoreName("bug");
+        boolean exists = false;
         for(Store store: searchResult.getResult()){
-            if(store.getName().equals("bug")){ // todo: equals or a substring matches?
+            if(store.getName().contains("bug")){
                 exists = true;
             }
         }
@@ -105,14 +118,13 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void reviewProduct(){ // 3.3
+    public void reviewProductSuccess(){ // 3.3 good
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
         // logged in user adding a product to his cart and buying it
-        String guestName = bridge.addGuest().getResult();
-        bridge.login(guestName, "shalom", "123456");
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "natanya");
+        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
 
         // now he reviews it
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
@@ -122,33 +134,64 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         // checking if the review was added
         searchResult = bridge.searchByProductName("simania zoheret");
         productDTO = searchResult.getResult().get(0);
-        Assert.assertTrue(productDTO.getReviews().contains("best simania i ever bought! solid 5/7"));
 
+        boolean added = false;
+        for(Review review: productDTO.getReviews()){
+            if(review.getReview().equals("best simania i ever bought! solid 5/7")){
+                added = true;
+                break;
+            }
+        }
 
-        // now the guest is trying to review a product he didn't buy. should fail
-        searchResult = bridge.searchByProductName("martiv sfarim");
-        productDTO = searchResult.getResult().get(0);
-        reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+        Assert.assertTrue(added);
+    }
+
+    @Test
+    public void reviewProductNotBoughtPreviously() { // 3.3 bad
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+        // the user is trying to review a product he didn't buy. should fail
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("martiv sfarim");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
                 productDTO.getProductID(), "meh martiv! 3/10");
         Assert.assertFalse(reviewResult.getResult());
 
+        bridge.logout("shalom");
+    }
 
+    @Test
+    public void guestReviewingAProduct(){ // 3.3 bad
         // logging out and trying to review a product. should fail.
-        guestName = bridge.logout("shalom").getResult();
-        reviewResult = bridge.addProductReview(guestName, productDTO.getStoreID(),
-                productDTO.getProductID(), "meh mavrik! 3/10");
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("martiv sfarim");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        String guestName = bridge.addGuest().getResult();
+        Response<Boolean> reviewResult = bridge.addProductReview(guestName, productDTO.getStoreID(),
+                productDTO.getProductID(), "meh mavriv! 3/10");
         Assert.assertFalse(reviewResult.getResult());
     }
 
     @Test
-    public void getPurchaseHistory(){ // 3.7
+    public void emptyReviewTest(){ // 3.3 bad
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+        // the user is trying to review a product he didn't buy. should fail
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("martiv sfarim");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "");
+        Assert.assertFalse(reviewResult.getResult());
+
+        bridge.logout("shalom");
+    }
+
+    @Test
+    public void getPurchaseHistorySuccess(){ // 3.7 good
         // logging in and buying a product
         String guestName = bridge.addGuest().getResult();
         bridge.login(guestName, "shalom", "123456");
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("mavrik sfarim");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "natanya");
+        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
 
         // looking the purchase in the purchase history
         Response<List<PurchaseDTO>> historyResult = bridge.getPurchaseHistory("shalom");
@@ -165,10 +208,22 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
         Assert.assertTrue(exists);
 
-
         // logging out and trying to view the purchase history as a guest. should fail
-        guestName = bridge.logout("shalom").getResult();
-        historyResult = bridge.getPurchaseHistory(guestName);
+        bridge.logout("shalom").getResult();
+    }
+
+    @Test
+    public void guestGetPurchaseHistory(){ // 3.7 bad
+        String guestName = bridge.addGuest().getResult();
+        Response<List<PurchaseDTO>> historyResult = bridge.getPurchaseHistory(guestName);
         Assert.assertTrue(historyResult.isFailure());
     }
+
+    @Test
+    public void emptyPurchaseHistory(){ // 3.7 bad
+        bridge.login(bridge.addGuest().getResult(), "tzemah", "123456");
+        Response<List<PurchaseDTO>> historyResult = bridge.getPurchaseHistory("tzemah");
+        Assert.assertTrue(historyResult.getResult().isEmpty());
+    }
+
 }
