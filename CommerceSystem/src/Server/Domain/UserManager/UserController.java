@@ -122,16 +122,17 @@ public class UserController {
             readLock.unlock();
             Response<Boolean> result = user.register();
             if (!result.isFailure()) {
-                //readLock.lock();  // TODO check if needed
+                writeLock.lock();  // TODO check if needed (prevents multiple registration)
                 result = UserDAO.getInstance().userExists(name);
                 if (!result.getResult()) {
                     UserDAO.getInstance().registerUser(name, security.sha256(password));
+                    writeLock.unlock();
                     result = new Response<>(true, false, "");
                 }
                 else{
+                    writeLock.unlock();
                     return new Response<>(false, true, "username already exists");
                 }
-                //readLock.unlock();
             }
             return result;
         }

@@ -13,6 +13,10 @@ import org.junit.Test;
 import org.junit.Assert;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,160 +101,213 @@ public class UserTests {
 //    }
 
     @Test
-    public void openStore() {
+    public void openStoreAddToStoresOwned() {
         int storeID = almog.openStore("Rami Levi").getResult();
-        //System.out.println(almog.getStoresOwned().toString());
-        //System.out.println(yaakov.getStoresOwned().toString());
         Assert.assertTrue(almog.getStoresOwned().contains(storeID));
     }
 
     @Test
-    public void registerState() {
+    public void registerSuccess() {
         Assert.assertFalse(guest.register().isFailure());
+    }
+
+    @Test
+    public void registerFailureNotAGuest() {
         Assert.assertTrue(shaked.register().isFailure());
     }
 
     @Test
-    public void logoutState() {
-        Assert.assertTrue(guest.logout().isFailure());
+    public void logoutSuccess() {
         Assert.assertFalse(yaakov.logout().isFailure());
     }
 
     @Test
-    public void openStoreState() {
-        Assert.assertTrue(guest.openStore("guest's cool store").isFailure());
+    public void logoutFailureNotRegistered() {
+        Assert.assertTrue(guest.logout().isFailure());
+    }
+
+    @Test
+    public void openStoreSuccess() {
         Assert.assertFalse(yaakov.openStore("yaakov's cool store").isFailure());
     }
 
     @Test
-    public void getPurchaseHistoryContentsState() {
-        Assert.assertTrue(guest.getPurchaseHistoryContents().isFailure());
+    public void openStoreFailureNotRegistered() {
+        Assert.assertTrue(guest.openStore("guest's cool store").isFailure());
+    }
+
+    @Test
+    public void getPurchaseHistoryContentsSuccess() {
         Assert.assertFalse(yaakov.getPurchaseHistoryContents().isFailure());
     }
 
     @Test
-    public void addProductReviewState() {
-        userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
-        userController.purchase(almog.getName(), "1234567890", "mercaz");
-
-        Assert.assertTrue(guest.addProductReview(store2ID, beef.getProductID(), "good product").isFailure());//todo productid
-        Assert.assertFalse(almog.addProductReview(store2ID, beef.getProductID(), "good product").isFailure());
+    public void getPurchaseHistoryContentsFailureNotRegistered() {
+        Assert.assertTrue(guest.getPurchaseHistoryContents().isFailure());
     }
 
     @Test
-    public void addProductsToStoreState() {//todo add to purchase history
-        List<String> categories = new LinkedList<>();
-        categories.add("food");
-        List<String> keyword = new LinkedList<>();
-        keyword.add("bread");
-        Collection<Review> review = new LinkedList<>();
-
-        Assert.assertFalse(yaakov.addProductsToStore(new ProductDTO("XL eggs", store1ID, 5, categories, keyword, review), 5).isFailure());
-        Assert.assertTrue(yaakov.addProductsToStore(new ProductDTO("steak", store2ID, 5, categories, keyword, review), 5).isFailure());
-    }
-
-    @Test
-    public void removeProductsFromStoreState() {//todo add to purchase history
-        List<String> categories = new LinkedList<>();
-        categories.add("food");
-        List<String> keyword = new LinkedList<>();
-        keyword.add("bread");
-        Collection<Review> review = new LinkedList<>();
-        yaakov.addProductsToStore(new ProductDTO("XXL eggs", store1ID, 10, categories, keyword, review), 5);
-        Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("XXL eggs");
-        ProductDTO productDTO = result.getResult().get(0);
-
-        Assert.assertTrue(almog.removeProductsFromStore(store1ID, productDTO.getProductID(), 5).isFailure());
-        Assert.assertFalse(yaakov.removeProductsFromStore(store1ID, productDTO.getProductID(), 5).isFailure());
-    }
-
-    @Test
-    public void editProductState() {
-        List<String> categories = new LinkedList<>();
-        categories.add("food");
-        List<String> keyword = new LinkedList<>();
-        keyword.add("bread");
-        Collection<Review> review = new LinkedList<>();
-        almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword, review), 5);
-        Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("chicken");
-        ProductDTO productDTO = result.getResult().get(0);
-
-        Assert.assertTrue(yaakov.updateProductInfo(store2ID, productDTO.getProductID(), 15, "big chicken").isFailure());
-        Assert.assertFalse(almog.updateProductInfo(store2ID, productDTO.getProductID(), 15, "big chicken").isFailure());
-    }
-
-    @Test
-    public void receiveGeneralHistoryState() {
-        Assert.assertTrue(yaakov.getUserPurchaseHistory("almog").isFailure());
-        Assert.assertFalse(shaked.getUserPurchaseHistory("almog").isFailure());
-
-        Assert.assertTrue(yaakov.getStorePurchaseHistory(store2ID).isFailure());
+    public void receiveStorePurchaseHistorySuccess() {
         Assert.assertFalse(shaked.getStorePurchaseHistory(store2ID).isFailure());
     }
 
     @Test
-    public void appointOwnerState() {
-        Assert.assertFalse(shaked.isOwner(store1ID));
-        Assert.assertTrue(almog.appointOwner("shaked", store1ID).isFailure());
-        Assert.assertFalse(shaked.isOwner(store1ID));
-        Assert.assertFalse(yaakov.appointOwner("shaked", store1ID).isFailure());
-        Assert.assertTrue(shaked.isOwner(store1ID));
+    public void receiveStorePurchaseHistoryFailureNotPermitted() {
+        Assert.assertTrue(yaakov.getStorePurchaseHistory(store2ID).isFailure());
     }
 
     @Test
-    public void removeOwnerAppointmentState() {
-        yaakov.appointOwner("shaked", store1ID);
-        Assert.assertTrue(shaked.isOwner(store1ID));
-        Assert.assertTrue(almog.removeAppointment("shaked", store1ID).isFailure());
-        Assert.assertTrue(shaked.isOwner(store1ID));
-        Assert.assertFalse(yaakov.removeAppointment("shaked", store1ID).isFailure());
+    public void receiveUserPurchaseHistorySuccess() {
+        Assert.assertFalse(shaked.getUserPurchaseHistory("almog").isFailure());
     }
 
     @Test
-    public void appointManagerState() {
-        Assert.assertFalse(shaked.isManager(store1ID));
-        Assert.assertTrue(almog.appointManager("shaked", store1ID).isFailure());
-        Assert.assertFalse(shaked.isManager(store1ID));
-        Assert.assertFalse(yaakov.appointManager("shaked", store1ID).isFailure());
-        Assert.assertTrue(shaked.isManager(store1ID));
+    public void receiveUserPurchaseHistoryFailureNotPermitted() {
+        Assert.assertTrue(yaakov.getUserPurchaseHistory("almog").isFailure());
     }
 
     @Test
-    public void removeManagerAppointmentState() {
-        yaakov.appointManager("shaked", store1ID);
-        Assert.assertTrue(shaked.isManager(store1ID));
-        Assert.assertTrue(almog.removeAppointment("shaked", store1ID).isFailure());
-        Assert.assertTrue(shaked.isManager(store1ID));
-        Assert.assertFalse(yaakov.removeAppointment("shaked", store1ID).isFailure());
-    }
-
-    @Test
-    public void editManagerPermissionState() {
-        List<String> categories = new LinkedList<>();
-        categories.add("food");
-        List<String> keyword = new LinkedList<>();
-        keyword.add("bread");
-        Collection<Review> review = new LinkedList<>();
-
-        yaakov.appointManager("shaked", store1ID);
-        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
-        Assert.assertTrue(almog.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
-        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
-        Assert.assertFalse(yaakov.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
-        Assert.assertFalse(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
-    }
-
-    @Test
-    public void receiveWorkerInfoState() {
-        Assert.assertTrue(yaakov.getStoreWorkersDetails(store2ID).isFailure());
+    public void receiveWorkerInfoSuccess() {
         Assert.assertFalse(almog.getStoreWorkersDetails(store2ID).isFailure());
     }
 
     @Test
-    public void receiveStoreHistoryState() {
-        Assert.assertTrue(yaakov.getPurchaseDetails(store2ID).isFailure());
+    public void receiveWorkerInfoFailureNotPermitted() {
+        Assert.assertTrue(yaakov.getStoreWorkersDetails(store2ID).isFailure());
+    }
+
+    @Test
+    public void receiveStoreHistorySuccess() {
         Assert.assertFalse(almog.getPurchaseDetails(store2ID).isFailure());
     }
 
+    @Test
+    public void receiveStoreHistoryFailureNotPermitted() {
+        Assert.assertTrue(yaakov.getPurchaseDetails(store2ID).isFailure());
+    }
 
+    @Test
+    public void concurrencyAddAppointmentTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(1000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                if(currentId % 2 == 0){
+                    yaakov.addStoresOwned(currentId);
+                }
+                else{
+                    yaakov.addStoresManaged(currentId, new Vector<>());
+                }
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every appointment was added
+        for(int storeId = 1000; storeId < 1100; storeId++){
+            if(storeId % 2 == 0) {
+                Assert.assertTrue(yaakov.isOwner(storeId));
+            }
+            else{
+                Assert.assertTrue(yaakov.isManager(storeId));
+            }
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyRemoveAppointmentTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(3000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 3000; storeId < 3100; storeId++){
+            if(storeId % 2 == 0){
+                yaakov.addStoresOwned(storeId);
+            }
+            else{
+                yaakov.addStoresManaged(storeId, new Vector<>());
+            }
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.removeRole(currentId);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every appointment was removed
+        for(int storeId = 3000; storeId < 3100; storeId++){
+            if(storeId % 2 == 0) {
+                Assert.assertFalse(yaakov.isOwner(storeId));
+            }
+            else{
+                Assert.assertFalse(yaakov.isManager(storeId));
+            }
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyAddPermissionTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(2000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 2000; storeId < 2100; storeId++){
+            yaakov.addStoresManaged(storeId, new Vector<>());
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.addSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every permission was added
+        for(int storeId = 2000; storeId < 2100; storeId++){
+            Assert.assertTrue(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        }
+        service.shutdownNow();
+    }
+
+    @Test
+    public void concurrencyRemovePermissionTest() throws InterruptedException{
+        AtomicInteger id = new AtomicInteger(4000);
+        int numberOfThreads = 100;
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        for(int storeId = 4000; storeId < 4100; storeId++){
+            yaakov.addStoresManaged(storeId, new Vector<>());
+            yaakov.addSelfPermission(storeId, Permissions.ADD_PRODUCT_TO_STORE);
+        }
+
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.execute(() -> {
+                int currentId = id.getAndIncrement();
+                yaakov.removeSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                latch.countDown();
+            });
+        }
+
+        latch.await();
+        // Check that every permission was removed
+        for(int storeId = 4000; storeId < 4100; storeId++){
+            Assert.assertFalse(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        }
+        service.shutdownNow();
+    }
 }
