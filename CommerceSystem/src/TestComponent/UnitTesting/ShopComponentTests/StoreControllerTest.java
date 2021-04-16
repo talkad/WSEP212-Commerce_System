@@ -31,12 +31,12 @@ public class StoreControllerTest {
     }
 
     @Test
-    public void addStoreTest(){
+    public void addStoreSuccess(){
         Assert.assertFalse(storeController.openStore("zara", "aviad").isFailure());
     }
 
     @Test
-    public void searchByProductNameTest1(){
+    public void searchByProductNameTestSuccess(){
         boolean result = false;
         List<ProductDTO> products = storeController.searchByProductName("TV").getResult();
 
@@ -48,7 +48,7 @@ public class StoreControllerTest {
     }
 
     @Test
-    public void searchByProductNameTest2(){
+    public void searchByProductNameTestSuccess2(){
         boolean result = false;
         List<ProductDTO> products = storeController.searchByProductName("AirPods").getResult();
 
@@ -60,12 +60,12 @@ public class StoreControllerTest {
     }
 
     @Test
-    public void searchByCategoryTest1(){
+    public void searchByCategoryTestFailure(){
         Assert.assertTrue(storeController.searchByCategory(null).getResult().isEmpty());
     }
 
     @Test
-    public void searchByCategoryTest2(){
+    public void searchByCategoryTestSuccess(){
         boolean result = false;
         List<ProductDTO> products = storeController.searchByCategory("Apple").getResult();
 
@@ -77,12 +77,12 @@ public class StoreControllerTest {
     }
 
     @Test
-    public void searchByKeyWordTest1(){
+    public void searchByKeyWordTestFailure(){
         Assert.assertTrue(storeController.searchByKeyWord(null).getResult().isEmpty());
     }
 
     @Test
-    public void searchByKeyWordTest2(){
+    public void searchByKeyWordTestSuccess(){
         boolean result = false;
         List<ProductDTO> products = storeController.searchByKeyWord("#Swag").getResult();
 
@@ -94,7 +94,13 @@ public class StoreControllerTest {
     }
 
     @Test
-    public void getStoreByIdTest(){
+    public void getStoreByIdTestSuccess(){
+        Store store2 = storeController.getStoreById(0);
+        Assert.assertSame(store, store2);
+    }
+
+    @Test
+    public void getStoreByIdTestFailure(){
         Store store2 = storeController.getStoreById(0);
         Assert.assertSame(store, store2);
     }

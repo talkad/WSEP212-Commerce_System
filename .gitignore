@@ -6,3 +6,5 @@ CommerceSystem/out
 CommerceSystem/errors.txt
 **/out
 *.txt
+out
+errors.txt

@@ -43,7 +43,7 @@ public class Store {
 
     public Response<Boolean> addProduct(ProductDTO productDTO, int amount){
         if(amount <= 0){
-            return new Response<>(false, true, "The amount cannot be negative or zero");
+            return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
 
         if(productDTO == null){
@@ -60,7 +60,7 @@ public class Store {
 
     public Response<Boolean> removeProduct(int productID, int amount){
         if(amount <= 0){
-            return new Response<>(false, true, "The amount cannot be negative or zero");
+            return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
 
         return inventory.removeProducts(productID, amount);
@@ -90,9 +90,11 @@ public class Store {
         return purchasePolicy;
     }
 
-    // todo: add policies
-
      public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
+        Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket);
+        if(validatePurchase.isFailure())
+            return new Response<>(null, true, validatePurchase.getErrMsg());
+
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
         PurchaseDTO purchaseDTO;
         double price = 0;
@@ -101,11 +103,13 @@ public class Store {
             price += productDTO.getPrice() * shoppingBasket.get(productDTO);
         }
 
+        double discount = discountPolicy.getDiscount(shoppingBasket);
+
         if(result.isFailure()){
             return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
 
-        purchaseDTO = new PurchaseDTO(shoppingBasket, price, LocalDate.now());
+        purchaseDTO = new PurchaseDTO(shoppingBasket, price - discount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
@@ -161,5 +165,13 @@ public class Store {
         readWriteLock.writeLock().lock();
         purchaseHistory.addSinglePurchase(purchaseDTO);
         readWriteLock.writeLock().unlock();
+    }
+
+    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
+    }
+
+    public void setPurchasePolicy(PurchasePolicy purchasePolicy) {
+        this.purchasePolicy = purchasePolicy;
     }
 }

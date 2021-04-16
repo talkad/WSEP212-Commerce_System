@@ -21,6 +21,10 @@ public class PurchaseDTO {
         return basket;
     }
 
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
     @Override
     public String toString() {
         return "PurchaseDTO{" +
