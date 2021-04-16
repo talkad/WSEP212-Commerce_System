@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ParallelismTests extends ProjectAcceptanceTests{
@@ -83,7 +84,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
                         Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
-                                "4580-1234-5678-9010", "republic city");
+                                "4580-1234-5678-9010", "Israel");
                         if(!purchaseResult.isFailure()){
                             buyer1Result[0] = 1;
                         }
@@ -130,7 +131,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                           productToAdd.getStoreID(), productToAdd.getProductID());
                   if(!cartResponse.isFailure()) {
                       Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
-                              "4580-1234-5678-9010", "republic city");
+                              "4580-1234-5678-9010", "Israel");
                       if(!purchaseResult.isFailure()){
                           buyer2Result[0] = 1;
                       }
@@ -170,7 +171,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
 
         // now that we have our threads ready we'll start them in random manner
-        Random random = new Random();
+        Random random = new Random(System.currentTimeMillis());
         if(random.nextInt(2) == 0){
             buyer1.start();
             buyer2.start();
@@ -230,7 +231,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         };
 
         // now that we have our threads ready we'll start them in random manner
-        Random random = new Random();
+        Random random = new Random(System.currentTimeMillis());
         if(random.nextInt(2) == 0){
             buyer.start();
             remover.start();
@@ -276,7 +277,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         };
 
         // now that we have our threads ready we'll start them in random manner
-        Random random = new Random();
+        Random random = new Random(System.currentTimeMillis());
         if(random.nextInt(2) == 0){
             appointer1.start();
             appointer2.start();
@@ -320,7 +321,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         };
 
         // now that we have our threads ready we'll start them in random manner
-        Random random = new Random();
+        Random random = new Random(System.currentTimeMillis());
         if(random.nextInt(2) == 0){
             actor.start();
             remover.start();
