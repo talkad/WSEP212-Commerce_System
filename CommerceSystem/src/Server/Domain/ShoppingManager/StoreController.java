@@ -1,4 +1,5 @@
 package Server.Domain.ShoppingManager;
+
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.ShoppingCart;
@@ -6,6 +7,7 @@ import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
 import org.xeustechnologies.googleapi.spelling.SpellRequest;
 import org.xeustechnologies.googleapi.spelling.SpellResponse;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;

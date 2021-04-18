@@ -6,7 +6,8 @@ import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;

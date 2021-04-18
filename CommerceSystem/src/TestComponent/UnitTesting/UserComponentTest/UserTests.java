@@ -1,24 +1,24 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
-import Server.Domain.UserManager.*;
-import Server.Service.CommerceService;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
+import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.User;
+import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-//import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTests {
 

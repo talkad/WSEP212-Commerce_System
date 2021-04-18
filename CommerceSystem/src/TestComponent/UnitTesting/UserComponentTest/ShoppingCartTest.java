@@ -6,8 +6,9 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;

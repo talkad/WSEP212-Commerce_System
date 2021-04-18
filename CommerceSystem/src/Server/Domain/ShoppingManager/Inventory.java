@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

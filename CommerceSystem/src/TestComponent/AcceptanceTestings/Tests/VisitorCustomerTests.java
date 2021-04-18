@@ -4,14 +4,14 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.PurchaseDTO;
-import Server.Service.IService;
-import TestComponent.AcceptanceTestings.Bridge.Driver;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class VisitorCustomerTests extends ProjectAcceptanceTests{
 

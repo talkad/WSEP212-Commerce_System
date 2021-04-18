@@ -8,7 +8,8 @@ import TestComponent.UnitTesting.UserComponentTest.ShoppingBasketTest;
 import TestComponent.UnitTesting.UserComponentTest.ShoppingCartTest;
 import TestComponent.UnitTesting.UserComponentTest.UserControllerTest;
 import TestComponent.UnitTesting.UserComponentTest.UserTests;
-import org.junit.runner.*;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
 class RegressionTesting {
 

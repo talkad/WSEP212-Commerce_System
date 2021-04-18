@@ -1,9 +1,12 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.Inventory;
+import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.StoreController;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

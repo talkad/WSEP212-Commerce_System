@@ -1,10 +1,13 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.StoreController;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.List;
 
 public class StoreControllerTest {

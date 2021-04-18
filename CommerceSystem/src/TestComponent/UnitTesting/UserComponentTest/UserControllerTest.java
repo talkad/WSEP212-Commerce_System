@@ -1,24 +1,22 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
 
-import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
-import Server.Domain.UserManager.Permissions;
 import Server.Service.CommerceService;
-import java.util.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.Assert;
 
 public class UserControllerTest {
 

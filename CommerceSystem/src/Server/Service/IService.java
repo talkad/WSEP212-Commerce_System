@@ -1,10 +1,14 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DiscountPolicy;
+import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.PurchasePolicy;
+import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

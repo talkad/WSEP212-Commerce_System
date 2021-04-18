@@ -4,9 +4,9 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.ShoppingBasket;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Map;
 
 public class ShoppingBasketTest {

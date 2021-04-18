@@ -3,8 +3,9 @@ package TestComponent.IntegrationTestings;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.UserController;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -267,6 +268,4 @@ public class PurchaseTests {
         double purchasePrice = store.getPurchaseHistory().getResult().stream().collect(Collectors.toList()).get(0).getTotalPrice();
         Assert.assertEquals(22500, purchasePrice, 0);
     }
-
-    // todo: purchase policy test when it will be implemented
 }

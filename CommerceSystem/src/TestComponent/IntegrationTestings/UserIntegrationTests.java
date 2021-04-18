@@ -1,18 +1,19 @@
 package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
-import Server.Domain.UserManager.*;
-import Server.Service.CommerceService;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
+import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.User;
+import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UserIntegrationTests {
 
@@ -82,11 +83,11 @@ public class UserIntegrationTests {
 
     @Test
     public void addProductReviewFailureDidNotPurchaseProduct() {
-        Assert.assertTrue(guest.addProductReview(store1ID, eggs.getProductID(), "good product").isFailure());//todo productid
+        Assert.assertTrue(guest.addProductReview(store1ID, eggs.getProductID(), "good product").isFailure());
     }
 
     @Test
-    public void addProductsToStoreSuccess() {//todo add to purchase history
+    public void addProductsToStoreSuccess() {
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
@@ -97,7 +98,7 @@ public class UserIntegrationTests {
     }
 
     @Test
-    public void addProductsToStoreFailureNotPermitted() {//todo add to purchase history
+    public void addProductsToStoreFailureNotPermitted() {
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
@@ -108,7 +109,7 @@ public class UserIntegrationTests {
     }
 
     @Test
-    public void removeProductsFromStoreSuccess() {//todo add to purchase history
+    public void removeProductsFromStoreSuccess() {
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
@@ -121,7 +122,7 @@ public class UserIntegrationTests {
     }
 
     @Test
-    public void removeProductsFromStoreFailureNotPermitted() {//todo add to purchase history
+    public void removeProductsFromStoreFailureNotPermitted() {
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
