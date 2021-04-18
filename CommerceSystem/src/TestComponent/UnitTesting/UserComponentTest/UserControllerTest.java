@@ -20,26 +20,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class UserControllerTest {
 
-    private CommerceService commerceService;
-    private UserController userController;
-    private UserDAO userDAO;
-    private String initialUserName;
-
-    private ReadWriteLock lock;
-
-    @Before
-    public void setUp(){
-        commerceService = CommerceService.getInstance();
-        commerceService.init();
-        userController = UserController.getInstance();
-        userDAO = UserDAO.getInstance();
-        initialUserName = commerceService.addGuest().getResult();
-        lock = new ReentrantReadWriteLock();
-    }
-
     @Test
     public void removeGuestTest(){
+        UserController userController = UserController.getInstance();
         String guestName = userController.addGuest().getResult();
+
         Assert.assertTrue(userController.getConnectedUsers().containsKey(guestName));
         userController.removeGuest(guestName);
         Assert.assertFalse(userController.getConnectedUsers().containsKey(guestName));
@@ -47,12 +32,23 @@ public class UserControllerTest {
 
     @Test
     public void addGuestTest(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+
         String guestName = userController.addGuest().getResult();
         Assert.assertTrue(userController.getConnectedUsers().containsKey(guestName));
     }
 
     @Test
     public void registerTestMainScenario(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        UserDAO userDAO = UserDAO.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
+
         Assert.assertFalse(userDAO.userExists("Jacob2").getResult());
         Assert.assertFalse(userController.register(initialUserName, "Jacob2", "12345").isFailure());
         Assert.assertTrue(userDAO.userExists("Jacob2").getResult());
@@ -60,6 +56,12 @@ public class UserControllerTest {
 
     @Test
     public void registerTestFailureUserAlreadyExists(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        UserDAO userDAO = UserDAO.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         Assert.assertFalse(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
         Assert.assertTrue(userDAO.userExists("JacobLine54").getResult());
         Assert.assertTrue(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
@@ -67,6 +69,11 @@ public class UserControllerTest {
 
     @Test
     public void loginTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         userController.register(initialUserName, "Jacob3", "12345");
         Assert.assertFalse(userController.getConnectedUsers().containsKey("Jacob3"));
 
@@ -79,6 +86,12 @@ public class UserControllerTest {
 
     @Test
     public void loginTestFailureNonExistentUser(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        UserDAO userDAO = UserDAO.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // login for non-existent user
         Assert.assertFalse(userDAO.userExists("Alice").getResult());
         Assert.assertTrue(userController.login(initialUserName, "Alice", "abcd").isFailure());
@@ -86,6 +99,11 @@ public class UserControllerTest {
 
     @Test
     public void loginTestFailureIncorrectPassword(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         userController.register(initialUserName, "JacobLine82", "12345");
         Assert.assertFalse(userController.getConnectedUsers().containsKey("JacobLine82"));
 
@@ -96,6 +114,11 @@ public class UserControllerTest {
 
     @Test
     public void logoutTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user login
         userController.register(initialUserName, "Jacob", "24680");
         Response<String> loginResult = userController.login(initialUserName, "Jacob", "24680");
@@ -113,6 +136,11 @@ public class UserControllerTest {
 
     @Test
     public void logoutTestFailureNotLoggedIn(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // attempted logout of guest
         Assert.assertTrue(userController.getConnectedUsers().containsKey(initialUserName));
         Assert.assertTrue(userController.logout(initialUserName).isFailure());
@@ -121,6 +149,10 @@ public class UserControllerTest {
 
     @Test
     public void concurrencyRegistrationTest() throws InterruptedException{
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+
         AtomicInteger successes = new AtomicInteger(0);
         int numberOfThreads = 100;
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
@@ -145,6 +177,11 @@ public class UserControllerTest {
 
     @Test
     public void concurrencyAddGuestTest() throws InterruptedException{
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        ReadWriteLock lock = new ReentrantReadWriteLock();
+
         AtomicInteger duplicates = new AtomicInteger(0);
         List<String> names = new Vector<>();
         int numberOfThreads = 100;

@@ -15,22 +15,13 @@ import java.util.Vector;
 
 public class UserControllerIntegrationTests {
 
-    private CommerceService commerceService;
-    private UserController userController;
-    private UserDAO userDAO;
-    private String initialUserName;
-
-    @Before
-    public void setUp(){
-        commerceService = CommerceService.getInstance();
-        commerceService.init();
-        userController = UserController.getInstance();
-        userDAO = UserDAO.getInstance();
-        initialUserName = commerceService.addGuest().getResult();
-    }
-
     @Test
     public void appointOwnerTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -59,6 +50,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void appointOwnerTestFailureAlreadyOwner(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -91,6 +87,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void appointOwnerTestFailureAlreadyManager(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -123,6 +124,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void appointManagerTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -151,6 +157,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void appointManagerTestFailureAlreadyOwner(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -183,6 +194,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void appointManagerTestFailureAlreadyManager(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal", "kadosh");
@@ -215,6 +231,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeManagerTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
         userController.register(initialUserName, "yoni9", "pis");
@@ -242,6 +263,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeManagerTestFailureNotAppointed(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registration
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
@@ -265,6 +291,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeManagerTestFailureNotAppointedOwnerByInitiator(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registration
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
@@ -295,6 +326,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeManagerTestFailureIsOwner(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
         userController.register(initialUserName, "yoni9", "pis");
@@ -322,6 +358,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeOwnerTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
         userController.register(initialUserName, "yoni9", "pis");
@@ -349,6 +390,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeOwnerTestFailureNotAppointed(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registration
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
@@ -372,6 +418,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeOwnerTestFailureNotAppointedOwnerByInitiator(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         // initial user registration
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
@@ -402,6 +453,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removeOwnerTestFailureIsManager(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         userController.register(initialUserName, "tal9", "kadosh");
         userController.register(initialUserName, "yoni9", "pis");
@@ -429,6 +485,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void cascadingRemovalTestSuccessfulRemoval() {
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
         String guest3 = commerceService.addGuest().getResult();
@@ -481,6 +542,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void cascadingRemovalTestUnsuccessfulRemoval() {
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
         String guest3 = commerceService.addGuest().getResult();
@@ -540,6 +606,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void addPermissionTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
 
         userController.register(initialUserName, "tal6", "kadosh");
@@ -564,6 +635,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void addPermissionTestFailureNotManager(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
 
         userController.register(initialUserName, "tal6", "kadosh");
@@ -586,6 +662,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void addPermissionTestFailureNotPermittedToAdd(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
 
@@ -615,6 +696,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removePermissionTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
 
         userController.register(initialUserName, "tal5", "kadosh");
@@ -639,6 +725,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removePermissionTestFailureNotManager(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
 
         userController.register(initialUserName, "tal5", "kadosh");
@@ -660,6 +751,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void removePermissionTestFailureNotPermittedToRemove(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
 
@@ -689,6 +785,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void getStoreWorkersDetailsTestSuccess(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
         String guest3 = commerceService.addGuest().getResult();
@@ -742,6 +843,11 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void getStoreWorkersDetailsTestFailureNoPermission(){
+        CommerceService commerceService = CommerceService.getInstance();
+        commerceService.init();
+        UserController userController = UserController.getInstance();
+        String initialUserName = commerceService.addGuest().getResult();
+
         String guest = commerceService.addGuest().getResult();
         String guest2 = commerceService.addGuest().getResult();
         String guest3 = commerceService.addGuest().getResult();
