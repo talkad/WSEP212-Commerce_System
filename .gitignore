@@ -2,4 +2,9 @@
 *.iml
 CommerceSystem/out
 **/error.txt
+**/errors.txt
 CommerceSystem/errors.txt
+**/out
+*.txt
+out
+errors.txtCommerceSystem/out/production

@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Service.IService;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class CommerceSystem implements IService {
 
     private UserController userController;
     private StoreController storeController;
-    public static Log log = new Log("errors.txt");
+    public static Log log = new Log("logs.txt");
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();

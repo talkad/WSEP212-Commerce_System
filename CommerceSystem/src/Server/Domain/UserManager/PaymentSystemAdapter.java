@@ -30,7 +30,13 @@ public class PaymentSystemAdapter
     /*
     pay --amount-- shekels taken from --bankAccount--
      */
-    public boolean pay (double amount, String bankAccount){
-        return externalSystem.pay(amount, bankAccount);
+    public void pay (double price, String bankAccount){
+        externalSystem.pay(price, bankAccount);
     }
+
+    public boolean canPay(double price, String bankAccount){
+        if (price<0) return false;
+        return externalSystem.canPay(price, bankAccount);
+    }
+
 }

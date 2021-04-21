@@ -4,7 +4,11 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -120,20 +124,23 @@ public class UserController {
         if(connectedUsers.containsKey(prevName)) {
             User user = connectedUsers.get(prevName);
             readLock.unlock();
-            Response<Boolean> result = user.register();
-            if (!result.isFailure()) {
-                //readLock.lock();  // TODO check if needed
-                result = UserDAO.getInstance().userExists(name);
-                if (!result.getResult()) {
-                    UserDAO.getInstance().registerUser(name, security.sha256(password));
-                    result = new Response<>(true, false, "");
+            if (name.startsWith("Guest")){
+                Response<Boolean> result = user.register();
+                if (!result.isFailure()) {
+                    writeLock.lock();  // TODO check if needed (prevents multiple registration)
+                    result = UserDAO.getInstance().userExists(name);
+                    if (!result.getResult()) {
+                        UserDAO.getInstance().registerUser(name, security.sha256(password));
+                        writeLock.unlock();
+                        result = new Response<>(true, false, "");
+                    } else {
+                        writeLock.unlock();
+                        return new Response<>(false, true, "username already exists");
+                    }
                 }
-                else{
-                    return new Response<>(false, true, "username already exists");
-                }
-                //readLock.unlock();
+                return result;
             }
-            return result;
+            else return new Response<>(false, true, "error: cannot register user starting with the name Guest");
         }
         else {
             readLock.unlock();
@@ -143,15 +150,20 @@ public class UserController {
 
     public Response<String> login(String prevName, String name, String password){
         if (connectedUsers.containsKey(prevName)) {
-            if (UserDAO.getInstance().validUser(name, security.sha256(password))) {
-                writeLock.lock();
-                connectedUsers.remove(prevName);
-                UserDTO userDTO = UserDAO.getInstance().getUser(name);
-                connectedUsers.put(name, new User(userDTO));
-                writeLock.unlock();
-                return new Response<>(name, false, "no error");
-            } else {
-                return new Response<>(prevName, true, "Failed to login user");
+            if (prevName.startsWith("Guest")){
+                if (UserDAO.getInstance().validUser(name, security.sha256(password))) {
+                    writeLock.lock();
+                    connectedUsers.remove(prevName);
+                    UserDTO userDTO = UserDAO.getInstance().getUser(name);
+                    connectedUsers.put(name, new User(userDTO));
+                    writeLock.unlock();
+                    return new Response<>(name, false, "no error");
+                } else {
+                    return new Response<>(prevName, true, "Failed to login user");
+                }
+            }
+            else {
+                return new Response<>(null, true, "error: user must disconnect before trying to login");
             }
         }
         else {
@@ -494,7 +506,7 @@ public class UserController {
             return new Response<>(true, false, "The purchase occurred");
         }
         readLock.unlock();
-        return new Response<>(null, true, "User not connected");
+        return new Response<>(null, true, "User is not connected");
     }
 
     public Map<String, User> getConnectedUsers() {

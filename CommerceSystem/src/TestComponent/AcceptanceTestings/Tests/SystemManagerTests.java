@@ -7,7 +7,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SystemManagerTests extends ProjectAcceptanceTests{
 
@@ -55,13 +58,13 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         productToAdd = bridge.searchByProductName("mitz petel").getResult().get(0);
         bridge.addToCart("avi", productToAdd.getStoreID(), productToAdd.getProductID());
 
-        bridge.directPurchase("avi", "4580-1234-5678-9010", "narnia");
+        bridge.directPurchase("avi", "4580-1234-5678-9010", "Israel");
 
         initialized = true;
         }
 
     @Test
-    public void getUserPurchaseHistoryTest(){ // 6.4 - a
+    public void getUserPurchaseHistoryTest(){ // 6.4 - a good
         // getting the purchase history of a user as an admin
         Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "avi");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
@@ -71,9 +74,19 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "shemesh");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
         Assert.assertTrue(userPurchaseHistoryResult.getResult().isEmpty());
-//
+    }
+
+    @Test
+    public void getUserPurchaseHistoryOfNonExistentUser(){ // 6.4 - a bad
+        // trying to get the purchase history of a non existent user. should fail
+        Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "hemi");
+        Assert.assertTrue(userPurchaseHistoryResult.isFailure());
+    }
+
+    @Test
+    public void notAdminGetUserPurchaseHistoryTest(){ // 6.4 - a bad
         // trying to get the purchase history of a user while not being an admin. should fail
-        userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shemesh", "avi");
+        Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shemesh", "avi");
         Assert.assertTrue(userPurchaseHistoryResult.isFailure());
     }
 
@@ -85,8 +98,20 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(storeHistoryResult.isFailure());
         Assert.assertFalse(storeHistoryResult.getResult().isEmpty());
 
+
+    }
+
+    @Test
+    public void notAdminGetStorePurchaseHistoryTest() { // 6.4 - b bad
         // trying to get the purchase history of a store while not being an admin. should fail
-        storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID);
+        Response<Collection<PurchaseDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID);
+        Assert.assertTrue(storeHistoryResult.isFailure());
+    }
+
+    @Test
+    public void getUserPurchaseHistoryOfNonExistentStore() { // 6.4 - b bad
+        // trying to get the purchase history of a non existent store. should fail
+        Response<Collection<PurchaseDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID+1);
         Assert.assertTrue(storeHistoryResult.isFailure());
     }
 }

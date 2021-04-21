@@ -20,6 +20,10 @@ public class PurchaseHistory {
         purchases.addAll(purchase);
     }
 
+    public void addSinglePurchase(PurchaseDTO purchase){
+        purchases.add(purchase);
+    }
+
     public boolean isPurchased(int productID) {
 
         for(PurchaseDTO purchaseDTO: purchases){

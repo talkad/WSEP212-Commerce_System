@@ -6,9 +6,9 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -18,19 +18,15 @@ import java.util.concurrent.Executors;
 
 public class ShoppingCartTest {
 
-    private ShoppingCart cart = new ShoppingCart();
-    private ProductDTO[] productsDTO;
-    private static boolean setUpIsDone = false;
+    @Test
+    public void addProductTest(){
+        ShoppingCart cart = new ShoppingCart();
 
-    @Before
-    public void setUp(){
-        if(setUpIsDone)
-            return;
 
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
         Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
 
-        this.productsDTO = new ProductDTO[]{
+        ProductDTO[] productsDTO = new ProductDTO[]{
                 new ProductDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
                 new ProductDTO("Watch",2222, res1.getResult(), 600, new LinkedList<>(),
@@ -47,18 +43,8 @@ public class ShoppingCartTest {
         store1.addProduct(productsDTO[0], 10);
         store1.addProduct(productsDTO[1], 10);
         store1.addProduct(productsDTO[3], 10);
-
         store2.addProduct(productsDTO[2], 10);
-//        StoreController.getInstance().addProductToStore(productsDTO[0], 10);
-//        StoreController.getInstance().addProductToStore(productsDTO[1], 10);
-//        StoreController.getInstance().addProductToStore(productsDTO[2], 10);
-//        StoreController.getInstance().addProductToStore(productsDTO[3], 10);
 
-        setUpIsDone = true;
-    }
-
-    @Test
-    public void addProductTest(){
         Map<Integer, Map<ProductDTO, Integer>> baskets;
         int numProducts = 0;
 
@@ -83,25 +69,41 @@ public class ShoppingCartTest {
 
     @Test
     public void removeExistingProductTest(){
+        ShoppingCart cart = new ShoppingCart();
+
+        Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
+        Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
+
+        ProductDTO[] productsDTO = new ProductDTO[]{
+                new ProductDTO("TV", 73725, res1.getResult(), 1299.9, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("Watch",12372, res1.getResult(), 600, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("AirPods",564521, res2.getResult(), 799.9, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0),
+                new ProductDTO("Watch2",345387, res1.getResult(), 600, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0)
+        };
+
+        Store store1 = StoreController.getInstance().getStoreById(res1.getResult());
+        Store store2 = StoreController.getInstance().getStoreById(res2.getResult());
+
+        store1.addProduct(productsDTO[0], 50);
+        store1.addProduct(productsDTO[1], 50);
+        store1.addProduct(productsDTO[3], 50);
+        store2.addProduct(productsDTO[2], 50);
+
         Map<Integer, Map<ProductDTO, Integer>> baskets;
         Response<Boolean> res;
         int numProducts = 0;
-        Product lastProduct = null;
 
-        for(Store store: StoreController.getInstance().getContent().getResult()){
-            for(Product product: store.getInventory().getProducts()){
-                cart.addProduct(product.getStoreID(), product.getProductID());
-                lastProduct = product;
-            }
-        }
+        cart.addProduct(productsDTO[0].getStoreID(), productsDTO[0].getProductID());
+        cart.addProduct(productsDTO[1].getStoreID(), productsDTO[1].getProductID());
+        cart.addProduct(productsDTO[2].getStoreID(), productsDTO[2].getProductID());
+        cart.addProduct(productsDTO[3].getStoreID(), productsDTO[3].getProductID());
 
-        if(lastProduct != null) {
-            res = cart.removeProduct(lastProduct.getStoreID(), lastProduct.getProductID());
-            Assert.assertTrue(res.getResult());
-        }
-        else{
-            Assert.assertEquals(1, 2); // error
-        }
+        res = cart.removeProduct(productsDTO[2].getStoreID(), productsDTO[2].getProductID());
+        Assert.assertTrue(res.getResult());
 
         baskets = cart.getBaskets();
         for(Map<ProductDTO, Integer> basket: baskets.values()){
@@ -110,11 +112,13 @@ public class ShoppingCartTest {
             }
         }
 
-        Assert.assertTrue(baskets.size() == 1 && numProducts == 3);
+        Assert.assertEquals(1, baskets.size());
+        Assert.assertEquals(3, numProducts);
     }
 
     @Test
     public void removeAbsentProductTest(){
+        ShoppingCart cart = new ShoppingCart();
         Response<Boolean> res;
 
         res = cart.removeProduct(2, 78321); // no basket exist for this product
@@ -123,6 +127,19 @@ public class ShoppingCartTest {
 
     @Test
     public void concurrencyTest() throws InterruptedException {
+        ShoppingCart cart = new ShoppingCart();
+
+        Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
+
+        ProductDTO productDTO = new ProductDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
+                        new LinkedList<>(), new LinkedList<>(),0,0);
+
+
+        Store store1 = StoreController.getInstance().getStoreById(res1.getResult());
+
+        store1.addProduct(productDTO, 10);
+
+
         int numberOfThreads1 = 100;
         int numberOfThreads2 = 50;
         Map<Integer, Map<ProductDTO, Integer>> baskets;

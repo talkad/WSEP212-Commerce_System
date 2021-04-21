@@ -22,7 +22,7 @@ public class Product {
     private final List<String> keywords;
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
-    private Collection<String> reviews;
+    private Collection<Review> reviews;
 
 
     private Product(ProductDTO productDTO){
@@ -85,15 +85,12 @@ public class Product {
         return price.get();
     }
 
-    public Response<Boolean> addReview(String review){
-        if(review == null || review.length() == 0)
-            return new Response<>(false, true, "Product: Review cannot be empty");
-
+    public Response<Boolean> addReview(Review review){
         reviews.add(review);
         return new Response<>(true, false, "Product: Review added successfully");
     }
 
-    public Collection<String> getReviews(){
+    public Collection<Review> getReviews(){
         return reviews;
     }
 

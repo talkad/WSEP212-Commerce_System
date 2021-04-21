@@ -2,8 +2,10 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -152,8 +154,12 @@ public class User {
         return this.shoppingCart.updateProductQuantity(storeID, productID, amount);
     }
 
-    public Response<Boolean> addProductReview(int storeID, int productID, String review) {
+    public Response<Boolean> addProductReview(int storeID, int productID, String reviewStr) {
         Store store;
+        Response<Review> reviewRes = Review.createReview(name, reviewStr);
+
+        if(reviewRes.isFailure())
+            return new Response<>(false, true, reviewRes.getErrMsg());
 
         if (this.state.allowed(Permissions.REVIEW_PRODUCT, this)) {
 
@@ -164,10 +170,7 @@ public class User {
                     return new Response<>(false, true, "This store doesn't exists");
                 }
 
-                return store.addProductReview(productID,review);
-
-//                StoreController.getInstance().addProductReview(storeID, productID, review);
-//                return new Response<>(true, false, "The review added successfully"); // todo: it may be wrong when the product doesn't exists
+                return store.addProductReview(productID, reviewRes.getResult());
             }
 
             return new Response<>(false, true, "The given product wasn't purchased before");

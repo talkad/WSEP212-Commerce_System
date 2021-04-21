@@ -4,28 +4,19 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.ShoppingBasket;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Map;
 
 public class ShoppingBasketTest {
 
-    private ShoppingBasket basket;
-    private Product product1;
-    private Product product2;
-    private Product product3;
-
-    @Before
-    public void setUp(){
-        basket = new ShoppingBasket(10);
-        product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
-        product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
-        product3 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
-    }
-
     @Test
     public void addProductLegalTest(){
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+        Product product3 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+
         Map<ProductDTO, Integer> products;
         int pNum = 0;
 
@@ -44,6 +35,9 @@ public class ShoppingBasketTest {
 
     @Test
     public void addProductIllegalTest(){
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
+
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
@@ -55,6 +49,9 @@ public class ShoppingBasketTest {
 
     @Test
     public void removeExistingProductTest(){
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
@@ -69,6 +66,10 @@ public class ShoppingBasketTest {
 
     @Test
     public void removeAbsentProductTest(){
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
+
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
 
@@ -80,4 +81,40 @@ public class ShoppingBasketTest {
         products = basket.getProducts();
         Assert.assertEquals(1, products.size());
     }
+
+    @Test
+    public void updateQuantityTest(){
+        Response<Boolean> response;
+        ShoppingBasket basket = new ShoppingBasket(10);
+
+        Product product1 = Product.createProduct(new ProductDTO("TV", 194652, 10, 1299.9, null, null, null, 0, 0));
+        basket.addProduct(product1.getProductDTO());
+        response = basket.updateProductQuantity(194652, 20);
+
+        Assert.assertTrue(response.getResult());
+        Assert.assertEquals(20, basket.getProductAmount(194652));
+    }
+
+    @Test
+    public void updateQuantityRemoveProductTest(){
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product1 = Product.createProduct(new ProductDTO("TV", 194652, 10, 1299.9, null, null, null, 0, 0));
+        basket.addProduct(product1.getProductDTO());
+        basket.updateProductQuantity(194652, 0);
+
+        Assert.assertEquals(0, basket.getProducts().keySet().size());
+    }
+
+    @Test
+    public void updateQuantityIllegalTest(){
+        Response<Boolean> response;
+        ShoppingBasket basket = new ShoppingBasket(10);
+        Product product1 = Product.createProduct(new ProductDTO("TV", 194652, 10, 1299.9, null, null, null, 0, 0));
+
+        basket.addProduct(product1.getProductDTO());
+        response = basket.updateProductQuantity(194652, -10);
+
+        Assert.assertTrue(response.isFailure());
+    }
+
 }
