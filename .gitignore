@@ -8,3 +8,4 @@ CommerceSystem/errors.txt
 *.txt
 out
 errors.txtCommerceSystem/out/production
+Client/node_modules
