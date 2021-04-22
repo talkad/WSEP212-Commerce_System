@@ -1,23 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import Login from "./Login";
+import Visitor from './Pages/Visitor'
+import App from './App'
 import reportWebVitals from './reportWebVitals';
 
-let flag = true;
-let toRender;
-
-if(flag){
-    toRender = <App/>
-}
-else{
-    toRender = <Login/>
-}
 
 ReactDOM.render(
   <React.StrictMode>
-      {toRender}
+      <App/>
   </React.StrictMode>,
   document.getElementById('root')
 );
