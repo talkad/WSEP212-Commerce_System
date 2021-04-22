@@ -18,6 +18,7 @@ public class UserDAO {
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
     private Map<String, Appointment> appointments;
+    private Map<String, PendingMessages> pendingMessages;
     private List<String> admins;
 
     private ReadWriteLock registeredLock;
@@ -44,6 +45,10 @@ public class UserDAO {
     private Lock appointmentsWriteLock;
     private Lock appointmentsReadLock;
 
+    private ReadWriteLock pendingLock;
+    private Lock pendingWriteLock;
+    private Lock pendingReadLock;
+
     private ReadWriteLock adminsLock;
     private Lock adminsWriteLock;
     private Lock adminsReadLock;
@@ -55,6 +60,7 @@ public class UserDAO {
         this.testOwners = new ConcurrentHashMap<>();
         this.shoppingCarts = new ConcurrentHashMap<>();
         this.purchaseHistories = new ConcurrentHashMap<>();
+        this.pendingMessages = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
         this.admins = new Vector<>();
         this.admins.add("shaked");
@@ -86,6 +92,10 @@ public class UserDAO {
         adminsLock = new ReentrantReadWriteLock();
         adminsWriteLock = adminsLock.writeLock();
         adminsReadLock = adminsLock.readLock();
+
+        pendingLock = new ReentrantReadWriteLock();
+        pendingWriteLock = pendingLock.writeLock();
+        pendingReadLock = pendingLock.readLock();
     }
 
     public UserDTO getUser(String name){
@@ -111,11 +121,15 @@ public class UserDAO {
             if (purchaseHistory == null) {
                 purchaseHistory = new PurchaseHistory();
             }
+            PendingMessages pendindMSG = pendingMessages.get(name);
+            if (pendindMSG == null) {
+                pendindMSG = new PendingMessages();
+            }
             Appointment appointment = appointments.get(name);
             if (appointment == null) {
                 appointment = new Appointment();
             }
-            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment);
+            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, pendindMSG);
         }
         appointmentsReadLock.unlock();
         historiesReadLock.unlock();
@@ -155,6 +169,10 @@ public class UserDAO {
         historiesWriteLock.lock();
         this.purchaseHistories.put(name, new PurchaseHistory());
         historiesWriteLock.unlock();
+
+        pendingWriteLock.lock();
+        this.pendingMessages.put(name, new PendingMessages());
+        pendingWriteLock.unlock();
     }
 
     public Response<Boolean> userExists(String name) {

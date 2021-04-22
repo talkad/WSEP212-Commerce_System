@@ -4,10 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
-import Server.Domain.UserManager.UserDAO;
 import Server.Service.CommerceService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,13 +22,13 @@ public class UserControllerIntegrationTests {
 
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
-        userController.register(initialUserName, "tal", "kadosh");
+        System.out.println(userController.register(initialUserName, "tal", "kadosh").getErrMsg());
         userController.register(initialUserName, "yoni", "pis");
 
         // login of users
         Response<String> login = userController.login(initialUserName, "yoni", "pis");
         String newUserName = login.getResult();
-        userController.login(guest, "tal", "kadosh");
+        System.out.println(userController.login(guest, "tal", "kadosh").getErrMsg());
 
         // opening the store
         Response<Integer> storeRes = userController.openStore(newUserName, "eggStore");

@@ -21,6 +21,8 @@ public class User {
     private PurchaseHistory purchaseHistory;
     private Appointment appointments;
 
+    private PendingMessages pendingMessages;
+
     private ReadWriteLock ownedLock;
     private Lock ownedWriteLock;
     private Lock ownedReadLock;
@@ -39,6 +41,8 @@ public class User {
         managedLock = new ReentrantReadWriteLock();
         managedWriteLock = managedLock.writeLock();
         managedReadLock = managedLock.readLock();
+
+        pendingMessages = new PendingMessages();
 
         this.storesOwned = null;
         this.storesManaged = null;
@@ -67,6 +71,7 @@ public class User {
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
         this.appointments = userDTO.getAppointments();
+        this.pendingMessages = userDTO.getPendingMessages();
     }
 
     public List<Integer> getStoresOwned() {
@@ -108,9 +113,6 @@ public class User {
         return new Response<>(false, true, "User is not allowed to register");
     }
 
-//    public boolean login(String name, String password){
-//        //@TODO what is the purpose of this function?
-//    }
 
     public Response<Boolean> addToCart(int storeID, int productID) {
         return this.shoppingCart.addProduct(storeID, productID);
@@ -386,5 +388,17 @@ public class User {
 
     public void emptyCart(){
         this.shoppingCart = new ShoppingCart();
+    }
+
+    public List<String> getPendingMessages(){
+        return pendingMessages.getPendingMessages();
+    }
+
+    public void clearPendingMessages(){
+        pendingMessages.clear();
+    }
+
+    public void addPendingMessage(String msg){
+        pendingMessages.addMessage(msg);
     }
 }
