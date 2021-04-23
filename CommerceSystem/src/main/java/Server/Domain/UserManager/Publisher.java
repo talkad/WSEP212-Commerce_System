@@ -1,5 +1,7 @@
 package Server.Domain.UserManager;
 
+import Server.Communication.WSS.Notifier;
+
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,11 +10,13 @@ public class Publisher{
 
     private Map<Integer, Vector<String>> storeSubscribers;
     private UserController userController;
+    private Notifier notifier;
 
     private Publisher()
     {
         storeSubscribers = new ConcurrentHashMap<>();
         userController = UserController.getInstance();
+        notifier = Notifier.getInstance();
     }
 
     private static class CreateSafeThreadSingleton {
@@ -29,7 +33,7 @@ public class Publisher{
      * @param msg - the message that will be sent
      */
     public void notify(String name, String msg) {
-        // todo
+        notifier.notify(name, msg);
     }
 
     /**
@@ -48,7 +52,7 @@ public class Publisher{
 
             if(userController.isConnected(username))
             {
-                // todo
+                notify(username, msg);
             }
             else {
                 user = userController.getUserByName(username);

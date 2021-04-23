@@ -20,13 +20,13 @@ public class ServerApp {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         // Load the certificates and initiate the SSL context
-        SSLHandlerProvider.initSSLContext();
+//        SSLHandlerProvider.initSSLContext();
 
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-//                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ServerInitializer())
                     .childOption(ChannelOption.AUTO_READ, true)
                     .bind(PORT).sync().channel().closeFuture().sync();

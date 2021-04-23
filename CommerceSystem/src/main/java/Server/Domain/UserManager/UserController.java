@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 
+import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
@@ -43,9 +44,8 @@ public class UserController {
         if(UserDAO.getInstance().userExists(name).getResult()){
             logoutGuest = logout(name).getResult();
         }
-        writeLock.lock();   // TODO check if write lock needed here
         connectedUsers.remove(logoutGuest);
-        writeLock.unlock();
+
         return new Response<>(name, false, "disconnected user successfully");
     }
 
@@ -160,6 +160,7 @@ public class UserController {
                     connectedUsers.put(name, user);
                     writeLock.unlock();
 
+                    Notifier.getInstance().replaceIdentifier(prevName, name);
                     user.sendPendingNotifications();
 
                     return new Response<>(name, false, "no error");
