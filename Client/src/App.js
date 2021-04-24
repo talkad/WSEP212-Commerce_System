@@ -7,6 +7,7 @@ import Visitor from "./Pages/Visitor";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Registered from "./Pages/Registered"
+import SearchResult from "./Pages/SearchResult";
 
 // const client = new W3CWebSocket('ws://192.168.56.1:8080')
 
@@ -21,6 +22,7 @@ class App extends React.Component{
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
                         <Route path="/registered" component={Registered} />
+                        <Route path="/search/" component={SearchResult} />
                     </Switch>
                 </div>
             </Router>
