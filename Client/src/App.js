@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, useHistory } from 'react-router-dom';
 import Login from "./Login";
 import { w3cwebsocket as W3CWebSocket } from 'websocket'
 
-const client = new W3CWebSocket('ws://192.168.56.1:8080')
+const client = new W3CWebSocket('ws://127.0.0.1:8080')
 
 class App extends React.Component{
 

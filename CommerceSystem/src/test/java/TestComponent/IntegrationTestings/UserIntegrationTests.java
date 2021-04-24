@@ -41,15 +41,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         Response<List<ProductDTO>> beefSearchResult = StoreController.getInstance().searchByProductName("beef");
         ProductDTO beef = beefSearchResult.getResult().get(0);
@@ -83,9 +82,8 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
 
         Response<List<ProductDTO>> eggsSearchResult = StoreController.getInstance().searchByProductName("Medium eggs");
         ProductDTO eggs = eggsSearchResult.getResult().get(0);
@@ -112,16 +110,15 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        Assert.assertFalse(yaakov.addProductsToStore(new ProductDTO("XL eggs", store1ID, 5, categories, keyword, review), 5).isFailure());
+        Assert.assertFalse(yaakov.addProductsToStore(new ProductDTO("XL eggs", store1ID, 5, categories, keyword), 5).isFailure());
     }
 
     @Test
@@ -148,22 +145,21 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        Assert.assertTrue(yaakov.addProductsToStore(new ProductDTO("steak", store2ID, 5, categories, keyword, review), 5).isFailure());
+        Assert.assertTrue(yaakov.addProductsToStore(new ProductDTO("steak", store2ID, 5, categories, keyword), 5).isFailure());
     }
 
     @Test
@@ -185,16 +181,15 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        yaakov.addProductsToStore(new ProductDTO("XXXL eggs", store1ID, 10, categories, keyword, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("XXXL eggs", store1ID, 10, categories, keyword), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("XXXL eggs");
         ProductDTO productDTO = result.getResult().get(0);
         Assert.assertFalse(yaakov.removeProductsFromStore(store1ID, productDTO.getProductID(), 5).isFailure());
@@ -224,22 +219,21 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        yaakov.addProductsToStore(new ProductDTO("XXL eggs", store1ID, 10, categories, keyword, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("XXL eggs", store1ID, 10, categories, keyword), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("XXL eggs");
         ProductDTO productDTO = result.getResult().get(0);
 
@@ -261,14 +255,13 @@ public class UserIntegrationTests {
 
         int store2ID = userController.openStore("almog", "meatStore").getResult();
 
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
 
         List<String> categories = new LinkedList<>();
@@ -276,7 +269,7 @@ public class UserIntegrationTests {
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword, review), 5);
+        almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("chicken");
         ProductDTO productDTO = result.getResult().get(0);
 
@@ -307,22 +300,21 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
         List<String> keyword = new LinkedList<>();
         keyword.add("bread");
 
-        almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword, review), 5);
+        almog.addProductsToStore(new ProductDTO("chicken", store2ID, 10, categories, keyword), 5);
         Response<List<ProductDTO>> result = StoreController.getInstance().searchByProductName("chicken");
         ProductDTO productDTO = result.getResult().get(0);
 
@@ -350,9 +342,8 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
 
         Assert.assertFalse(shaked.isOwner(store1ID));
         Assert.assertFalse(yaakov.appointOwner("shaked", store1ID).isFailure());
@@ -385,15 +376,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         Assert.assertFalse(shaked.isOwner(store1ID));
         Assert.assertTrue(almog.appointOwner("shaked", store1ID).isFailure());
@@ -426,15 +416,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointOwner("shaked", store1ID);
         Assert.assertTrue(shaked.isOwner(store1ID));
@@ -467,15 +456,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointOwner("shaked", store1ID);
         Assert.assertTrue(shaked.isOwner(store1ID));
@@ -509,15 +497,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         Assert.assertFalse(shaked.isManager(store1ID));
         Assert.assertFalse(yaakov.appointManager("shaked", store1ID).isFailure());
@@ -550,15 +537,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         Assert.assertFalse(shaked.isManager(store1ID));
         Assert.assertTrue(almog.appointManager("shaked", store1ID).isFailure());
@@ -591,15 +577,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointManager("shaked", store1ID);
         Assert.assertTrue(shaked.isManager(store1ID));
@@ -632,15 +617,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointManager("shaked", store1ID);
         Assert.assertTrue(shaked.isManager(store1ID));
@@ -674,15 +658,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
@@ -691,9 +674,9 @@ public class UserIntegrationTests {
 
         yaakov.appointManager("shaked", store1ID);
 
-        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
+        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
         Assert.assertFalse(yaakov.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
-        Assert.assertFalse(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
+        Assert.assertFalse(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
     }
 
     @Test
@@ -722,15 +705,14 @@ public class UserIntegrationTests {
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
         keyword1.add("egg");
-        Collection<Review> review = new LinkedList<>();
 
         List<String> categories2 = new LinkedList<>();
         categories2.add("food");
         List<String> keyword2 = new LinkedList<>();
         keyword2.add("meat");
 
-        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1, review), 5);
-        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2, review), 5);
+        yaakov.addProductsToStore(new ProductDTO("Medium eggs", store1ID, 2, categories1, keyword1), 5);
+        almog.addProductsToStore(new ProductDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         List<String> categories = new LinkedList<>();
         categories.add("food");
@@ -738,8 +720,8 @@ public class UserIntegrationTests {
         keyword.add("bread");
 
         yaakov.appointManager("shaked", store1ID);
-        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
+        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
         Assert.assertTrue(almog.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
-        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword, review), 5).isFailure());
+        Assert.assertTrue(shaked.addProductsToStore(new ProductDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
     }
 }

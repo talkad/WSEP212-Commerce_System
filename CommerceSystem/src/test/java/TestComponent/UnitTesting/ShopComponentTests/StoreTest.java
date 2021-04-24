@@ -9,8 +9,8 @@ public class StoreTest {
     @Test
     public void addProductsTestSuccess(){
        Store store1 = new Store(0, "h&m",  "talkad", new DiscountPolicy(1), new PurchasePolicy(1));
-       ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null, null);
-       ProductDTO product2 = new ProductDTO("AirPods", 0, 799.9, null , null, null);
+       ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null);
+       ProductDTO product2 = new ProductDTO("AirPods", 0, 799.9, null , null);
 
         int pAmount = 0;
         store1.addProduct(product1, 5);
@@ -23,7 +23,7 @@ public class StoreTest {
     @Test
     public void addProductsTestFailure(){
         Store store1 = new Store(0, "h&m",  "talkad", new DiscountPolicy(1), new PurchasePolicy(1));
-        ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null, null);
+        ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null);
 
         int pAmount = 0;
         store1.addProduct(product1, -3);

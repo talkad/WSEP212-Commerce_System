@@ -28,14 +28,16 @@ public class ServerHandler  extends SimpleChannelInboundHandler<FullHttpRequest>
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
         notifier.removeConnection(ctx);
         ctx.close();
     }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        // todo - aviad may be wrong like always and this code should be in a specific handler for function addGuest
+
         Response<String> response = CommerceService.getInstance().addGuest();
+        System.out.println(response.getResult());
         ByteBuf content = Unpooled.copiedBuffer(response.getResult(), CharsetUtil.UTF_8);
 
         ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content));
@@ -53,6 +55,8 @@ public class ServerHandler  extends SimpleChannelInboundHandler<FullHttpRequest>
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request){
+        Gson gson = new Gson();
+
         // Handle a bad request.
         if (!request.decoderResult().isSuccess()) {
             ctx.writeAndFlush(new DefaultFullHttpResponse(request.protocolVersion(), BAD_REQUEST, ctx.alloc().buffer()));
@@ -73,8 +77,12 @@ public class ServerHandler  extends SimpleChannelInboundHandler<FullHttpRequest>
             requestContent.append((char) b);
         }
 
-        ByteBuf content = Unpooled.copiedBuffer(CommerceHandler.getInstance().handle(requestContent.toString()), CharsetUtil.UTF_8);
-        ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content));
+        Response<?> response = CommerceHandler.getInstance().handle(requestContent.toString());
+
+        if(!response.isFailure()) {
+            ByteBuf content = Unpooled.copiedBuffer(gson.toJson(response), CharsetUtil.UTF_8);
+            ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content));
+        }
     }
 
 }

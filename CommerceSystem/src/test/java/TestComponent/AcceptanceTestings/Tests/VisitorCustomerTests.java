@@ -39,23 +39,20 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
             // adding products to the store
             ProductDTO product = new ProductDTO("kchichat perot", storeID, 20,
                     new LinkedList<String>(Arrays.asList("food", "tasty")),
-                    new LinkedList<String>(Arrays.asList("kchicha")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("kchicha")));
 
             bridge.addProductsToStore("aviad", product, 20);
 
             product = new ProductDTO("kchicha kchitatit", storeID, 20,
                     new LinkedList<String>(Arrays.asList("food", "tasty")),
-                    new LinkedList<String>(Arrays.asList("kchicha")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("kchicha")));
 
             bridge.addProductsToStore("aviad", product, 20);
 
             storeID = bridge.openStore("aviad", "lo yodea").getResult();
             product = new ProductDTO("matos krav", storeID, 200000,
                     new LinkedList<String>(Arrays.asList("aviation", "fly")),
-                    new LinkedList<String>(Arrays.asList("matos")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("matos")));
 
             bridge.addProductsToStore("aviad", product, 2);
 
@@ -261,8 +258,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         int storeID = bridge.openStore("aviad", "lala lili").getResult();
         ProductDTO product = new ProductDTO("kchichat basar", storeID, 20,
                 new LinkedList<String>(Arrays.asList("food", "tasty")),
-                new LinkedList<String>(Arrays.asList("kchicha")),
-                null);
+                new LinkedList<String>(Arrays.asList("kchicha")));
 
         bridge.addProductsToStore("aviad", product, 1); // last in stock
 
@@ -419,8 +415,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         int storeID = bridge.openStore("aviad", "krusty crab").getResult();
         ProductDTO product = new ProductDTO("patty", storeID, 20,
                 new LinkedList<String>(Arrays.asList("food", "tasty")),
-                new LinkedList<String>(Arrays.asList("patty")),
-                null);
+                new LinkedList<String>(Arrays.asList("patty")));
 
         bridge.addProductsToStore("aviad", product, 1); // last in stock
 

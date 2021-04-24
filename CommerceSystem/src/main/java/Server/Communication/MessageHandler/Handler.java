@@ -15,14 +15,12 @@ public abstract class Handler {
         Response<?> response;
 
         if(nextHandler != null) {
-
             try{
                 response = nextHandler.handle(input);
                 return response;
             }catch(Exception e){
                 new Response<>(false, true, "Handler found but an error occured");
             }
-
         }
 
         return new Response<>(false, true, "Invalid input: "+ input);

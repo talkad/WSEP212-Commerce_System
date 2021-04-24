@@ -31,16 +31,14 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             // adding a product which is last in stock
             ProductDTO product = new ProductDTO("air bending", storeID, 10,
                     new LinkedList<String>(Arrays.asList("air", "bending")),
-                    new LinkedList<String>(Arrays.asList("bending")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("bending")));
 
             bridge.addProductsToStore("korra", product, 1);
 
             // a product which the owner will try to remove while someone buys
             product = new ProductDTO("earth bending", storeID, 50,
                     new LinkedList<String>(Arrays.asList("earth", "bending")),
-                    new LinkedList<String>(Arrays.asList("bending")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("bending")));
 
             bridge.addProductsToStore("korra", product, 42);
 

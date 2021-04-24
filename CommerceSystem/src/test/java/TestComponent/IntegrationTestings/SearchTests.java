@@ -58,7 +58,7 @@ public class SearchTests {
         List<String> keyword = new LinkedList<>();
         keyword.add("meat");
         Collection<Review> review = new LinkedList<>();
-        guest.addProductsToStore(new ProductDTO("beef", 0, 5, categories, keyword, review), 5).isFailure();
+        guest.addProductsToStore(new ProductDTO("beef", 0, 5, categories, keyword), 5).isFailure();
     }
 
 
