@@ -6,10 +6,26 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket'
 import Visitor from "./Pages/Visitor";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
+import Registered from "./Pages/Registered"
 
 // const client = new W3CWebSocket('ws://192.168.56.1:8080')
 
 class App extends React.Component{
+
+    render() {
+        return(
+            <Router>
+                <div className="App">
+                    <Switch>
+                        <Route exact path="/" component={Visitor} />
+                        <Route path="/login" component={Login} />
+                        <Route path="/register" component={Register} />
+                        <Route path="/registered" component={Registered} />
+                    </Switch>
+                </div>
+            </Router>
+        )
+    }
 
     // constructor(props) {
     //     super(props);
@@ -109,19 +125,7 @@ class App extends React.Component{
     //     return (thisPage);
     // }
 
-    render() {
-        return(
-            <Router>
-                <div className="App">
-                    <Switch>
-                        <Route exact path="/" component={Visitor} />
-                        <Route path="/login" component={Login} />
-                        <Route path="/register" component={Register} />
-                    </Switch>
-                </div>
-            </Router>
-        )
-    }
+
 }
 
 export default App;
