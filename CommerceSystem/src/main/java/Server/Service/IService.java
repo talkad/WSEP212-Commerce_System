@@ -104,6 +104,8 @@ public interface IService {
 
     Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 
+    Response<List<Permissions>> getUserPermissions(String username, int storeID); // for client
+
 
     /**
      * System Manager requirements - 6

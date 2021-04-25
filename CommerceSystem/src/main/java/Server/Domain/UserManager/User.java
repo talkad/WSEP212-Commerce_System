@@ -174,6 +174,8 @@ public class User {
             if (purchaseHistory.isPurchased(productID)) {
                 store = StoreController.getInstance().getStoreById(storeID);
 
+                Publisher.getInstance().notify(storeID, "New review to product "+ productID + ": " + reviewStr);
+
                 if(store == null){
                     return new Response<>(false, true, "This store doesn't exists");
                 }
@@ -433,6 +435,19 @@ public class User {
         emptyCart();
 
         return new Response<>(true, false, "The purchase occurred");
+    }
+
+    public Response<List<Permissions>> getPermissions(int storeID){
+        List<Permissions> permissions;
+
+        managedReadLock.lock();
+        permissions = storesManaged.get(storeID);
+        managedReadLock.unlock();
+
+        if(permissions == null)
+            return new Response<>(null, true, "user "+ name + " doesn't manage the given store");
+
+        return new Response<>(permissions, false, "OK");
     }
 
 }

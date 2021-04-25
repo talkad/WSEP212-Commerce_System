@@ -297,6 +297,11 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
+        return null; // todo - the manager is responsible for this shit
+    }
+
+    @Override
     public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         if (real != null){
             return real.getUserPurchaseHistory(adminName, username);

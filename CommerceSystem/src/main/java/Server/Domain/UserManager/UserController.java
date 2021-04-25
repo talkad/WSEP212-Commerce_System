@@ -528,5 +528,16 @@ public class UserController {
     public boolean isConnected(String username){
         return connectedUsers.containsKey(username);
     }
+
+    public Response<List<Permissions>> getUserPermissions(String username, int storeID){
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getPermissions(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
 }
 

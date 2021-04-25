@@ -167,6 +167,11 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
+        return userController.getUserPermissions(username, storeID);
+    }
+
+    @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
         return userController.appointManager(appointerName, appointeeName, storeID);
     }
