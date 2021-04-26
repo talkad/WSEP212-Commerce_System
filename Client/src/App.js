@@ -8,8 +8,10 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Registered from "./Pages/Registered"
 import SearchResult from "./Pages/SearchResult";
+import CreateStore from "./Pages/CreateStore";
+import PurchaseHistory from "./Pages/PurchaseHistory";
 
-// const client = new W3CWebSocket('ws://192.168.56.1:8080')
+const client = new W3CWebSocket('ws://127.0.0.1:8080')
 
 class App extends React.Component{
 
@@ -18,11 +20,13 @@ class App extends React.Component{
             <Router>
                 <div className="App">
                     <Switch>
-                        <Route exact path="/" component={Visitor} />
+                        <Route exact path="/" render={() => <Visitor isVisitor={true}/>} />
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
                         <Route path="/registered" component={Registered} />
                         <Route path="/search/" component={SearchResult} />
+                        <Route path="/createStore" component={CreateStore}/>
+                        <Route path="/purchaseHistory" component={PurchaseHistory}/>
                     </Switch>
                 </div>
             </Router>
