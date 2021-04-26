@@ -10,6 +10,8 @@ import Registered from "./Pages/Registered"
 import SearchResult from "./Pages/SearchResult";
 import CreateStore from "./Pages/CreateStore";
 import PurchaseHistory from "./Pages/PurchaseHistory";
+import Cart from "./Pages/Cart";
+import Checkout from "./Pages/Checkout";
 
 const client = new W3CWebSocket('ws://127.0.0.1:8080')
 
@@ -27,6 +29,8 @@ class App extends React.Component{
                         <Route path="/search/" component={SearchResult} />
                         <Route path="/createStore" component={CreateStore}/>
                         <Route path="/purchaseHistory" component={PurchaseHistory}/>
+                        <Route path="/cart" component={Cart}/>
+                        <Route path="/checkout" component={Checkout}/>
                     </Switch>
                 </div>
             </Router>
