@@ -4,6 +4,8 @@ import './index.css';
 import Visitor from './Pages/Visitor'
 import App from './App'
 import reportWebVitals from './reportWebVitals';
+import StoreManagment from "./MainPages/StoreManagment";
+import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 
 
 ReactDOM.render(

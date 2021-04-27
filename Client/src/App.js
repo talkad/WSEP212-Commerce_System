@@ -12,6 +12,19 @@ import CreateStore from "./Pages/CreateStore";
 import PurchaseHistory from "./Pages/PurchaseHistory";
 import Cart from "./Pages/Cart";
 import Checkout from "./Pages/Checkout";
+import StoreManagment from "./MainPages/StoreManagment";
+import AddProduct from "./ProductPages/AddProduct";
+import DeleteProduct from "./ProductPages/DeleteProduct";
+import EditProduct from "./ProductPages/EditProduct";
+import AddDiscount from "./DiscountPurchasePolicyPages/AddDiscount";
+import AppointOwner from "./AppoinmentPages/AppointOwner";
+import RemoveOwner from "./AppoinmentPages/RemoveOwner";
+import AddPermission from "./PermissionsPages/AddPermission";
+import DeletePermission from "./PermissionsPages/DeletePermission";
+import AppointManager from "./AppoinmentPages/AppointManager";
+import RemoveManager from "./AppoinmentPages/RemoveManager";
+import WorkerDetails from "./ReportsPages/WorkerDetails";
+import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 
 const client = new W3CWebSocket('ws://127.0.0.1:8080')
 
@@ -31,111 +44,26 @@ class App extends React.Component{
                         <Route path="/purchaseHistory" component={PurchaseHistory}/>
                         <Route path="/cart" component={Cart}/>
                         <Route path="/checkout" component={Checkout}/>
+                        <Route path="/storeManagement" component={StoreManagment}/>
+                        <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
+                        <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
+                        <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
+                        <Route path="/ADD_DISCOUNTS" component={AddDiscount}/>
+                        {/*<Route path="/DELETE_DISCOUNTS" component={DeleteDiscount}/>*/}
+                        <Route path="/APPOINT_OWNER" component={AppointOwner}/>
+                        <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>
+                        <Route path="/ADD_PERMISSION" component={AddPermission}/>
+                        <Route path="/DELETE_PERMISSION" component={DeletePermission}/>
+                        <Route path="/APPOINT_MANAGER" component={AppointManager}/>
+                        <Route path="/REMOVE_MANAGER_APPOINTMENT" component={RemoveManager}/>
+                        <Route path="/RECEIVE_STORE_WORKER_INFO" component={WorkerDetails}/>
+                        <Route path="/RECEIVE_STORE_HISTORY" component={StorePurchaseHistory}/>
+                        {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>
             </Router>
         )
     }
-
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         identifier: '',
-    //         username: '',
-    //         password: '',
-    //         flag: false,
-    //     };
-    //
-    //     this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    //     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    //     this.handleLogin = this.handleLogin.bind(this);
-    //     this.handleRegister = this.handleRegister.bind(this);
-    // }
-    //
-    // componentDidMount() {
-    //     client.onopen = () => {
-    //         console.log('WebSocket Client Connected');
-    //     };
-    //     client.onmessage = (message) => {
-    //         console.log(message);
-    //         const dataFromServer = JSON.parse(message.data);
-    //         if(dataFromServer.type === "identification"){
-    //             this.setState({identifier: dataFromServer.identifier});
-    //         }
-    //
-    //         if(dataFromServer.response === "login"){
-    //             if(dataFromServer.isFailure === true){
-    //                 alert(`registration failed. Error: ${dataFromServer.err}` )
-    //             }
-    //             else{
-    //                 this.setState({identifier: dataFromServer.result})
-    //                 alert("registered successfully");
-    //             }
-    //         }
-    //
-    //         if(dataFromServer.response === "register"){
-    //             if(dataFromServer.isFailure === true){
-    //                 alert(`login failed. Error: ${dataFromServer.err}` )
-    //             }
-    //             else{
-    //                 this.setState({identifier: dataFromServer.result});
-    //                 alert('logged in');
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // handleUsernameChange(event) {
-    //     this.setState({username: event.target.value});
-    // }
-    //
-    // handlePasswordChange(event) {
-    //     this.setState({password: event.target.value});
-    // }
-    //
-    // handleLogin(){
-    //     console.log(this.state.username);
-    //     console.log(this.state.password);
-    //     client.send(JSON.stringify({
-    //                 "action": "login",
-    //                 "identifier": this.state.identifier,
-    //                 "username": this.state.username,
-    //                 "password": this.state.password
-    //             }))
-    //     this.setState({username: '', password: ''})
-    // }
-    //
-    // handleRegister(){
-    //     console.log(this.state.username);
-    //     console.log(this.state.password);
-    //     client.send(JSON.stringify({
-    //         "action": "register",
-    //         "identifier": this.state.identifier,
-    //         "username": this.state.username,
-    //         "password": this.state.password
-    //     }))
-    //     this.setState({username: '', password: ''})
-    // }
-
-    // render() {
-    //     const thisPage = <div className="App">
-    //         <header className="App-header">
-    //             <form>
-    //                 <input type="text" name="username" placeholder="Username" value={this.state.username}
-    //                        onChange={this.handleUsernameChange}/>
-    //                 <input type="password" name="password" placeholder="Password" value={this.state.password}
-    //                        onChange={this.handlePasswordChange}/>
-    //             </form>
-    //             <form>
-    //                 <button type="button" onClick={this.handleLogin}>login</button>
-    //                 <button type="button" onClick={this.handleRegister}>register</button>
-    //             </form>
-    //         </header>
-    //     </div>;
-    //     return (thisPage);
-    // }
-
-
 }
 
 export default App;
