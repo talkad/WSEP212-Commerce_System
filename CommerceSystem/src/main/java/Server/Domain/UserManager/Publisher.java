@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Communication.WSS.Notifier;
+import Server.Communication.WSS.Notify;
 
 import java.util.Map;
 import java.util.Vector;
@@ -10,7 +11,7 @@ public class Publisher{
 
     private Map<Integer, Vector<String>> storeSubscribers;
     private UserController userController;
-    private Notifier notifier;
+    private Notify notifier;
 
     private Publisher()
     {
@@ -66,4 +67,10 @@ public class Publisher{
         storeSubscribers.putIfAbsent(storeID, new Vector<>());
         storeSubscribers.get(storeID).add(username);
     }
+
+    // inject the mock notifier for testing - no one should use this function!
+    public void setNotifier(Notify notifier){
+        this.notifier = notifier;
+    }
+
 }

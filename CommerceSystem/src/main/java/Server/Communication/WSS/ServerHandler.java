@@ -19,7 +19,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
 
 public class ServerHandler  extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private Notifier notifier;
+    private Notify notifier;
 
 
     public ServerHandler() {

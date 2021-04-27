@@ -11,7 +11,7 @@ import io.netty.util.CharsetUtil;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Notifier{
+public class Notifier implements Notify{
 
     private Map<String, ChannelHandlerContext> connections;
 
@@ -24,7 +24,7 @@ public class Notifier{
         private static final Notifier INSTANCE = new Notifier();
     }
 
-    public static Notifier getInstance() {
+    public static Notify getInstance() {
         return CreateSafeThreadSingleton.INSTANCE;
     }
 
