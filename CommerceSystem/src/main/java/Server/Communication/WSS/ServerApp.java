@@ -11,7 +11,7 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class ServerApp {
 
-    static final int PORT = 8443;
+    static final int PORT = 8080;
 
     public static void main(String[] args) throws Exception {
 
