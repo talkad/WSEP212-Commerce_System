@@ -6,6 +6,7 @@ import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 
+import java.security.Policy;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -222,6 +223,19 @@ public class User {
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
         if (this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)) {
             return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
+        }
+        return new Response<>(false, true, "The user is not allowed to edit products information in the store");
+    }
+
+    public Response<Boolean> addDiscountPolicy(int storeID, Policy policy) {
+        if (this.state.allowed(Permissions.ADD_DISCOUNT_POLICY, this, storeID)) {
+
+            Store store = StoreController.getInstance().getStoreById(storeID);
+            if(store != null)
+                return null;
+//                return store.aaaa
+
+            return new Response<>(false, true, "The given store doesn't exists");
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
