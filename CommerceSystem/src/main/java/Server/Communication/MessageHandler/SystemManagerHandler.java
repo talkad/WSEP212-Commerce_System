@@ -35,9 +35,9 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.getStorePurchaseHistory(adminName, Integer.parseInt(storeID));
             }
-            default -> response = new Response<>(false, true, "Action " + action + " does not exists");
+            default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
 
-        return response.isFailure()? super.handle(input): response;
+        return response;
     }
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import Connection from "../API/Connection";
 
 
 class Login extends React.Component{
@@ -24,10 +25,10 @@ class Login extends React.Component{
     }
 
     handleSignIn(){
-        //TODO: send data to server and redirect according to the result
-        this.props.history.push('/registered');
+        if(Connection.sendLogin(this.state.username, this.state.password) !== null){
+            this.props.history.push('/registered');
+        }
     }
-
 
     render(){
         return (

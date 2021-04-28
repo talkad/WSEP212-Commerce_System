@@ -124,10 +124,10 @@ public class StoreManagerHandler extends Handler{
 
                 response = service.getUserPermissions(username, Integer.parseInt(storeID));
             }
-            default -> response = new Response<>(false, true, "Action " + action + " does not exists");
+            default -> response = super.handle(input);
         }
 
-        return response.isFailure()? super.handle(input): response;
+        return response;
     }
 
 }

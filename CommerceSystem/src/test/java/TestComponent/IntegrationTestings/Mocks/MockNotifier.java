@@ -31,12 +31,6 @@ public class MockNotifier implements Notify {
     }
 
     @Override
-    public void replaceIdentifier(String prevIdentifier, String newIdentifier) {
-        List<String> msg = messages.remove(prevIdentifier);
-        messages.put(newIdentifier, msg);
-    }
-
-    @Override
     public void notify(String identifier, String msg) {
         messages.get(identifier).add(msg);
     }

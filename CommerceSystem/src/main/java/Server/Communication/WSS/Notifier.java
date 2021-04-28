@@ -1,6 +1,8 @@
 package Server.Communication.WSS;
 
 
+import Server.Communication.WSS.DataObjects.NotificationData;
+import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.util.Map;
@@ -31,16 +33,17 @@ public class Notifier implements Notify{
         connections.values().remove(ctx);
     }
 
-    public void replaceIdentifier(String prevIdentifier, String newIdentifier) {
-        ChannelHandlerContext ctx = connections.remove(prevIdentifier);
-        connections.put(newIdentifier, ctx);
-    }
+//    public void replaceIdentifier(String prevIdentifier, String newIdentifier) {
+//        ChannelHandlerContext ctx = connections.remove(prevIdentifier);
+//        connections.put(newIdentifier, ctx);
+//    }
 
     public void notify(String identifier, String msg){
+        Gson gson = new Gson();
         ChannelHandlerContext channel = connections.get(identifier);
 
         if(channel != null)
-            channel.writeAndFlush(new TextWebSocketFrame(msg));
+            channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(new NotificationData(msg))));
 
     }
 }

@@ -1,6 +1,7 @@
 package Server.Communication.WSS;
 
 import Server.Communication.MessageHandler.CommerceHandler;
+import Server.Communication.WSS.DataObjects.ActionData;
 import Server.Communication.WSS2.HttpRequestHandler;
 import Server.Domain.CommonClasses.Response;
 import com.google.gson.Gson;
@@ -8,6 +9,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import java.util.Properties;
+
 
 public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
@@ -25,10 +28,19 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         Gson gson = new Gson();
-        String content = msg.text();
 
+        Properties data = gson.fromJson(msg.text(), Properties.class);
+        String action = data.getProperty("action");
+
+        String content = msg.text();
         Response<?> result = CommerceHandler.getInstance().handle(content);
 
-        ctx.writeAndFlush(new TextWebSocketFrame(gson.toJson(result)));
+        String response = gson.toJson(new ActionData(action, result));
+        ctx.writeAndFlush(new TextWebSocketFrame(response));
+
+
+        if(action.equals("login") && !result.isFailure())
+            Notifier.getInstance().addConnection((String)result.getResult(), ctx);
     }
+
 }
