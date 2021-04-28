@@ -106,6 +106,7 @@ public class UserDAO {
         cartsReadLock.lock();
         historiesReadLock.lock();
         appointmentsReadLock.lock();
+        pendingReadLock.lock();
         if(registeredUsers.containsKey(name)) {
             List<Integer> storesOwned = testOwners.get(name);
             if (storesOwned == null)
@@ -131,6 +132,7 @@ public class UserDAO {
             }
             user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, pendindMSG);
         }
+        pendingReadLock.unlock();
         appointmentsReadLock.unlock();
         historiesReadLock.unlock();
         cartsReadLock.unlock();

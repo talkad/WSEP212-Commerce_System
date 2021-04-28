@@ -1,13 +1,8 @@
 package Server.Communication.WSS;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpVersion;
-import io.netty.util.CharsetUtil;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,12 +37,10 @@ public class Notifier implements Notify{
     }
 
     public void notify(String identifier, String msg){
-        ByteBuf content;
         ChannelHandlerContext channel = connections.get(identifier);
 
-        if(channel != null) {
-            content = Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8);
-            channel.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content));
-        }
+        if(channel != null)
+            channel.writeAndFlush(new TextWebSocketFrame(msg));
+
     }
 }

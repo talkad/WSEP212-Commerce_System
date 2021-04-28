@@ -12,7 +12,7 @@ public class ServerApp {
 
     static final int PORT = 8080;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         // Configure the bootstrap
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
