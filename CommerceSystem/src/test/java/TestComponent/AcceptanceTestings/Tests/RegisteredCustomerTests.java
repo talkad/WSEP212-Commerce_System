@@ -32,22 +32,19 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
             ProductDTO product = new ProductDTO("simania zoheret", storeID, 20,
                     new LinkedList<String>(Arrays.asList("bookmark")),
-                    new LinkedList<String>(Arrays.asList("simania")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("simania")));
 
             bridge.addProductsToStore("aviad", product, 20);
 
             product = new ProductDTO("mavrik sfarim", storeID, 30,
                     new LinkedList<String>(Arrays.asList("polish")),
-                    new LinkedList<String>(Arrays.asList("mavrik")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("mavrik")));
 
             bridge.addProductsToStore("aviad", product, 100);
 
             product = new ProductDTO("martiv sfarim", storeID, 30,
                     new LinkedList<String>(Arrays.asList("wet")),
-                    new LinkedList<String>(Arrays.asList("martiv")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("martiv")));
 
             bridge.addProductsToStore("aviad", product, 100);
 

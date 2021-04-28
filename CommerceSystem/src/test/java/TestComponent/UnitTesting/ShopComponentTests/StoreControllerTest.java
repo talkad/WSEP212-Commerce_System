@@ -22,8 +22,8 @@ public class StoreControllerTest {
     public void setUp(){
         if(!initialized) {
             storeController = StoreController.getInstance();
-            product1 = new ProductDTO("TV", 0, 1299.9, null, null, null);
-            product2 = new ProductDTO("AirPods", 0, 799.9, List.of("Apple", "Headphones"), List.of("#Expensive", "#Swag"), null);
+            product1 = new ProductDTO("TV", 0, 1299.9, null, null);
+            product2 = new ProductDTO("AirPods", 0, 799.9, List.of("Apple", "Headphones"), List.of("#Expensive", "#Swag"));
             Response<Integer> res = storeController.openStore("castro", "shaked");
             store = storeController.getStoreById(res.getResult());
             store.addProduct(product1, 5);

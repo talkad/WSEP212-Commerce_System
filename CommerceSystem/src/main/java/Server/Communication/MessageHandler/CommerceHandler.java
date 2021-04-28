@@ -1,7 +1,10 @@
 package Server.Communication.MessageHandler;
 
 
+import Server.Domain.CommonClasses.Response;
 import com.google.gson.Gson;
+
+import java.util.Properties;
 
 public class CommerceHandler {
 
@@ -25,10 +28,14 @@ public class CommerceHandler {
         return CreateSafeThreadSingleton.INSTANCE;
     }
 
-    public String handle(String input) {
+    public Response<?> handle(String input) {
         Gson gson = new Gson();
+        Properties data = gson.fromJson(input, Properties.class);
 
-        return gson.toJson(handler.handle(input));
+        if(data == null)
+            return new Response<>(false, true, "Not a valid Get Request - may be the handshake");
+
+        return handler.handle(input);
     }
 
 

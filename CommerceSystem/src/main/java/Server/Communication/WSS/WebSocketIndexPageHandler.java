@@ -1,4 +1,5 @@
-package Server.Communication.example;
+package Server.Communication.WSS;
+
 
   import io.netty.buffer.ByteBuf;
   import io.netty.buffer.ByteBufUtil;
@@ -33,6 +34,37 @@ package Server.Communication.example;
                   this.websocketPath = websocketPath;
               }
 
+              @Override
+      protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
+                  // Handle a bad request.
+                  if (!req.decoderResult().isSuccess()) {
+                          sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), BAD_REQUEST,
+                                                                                         ctx.alloc().buffer()));
+                          return;
+                      }
+        
+                  // Allow only GET methods.
+                  if (!GET.equals(req.method())) {
+                          sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), FORBIDDEN,
+                                                                                         ctx.alloc().buffer()));
+                          return;
+                      }
+        
+                  // Send the index page
+                  if ("/".equals(req.uri()) || "/index.html".equals(req.uri())) {
+                          String webSocketLocation = getWebSocketLocation(ctx.pipeline(), req, websocketPath);
+                          ByteBuf content = Unpooled.copiedBuffer("hello", CharsetUtil.UTF_8);
+                          FullHttpResponse res = new DefaultFullHttpResponse(req.protocolVersion(), OK, content);
+            
+                          res.headers().set(CONTENT_TYPE, "text/html; charset=UTF-");
+                          HttpUtil.setContentLength(res, content.readableBytes());
+            
+                          sendHttpResponse(ctx, req, res);
+                      } else {
+                          sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), NOT_FOUND,
+                                                                                         ctx.alloc().buffer()));
+                      }
+              }
 
               @Override
       public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -48,7 +80,7 @@ package Server.Communication.example;
                           HttpUtil.setContentLength(res, res.content().readableBytes());
                       }
                   // Send the response and close the connection if necessary.
-                  boolean keepAlive = HttpUtil.isKeepAlive(req) && responseStatus.code() == 200 ;
+                  boolean keepAlive = HttpUtil.isKeepAlive(req) && responseStatus.code() == 200;
                   HttpUtil.setKeepAlive(res, keepAlive);
                   ChannelFuture future = ctx.writeAndFlush(res);
                   if (!keepAlive) {
@@ -64,36 +96,4 @@ package Server.Communication.example;
                      }
                  return protocol + "://" + req.headers().get(HttpHeaderNames.HOST) + path;
              }
-
-              @Override
-              protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
-                  // Handle a bad request.
-                  if (!req.decoderResult().isSuccess()) {
-                      sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), BAD_REQUEST,
-                              ctx.alloc().buffer()));
-                      return;
-                  }
-
-                  // Allow only GET methods.
-                  if (!GET.equals(req.method())) {
-                      sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), FORBIDDEN,
-                              ctx.alloc().buffer()));
-                      return;
-                  }
-
-                  // Send the index page
-                  if ("/".equals(req.uri()) || "/index.html".equals(req.uri())) {
-                      String webSocketLocation = getWebSocketLocation(ctx.pipeline(), req, websocketPath);
-                      ByteBuf content = Unpooled.copiedBuffer("hello", CharsetUtil.UTF_8);;
-                      FullHttpResponse res = new DefaultFullHttpResponse(req.protocolVersion(), OK, content);
-
-                      res.headers().set(CONTENT_TYPE, "text/html; charset=UTF-");
-                      HttpUtil.setContentLength(res, content.readableBytes());
-
-                      sendHttpResponse(ctx, req, res);
-                  } else {
-                      sendHttpResponse(ctx, req, new DefaultFullHttpResponse(req.protocolVersion(), NOT_FOUND,
-                              ctx.alloc().buffer()));
-                  }
-              }
-          }
+ }

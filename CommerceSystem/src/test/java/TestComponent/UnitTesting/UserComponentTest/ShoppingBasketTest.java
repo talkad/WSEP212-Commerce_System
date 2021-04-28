@@ -14,8 +14,8 @@ public class ShoppingBasketTest {
     @Test
     public void addProductLegalTest(){
         ShoppingBasket basket = new ShoppingBasket(10);
-        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
-        Product product3 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null));
+        Product product3 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null));
 
         Map<ProductDTO, Integer> products;
         int pNum = 0;
@@ -36,7 +36,7 @@ public class ShoppingBasketTest {
     @Test
     public void addProductIllegalTest(){
         ShoppingBasket basket = new ShoppingBasket(10);
-        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
+        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null));
 
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
@@ -50,7 +50,7 @@ public class ShoppingBasketTest {
     @Test
     public void removeExistingProductTest(){
         ShoppingBasket basket = new ShoppingBasket(10);
-        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null));
 
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;
@@ -67,8 +67,8 @@ public class ShoppingBasketTest {
     @Test
     public void removeAbsentProductTest(){
         ShoppingBasket basket = new ShoppingBasket(10);
-        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null, null));
-        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null, null));
+        Product product1 = Product.createProduct(new ProductDTO("TV", 10, 1299.9, null, null));
+        Product product2 = Product.createProduct(new ProductDTO("AirPods", 9, 1299.9, null, null));
 
         Map<ProductDTO, Integer> products;
         Response<Boolean> res;

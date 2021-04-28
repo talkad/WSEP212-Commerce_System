@@ -34,15 +34,13 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
 
         ProductDTO product = new ProductDTO("pastrama hodu", storeID, 10,
                 new LinkedList<String>(Arrays.asList("food", "yummy")),
-                new LinkedList<String>(Arrays.asList("pastrama")),
-                null);
+                new LinkedList<String>(Arrays.asList("pastrama")));
 
         bridge.addProductsToStore("shemesh", product, 100);
 
         product = new ProductDTO("mitz petel", storeID, 5,
                 new LinkedList<String>(Arrays.asList("beverage", "yummy")),
-                new LinkedList<String>(Arrays.asList("mitz")),
-                null);
+                new LinkedList<String>(Arrays.asList("mitz")));
 
         bridge.addProductsToStore("shemesh", product, 200);
 

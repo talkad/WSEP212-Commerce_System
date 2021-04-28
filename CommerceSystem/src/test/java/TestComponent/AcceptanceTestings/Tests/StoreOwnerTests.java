@@ -44,15 +44,13 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
             ProductDTO productDTO = new ProductDTO("masmer adom", this.storeID, 20,
                     new LinkedList<String>(Arrays.asList("red", "nail")),
-                    new LinkedList<String>(Arrays.asList("masmer")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("masmer")));
 
             bridge.addProductsToStore("aviad", productDTO, 20);
 
             productDTO = new ProductDTO("masmer varod", this.storeID, 20,
                     new LinkedList<String>(Arrays.asList("pink", "nail")),
-                    new LinkedList<String>(Arrays.asList("masmer")),
-                    null);
+                    new LinkedList<String>(Arrays.asList("masmer")));
 
             bridge.addProductsToStore("aviad", productDTO, 20);
 
@@ -66,8 +64,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         ProductDTO productDTO = new ProductDTO("masmer yarok", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("green", "nail")),
-                new LinkedList<String>(Arrays.asList("masmer")),
-                null);
+                new LinkedList<String>(Arrays.asList("masmer")));
 
         Response<Boolean> addResponse = bridge.addProductsToStore("aviad", productDTO, 20);
         Assert.assertTrue(addResponse.getResult());
@@ -90,8 +87,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         // now a user which doesn't have permissions will try to add a product
         ProductDTO productDTO = new ProductDTO("masmer shahor", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("black", "nail")),
-                new LinkedList<String>(Arrays.asList("masmer")),
-                null);
+                new LinkedList<String>(Arrays.asList("masmer")));
         Response<Boolean> addResponse = bridge.addProductsToStore("jacob", productDTO, 20);
         Assert.assertTrue(addResponse.isFailure());
 
@@ -113,8 +109,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         // now a user which doesn't have permissions will try to add a product
         ProductDTO productDTO = new ProductDTO("masmer masmeri", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("nail")),
-                new LinkedList<String>(Arrays.asList("masmer")),
-                null);
+                new LinkedList<String>(Arrays.asList("masmer")));
         Response<Boolean> addResponse = bridge.addProductsToStore("aviad", productDTO, -20);
         Assert.assertTrue(addResponse.isFailure());
 
@@ -440,8 +435,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         ProductDTO productDTO = new ProductDTO("masmer krem", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("krem", "nail")),
-                new LinkedList<String>(Arrays.asList("masmer")),
-                null);
+                new LinkedList<String>(Arrays.asList("masmer")));
 
         Response<Boolean> actionResult = bridge.addProductsToStore("e", productDTO, 20);
         Assert.assertTrue(actionResult.getResult());
@@ -612,8 +606,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         ProductDTO productDTO = new ProductDTO("masmer hum", this.storeID, 20,
                 new LinkedList<String>(Arrays.asList("brown", "nail")),
-                new LinkedList<String>(Arrays.asList("masmer")),
-                null);
+                new LinkedList<String>(Arrays.asList("masmer")));
 
         Response<Boolean> actionResult = bridge.addProductsToStore("x", productDTO, 20);
         Assert.assertFalse(actionResult.getResult());

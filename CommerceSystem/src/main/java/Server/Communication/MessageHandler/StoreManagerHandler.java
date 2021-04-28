@@ -118,6 +118,12 @@ public class StoreManagerHandler extends Handler{
 
                 response = service.getPurchaseDetails(username, Integer.parseInt(storeID));
             }
+            case "getUserPermissions" ->{
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+
+                response = service.getUserPermissions(username, Integer.parseInt(storeID));
+            }
             default -> response = new Response<>(false, true, "Action " + action + " does not exists");
         }
 

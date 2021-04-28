@@ -194,6 +194,11 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<List<Permissions>> getUserPermissions(String username, int storeID){
+        return commerceSystem.getUserPermissions(username, storeID);
+    }
+
+    @Override
     public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
         return commerceSystem.getStoreWorkersDetails(username, storeID);
     }
