@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.StoreDTO;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,10 +84,10 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(openStoreResponse.isFailure());
 
         // looking the store up on the search just to be sure
-        Response<List<Store>> searchResult = bridge.searchByStoreName("hacol la even");
+        Response<List<StoreDTO>> searchResult = bridge.searchByStoreName("hacol la even");
         boolean exists = true;
-        for(Store store: searchResult.getResult()){
-            if(!store.getName().contains("hacol la even")){
+        for(StoreDTO store: searchResult.getResult()){
+            if(!store.getStoreName().contains("hacol la even")){
                 exists = false;
             }
         }
@@ -102,10 +103,10 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(openStoreResponse.isFailure());
 
         // making sure we can't find it
-        Response<List<Store>> searchResult = bridge.searchByStoreName("bug");
+        Response<List<StoreDTO>> searchResult = bridge.searchByStoreName("bug");
         boolean exists = false;
-        for(Store store: searchResult.getResult()){
-            if(store.getName().contains("bug")){
+        for(StoreDTO store: searchResult.getResult()){
+            if(store.getStoreName().contains("bug")){
                 exists = true;
             }
         }

@@ -10,9 +10,12 @@ class Connection{
 
         this.connection.onopen = () => {
             console.log("connected to the server");
-            connection.send(JSON.stringify({
-                action: "startup",
-            }))
+            if(StaticUserInfo.getUsername() === '') {
+                console.log("got a new username");
+                connection.send(JSON.stringify({
+                    action: "startup",
+                }))
+            }
         }
 
         this.connection.onerror = (err) =>{
@@ -29,6 +32,36 @@ class Connection{
             else{
                 Connection.dataFromServer.push(receivedData);
             }
+        }
+    }
+
+    static waitForOpenConnection = (socket) => {
+        return new Promise((resolve, reject) => {
+            const maxNumberOfAttempts = 10
+            const intervalTime = 200 //ms
+
+            let currentAttempt = 0
+            const interval = setInterval(() => {
+                if (currentAttempt > maxNumberOfAttempts - 1) {
+                    clearInterval(interval)
+                    reject(new Error('Maximum number of attempts exceeded'))
+                } else if (socket.readyState === socket.OPEN) {
+                    clearInterval(interval)
+                    resolve()
+                }
+                currentAttempt++
+            }, intervalTime)
+        })
+    }
+
+    static sendMessage = async (socket, msg) => {
+        if (socket.readyState !== socket.OPEN) {
+            try {
+                await Connection.waitForOpenConnection(socket)
+                socket.send(msg)
+            } catch (err) { console.error(err) }
+        } else {
+            socket.send(msg)
         }
     }
 
@@ -61,7 +94,7 @@ class Connection{
     }
 
     static sendRegister(username, password){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection ,JSON.stringify({
             action: "register",
             identifier: StaticUserInfo.getUsername(),
             username: username,
@@ -72,7 +105,7 @@ class Connection{
     }
 
     static sendLogin(username, password){
-        this.connection.send(JSON.stringify({
+       Connection.sendMessage(Connection.connection ,JSON.stringify({
             action: "login",
             identifier: StaticUserInfo.getUsername(),
             username: username,
@@ -83,7 +116,7 @@ class Connection{
     }
 
     static sendSearchStoreByName(storeName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByStoreName",
             storeName: storeName,
         }));
@@ -92,7 +125,7 @@ class Connection{
     }
 
     static sendSearchProductByName(productName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductName",
             productName: productName,
         }));
@@ -101,7 +134,7 @@ class Connection{
     }
 
     static sendSearchProductByCategory(category){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductCategory",
             category: category,
         }));
@@ -110,7 +143,7 @@ class Connection{
     }
 
     static sendSearchProductByKeyword(keyword){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductKeyword",
             keyword: keyword,
         }));
@@ -119,7 +152,7 @@ class Connection{
     }
 
     static sendAddToCart(storeID, productID){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addToCart",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
@@ -130,7 +163,7 @@ class Connection{
     }
 
     static sendRemoveFromCart(storeID, productID){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "removeFromCart",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
@@ -141,7 +174,7 @@ class Connection{
     }
 
     static sendGetCartDetails(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getCartDetails",
             username: StaticUserInfo.getUsername(),
         }));
@@ -150,7 +183,7 @@ class Connection{
     }
 
     static sendUpdateProductQuantity(storeID, productID, amount){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "updateProductQuantity",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
@@ -162,7 +195,7 @@ class Connection{
     }
 
     static sendDirectPurchase(backAccount, location){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "directPurchase",
             username: StaticUserInfo.getUsername(),
             backAccount: backAccount,
@@ -173,7 +206,7 @@ class Connection{
     }
 
     static sendLogout(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "logout",
             username: StaticUserInfo.getUsername(),
         }));
@@ -182,7 +215,7 @@ class Connection{
     }
 
     static sendOpenStore(storeName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "openStore",
             username: StaticUserInfo.getUsername(),
             storeName: storeName,
@@ -192,7 +225,7 @@ class Connection{
     }
 
     static sendAddProductReview(storeID, productID, review){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addProductReview",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
@@ -204,7 +237,7 @@ class Connection{
     }
 
     static sendGetPurchaseHistory(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getPurchaseHistory",
             username: StaticUserInfo.getUsername(),
         }));
@@ -225,12 +258,14 @@ class Connection{
     Holds for all 4 Appointments Pages
      */
     static sendAppoints (functionName, appointerName, appointeeName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             appointerName: appointerName,
             appointeeName: appointeeName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
 
     //ADD TO SERVICE FIRST!
@@ -244,17 +279,19 @@ class Connection{
     Holds for 2 Permission Pages
      */
     static sendPermission (functionName, permitting, storeId, permitted, permissions){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             permitting: permitting,
             storeId: storeId,
             permitted: permitted,
             permissions: permissions,
         }))
+
+        return Connection.getResponse();
     }
 
     static sendAddProduct (functionName, username, name, storeId, price, categories, keywords, amount){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             name: name,
@@ -264,21 +301,25 @@ class Connection{
             keywords: keywords,
             amount: amount,
         }))
+
+        return Connection.getResponse();
     }
 
     static sendDeleteProduct (functionName, username, storeId, productId, amount){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             storeId: storeId,
             productId: productId,
             amount: amount,
         }))
+
+        return Connection.getResponse();
     }
 
 
     static sendEditProduct (functionName, username, storeId, productId, newPrice, newName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             storeId: storeId,
@@ -286,25 +327,31 @@ class Connection{
             newPrice: newPrice,
             newName: newName,
         }))
+
+        return Connection.getResponse();
     }
 
     static sendStorePurchaseHistory (functionName, adminName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
 
     /*
     * Holds for all 3 pages in Report Pages- Need to receive information too
     */
     static sendReportRequest (functionName, adminName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
 }
 

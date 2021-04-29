@@ -26,8 +26,6 @@ import Connection from "../API/Connection";
 //     }
 // ]
 
-
-//TODO: show stores
 class SearchResult extends React.Component{
     constructor(props) {
         super(props);

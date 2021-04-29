@@ -1,8 +1,5 @@
 package Server.Communication.WSS;
 
-import Server.Communication.WSS.HttpRequestHandler;
-import Server.Communication.WSS2.TextWebSocketFrameHandler;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;

@@ -44,7 +44,7 @@ public class Appointment {
         writeLock.lock();
         if(this.storeAppointments.containsKey(storeId) && this.storeAppointments.get(storeId).contains(name)) {
             response = new Response<>(name, false, "");
-            this.storeAppointments.get(storeId).r
+            this.storeAppointments.get(storeId).remove(name);
         }
         else{
             response = new Response<>(null, true, "Tried removing appointment for nonexistent user");

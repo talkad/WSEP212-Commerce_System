@@ -32,7 +32,7 @@ class Login extends React.Component{
             this.props.history.push('/registered');
         }
         else{
-            alert(result.result.errMsg);
+            alert(result.response.errMsg);
             this.setState({username: '', password: ''});
         }
     }

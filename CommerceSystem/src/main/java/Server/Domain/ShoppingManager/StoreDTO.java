@@ -14,4 +14,8 @@ public class StoreDTO {
         this.storeName = storeName;
         this.products = products;
     }
+
+    public String getStoreName() {
+        return storeName;
+    }
 }

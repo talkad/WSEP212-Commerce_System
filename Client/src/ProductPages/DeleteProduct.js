@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 /***
  * Use Case : 4.1.2
@@ -15,11 +16,13 @@ class DeleteProduct extends React.Component {
             productId: '',
             amount: '',
         };
+
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendDeleteProduct(this.state.functionName, this,state.username, this.state.storeId, this.state.productId, this.state.amount).then(this.handleDeleteProductResponse, Connection.handleReject())
+        Connection.sendDeleteProduct(this.state.functionName, this.state.username, this.state.storeId, this.state.productId, this.state.amount).then(this.handleDeleteProductResponse, Connection.handleReject())
     }
 
     handleDeleteProductResponse(result){

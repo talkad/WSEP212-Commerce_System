@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 class AppointOwner extends React.Component {
     constructor(props) {

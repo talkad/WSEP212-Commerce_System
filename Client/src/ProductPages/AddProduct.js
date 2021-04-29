@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 /***
  * Use Case : 4.1
  */
@@ -21,7 +22,7 @@ class AddProduct extends React.Component {
 
     handleClick(e) {
          e.preventDefault();
-         Connection.sendAddDeleteProduct(this.state.functionName, this.state.username, this.state.name, this.state.storeId, this.state.price,
+         Connection.sendAddProduct(this.state.functionName, this.state.username, this.state.name, this.state.storeId, this.state.price,
              this.state.categories, this.state.keywords, this.state.amount).then(this.handleAddProductResponse, Connection.handleReject())
     }
 

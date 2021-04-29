@@ -57,7 +57,7 @@ class Search extends React.Component{
     render() {
         return (
             <div className="Search">
-                    <form autoComplete="on" action="search/" method="get">
+                    <form autoComplete="on" action="/search/" method="get">
                         <div onChange={this.searchOptionChangeHandler}>
                             <label>Search for:</label>
                             <input type="radio" value="Product" name="searchOption" defaultChecked /> Product

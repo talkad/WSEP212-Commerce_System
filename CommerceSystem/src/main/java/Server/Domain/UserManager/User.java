@@ -85,7 +85,7 @@ public class User {
         ownedWriteLock.unlock();
 
         // subscribe to get notifications
-        Publisher.getInstance().subscribe(storeId, this.name);
+//        Publisher.getInstance().subscribe(storeId, this.name);
     }
 
     public Map<Integer, List<Permissions>> getStoresManaged() {
@@ -241,12 +241,19 @@ public class User {
     }
 
     public Response<Boolean> appointOwner(String newOwner, int storeId) {
+        Response<Boolean> res;
         if (this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
             if (UserDAO.getInstance().userExists(newOwner)) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
                     this.appointments.addAppointment(storeId, newOwner);
                     UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
-                    return UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+
+                    res = UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+
+                    if(!res.isFailure())
+                            Publisher.getInstance().subscribe(storeId, newOwner);
+
+                    return res;
                 }
                 return new Response<>(false, true, "User was already appointed in this store");
             } else {
