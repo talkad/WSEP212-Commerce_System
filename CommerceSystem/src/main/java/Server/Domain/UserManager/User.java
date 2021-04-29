@@ -296,7 +296,11 @@ public class User {
 
     public Response<String> removeAppointment(String appointeeName, int storeID) {
         if (this.storesOwned.contains(storeID)) {
-            return this.appointments.removeAppointment(storeID, appointeeName);
+            Response<String> res = this.appointments.removeAppointment(storeID, appointeeName);
+            if(!res.isFailure()){
+                Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
+            }
+            return res;
         } else if (this.storesManaged.containsKey(storeID)) {
             return this.appointments.removeAppointment(storeID, appointeeName);
         }

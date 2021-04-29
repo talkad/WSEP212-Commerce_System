@@ -267,7 +267,7 @@ public class UserController {
                     connectedUsers.get(newOwner).addStoresOwned(storeId); //@TODO what about his permissions
                 }
                 // subscribe to get notifications
-                Publisher.getInstance().subscribe(storeId, newOwner);
+                //Publisher.getInstance().subscribe(storeId, newOwner);
             }
             writeLock.unlock();
             return result;
@@ -319,14 +319,14 @@ public class UserController {
                     UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                     UserDAO.getInstance().removeRole(appointeeName, storeID);
 
-                    Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
+                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
 
                     List<String> names = new Vector<>(appointments.getResult());
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
 
-                    Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
+                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
                     response = new Response<>(true, false, appointments.getErrMsg());
                 } else {
                     response = new Response<>(false, true, "Attempted to remove not a store owner");
