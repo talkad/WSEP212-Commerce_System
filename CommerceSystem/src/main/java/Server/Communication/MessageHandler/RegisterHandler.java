@@ -48,10 +48,10 @@ public class RegisterHandler extends Handler{
 
                 response = service.getPurchaseHistory(username);
             }
-            default -> response = new Response<>(false, true, "Action " + action + " does not exists");
+            default -> response = super.handle(input);
         }
 
-        return response.isFailure()? super.handle(input): response;
+        return response;
     }
 
 }

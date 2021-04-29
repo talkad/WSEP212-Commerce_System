@@ -45,6 +45,10 @@ import Connection from "./API/Connection";
 
 // Connection.setConnection(client);
 
+let client = new WebSocket("ws://localhost:8080/ws");
+
+Connection.setConnection(client);
+
 class App extends React.Component{
 
     render() {

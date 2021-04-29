@@ -6,9 +6,11 @@ import io.netty.handler.codec.http.*;
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private final String wsUri;
+    private Notify notifier;
 
     public HttpRequestHandler(String wsUri){
         this.wsUri = wsUri;
+        this.notifier = Notifier.getInstance();
     }
 
     @Override
@@ -46,20 +48,21 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception{
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
+        notifier.removeConnection(ctx);
         cause.printStackTrace();
         ctx.close();
     }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-
         System.out.println("Client is connected.");
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        notifier.removeConnection(ctx);
         System.out.println("Client disconnected.");
         super.channelUnregistered(ctx);
     }

@@ -3,52 +3,84 @@ import {getMessage} from "@testing-library/jest-dom/dist/utils";
 
 class Connection{
     static connection;
-    static dataFromServer;
+    static dataFromServer = [];
+    static readyMessages = [];
 
     static setConnection(connection) {
         this.connection = connection;
 
         this.connection.onopen = () => {
             console.log("connected to the server");
-            connection.send("Hello");
+            connection.send(JSON.stringify({
+                action: "startup",
+            }))
         }
 
         this.connection.onerror = (err) =>{
             console.log(err);
         }
         this.connection.onmessage = (message) => {
-            console.log(message);
-            let receivedData = JSON.parse(message);
+            let receivedData = JSON.parse(message.data);
             if(receivedData.type === "startup"){
-                StaticUserInfo.setUsername(this.dataFromServer.identifier);
+                StaticUserInfo.setUsername(receivedData.response.result);
             }
             else if(receivedData.type === "notification"){
                 alert(receivedData.message);
             }
             else{
-                this.dataFromServer.push(receivedData)
+                Connection.dataFromServer.push(receivedData);
             }
         }
     }
 
-    static receiveMessage() {
-        return new Promise((resolve, reject) => {
-            setTimeout(function () {
-                while(true){
-                    if(!Connection.dataFromServer.isEmpty()){
-                        return resolve(Connection.dataFromServer.shift());
-                    }
+    static catchResponse() {
+        function sleep(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        return new Promise(async (resolve, reject) => {
+            let i = 0
+
+            while(i < 5){
+                if(Connection.dataFromServer.length !== 0){
+                    return resolve(Connection.dataFromServer.shift());
                 }
-            }, 5000)
-            reject("error");
+                await sleep(1000);
+                i++;
+            }
+            reject("timeout");
         });
     }
 
-    static async getMessage(){
-        return await Connection.receiveMessage();
+    static async getResponse(){
+        function successCallback(result){
+            console.log(result);
+            if(result.response.isFailure === true){
+                alert(result.response.errMsg);
+            }
+            else{
+                Connection.readyMessages.push(result);
+            }
+        }
+
+        function failureCallback(error){
+            alert(error);
+        }
+
+        await Connection.catchResponse().then(successCallback, failureCallback);
+
+        console.log("hello there");
+
+        if(Connection.readyMessages.length === 0){
+            return Connection.readyMessages.shift();
+        }
+        else{
+            return null;
+        }
     }
 
     static sendRegister(username, password){
+        console.log(StaticUserInfo.getUsername());
         this.connection.send(JSON.stringify({
             action: "register",
             identifier: StaticUserInfo.getUsername(),
@@ -56,7 +88,7 @@ class Connection{
             pwd: password,
         }));
 
-        const message = Connection.getMessage();
+        return Connection.getResponse();
     }
 
     static sendLogin(username, password){
@@ -67,7 +99,7 @@ class Connection{
             pwd: password,
         }));
 
-        return getMessage("login");
+        return Connection.getResponse();
     }
 
     static sendSearchStoreByName(storeName){

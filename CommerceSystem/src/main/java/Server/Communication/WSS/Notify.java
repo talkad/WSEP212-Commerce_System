@@ -8,7 +8,5 @@ public interface Notify {
 
     void removeConnection(ChannelHandlerContext ctx);
 
-    void replaceIdentifier(String prevIdentifier, String newIdentifier);
-
     void notify(String identifier, String msg);
 }

@@ -41,7 +41,7 @@ public class UserController {
     public Response<String> removeGuest(String name) {
 
         String logoutGuest = name;
-        if(UserDAO.getInstance().userExists(name).getResult()){
+        if(UserDAO.getInstance().userExists(name)){
             logoutGuest = logout(name).getResult();
         }
         connectedUsers.remove(logoutGuest);
@@ -128,11 +128,10 @@ public class UserController {
                 Response<Boolean> result = user.register();
                 if (!result.isFailure()) {
                     writeLock.lock();  // TODO check if needed (prevents multiple registration)
-                    result = UserDAO.getInstance().userExists(name);
-                    if (!result.getResult()) {
+                    if (!UserDAO.getInstance().userExists(name)) {
                         UserDAO.getInstance().registerUser(name, security.sha256(password));
                         writeLock.unlock();
-                        result = new Response<>(true, false, "");
+                        result = new Response<>(true, false, "Registration occurred");
                     } else {
                         writeLock.unlock();
                         return new Response<>(false, true, "username already exists");
@@ -160,10 +159,10 @@ public class UserController {
                     connectedUsers.put(name, user);
                     writeLock.unlock();
 
-                    Notifier.getInstance().replaceIdentifier(prevName, name);
+//                    Notifier.getInstance().replaceIdentifier(prevName, name);
                     user.sendPendingNotifications();
 
-                    return new Response<>(name, false, "no error");
+                    return new Response<>(name, false, "Logged in successfully");
                 } else {
                     return new Response<>(prevName, true, "Failed to login user");
                 }

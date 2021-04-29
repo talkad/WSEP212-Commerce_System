@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom'
+import Connection from "../API/Connection";
 
 
 class Register extends React.Component{
@@ -14,7 +15,7 @@ class Register extends React.Component{
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.goBack = this.goBack.bind(this);
+        this.handleCreateAccount = this.handleCreateAccount.bind(this);
     }
 
     handleUsernameChange(event) {
@@ -25,13 +26,11 @@ class Register extends React.Component{
     }
 
     handleCreateAccount(){
-        //TODO: send data to server and redirect according to the result
+       if(Connection.sendRegister(this.state.username, this.state.password) !== null){
+           alert("register successful");
+           this.props.history.goBack();
+       }
     }
-
-    goBack(){ //TODO: do we need a back button?
-        this.props.history.goBack();
-    }
-
 
     render(){
         return (
@@ -49,9 +48,6 @@ class Register extends React.Component{
                     <button  onClick={this.handleCreateAccount}>create account</button>
                 </div>
                 <p>already a member? <Link to="/login">sign in</Link></p>
-                {/*<div>*/}
-                {/*    <button  onClick={this.goBack}>back</button>*/}
-                {/*</div>*/}
             </div>
         );
     }

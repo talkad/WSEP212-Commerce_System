@@ -242,8 +242,7 @@ public class User {
 
     public Response<Boolean> appointOwner(String newOwner, int storeId) {
         if (this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
-            Response<Boolean> exists = UserDAO.getInstance().userExists(newOwner);
-            if (exists.getResult()) {
+            if (UserDAO.getInstance().userExists(newOwner)) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
                     this.appointments.addAppointment(storeId, newOwner);
                     UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
@@ -259,8 +258,7 @@ public class User {
 
     public Response<Boolean> appointManager(String newManager, int storeId) {
         if (this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)) {
-            Response<Boolean> exists = UserDAO.getInstance().userExists(newManager);
-            if (exists.getResult()) {
+            if (UserDAO.getInstance().userExists(newManager)) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
                     this.appointments.addAppointment(storeId, newManager);
                     UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
@@ -357,7 +355,7 @@ public class User {
 
     public Response<List<PurchaseDTO>> getUserPurchaseHistory(String username) {       // req 6.4
         if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
-            if (UserDAO.getInstance().userExists(username).getResult()) {
+            if (UserDAO.getInstance().userExists(username)) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
             } else {
                 return new Response<>(new Vector<>(), true, "User does not exist");//todo empty list or null

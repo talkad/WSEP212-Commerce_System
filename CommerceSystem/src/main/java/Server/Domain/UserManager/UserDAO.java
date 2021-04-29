@@ -177,9 +177,8 @@ public class UserDAO {
         pendingWriteLock.unlock();
     }
 
-    public Response<Boolean> userExists(String name) {
-        boolean result = this.registeredUsers.containsKey(name);
-        return new Response<>(result, !result, "username already exists");
+    public boolean userExists(String name) {
+        return this.registeredUsers.containsKey(name);
     }
 
     public boolean validUser(String name, String password) {
@@ -195,7 +194,7 @@ public class UserDAO {
     public Response<Boolean> addStoreOwned(String name, int storeId){
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         ownersWriteLock.lock();
-        if(userExists(name).getResult()){
+        if(userExists(name)){
             this.testOwners.get(name).add(storeId);
             result = new Response<>(true, false, "Store added to owner's list");
         }
@@ -206,7 +205,7 @@ public class UserDAO {
     public Response<Boolean> addStoreManaged(String name, int storeId) {
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         managersWriteLock.lock();
-        if(userExists(name).getResult()){
+        if(userExists(name)){
             List<Permissions> permissions = new Vector<>();
             permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);

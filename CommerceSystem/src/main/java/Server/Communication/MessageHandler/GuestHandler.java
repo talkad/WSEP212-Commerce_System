@@ -24,6 +24,9 @@ public class GuestHandler extends Handler{
         String action = data.getProperty("action");
 
         switch (action) {
+            case "startup" -> {
+                response = service.addGuest();
+            }
             case "removeGuest" -> {
                 String name = data.getProperty("name");
 
@@ -32,14 +35,14 @@ public class GuestHandler extends Handler{
             case "register" ->{
                 String identifier = data.getProperty("identifier");
                 String username = data.getProperty("username");
-                String password = data.getProperty("password");
+                String password = data.getProperty("pwd");
 
                 response = service.register(identifier, username, password);
             }
             case "login" -> {
                 String identifier = data.getProperty("identifier");
                 String username = data.getProperty("username");
-                String password = data.getProperty("password");
+                String password = data.getProperty("pwd");
 
                 response = service.login(identifier, username, password);
             }
@@ -98,9 +101,9 @@ public class GuestHandler extends Handler{
 
                 response = service.directPurchase(username, bankAccount, location);
             }
-            default -> response = new Response<>(false, true, "Action " + action + " does not exists");
+            default -> response = super.handle(input);
         }
 
-        return response.isFailure()? super.handle(input): response;
+        return response;
     }
 }

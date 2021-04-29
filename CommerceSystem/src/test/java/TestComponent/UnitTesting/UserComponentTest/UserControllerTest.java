@@ -48,9 +48,9 @@ public class UserControllerTest {
         String initialUserName = commerceService.addGuest().getResult();
 
 
-        Assert.assertFalse(userDAO.userExists("Jacob2").getResult());
+        Assert.assertFalse(userDAO.userExists("Jacob2"));
         Assert.assertFalse(userController.register(initialUserName, "Jacob2", "12345").isFailure());
-        Assert.assertTrue(userDAO.userExists("Jacob2").getResult());
+        Assert.assertTrue(userDAO.userExists("Jacob2"));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserControllerTest {
         String initialUserName = commerceService.addGuest().getResult();
 
         Assert.assertFalse(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
-        Assert.assertTrue(userDAO.userExists("JacobLine54").getResult());
+        Assert.assertTrue(userDAO.userExists("JacobLine54"));
         Assert.assertTrue(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
     }
 
@@ -92,7 +92,7 @@ public class UserControllerTest {
         String initialUserName = commerceService.addGuest().getResult();
 
         // login for non-existent user
-        Assert.assertFalse(userDAO.userExists("Alice").getResult());
+        Assert.assertFalse(userDAO.userExists("Alice"));
         Assert.assertTrue(userController.login(initialUserName, "Alice", "abcd").isFailure());
     }
 
