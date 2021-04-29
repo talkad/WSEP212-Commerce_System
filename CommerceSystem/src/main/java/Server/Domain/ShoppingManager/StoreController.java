@@ -188,12 +188,12 @@ public class StoreController {
         }
     }
 
-    public Response<List<Store>> searchByStoreName(String storeName) {
-        List<Store> storeList = new LinkedList<>();
+    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+        List<StoreDTO> storeList = new LinkedList<>();
 
         for(Store store: stores.values()){
             if(store.getName().equals(storeName))
-                storeList.add(store);
+                storeList.add(new StoreDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()));
         }
 
         return new Response<>(storeList, false, "all stores with name " + storeName);

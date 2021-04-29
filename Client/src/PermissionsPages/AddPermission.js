@@ -1,9 +1,7 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
-/***
- * Use Case : 4.6.1
- */
 
 class AddPermission extends React.Component {
     constructor(props) {
@@ -18,8 +16,7 @@ class AddPermission extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
+        Connection.sendPermission(this.state.functionName, this.state.permitting, this.state.storeId, this.state.permitted, this.state.permissions).then(this.handleResponse, Connection.handleReject);
         e.preventDefault();
     }
 
@@ -27,6 +24,10 @@ class AddPermission extends React.Component {
         this.setState({
             [name]: e.target.value
         })
+    }
+
+    handleResponse(result) {
+        alert(result.response.result);
     }
 
     render() {

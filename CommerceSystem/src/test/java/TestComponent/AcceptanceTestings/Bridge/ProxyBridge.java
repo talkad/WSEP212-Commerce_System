@@ -1,10 +1,7 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -70,16 +67,16 @@ public class ProxyBridge implements IService {
         return new Response<>(null, true, "not implemented");
     }
 
-    @Override
-    public Response<Collection<Store>> getContent() {
-        if (real != null){
-            return real.getContent();
-        }
-        return new Response<>(null, true, "not implemented");
-    }
+//    @Override
+//    public Response<Collection<Store>> getContent() {
+//        if (real != null){
+//            return real.getContent();
+//        }
+//        return new Response<>(null, true, "not implemented");
+//    }
 
     @Override
-    public Response<List<Store>> searchByStoreName(String storeName) {
+    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
         if (real != null){
             return real.searchByStoreName(storeName);
         }

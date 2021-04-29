@@ -2,9 +2,7 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -166,4 +164,19 @@ public class Inventory {
 
         return res;
     }
+
+    public List<ProductDTO> getProductsDTO() {
+        List<ProductDTO> result = new LinkedList<>();
+
+        lock.readLock().lock();
+
+        for(Product product: products.values()) {
+            result.add(product.getProductDTO());
+        }
+
+        lock.readLock().unlock();
+
+        return result;
+    }
+
 }

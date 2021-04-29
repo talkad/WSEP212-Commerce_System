@@ -1,4 +1,5 @@
 import React from "react";
+import Connection from "../API/Connection";
 
 class Search extends React.Component{
 
@@ -45,16 +46,18 @@ class Search extends React.Component{
     }
 
     handleSearch(){
-        //TODO: sending to the server the appropriate request and moving to a screen which show the result
-        //TODO: since it just pastes all the data
-        console.log("hey");
-        //this.props.history.push(`/register`);
+        // if(this.state.searchOption === "Product"){
+        //
+        // }
+        // else{
+        //     Connection.sendSearchStoreByName()
+        // }
     }
 
     render() {
         return (
             <div className="Search">
-                    <form autoComplete="on" action="search/" method="get">
+                    <form autoComplete="on" action="/search/" method="get">
                         <div onChange={this.searchOptionChangeHandler}>
                             <label>Search for:</label>
                             <input type="radio" value="Product" name="searchOption" defaultChecked /> Product

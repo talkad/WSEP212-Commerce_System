@@ -4,16 +4,18 @@ import {getMessage} from "@testing-library/jest-dom/dist/utils";
 class Connection{
     static connection;
     static dataFromServer = [];
-    static readyMessages = [];
 
     static setConnection(connection) {
         this.connection = connection;
 
         this.connection.onopen = () => {
             console.log("connected to the server");
-            connection.send(JSON.stringify({
-                action: "startup",
-            }))
+            if(StaticUserInfo.getUsername() === '') {
+                console.log("got a new username");
+                connection.send(JSON.stringify({
+                    action: "startup",
+                }))
+            }
         }
 
         this.connection.onerror = (err) =>{
@@ -33,7 +35,38 @@ class Connection{
         }
     }
 
+    static waitForOpenConnection = (socket) => {
+        return new Promise((resolve, reject) => {
+            const maxNumberOfAttempts = 10
+            const intervalTime = 200 //ms
+
+            let currentAttempt = 0
+            const interval = setInterval(() => {
+                if (currentAttempt > maxNumberOfAttempts - 1) {
+                    clearInterval(interval)
+                    reject(new Error('Maximum number of attempts exceeded'))
+                } else if (socket.readyState === socket.OPEN) {
+                    clearInterval(interval)
+                    resolve()
+                }
+                currentAttempt++
+            }, intervalTime)
+        })
+    }
+
+    static sendMessage = async (socket, msg) => {
+        if (socket.readyState !== socket.OPEN) {
+            try {
+                await Connection.waitForOpenConnection(socket)
+                socket.send(msg)
+            } catch (err) { console.error(err) }
+        } else {
+            socket.send(msg)
+        }
+    }
+
     static catchResponse() {
+
         function sleep(ms){
             return new Promise(resolve => setTimeout(resolve, ms));
         }
@@ -43,7 +76,7 @@ class Connection{
 
             while(i < 5){
                 if(Connection.dataFromServer.length !== 0){
-                    return resolve(Connection.dataFromServer.shift());
+                    resolve(Connection.dataFromServer.shift());
                 }
                 await sleep(1000);
                 i++;
@@ -52,36 +85,16 @@ class Connection{
         });
     }
 
+    static handleReject(error){
+        alert(error);
+    }
+
     static async getResponse(){
-        function successCallback(result){
-            console.log(result);
-            if(result.response.isFailure === true){
-                alert(result.response.errMsg);
-            }
-            else{
-                Connection.readyMessages.push(result);
-            }
-        }
-
-        function failureCallback(error){
-            alert(error);
-        }
-
-        await Connection.catchResponse().then(successCallback, failureCallback);
-
-        console.log("hello there");
-
-        if(Connection.readyMessages.length === 0){
-            return Connection.readyMessages.shift();
-        }
-        else{
-            return null;
-        }
+        return await Connection.catchResponse();
     }
 
     static sendRegister(username, password){
-        console.log(StaticUserInfo.getUsername());
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection ,JSON.stringify({
             action: "register",
             identifier: StaticUserInfo.getUsername(),
             username: username,
@@ -92,7 +105,7 @@ class Connection{
     }
 
     static sendLogin(username, password){
-        this.connection.send(JSON.stringify({
+       Connection.sendMessage(Connection.connection ,JSON.stringify({
             action: "login",
             identifier: StaticUserInfo.getUsername(),
             username: username,
@@ -103,128 +116,156 @@ class Connection{
     }
 
     static sendSearchStoreByName(storeName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByStoreName",
             storeName: storeName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByName(productName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductName",
             productName: productName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByCategory(category){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductCategory",
             category: category,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByKeyword(keyword){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "searchByProductKeyword",
             keyword: keyword,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendAddToCart(storeID, productID){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addToCart",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
             productID: productID,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendRemoveFromCart(storeID, productID){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "removeFromCart",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
             productID: productID,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendGetCartDetails(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getCartDetails",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
     static sendUpdateProductQuantity(storeID, productID, amount){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "updateProductQuantity",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
             productID: productID,
             amount: amount,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendDirectPurchase(backAccount, location){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "directPurchase",
             username: StaticUserInfo.getUsername(),
             backAccount: backAccount,
             location: location,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendLogout(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "logout",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
     static sendOpenStore(storeName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "openStore",
             username: StaticUserInfo.getUsername(),
             storeName: storeName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendAddProductReview(storeID, productID, review){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addProductReview",
             username: StaticUserInfo.getUsername(),
             storeID: storeID,
             productID: productID,
             review: review,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendGetPurchaseHistory(){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getPurchaseHistory",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
-    static sendAppointManager (functionName, appointerName, appointeeName, storeId){
-        this.connection.send(JSON.stringify({
-            action: functionName,
-            appointerName: appointerName,
-            appointeeName: appointeeName,
-            storeId: storeId,
-        }))
-    }
+    // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
+    //     this.connection.send(JSON.stringify({
+    //         action: functionName,
+    //         appointerName: appointerName,
+    //         appointeeName: appointeeName,
+    //         storeId: storeId,
+    //     }))
+    // }
 
     /*
     Holds for all 4 Appointments Pages
      */
     static sendAppoints (functionName, appointerName, appointeeName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             appointerName: appointerName,
             appointeeName: appointeeName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
 
     //ADD TO SERVICE FIRST!
@@ -238,27 +279,47 @@ class Connection{
     Holds for 2 Permission Pages
      */
     static sendPermission (functionName, permitting, storeId, permitted, permissions){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             permitting: permitting,
             storeId: storeId,
             permitted: permitted,
             permissions: permissions,
         }))
+
+        return Connection.getResponse();
+    }
+
+    static sendAddProduct (functionName, username, name, storeId, price, categories, keywords, amount){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            name: name,
+            storeId: storeId,
+            price: price,
+            categorires: categories,
+            keywords: keywords,
+            amount: amount,
+        }))
+
+        return Connection.getResponse();
     }
 
     static sendDeleteProduct (functionName, username, storeId, productId, amount){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             storeId: storeId,
             productId: productId,
             amount: amount,
         }))
+
+        return Connection.getResponse();
     }
 
+
     static sendEditProduct (functionName, username, storeId, productId, newPrice, newName){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             storeId: storeId,
@@ -266,28 +327,32 @@ class Connection{
             newPrice: newPrice,
             newName: newName,
         }))
+
+        return Connection.getResponse();
     }
 
     static sendStorePurchaseHistory (functionName, adminName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
 
     /*
     * Holds for all 3 pages in Report Pages- Need to receive information too
     */
     static sendReportRequest (functionName, adminName, storeId){
-        this.connection.send(JSON.stringify({
+        Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
             storeId: storeId,
         }))
+
+        return Connection.getResponse();
     }
-
-
 }
 
 export default Connection;

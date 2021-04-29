@@ -1,4 +1,5 @@
 import React from "react";
+import Connection from "../API/Connection";
 
 
 class UpdateQuantity extends React.Component{
@@ -11,18 +12,28 @@ class UpdateQuantity extends React.Component{
 
         this.handleQuantityChange = this.handleQuantityChange.bind(this);
         this.handleQuantityUpdate = this.handleQuantityUpdate.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleQuantityChange(event){
         this.setState({quantity: event.target.value});
     }
 
-    handleQuantityUpdate(){
-        // TODO: send new quantity to server
+    handleResponse(result){
+        if(!result.response.isFailure){
+            alert("quantity updated successfully");
+            this.props.handler();
+        }
+        else{
+            alert(result.response.errMsg);
+        }
         this.setState({quantity: ''})
-        //TODO: call the handler from the parent component on success
-        this.props.handler();
     }
+
+    handleQuantityUpdate(){
+        Connection.sendUpdateProductQuantity(this.props.storeID, this.props.productID, this.state.quantity).then(this.handleResponse, Connection.handleReject);
+    }
+
     render() {
         return (
             <div>

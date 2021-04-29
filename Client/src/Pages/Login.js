@@ -1,5 +1,6 @@
 import React from "react";
 import Connection from "../API/Connection";
+import StaticUserInfo from "../API/StaticUserInfo";
 
 
 class Login extends React.Component{
@@ -15,6 +16,7 @@ class Login extends React.Component{
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSignIn = this.handleSignIn.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleUsernameChange(event) {
@@ -24,10 +26,19 @@ class Login extends React.Component{
         this.setState({password: event.target.value});
     }
 
-    handleSignIn(){
-        if(Connection.sendLogin(this.state.username, this.state.password) !== null){
+    handleResponse(result) {
+        if(!result.response.isFailure){
+            StaticUserInfo.setUsername(result.response.result);
             this.props.history.push('/registered');
         }
+        else{
+            alert(result.response.errMsg);
+            this.setState({username: '', password: ''});
+        }
+    }
+
+    handleSignIn(){
+        Connection.sendLogin(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
     }
 
     render(){

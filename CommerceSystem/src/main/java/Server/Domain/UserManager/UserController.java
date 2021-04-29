@@ -325,6 +325,8 @@ public class UserController {
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
+
+                    Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
                     response = new Response<>(true, false, appointments.getErrMsg());
                 } else {
                     response = new Response<>(false, true, "Attempted to remove not a store owner");

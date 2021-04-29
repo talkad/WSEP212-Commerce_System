@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 class RemoveOwner extends React.Component {
     constructor(props) {
@@ -13,9 +14,17 @@ class RemoveOwner extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
         e.preventDefault();
+        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName).then(this.handleAppointResponse, Connection.handleReject())
+    }
+
+    handleAppointResponse(result){
+        if(!result.response.isFailure){
+            alert("appointing successful");
+        }
+        else{
+            alert(result.response.errMsg);
+        }
     }
 
     handleInputChange = (e, name) => {

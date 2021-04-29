@@ -3,6 +3,7 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.StoreDTO;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -126,13 +127,13 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void searchStoreTestSuccess(){ // 2.5 good
         // searching for an existing store
-        Response<List<Store>> searchResult = bridge.searchByStoreName("stam hanut");
+        Response<List<StoreDTO>> searchResult = bridge.searchByStoreName("stam hanut");
         Assert.assertFalse(searchResult.isFailure());
 
         // checking if all the stores we got have that name
         boolean exists = true;
-        for(Store store: searchResult.getResult()){
-            if(!store.getName().contains("stam hanut")){
+        for(StoreDTO store: searchResult.getResult()){
+            if(!store.getStoreName().contains("stam hanut")){
                 exists = false;
             }
         }
@@ -143,7 +144,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     @Test
     public void searchNonExistentStoreTest(){ // 2.5 good
         // now looking for an non-existing store
-        Response<List<Store>> searchResult = bridge.searchByStoreName("mefo li");
+        Response<List<StoreDTO>> searchResult = bridge.searchByStoreName("mefo li");
         Assert.assertTrue(searchResult.getResult().isEmpty());
     }
 

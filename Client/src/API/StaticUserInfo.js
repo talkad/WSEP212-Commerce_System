@@ -1,6 +1,6 @@
 class StaticUserInfo{
-    static username = 'some user..';
-    static StoreId = 'some store id..';
+    static username = '';
+    static StoreId = '';
 
     static getUsername() { return this.username.toString() };
     static getStoreId() { return this.StoreId.toString() };

@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 class StorePurchaseHistory extends React.Component{
     constructor(props) {
@@ -14,9 +15,22 @@ class StorePurchaseHistory extends React.Component{
     }
 
     onButtonClickHandler = (e) => {
-        this.setState({showMessage: true});
         e.preventDefault();
+
+        Connection.sendReportRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject())
+
+        this.setState({showMessage: true});
+        //e.preventDefault();
     };
+
+    handleReportResponse(result){
+        if(!result.response.isFailure){
+            this.setState({toShow: result.response.result.toString()})//TODO check
+        }
+        else{
+            alert(result.response.errMsg);
+        }
+    }
 
     handleInputChange = (e, name) => {
         this.setState({

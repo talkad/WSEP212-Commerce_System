@@ -26,6 +26,13 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
     }
 
     @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
+        // check if remove subscription needed
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         Gson gson = new Gson();
 

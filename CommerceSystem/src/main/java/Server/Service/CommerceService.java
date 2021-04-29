@@ -4,11 +4,11 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
 import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
+import Server.Domain.ShoppingManager.StoreDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -63,13 +63,13 @@ public class CommerceService implements IService{
         return commerceSystem.login(prevName, username, pwd);
     }
 
-    @Override
-    public Response<Collection<Store>> getContent() {
-        return commerceSystem.getContent();
-    }
+//    @Override
+//    public Response<Collection<StoreDTO>> getContent() {
+//        return commerceSystem.getContent();
+//    }
 
     @Override
-    public Response<List<Store>> searchByStoreName(String storeName) {
+    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
         return commerceSystem.searchByStoreName(storeName);
     }
 

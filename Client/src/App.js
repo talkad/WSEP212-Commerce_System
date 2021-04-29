@@ -49,6 +49,13 @@ let client = new WebSocket("ws://localhost:8080/ws");
 
 Connection.setConnection(client);
 
+// if(!result.response.isFailure){
+//
+// }
+// else{
+//     alert(result.response.errMsg);
+// }
+
 class App extends React.Component{
 
     render() {
