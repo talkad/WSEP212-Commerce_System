@@ -1,4 +1,5 @@
 import React from "react";
+import Connection from "../API/Connection";
 
 class Checkout extends React.Component{
     constructor(props) {
@@ -12,6 +13,7 @@ class Checkout extends React.Component{
         this.handleCreditCardChange = this.handleCreditCardChange.bind(this);
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handlePurchase = this.handlePurchase.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleCreditCardChange(event) {
@@ -22,10 +24,18 @@ class Checkout extends React.Component{
         this.setState({address: event.target.value});
     }
 
-    handlePurchase(){
-        // TODO: send purchase info to server
+    handleResponse(result){
+        if(!result.response.isFailure){
+            alert("thank you for your purchase");
+            this.props.history.push("/registered");
+        }
+        else{
+            alert(result.response.errMsg);
+        }
+    }
 
-        this.props.history.goBack();
+    handlePurchase(){
+        Connection.sendDirectPurchase(this.state.backAccount, this.state.location).then(this.handleResponse, Connection.handleReject);
     }
 
     render() {

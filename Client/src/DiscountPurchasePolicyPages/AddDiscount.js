@@ -38,9 +38,8 @@ class AddDiscount extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
         e.preventDefault();
+        //TODO: add discount not implemented
     }
 
     render() {

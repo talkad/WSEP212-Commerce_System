@@ -13,9 +13,22 @@ class WorkerDetails extends React.Component{
         };
     }
     onButtonClickHandler = (e) => {
-        this.setState({showMessage: true});
         e.preventDefault();
+
+        Connection.sendReportRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject())
+
+        this.setState({showMessage: true});
+        //e.preventDefault();
     };
+
+    handleReportResponse(result){
+        if(!result.response.isFailure){
+            this.setState({toShow: result.response.result.toString()})//TODO check
+        }
+        else{
+            alert(result.response.errMsg);
+        }
+    }
 
     render(){
         return(

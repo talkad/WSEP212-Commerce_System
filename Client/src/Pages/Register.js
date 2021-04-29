@@ -16,6 +16,7 @@ class Register extends React.Component{
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleCreateAccount = this.handleCreateAccount.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleUsernameChange(event) {
@@ -25,11 +26,19 @@ class Register extends React.Component{
         this.setState({password: event.target.value});
     }
 
+    handleResponse(result){
+        if(!result.response.isFailure){
+            alert("register successful");
+            this.props.history.goBack();
+        }
+        else{
+            alert(result.response.errMsg);
+            this.setState({username: '', password: ''});
+        }
+    }
+
     handleCreateAccount(){
-       if(Connection.sendRegister(this.state.username, this.state.password) !== null){
-           alert("register successful");
-           this.props.history.goBack();
-       }
+        Connection.sendRegister(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
     }
 
     render(){

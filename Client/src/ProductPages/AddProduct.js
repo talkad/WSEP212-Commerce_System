@@ -20,9 +20,18 @@ class AddProduct extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
          e.preventDefault();
+         Connection.sendAddDeleteProduct(this.state.functionName, this.state.username, this.state.name, this.state.storeId, this.state.price,
+             this.state.categories, this.state.keywords, this.state.amount).then(this.handleAddProductResponse, Connection.handleReject())
+    }
+
+    handleAddProductResponse(result){
+        if(!result.response.isFailure){
+            alert("adding product success");
+        }
+        else{
+            alert(result.response.errMsg);
+        }
     }
 
     handleInputChange = (e, name) => {

@@ -4,7 +4,6 @@ import {getMessage} from "@testing-library/jest-dom/dist/utils";
 class Connection{
     static connection;
     static dataFromServer = [];
-    static readyMessages = [];
 
     static setConnection(connection) {
         this.connection = connection;
@@ -34,6 +33,7 @@ class Connection{
     }
 
     static catchResponse() {
+
         function sleep(ms){
             return new Promise(resolve => setTimeout(resolve, ms));
         }
@@ -43,7 +43,7 @@ class Connection{
 
             while(i < 5){
                 if(Connection.dataFromServer.length !== 0){
-                    return resolve(Connection.dataFromServer.shift());
+                    resolve(Connection.dataFromServer.shift());
                 }
                 await sleep(1000);
                 i++;
@@ -52,35 +52,15 @@ class Connection{
         });
     }
 
+    static handleReject(error){
+        alert(error);
+    }
+
     static async getResponse(){
-        function successCallback(result){
-            console.log(result);
-            if(result.response.isFailure === true){
-                alert(result.response.errMsg);
-            }
-            else{
-                Connection.readyMessages.push(result);
-            }
-        }
-
-        function failureCallback(error){
-            alert(error);
-        }
-
-        await Connection.catchResponse().then(successCallback, failureCallback);
-
-        console.log("hello there");
-
-        if(Connection.readyMessages.length === 0){
-            return Connection.readyMessages.shift();
-        }
-        else{
-            return null;
-        }
+        return await Connection.catchResponse();
     }
 
     static sendRegister(username, password){
-        console.log(StaticUserInfo.getUsername());
         this.connection.send(JSON.stringify({
             action: "register",
             identifier: StaticUserInfo.getUsername(),
@@ -107,6 +87,8 @@ class Connection{
             action: "searchByStoreName",
             storeName: storeName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByName(productName){
@@ -114,6 +96,8 @@ class Connection{
             action: "searchByProductName",
             productName: productName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByCategory(category){
@@ -121,6 +105,8 @@ class Connection{
             action: "searchByProductCategory",
             category: category,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendSearchProductByKeyword(keyword){
@@ -128,6 +114,8 @@ class Connection{
             action: "searchByProductKeyword",
             keyword: keyword,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendAddToCart(storeID, productID){
@@ -137,6 +125,8 @@ class Connection{
             storeID: storeID,
             productID: productID,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendRemoveFromCart(storeID, productID){
@@ -146,6 +136,8 @@ class Connection{
             storeID: storeID,
             productID: productID,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendGetCartDetails(){
@@ -153,6 +145,8 @@ class Connection{
             action: "getCartDetails",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
     static sendUpdateProductQuantity(storeID, productID, amount){
@@ -163,6 +157,8 @@ class Connection{
             productID: productID,
             amount: amount,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendDirectPurchase(backAccount, location){
@@ -172,6 +168,8 @@ class Connection{
             backAccount: backAccount,
             location: location,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendLogout(){
@@ -179,6 +177,8 @@ class Connection{
             action: "logout",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
     static sendOpenStore(storeName){
@@ -187,6 +187,8 @@ class Connection{
             username: StaticUserInfo.getUsername(),
             storeName: storeName,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendAddProductReview(storeID, productID, review){
@@ -197,6 +199,8 @@ class Connection{
             productID: productID,
             review: review,
         }));
+
+        return Connection.getResponse();
     }
 
     static sendGetPurchaseHistory(){
@@ -204,16 +208,18 @@ class Connection{
             action: "getPurchaseHistory",
             username: StaticUserInfo.getUsername(),
         }));
+
+        return Connection.getResponse();
     }
 
-    static sendAppointManager (functionName, appointerName, appointeeName, storeId){
-        this.connection.send(JSON.stringify({
-            action: functionName,
-            appointerName: appointerName,
-            appointeeName: appointeeName,
-            storeId: storeId,
-        }))
-    }
+    // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
+    //     this.connection.send(JSON.stringify({
+    //         action: functionName,
+    //         appointerName: appointerName,
+    //         appointeeName: appointeeName,
+    //         storeId: storeId,
+    //     }))
+    // }
 
     /*
     Holds for all 4 Appointments Pages
@@ -247,6 +253,19 @@ class Connection{
         }))
     }
 
+    static sendAddProduct (functionName, username, name, storeId, price, categories, keywords, amount){
+        this.connection.send(JSON.stringify({
+            action: functionName,
+            username: username,
+            name: name,
+            storeId: storeId,
+            price: price,
+            categorires: categories,
+            keywords: keywords,
+            amount: amount,
+        }))
+    }
+
     static sendDeleteProduct (functionName, username, storeId, productId, amount){
         this.connection.send(JSON.stringify({
             action: functionName,
@@ -256,6 +275,7 @@ class Connection{
             amount: amount,
         }))
     }
+
 
     static sendEditProduct (functionName, username, storeId, productId, newPrice, newName){
         this.connection.send(JSON.stringify({
@@ -286,8 +306,6 @@ class Connection{
             storeId: storeId,
         }))
     }
-
-
 }
 
 export default Connection;

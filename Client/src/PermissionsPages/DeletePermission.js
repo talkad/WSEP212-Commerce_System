@@ -1,5 +1,6 @@
 import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 class DeletePermission extends React.Component {
     constructor(props) {
@@ -14,15 +15,18 @@ class DeletePermission extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
         e.preventDefault();
+        Connection.sendPermission(this.state.functionName, this.state.permitting, this.state.storeId, this.state.permitted, this.state.permissions).then(this.handleResponse, Connection.handleReject);
     }
 
     handleInputChange = (e, name) => {
         this.setState({
             [name]: e.target.value
         })
+    }
+
+    handleResponse(result) {
+        alert(result.response.result);
     }
 
     render() {

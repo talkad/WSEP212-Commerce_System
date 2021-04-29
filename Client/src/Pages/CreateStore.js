@@ -1,4 +1,6 @@
 import React from "react";
+import Connection from "../API/Connection";
+import StaticUserInfo from "../API/StaticUserInfo";
 
 
 class CreateStore extends React.Component{
@@ -11,15 +13,26 @@ class CreateStore extends React.Component{
 
         this.handleStoreNameChange = this.handleStoreNameChange.bind(this);
         this.handleCreateStore = this.handleCreateStore.bind(this);
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleStoreNameChange(event) {
         this.setState({storeName: event.target.value})
     }
 
+    handleResponse(result){
+        if(!result.response.isFailure){
+            StaticUserInfo.setStoreId(result.response.result);
+            alert("Store created successfully");
+            this.props.history.goBack();
+        }
+        else{
+            alert(result.response.errMsg);
+        }
+    }
+
     handleCreateStore(){
-        // TODO: send to server the create store data
-        // TODO: send the user to a main page destined for store owners
+        Connection.sendOpenStore(this.state.storeName).then(this.handleResponse, Connection.handleReject);
     }
 
     render() {

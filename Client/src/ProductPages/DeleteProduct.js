@@ -18,9 +18,17 @@ class DeleteProduct extends React.Component {
     }
 
     handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
         e.preventDefault();
+        Connection.sendDeleteProduct(this.state.functionName, this,state.username, this.state.storeId, this.state.productId, this.state.amount).then(this.handleDeleteProductResponse, Connection.handleReject())
+    }
+
+    handleDeleteProductResponse(result){
+        if(!result.response.isFailure){
+            alert("deleting product successful");
+        }
+        else{
+            alert(result.response.errMsg);
+        }
     }
 
     handleInputChange = (e, name) => {
