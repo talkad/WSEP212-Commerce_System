@@ -13,12 +13,11 @@ class ProductEntry extends React.Component{
           <div>
               <h2>{this.props.name}</h2>
               <h3>price: {this.props.price}</h3>
-              <h3>sold by: {this.props.seller}</h3>
-              <p>
-                  rating {this.props.rating} stars by {this.props.numReview} reviewers
-              </p>
               <p>
                   categories: {this.props.categories}
+              </p>
+              <p>
+                  reviews: {this.props.reviews}
               </p>
           </div>
         );

@@ -70,16 +70,16 @@ public class ProxyBridge implements IService {
         return new Response<>(null, true, "not implemented");
     }
 
-    @Override
-    public Response<Collection<Store>> getContent() {
-        if (real != null){
-            return real.getContent();
-        }
-        return new Response<>(null, true, "not implemented");
-    }
+//    @Override
+//    public Response<Collection<Store>> getContent() {
+//        if (real != null){
+//            return real.getContent();
+//        }
+//        return new Response<>(null, true, "not implemented");
+//    }
 
     @Override
-    public Response<List<Store>> searchByStoreName(String storeName) {
+    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
         if (real != null){
             return real.searchByStoreName(storeName);
         }

@@ -1,10 +1,7 @@
 package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountPolicy;
-import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.ShoppingManager.PurchasePolicy;
-import Server.Domain.ShoppingManager.Store;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -35,9 +32,9 @@ public interface IService {
 
     Response<String> login(String identifier, String username, String pwd); // 2.4
 
-    Response<Collection<Store>>  getContent(); // 2.5 - a
+//    Response<Collection<Store>>  getContent(); // 2.5 - a
 
-    Response<List<Store>> searchByStoreName(String storeName); // 2.5 - b
+    Response<List<StoreDTO>> searchByStoreName(String storeName); // 2.5 - b
 
     Response<List<ProductDTO>> searchByProductName(String productName); // 2.6 - a
 

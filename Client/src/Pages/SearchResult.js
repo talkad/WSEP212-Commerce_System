@@ -35,6 +35,8 @@ class SearchResult extends React.Component{
         this.state = {
             searchOption: '',
             responseResults: [],
+            showStore: false,
+            showProduct: false,
         }
 
         this.handleSearchResponse = this.handleSearchResponse.bind(this);
@@ -56,7 +58,7 @@ class SearchResult extends React.Component{
         const freeText = urlParams.get("freeText");
 
         if(searchOption === "Product"){
-            this.setState({searchOption: searchOption});
+            this.setState({searchOption: searchOption, showProduct: true});
 
             const searchProductBy = urlParams.get("searchProductBy");
 
@@ -72,7 +74,7 @@ class SearchResult extends React.Component{
 
         }
         else{
-            this.setState({searchOption: searchOption})
+            this.setState({searchOption: searchOption, showStore: true})
             Connection.sendSearchStoreByName(freeText).then(this.handleSearchResponse, Connection.handleReject);
         }
     }
@@ -90,30 +92,47 @@ class SearchResult extends React.Component{
         Connection.sendAddToCart(productID, storeID).then(this.handleAddToCartResponse, Connection.handleReject);
     }
 
-
+    handleShowStoreProducts(products){
+        this.setState({showStore: false, showProduct: true, responseResult: products});
+    }
 
     render() {
         return(
           <div>
               <h1>Search Results</h1>
+              {this.state.showProduct &&
               <ul>
-                  {this.state.responseResults.map(({name, productID, storeID, price, seller,
-                                     categories, rating, numReview}) =>(
+                  {this.state.responseResults.map(({name, productID, storeID, price,
+                                                       categories, keywords, reviews, rating, numRatings}) =>(
                       <div>
                           <li>
                               <ProductEntry
-                              name = {name}
-                              price = {price}
-                              seller = {seller}
-                              categories = {categories}
-                              rating = {rating}
-                              numReview = {numReview}
+                                  name = {name}
+                                  price = {price}
+                                  categories = {categories}
+                                  reviews = {reviews}
                               />
                           </li>
                           <button onClick={() => this.handleAddToCart(productID, storeID)}>add to cart</button>
                       </div>
                   ) ) }
               </ul>
+              }
+              {this.state.showStore &&
+              <ul>
+                  {this.state.responseResults.map(({id, name, products}) =>(
+                      <div>
+                          <li>
+                              <StoreEntry
+                                  name = {name}
+                                  id = {id}
+                              />
+                          </li>
+                          <button onClick={() => this.handleShowStoreProducts(products)}>show store products</button>
+                      </div>
+                  ) ) }
+              </ul>
+              }
           </div>
         );
     }

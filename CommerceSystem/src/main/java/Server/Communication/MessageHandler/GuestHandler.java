@@ -46,7 +46,7 @@ public class GuestHandler extends Handler{
 
                 response = service.login(identifier, username, password);
             }
-            case "getContent" -> response = service.getContent();
+//            case "getContent" -> response = service.getContent();
             case "searchByStoreName" ->{
                 String storeName = data.getProperty("storeName");
 
