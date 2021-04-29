@@ -467,4 +467,118 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "USA");
         Assert.assertFalse(purchaseResult.getResult());
     }
+
+    @Test
+    public void directPurchaseSuccessNotificationTest(){ // 9.1 good (2.9)
+        notifier.addConnection("aviad", null);
+
+        // a guest is adding a product to his cart
+        String guestName = bridge.addGuest().getResult();
+
+        // adding to cart a product which is in stock
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
+        ProductDTO product = searchResult.getResult().get(0);
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Assert.assertTrue(addResult.getResult());
+
+        // the user buying them
+        Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+
+        // the store owner received a notification regarding the purchase
+        Assert.assertEquals(1, notifier.getMessages("aviad").size());
+    }
+
+    @Test
+    public void directPurchaseFailureNotificationTest(){ // 9.1 bad (2.9)
+        notifier.addConnection("aviad", null);
+        // opening a store and adding a product to it
+        int storeID = bridge.openStore("aviad", "krusty crab").getResult();
+        ProductDTO product = new ProductDTO("patty", storeID, 20,
+                new LinkedList<String>(Arrays.asList("food", "tasty")),
+                new LinkedList<String>(Arrays.asList("patty")));
+
+        bridge.addProductsToStore("aviad", product, 1); // last in stock
+
+        // searching the product up in the system
+        String guestName = bridge.addGuest().getResult();
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("patty");
+        product = searchResult.getResult().get(0);
+
+        // adding the product to the cart
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Assert.assertTrue(addResult.getResult());
+
+        // the product is removed just before the user buys it
+        bridge.removeProductsFromStore("aviad", storeID, product.getProductID(), 1);
+
+        // the user trying to buy the product
+        Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+
+        // store owner doesn't recieve a notification because the purchase wasn't completed
+        Assert.assertEquals(0, notifier.getMessages("aviad").size());
+    }
+
+    @Test
+    public void directPurchaseSuccessStoredNotificationTest(){ // 9.1 good (2.9)
+        notifier.addConnection("aviad", null);
+
+        bridge.logout("aviad");
+
+        // a guest is adding a product to his cart
+        String guestName = bridge.addGuest().getResult();
+
+        // adding to cart a product which is in stock
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("kchichat perot");
+        ProductDTO product = searchResult.getResult().get(0);
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Assert.assertTrue(addResult.getResult());
+
+        // the user buying them
+        Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456");
+
+        // the store owner received a notification regarding the purchase
+        Assert.assertEquals(1, notifier.getMessages("aviad").size());
+    }
+
+    @Test
+    public void directPurchaseFailureStoredNotificationTest(){ // 9.1 bad (2.9)
+        notifier.addConnection("shalom", null);
+        bridge.logout("shalom");
+
+
+        // opening a store and adding a product to it
+        int storeID = bridge.openStore("aviad", "krusty crab").getResult();
+        ProductDTO product = new ProductDTO("patty", storeID, 20,
+                new LinkedList<String>(Arrays.asList("food", "tasty")),
+                new LinkedList<String>(Arrays.asList("patty")));
+
+        bridge.addProductsToStore("aviad", product, 1); // last in stock
+
+        // searching the product up in the system
+        String guestName = bridge.addGuest().getResult();
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("patty");
+        product = searchResult.getResult().get(0);
+
+        // adding the product to the cart
+        Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
+        Assert.assertTrue(addResult.getResult());
+
+        // the product is removed just before the user buys it
+        bridge.removeProductsFromStore("aviad", storeID, product.getProductID(), 1);
+
+        // the user trying to buy the product
+        Response<Boolean> purchaseResult = bridge.directPurchase(guestName, "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+
+
+        // store owner doesn't recieve a notification because the purchase wasn't completed
+        Assert.assertEquals(0, notifier.getMessages("shalom").size());
+    }
 }

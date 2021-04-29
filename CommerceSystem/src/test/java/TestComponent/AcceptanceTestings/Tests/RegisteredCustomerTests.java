@@ -48,6 +48,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
             bridge.addProductsToStore("aviad", product, 100);
 
+            bridge.appointStoreOwner("aviad", "shalom", storeID);
+            bridge.appointStoreOwner("aviad", "tzemah", storeID);
+
             initialized = true;
         }
     }
@@ -74,6 +77,45 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         // logging out
         Response<String> logoutResponse = bridge.logout(guestName);
         Assert.assertTrue(logoutResponse.isFailure());
+    }
+
+    @Test
+    public void LoginDisplayStoredNotificationTest(){ // 9.1 good (2.4)
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+
+        // store owner subscribed to receive notifications, not logged in
+        notifier.addConnection("tzemah", null);
+
+        // logged in user adding a product to his cart and buying it
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
+        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+
+        // now he reviews it
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "best simania i ever bought! solid 5/7");
+        Assert.assertTrue(reviewResult.getResult());
+
+        // checking if the review was added
+        searchResult = bridge.searchByProductName("simania zoheret");
+        productDTO = searchResult.getResult().get(0);
+
+        boolean added = false;
+        for(Review review: productDTO.getReviews()){
+            if(review.getReview().equals("best simania i ever bought! solid 5/7")){
+                added = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(added);
+
+        // log in owner
+        bridge.login(bridge.addGuest().getResult(), "tzemah", "123456");
+
+        //checking the store owner received notifications (one for purchase, one for review) upon login
+        Assert.assertEquals(2, notifier.getMessages("tzemah").size());
     }
 
     @Test
@@ -222,4 +264,118 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(historyResult.getResult().isEmpty());
     }
 
+    @Test
+    public void reviewProductSuccessNotificationTest(){ // 9.1 good (3.3)
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+        bridge.login(bridge.addGuest().getResult(), "tzemah", "123456");
+
+        notifier.addConnection("aviad", null);
+        notifier.addConnection("shalom", null);
+        notifier.addConnection("tzemah", null);
+
+        // logged in user adding a product to his cart and buying it
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
+        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+
+        // now he reviews it
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "best simania i ever bought! solid 5/7");
+        Assert.assertTrue(reviewResult.getResult());
+
+        // checking if the review was added
+        searchResult = bridge.searchByProductName("simania zoheret");
+        productDTO = searchResult.getResult().get(0);
+
+        boolean added = false;
+        for(Review review: productDTO.getReviews()){
+            if(review.getReview().equals("best simania i ever bought! solid 5/7")){
+                added = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(added);
+
+        //checking the store owners received notifications (one for purchase, one for review)
+        Assert.assertEquals(2, notifier.getMessages("aviad").size());
+        Assert.assertEquals(2, notifier.getMessages("shalom").size());
+        Assert.assertEquals(2, notifier.getMessages("tzemah").size());
+    }
+
+    @Test
+    public void reviewProductFailureNotificationTest() { // 9.1 bad (3.3)
+        notifier.addConnection("aviad", null);
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+        // the user is trying to review a product he didn't buy. should fail
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("martiv sfarim");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "meh martiv! 3/10");
+        Assert.assertFalse(reviewResult.getResult());
+
+        bridge.logout("shalom");
+
+        //checking the store owners received no notifications
+        Assert.assertEquals(0, notifier.getMessages("aviad").size());
+    }
+
+    @Test
+    public void reviewProductSuccessStoredNotificationTest(){ // 9.1 good (3.3)
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+
+        notifier.addConnection("aviad", null);
+        notifier.addConnection("shalom", null);
+        notifier.addConnection("tzemah", null);
+
+        // logged in user adding a product to his cart and buying it
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
+        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+
+        // now he reviews it
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "best simania i ever bought! solid 5/7");
+        Assert.assertTrue(reviewResult.getResult());
+
+        // checking if the review was added
+        searchResult = bridge.searchByProductName("simania zoheret");
+        productDTO = searchResult.getResult().get(0);
+
+        boolean added = false;
+        for(Review review: productDTO.getReviews()){
+            if(review.getReview().equals("best simania i ever bought! solid 5/7")){
+                added = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(added);
+
+        bridge.login(bridge.addGuest().getResult(), "tzemah", "123456");
+
+        //checking the store owner received notifications (one for purchase, one for review)
+        Assert.assertEquals(2, notifier.getMessages("tzemah").size());
+    }
+
+    @Test
+    public void reviewProductFailureStoredNotificationTest() { // 9.1 bad (3.3)
+        notifier.addConnection("aviad", null);
+        bridge.logout("aviad");
+        bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
+        // the user is trying to review a product he didn't buy. should fail
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("martiv sfarim");
+        ProductDTO productDTO = searchResult.getResult().get(0);
+        Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
+                productDTO.getProductID(), "meh martiv! 3/10");
+        Assert.assertFalse(reviewResult.getResult());
+
+        bridge.logout("shalom");
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456");
+
+        //checking the store owners received no notifications
+        Assert.assertEquals(0, notifier.getMessages("aviad").size());
+    }
 }

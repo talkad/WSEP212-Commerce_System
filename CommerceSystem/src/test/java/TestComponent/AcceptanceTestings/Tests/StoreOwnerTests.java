@@ -3,8 +3,10 @@ package TestComponent.AcceptanceTestings.Tests;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.Publisher;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
+import TestComponent.AcceptanceTestings.Bridge.ProxyNotifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -902,4 +904,93 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         historyResult = bridge.getPurchaseDetails(guestName, this.storeID);
         Assert.assertTrue(historyResult.isFailure());
     }
+
+    @Test
+    public void removeOwnerAppointmentSuccessNotificationTest(){ // 9.1 good (4.4.1)
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "jay", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "jay", "123456");
+
+        notifier.addConnection("jay", null);
+
+        // owner appoints a new owner
+        Response<Boolean> appointResult = bridge.appointStoreOwner("aviad", "jay",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // owner tries to remove him
+        Response<Boolean> removeResult = bridge.removeOwnerAppointment("aviad", "jay",
+                this.storeID);
+        Assert.assertTrue(removeResult.getResult());
+
+        // the removed owner should have received a notification saying they were removed
+        Assert.assertEquals(1, notifier.getMessages("jay").size());
+    }
+
+    @Test
+    public void removeOwnerAppointmentFailureNotificationTest() { // 9.1 bad (4.4.1)
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "rrr", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "rrr", "123456");
+
+        notifier.addConnection("aviad", null);
+
+
+        // a user without any permissions tried to remove the ownership of an owner
+        Response<Boolean> removeResult = bridge.removeOwnerAppointment("rrr", "aviad",
+                this.storeID);
+        Assert.assertFalse(removeResult.getResult());
+
+        // the owner didn't receive a notification because they weren't fired
+        Assert.assertEquals(0, notifier.getMessages("aviad").size());
+    }
+
+    @Test
+    public void removeOwnerAppointmentSuccessStoredNotificationTest(){ // 9.1 good (4.4.1)
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "jay", "123456");
+
+        notifier.addConnection("jay", null);
+
+        // owner appoints a new owner
+        Response<Boolean> appointResult = bridge.appointStoreOwner("aviad", "jay",
+                this.storeID);
+        Assert.assertTrue(appointResult.getResult());
+
+        // owner tries to remove him
+        Response<Boolean> removeResult = bridge.removeOwnerAppointment("aviad", "jay",
+                this.storeID);
+        Assert.assertTrue(removeResult.getResult());
+
+        bridge.login(bridge.addGuest().getResult(), "jay", "123456");
+
+        // the removed owner should have received a notification saying they were removed
+        Assert.assertEquals(1, notifier.getMessages("jay").size());
+    }
+
+    @Test
+    public void removeOwnerAppointmentFailureStoredNotificationTest() { // 9.1 bad (4.4.1)
+        String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "rrr", "123456");
+
+        bridge.login(bridge.addGuest().getResult(), "rrr", "123456");
+
+        notifier.addConnection("aviad", null);
+
+        bridge.logout("aviad");
+
+
+        // a user without any permissions tried to remove the ownership of an owner
+        Response<Boolean> removeResult = bridge.removeOwnerAppointment("rrr", "aviad",
+                this.storeID);
+        Assert.assertFalse(removeResult.getResult());
+
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456");
+
+        // the owner didn't receive a notification because they weren't fired
+        Assert.assertEquals(0, notifier.getMessages("aviad").size());
+    }
+
 }

@@ -1,5 +1,7 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
+import Server.Communication.WSS.Notify;
+import Server.Domain.UserManager.Publisher;
 import Server.Service.CommerceService;
 import Server.Service.IService;
 
@@ -12,5 +14,12 @@ public abstract class Driver {
         bridge.serRealBridge(real);
 
         return bridge;
+    }
+
+    public static ProxyNotifier getNotifier(){
+        ProxyNotifier notifier = new ProxyNotifier();
+        Publisher.getInstance().setNotifier(notifier);
+
+        return notifier;
     }
 }

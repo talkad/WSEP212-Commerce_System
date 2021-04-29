@@ -45,7 +45,6 @@ public class Appointment {
         if(this.storeAppointments.containsKey(storeId) && this.storeAppointments.get(storeId).contains(name)) {
             response = new Response<>(name, false, "");
             this.storeAppointments.get(storeId).remove(name);
-            Publisher.getInstance().notify(name, "Your ownership canceled at store "+ storeId);
         }
         else{
             response = new Response<>(null, true, "Tried removing appointment for nonexistent user");
