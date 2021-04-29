@@ -83,9 +83,6 @@ public class User {
         ownedWriteLock.lock();
         this.storesOwned.add(storeId);
         ownedWriteLock.unlock();
-
-        // subscribe to get notifications
-        Publisher.getInstance().subscribe(storeId, this.name);
     }
 
     public Map<Integer, List<Permissions>> getStoresManaged() {

@@ -266,6 +266,8 @@ public class UserController {
                 if (this.connectedUsers.containsKey(newOwner)) {
                     connectedUsers.get(newOwner).addStoresOwned(storeId); //@TODO what about his permissions
                 }
+                // subscribe to get notifications
+                Publisher.getInstance().subscribe(storeId, newOwner);
             }
             writeLock.unlock();
             return result;
@@ -316,6 +318,8 @@ public class UserController {
                     Response<List<String>> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID);
                     UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
                     UserDAO.getInstance().removeRole(appointeeName, storeID);
+
+                    Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
 
                     List<String> names = new Vector<>(appointments.getResult());
                     for (String name : names) {
