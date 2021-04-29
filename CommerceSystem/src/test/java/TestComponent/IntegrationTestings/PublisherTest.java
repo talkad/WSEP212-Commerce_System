@@ -59,7 +59,9 @@ public class PublisherTest {
         String costumerName = UserController.getInstance().addGuest().getResult();
 
         // set the mock notifier
-        Publisher.getInstance().setNotifier(new MockNotifier());
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("yoni2", null);
+        Publisher.getInstance().setNotifier(mock);
 
         // initial user registrations
         userController.register(initialUserName, "yoni2", "pis");
@@ -73,15 +75,19 @@ public class PublisherTest {
         productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
+        // costumer login
+        userController.register(costumerName, "tal", "pis");
+        userController.login(costumerName, "tal", "pis");
+
         // costumer purchase its cart
-        userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.addToCart("tal", storeRes.getResult(), productID);
+        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
 
         // logout
         userController.logout("yoni2");
 
         // add review
-        userController.addProductReview(costumerName, store.getStoreID(), productID, "The best eggs");
+        userController.addProductReview("tal", store.getStoreID(), productID, "The best eggs");
 
         Assert.assertEquals(1, userController.getUserByName("yoni2").getPendingMessages().size());
     }
@@ -98,6 +104,7 @@ public class PublisherTest {
 
         // set the mock notifier
         MockNotifier mock = new MockNotifier();
+        mock.addConnection("yoni3", null);
         Publisher.getInstance().setNotifier(mock);
 
         // initial user registrations
@@ -132,6 +139,7 @@ public class PublisherTest {
 
         // set the mock notifier
         MockNotifier mock = new MockNotifier();
+        mock.addConnection("yoni4", null);
         Publisher.getInstance().setNotifier(mock);
 
         // initial user registrations
@@ -146,12 +154,16 @@ public class PublisherTest {
         productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
+        // costumer login
+        userController.register(costumerName, "tal", "pis");
+        userController.login(costumerName, "tal", "pis");
+
         // costumer purchase its cart
-        userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.addToCart("tal", storeRes.getResult(), productID);
+        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
 
         // add review
-        userController.addProductReview(costumerName, store.getStoreID(), productID, "The best eggs");
+        userController.addProductReview("tal", store.getStoreID(), productID, "The best eggs");
 
         Assert.assertEquals(0, userController.getUserByName("yoni4").getPendingMessages().size());
         Assert.assertEquals(2, mock.getMessages("yoni4").size());

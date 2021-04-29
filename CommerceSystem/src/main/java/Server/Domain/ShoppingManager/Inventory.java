@@ -124,8 +124,13 @@ public class Inventory {
         if (product == null)
             return new Response<>(false, true, "Inventory: This product doesn't exists");
 
-        product.updatePrice(newPrice);
         product.updateName(newName);
+
+        if(newPrice > 0)
+            product.updatePrice(newPrice);
+        else
+            return new Response<>(false, true, "Price must be positive");
+
         return new Response<>(true, false, "Inventory: Updated info successfully");
     }
 

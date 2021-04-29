@@ -36,6 +36,7 @@ public class UserIntegrationTests {
 
         Store store = StoreController.getInstance().getStoreById(store2ID);
         store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
 
         List<String> categories1 = new LinkedList<>();
         categories1.add("food");
@@ -56,6 +57,12 @@ public class UserIntegrationTests {
         userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
         userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
         userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
+
+        store = StoreController.getInstance().getStoreById(beef.getStoreID());
+        store.setPurchasePolicy(new PurchasePolicy(1));
+        store.setDiscountPolicy(new DiscountPolicy(1));
+
+        System.out.println(store2ID + " " + beef.getStoreID());
 
         Assert.assertFalse(userController.purchase(almog.getName(), "45801234", "Israel").isFailure());
         Assert.assertFalse(almog.addProductReview(beef.getStoreID(), beef.getProductID(), "good product").isFailure());

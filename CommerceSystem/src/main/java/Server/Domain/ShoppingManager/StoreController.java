@@ -43,7 +43,7 @@ public class StoreController {
     public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
 
-        Store store = new Store(id, StoreName, ownerName, null, null);
+        Store store = new Store(id, StoreName, ownerName, new DiscountPolicy(1), new PurchasePolicy(1));
         stores.put(id, store);
 
         return new Response<>(id, false, "Store with id " + id + " opened successfully");

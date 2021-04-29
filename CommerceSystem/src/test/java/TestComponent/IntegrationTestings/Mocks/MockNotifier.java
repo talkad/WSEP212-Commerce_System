@@ -32,7 +32,12 @@ public class MockNotifier implements Notify {
 
     @Override
     public void notify(String identifier, String msg) {
-        messages.get(identifier).add(msg);
+        List<String> msgs = messages.get(identifier);
+
+        if(msgs != null)
+            messages.get(identifier).add(msg);
+        else
+            System.out.println("user "+ identifier +  " doesn't exists");
     }
 
     public List<String> getMessages(String username){

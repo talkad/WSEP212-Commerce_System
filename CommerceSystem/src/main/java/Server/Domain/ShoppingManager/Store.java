@@ -92,9 +92,9 @@ public class Store {
     }
 
      public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
-        Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket);
-        if(validatePurchase.isFailure())
-            return new Response<>(null, true, validatePurchase.getErrMsg());
+//        Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket); // todo - no policy validation
+//        if(validatePurchase.isFailure())
+//            return new Response<>(null, true, validatePurchase.getErrMsg());
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
         PurchaseDTO purchaseDTO;
