@@ -216,19 +216,19 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<PurchasePolicy>> getPurchasePolicy(String username, int storeID) {
+    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
         if (real != null){
             return real.getPurchasePolicy(username, storeID);
         }
-        return new Response<>(new LinkedList<>(), false, "OK");
+        return new Response<>(new PurchasePolicy(), false, "OK");
     }
 
     @Override
-    public Response<List<DiscountPolicy>> getDiscountPolicy(String username, int storeID) {
+    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
         if (real != null){
             return real.getDiscountPolicy(username, storeID);
         }
-        return new Response<>(new LinkedList<>(), false, "OK");
+        return new Response<>(new DiscountPolicy(), false, "OK");
     }
 
     @Override

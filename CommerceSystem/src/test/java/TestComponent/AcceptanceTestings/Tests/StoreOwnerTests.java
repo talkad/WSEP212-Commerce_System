@@ -1,11 +1,14 @@
 package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountPolicy;
+import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.Publisher;
-import Server.Domain.UserManager.PurchaseDTO;
-import Server.Domain.UserManager.User;
+import Server.Domain.ShoppingManager.PurchasePolicy;
+import Server.Domain.ShoppingManager.PurchaseRules.CategoryPurchaseRule;
+import Server.Domain.UserManager.*;
 import TestComponent.AcceptanceTestings.Bridge.ProxyNotifier;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,6 +58,12 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                     new LinkedList<String>(Arrays.asList("masmer")));
 
             bridge.addProductsToStore("aviad", productDTO, 20);
+
+            productDTO = new ProductDTO("masmer yarok", this.storeID, 20,
+                    new LinkedList<String>(Arrays.asList("green", "nail")),
+                    new LinkedList<String>(Arrays.asList("masmer")));
+
+            bridge.addProductsToStore("aviad", productDTO, 1000);
 
             initialized = true;
         }
@@ -267,6 +276,566 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         Assert.assertFalse(updated);
+    }
+
+    @Test
+    public void addDiscountRuleWithPermissionTest(){ // 4.2.1 good
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob1000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob1000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store owner will try to add a discount rule to his store's policy
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        DiscountPolicy policy = policyResponse.getResult();
+
+        // store has no discount with id 1
+        Assert.assertNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 100 dollars
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob1000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob1000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob1000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price
+        List<PurchaseDTO> purchases = historyResponse.getResult();
+        Assert.assertEquals(100, (int)purchases.get(purchases.size()-1).getTotalPrice());
+
+        // owner wants to add a category discount for 15% all red products
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+
+        // store now contains a discount with id 1
+        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 85 dollars
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob1000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        purchaseResult = bridge.directPurchase("jacob1000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        historyResponse = bridge.getPurchaseHistory("jacob1000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed discounted price
+        purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+    }
+
+    @Test
+    public void addDiscountRuleWithoutPermissionTest(){ // 4.2.1 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob2000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob2000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // customer will try to add a discount rule to a store's policy
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        DiscountPolicy policy = policyResponse.getResult();
+
+        // store has no discount with id 1
+        Assert.assertNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 100 dollars
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob2000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob2000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob2000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price
+        List<PurchaseDTO> purchases = historyResponse.getResult();
+        Assert.assertEquals(100, (int)purchases.get(purchases.size()-1).getTotalPrice());
+
+        // customer wants to add a category discount for 50% all red products (sneaky!)
+        Assert.assertTrue(bridge.addDiscountRule("jacob2000", this.storeID, new CategoryDiscountRule(1, "green", 50)).isFailure());
+
+        // store still doesn't contain a discount with id 1
+        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNull(policy.getDiscountRule(1));
+
+        // customer tries purchasing 10 red products for 100 dollars
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 10; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob2000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        purchaseResult = bridge.directPurchase("jacob2000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        historyResponse = bridge.getPurchaseHistory("jacob2000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price (uh oh!)
+        purchases = historyResponse.getResult();
+        Assert.assertEquals(200, (int)purchases.get(purchases.size()-1).getTotalPrice());
+    }
+
+    @Test
+    public void addPurchaseRuleWithPermissionTest(){ // 4.2.2 good
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob3000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob3000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store owner will try to add a purchase rule to his store's policy
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        PurchasePolicy policy = policyResponse.getResult();
+
+        // store has no discount with id 1
+        Assert.assertNull(policy.getPurchaseRule(1));
+
+        // a customer purchases 5 red products
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob3000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob3000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+
+        // owner wants to add a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+
+        // store now contains a purchase rule with id 1
+        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // a customer tries to purchase 5 red products again
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob3000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user attempts the purchase
+        purchaseResult = bridge.directPurchase("jacob3000", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+    }
+
+    @Test
+    public void addPurchaseRuleWithoutPermissionTest(){ // 4.2.2 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob4000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob4000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // customer will try to add a purchase rule to his store's policy
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        PurchasePolicy policy = policyResponse.getResult();
+
+        // store has no discount with id 1
+        Assert.assertNull(policy.getPurchaseRule(1));
+
+        // a customer purchases 5 red products
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob4000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob4000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+
+        // customer wants to add a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertTrue(bridge.addPurchaseRule("jacob4000", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+
+        // store still doesn't contain a purchase rule with id 1
+        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNull(policy.getPurchaseRule(1));
+
+        // a customer tries to purchase 5 red products again
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob4000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user attempts the purchase
+        purchaseResult = bridge.directPurchase("jacob4000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+    }
+
+    @Test
+    public void removeDiscountRuleWithPermissionTest(){ // 4.2.3 good
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob5000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob5000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a discount rule
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+
+        // store owner will try to remove a discount rule from his store's policy
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        DiscountPolicy policy = policyResponse.getResult();
+
+        // store has a discount with id 1
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 85 dollars
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob5000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob5000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob5000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed discounted price
+        List<PurchaseDTO> purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+
+        // owner wants to remove the category discount for 15% all red products
+        Assert.assertFalse(bridge.removeDiscountRule("aviad", this.storeID, 1).isFailure());
+
+        // store now doesn't contain a discount with id 1
+        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 100 dollars
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob5000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        purchaseResult = bridge.directPurchase("jacob5000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        historyResponse = bridge.getPurchaseHistory("jacob5000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price
+        purchases = historyResponse.getResult();
+        Assert.assertEquals(100, (int)purchases.get(purchases.size()-1).getTotalPrice());
+    }
+
+    @Test
+    public void removeDiscountRuleWithoutPermissionTest(){ // 4.2.3 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob6000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob6000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a discount rule
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+
+        // customer will try to remove a discount rule from the store's policy, for some reason
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        DiscountPolicy policy = policyResponse.getResult();
+
+        // store has a discount with id 1
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 85 dollars
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob6000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob6000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob6000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed discounted price
+        List<PurchaseDTO> purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+
+        // customer wants to remove the category discount for 15% all red products
+        Assert.assertTrue(bridge.removeDiscountRule("jacob6000", this.storeID, 1).isFailure());
+
+        // store still contains a discount with id 1
+        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 85 dollars
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob6000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        purchaseResult = bridge.directPurchase("jacob6000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        historyResponse = bridge.getPurchaseHistory("jacob6000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price
+        purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+    }
+
+    @Test
+    public void removeDiscountRuleBadRuleInfoTest(){ // 4.2.3 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob7000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob7000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a discount rule
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+
+        // store owner will try to remove a discount rule from his store's policy
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        DiscountPolicy policy = policyResponse.getResult();
+
+        // store has a discount with id 1
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // store has no discount with id 2
+        Assert.assertNull(policy.getDiscountRule(2));
+
+        // a customer purchases 5 red products for 85 dollars
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob7000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob7000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob7000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed discounted price
+        List<PurchaseDTO> purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+
+        // owner wants to remove a non-existant discount
+        Assert.assertTrue(bridge.removeDiscountRule("aviad", this.storeID, 2).isFailure());
+
+        // store still contains a discount with id 1
+        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getDiscountRule(1));
+
+        // a customer purchases 5 red products for 85 dollars again
+        searchResult = bridge.searchByProductName("masmer yarok");
+        product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob7000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user does the purchase
+        purchaseResult = bridge.directPurchase("jacob7000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+        historyResponse = bridge.getPurchaseHistory("jacob7000");
+        Assert.assertFalse(historyResponse.isFailure());
+
+        // customer payed full price
+        purchases = historyResponse.getResult();
+        Assert.assertEquals(85, (int)purchases.get(purchases.size()-1).getTotalPrice());
+    }
+
+    @Test
+    public void removePurchaseRuleWithPermissionTest(){ // 4.2.4 good
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob8000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob8000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+
+        // store owner will try to remove the purchase rule from his store's policy
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        PurchasePolicy policy = policyResponse.getResult();
+
+        // store has a purchase policy with id 1
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // a customer purchases 5 red products unsuccessfully
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob8000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user doesn't do the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob8000", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+
+        // owner wants to remove a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertFalse(bridge.removePurchaseRule("aviad", this.storeID, 1).isFailure());
+
+        // store no longer contains a purchase rule with id 1
+        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNull(policy.getPurchaseRule(1));
+
+        // a customer tries to purchase 5 red products again
+        purchaseResult = bridge.directPurchase("jacob8000", "4580-1234-5678-9010", "Israel");
+        Assert.assertTrue(purchaseResult.getResult());
+    }
+
+    @Test
+    public void removePurchaseRuleWithoutPermissionTest(){ // 4.2.4 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob9000", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob9000", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("yarok", 7, 10))).isFailure());
+
+        // customer will try to remove the purchase rule from his store's policy
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        PurchasePolicy policy = policyResponse.getResult();
+
+        // store has a purchase policy with id 1
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // a customer purchases 5 red products unsuccessfully
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob9000", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user doesn't do the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9000", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+
+        // customer wants to remove a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertTrue(bridge.removePurchaseRule("jacob9000", this.storeID, 1).isFailure());
+
+        // store contains a purchase rule with id 1
+        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // a customer tries to purchase 5 red products again
+        purchaseResult = bridge.directPurchase("jacob9000", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+    }
+
+    @Test
+    public void removePurchaseRuleBadRuleInfoTest(){ // 4.2.4 bad
+        bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
+        bridge.register(bridge.addGuest().getResult(), "jacob9900", "123456");
+        bridge.login(bridge.addGuest().getResult(), "jacob9900", "123456"); // customer
+
+        // reset rules
+        bridge.removeDiscountRule("aviad", this.storeID, 1);
+        bridge.removePurchaseRule("aviad", this.storeID, 1);
+
+        // store has a category purchase policy that a customer must buy 7 - 10 red products
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+
+        // store owner will try to remove the purchase rule from his store's policy
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        PurchasePolicy policy = policyResponse.getResult();
+
+        // store has a purchase policy with id 1
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // store has no purchase policy with id 2
+        Assert.assertNull(policy.getPurchaseRule(2));
+
+        // a customer purchases 5 red products unsuccessfully
+        Response<List<ProductDTO>> searchResult = bridge.searchByProductName("masmer yarok");
+        ProductDTO product = searchResult.getResult().get(0);
+        for(int i = 0; i < 5; i++) {
+            Response<Boolean> addResult = bridge.addToCart("jacob9900", product.getStoreID(), product.getProductID());
+            Assert.assertFalse(addResult.isFailure());
+        }
+
+        // the user doesn't do the purchase
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9900", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
+
+        // owner wants to remove a non-existant purchase rule
+        Assert.assertTrue(bridge.removePurchaseRule("aviad", this.storeID, 2).isFailure());
+
+        // store still contains a purchase rule with id 1
+        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policy = policyResponse.getResult();
+        Assert.assertNotNull(policy.getPurchaseRule(1));
+
+        // a customer tries to purchase 5 red products again
+        purchaseResult = bridge.directPurchase("jacob9900", "4580-1234-5678-9010", "Israel");
+        Assert.assertFalse(purchaseResult.getResult());
     }
 
     @Test

@@ -3,8 +3,10 @@ package Server.Domain.UserManager;
 
 import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
 
@@ -595,6 +597,28 @@ public class UserController {
         }
         readLock.unlock();
         return new Response<>(false, true, "User not connected");
+    }
+    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getPurchasePolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getDiscountPolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
     }
 }
 
