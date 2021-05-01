@@ -2,6 +2,11 @@ package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
+import Server.Domain.ShoppingManager.Predicates.BasketPredicate;
+import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
+import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,8 +25,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
         for(int i = 0; i < 5; i++)
@@ -39,8 +44,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Rami levi", "Rami levi").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -57,8 +62,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("ABU fahrizade", "Abu jihad").getResult();
         ProductDTO productDTO = new ProductDTO("sheep", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -76,8 +81,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("KFC", "Ned Stark").getResult();
         ProductDTO productDTO = new ProductDTO("sword", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 1);
         UserController.getInstance().addToCart(guestName1, storeID, 482163215); // product doesn't exists
@@ -102,8 +107,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Spongebob", "mr. krab").getResult();
         ProductDTO productDTO = new ProductDTO("jellyfish", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
 
@@ -123,8 +128,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Evil Inc.", "Dufenshmirtz").getResult();
         ProductDTO productDTO = new ProductDTO("IHateTestInator", productID, storeID, 99999.99, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 15, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         UserController.getInstance().register(guestName, "faruk", "doda lola");
         UserController.getInstance().login(guestName, "faruk", "doda lola");
@@ -151,8 +156,8 @@ public class PurchaseTests {
         ProductDTO productDTO2 = new ProductDTO("tehini", productID2, storeID, 20, null, null, null, 0, 0);
 
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO1, 1);
         store.addProduct(productDTO2, 1);
@@ -180,8 +185,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
         ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
 
@@ -200,8 +205,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 3; ++i)
@@ -211,23 +216,23 @@ public class PurchaseTests {
         Assert.assertTrue(response.getResult());
     }
 
-//    @Test  // todo - fix policy - yoni??
-//    public void purchasePurchasePolicyTestFailure(){
-//        Response<Boolean> response;
-//        String guestName = UserController.getInstance().addGuest().getResult();
-//        int productID = 65482;
-//        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
-//        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
-//        Store store = StoreController.getInstance().getStoreById(storeID);
-//        store.setPurchasePolicy(new PurchasePolicy(1));
-//        store.setDiscountPolicy(new DiscountPolicy(1));
-//
-//        store.addProduct(productDTO, 5);
-//            UserController.getInstance().addToCart(guestName, storeID, productID);
-//
-//        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
-//        Assert.assertTrue(response.getErrMsg().contains("Not qualified of policy demands."));
-//    }
+    @Test
+    public void purchasePurchasePolicyTestFailure(){
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 65482;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
+
+        store.addProduct(productDTO, 5);
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        Assert.assertTrue(response.getErrMsg().contains("Not qualified of policy demands."));
+    }
 
     @Test
     public void purchaseDiscountPolicyTestFailure() {
@@ -236,8 +241,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new ProductDiscountRule(2, 345345, 10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 3; ++i)
@@ -256,8 +261,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.setPurchasePolicy(new PurchasePolicy(1));
-        store.setDiscountPolicy(new DiscountPolicy(1));
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 5; ++i)

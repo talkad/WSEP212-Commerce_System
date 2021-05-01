@@ -68,9 +68,16 @@ public class Publisher{
         storeSubscribers.get(storeID).add(username);
     }
 
+    public void unsubscribe(Integer storeID, String username) {
+        if(storeSubscribers.containsKey(storeID))
+            storeSubscribers.get(storeID).remove(username);
+    }
+
     // inject the mock notifier for testing - no one should use this function!
     public void setNotifier(Notify notifier){
         this.notifier = notifier;
     }
+
+
 
 }

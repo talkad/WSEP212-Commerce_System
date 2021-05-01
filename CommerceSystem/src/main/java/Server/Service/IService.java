@@ -2,6 +2,8 @@ package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -83,6 +85,15 @@ public interface IService {
 
     Response<List<DiscountPolicy>> getDiscountPolicy(String username, int storeID); // 4.2 - b
 
+    Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule); // 4.2 - c
+
+    Response<Boolean> addPurchaseRule(String username, int storeID, PurchaseRule purchaseRule); // 4.2 - d
+
+    Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID); // 4.2 - e
+
+    Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID); // 4.2
+
+
     // add policy and edit it ???? 4.2 - c
 
     Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID); // 4.3
@@ -102,6 +113,8 @@ public interface IService {
     Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 
     Response<List<Permissions>> getUserPermissions(String username, int storeID); // for client
+
+
 
 
     /**

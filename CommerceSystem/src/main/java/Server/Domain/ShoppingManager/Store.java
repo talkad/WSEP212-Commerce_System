@@ -2,6 +2,8 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
@@ -28,14 +30,14 @@ public class Store {
     private ReentrantReadWriteLock readWriteLock;
 
 
-    public Store(int id, String name,String ownerName, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
+    public Store(int id, String name, String ownerName){
         this.name = name;
         this.storeID = id;
         this.ownerName = ownerName;
         this.inventory = new Inventory();
         this.isActiveStore = new AtomicBoolean(true);
-        this.discountPolicy = discountPolicy;
-        this.purchasePolicy = purchasePolicy;
+        this.discountPolicy = new DiscountPolicy();
+        this.purchasePolicy = new PurchasePolicy();
         this.purchaseHistory = new PurchaseHistory();
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
@@ -92,9 +94,9 @@ public class Store {
     }
 
      public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
-//        Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket); // todo - no policy validation
-//        if(validatePurchase.isFailure())
-//            return new Response<>(null, true, validatePurchase.getErrMsg());
+        Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket);
+        if(validatePurchase.isFailure())
+            return new Response<>(null, true, validatePurchase.getErrMsg());
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
         PurchaseDTO purchaseDTO;
@@ -104,13 +106,13 @@ public class Store {
             price += productDTO.getPrice() * shoppingBasket.get(productDTO);
         }
 
-        double discount = discountPolicy.getDiscount(shoppingBasket);
+        double priceAfterDiscount = discountPolicy.calcDiscount(shoppingBasket);
 
         if(result.isFailure()){
             return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
 
-        purchaseDTO = new PurchaseDTO(shoppingBasket, price - discount, LocalDate.now());
+        purchaseDTO = new PurchaseDTO(shoppingBasket, priceAfterDiscount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
@@ -168,11 +170,20 @@ public class Store {
         readWriteLock.writeLock().unlock();
     }
 
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
-        this.discountPolicy = discountPolicy;
+    public Response<Boolean> addDiscountRule(DiscountRule discountRule) {
+        return discountPolicy.addDiscountRule(discountRule);
     }
 
-    public void setPurchasePolicy(PurchasePolicy purchasePolicy) {
-        this.purchasePolicy = purchasePolicy;
+    public Response<Boolean> removeDiscountRule(int ruleID){
+        return discountPolicy.removeDiscountRule(ruleID);
     }
+
+    public Response<Boolean> addPurchaseRule(PurchaseRule purchaseRule) {
+        return purchasePolicy.addPurchaseRule(purchaseRule);
+    }
+
+    public Response<Boolean> removePurchaseRule(int ruleID){
+        return purchasePolicy.removePurchaseRule(ruleID);
+    }
+
 }

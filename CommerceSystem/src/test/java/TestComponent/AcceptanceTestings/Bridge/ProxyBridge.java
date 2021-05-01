@@ -2,6 +2,8 @@ package TestComponent.AcceptanceTestings.Bridge;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -227,6 +229,38 @@ public class ProxyBridge implements IService {
             return real.getDiscountPolicy(username, storeID);
         }
         return new Response<>(new LinkedList<>(), false, "OK");
+    }
+
+    @Override
+    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule) {
+        if (real != null){
+            return real.addDiscountRule(username, storeID, discountRule);
+        }
+        return new Response<>(false, true, "not implemented");
+    }
+
+    @Override
+    public Response<Boolean> addPurchaseRule(String username, int storeID, PurchaseRule purchaseRule) {
+        if (real != null){
+            return real.addPurchaseRule(username, storeID, purchaseRule);
+        }
+        return new Response<>(false, true, "not implemented");
+    }
+
+    @Override
+    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID) {
+        if (real != null){
+            return real.removeDiscountRule(username, storeID, discountRuleID);
+        }
+        return new Response<>(false, true, "not implemented");
+    }
+
+    @Override
+    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID) {
+        if (real != null){
+            return real.removePurchaseRule(username, storeID, purchaseRuleID);
+        }
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override

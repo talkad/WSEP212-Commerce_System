@@ -1,7 +1,9 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
@@ -228,18 +230,18 @@ public class User {
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
 
-    public Response<Boolean> addDiscountPolicy(int storeID, Policy policy) {
-        if (this.state.allowed(Permissions.ADD_DISCOUNT_POLICY, this, storeID)) {
-
-            Store store = StoreController.getInstance().getStoreById(storeID);
-            if(store != null)
-                return null;
-//                return store.aaaa
-
-            return new Response<>(false, true, "The given store doesn't exists");
-        }
-        return new Response<>(false, true, "The user is not allowed to edit products information in the store");
-    }
+//    public Response<Boolean> addDiscountPolicy(int storeID, Policy policy) { //todo - check that
+//        if (this.state.allowed(Permissions.ADD_DISCOUNT_POLICY, this, storeID)) {
+//
+//            Store store = StoreController.getInstance().getStoreById(storeID);
+//            if(store != null)
+//                return null;
+////                return store.aaaa
+//
+//            return new Response<>(false, true, "The given store doesn't exists");
+//        }
+//        return new Response<>(false, true, "The user is not allowed to edit products information in the store");
+//    }
 
     public Response<Boolean> appointOwner(String newOwner, int storeId) {
         Response<Boolean> res;
@@ -299,6 +301,7 @@ public class User {
             Response<String> res = this.appointments.removeAppointment(storeID, appointeeName);
             if(!res.isFailure()){
                 Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
+                Publisher.getInstance().unsubscribe(storeID, appointeeName);
             }
             return res;
         } else if (this.storesManaged.containsKey(storeID)) {
@@ -472,6 +475,71 @@ public class User {
             return new Response<>(null, true, "user "+ name + " doesn't manage the given store");
 
         return new Response<>(permissions, false, "OK");
+    }
+
+    public Response<Boolean> addDiscountRule(int storeID, DiscountRule discountRule) {
+        Store store;
+        if(this.state.allowed(Permissions.ADD_DISCOUNT_RULE, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return store.addDiscountRule(discountRule);
+            }
+            else {
+                return new Response<>(false, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(false, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Boolean> addPurchaseRule(int storeID, PurchaseRule purchaseRule) {
+        Store store;
+        if(this.state.allowed(Permissions.ADD_PURCHASE_RULE, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return store.addPurchaseRule(purchaseRule);
+            }
+            else {
+                return new Response<>(false, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(false, true, "The user doesn't have the right permissions");
+        }
+    }
+
+
+    public Response<Boolean> removeDiscountRule(int storeID, int discountRuleID) {
+        Store store;
+        if(this.state.allowed(Permissions.REMOVE_DISCOUNT_RULE, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return store.removeDiscountRule(discountRuleID);
+            }
+            else {
+                return new Response<>(false, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(false, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Boolean> removePurchaseRule(int storeID, int purchaseRuleID) {
+        Store store;
+        if(this.state.allowed(Permissions.REMOVE_PURCHASE_RULE, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return store.removePurchaseRule(purchaseRuleID);
+            }
+            else {
+                return new Response<>(false, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(false, true, "The user doesn't have the right permissions");
+        }
     }
 
 }

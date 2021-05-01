@@ -2,8 +2,10 @@ package Server.Service;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
@@ -161,6 +163,28 @@ public class CommerceService implements IService{
     @Override
     public Response<List<DiscountPolicy>> getDiscountPolicy(String username, int storeID) {
         return commerceSystem.getDiscountPolicy(username, storeID);
+    }
+
+    @Override
+    public Response<Boolean> addDiscountRule(String username, int storeID,DiscountRule discountRule){
+        return commerceSystem.addDiscountRule(username, storeID, discountRule);
+    }
+
+    @Override
+    public Response<Boolean> addPurchaseRule(String username, int storeID, PurchaseRule purchaseRule) {
+        return commerceSystem.addPurchaseRule(username, storeID, purchaseRule);
+    }
+
+    @Override
+    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID)
+    {
+        return commerceSystem.removeDiscountRule(username, storeID, discountRuleID);
+    }
+
+    @Override
+    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID)
+    {
+        return commerceSystem.removePurchaseRule(username, storeID, purchaseRuleID);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package TestComponent;
 
+import TestComponent.IntegrationTestings.*;
 import TestComponent.UnitTesting.ShopComponentTests.InventoryTest;
 import TestComponent.UnitTesting.ShopComponentTests.ProductTest;
 import TestComponent.UnitTesting.ShopComponentTests.StoreControllerTest;
@@ -26,6 +27,7 @@ class RegressionTesting {
 
         Class[] shopUnitTests = {StoreControllerTest.class, StoreTest.class, InventoryTest.class, ProductTest.class};
         Class[] userUnitTests = {ShoppingCartTest.class, ShoppingBasketTest.class, UserTests.class, UserControllerTest.class};
+        Class[] integrationTests = {PublisherTest.class, PurchaseTests.class, SearchTests.class, UserControllerIntegrationTests.class, UserIntegrationTests.class};
 
         System.out.println("Test Shop Component");
         for(Class test: shopUnitTests){
@@ -37,6 +39,14 @@ class RegressionTesting {
 
         System.out.println("Test User Component");
         for(Class test: userUnitTests){
+            System.out.println("Class "+test.getName()+ " Testing ...");
+
+            Result result = JUnitCore.runClasses(test);
+            resultReport(result);
+        }
+
+        System.out.println("Integration tests");
+        for(Class test: integrationTests){
             System.out.println("Class "+test.getName()+ " Testing ...");
 
             Result result = JUnitCore.runClasses(test);

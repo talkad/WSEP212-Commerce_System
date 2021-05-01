@@ -2,7 +2,6 @@ package Server.Communication.WSS;
 
 import Server.Communication.MessageHandler.CommerceHandler;
 import Server.Communication.WSS.DataObjects.ActionData;
-import Server.Communication.WSS2.HttpRequestHandler;
 import Server.Domain.CommonClasses.Response;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;

@@ -3,7 +3,9 @@ package Server.Domain.UserManager;
 
 import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.Collection;
@@ -543,6 +545,56 @@ public class UserController {
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule){
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.addDiscountRule(storeID, discountRule);
+        }
+        readLock.unlock();
+        return new Response<>(false, true, "User not connected");
+    }
+
+    public Response<Boolean> addPurchaseRule(String username, int storeID, PurchaseRule purchaseRule) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.addPurchaseRule(storeID, purchaseRule);
+        }
+        readLock.unlock();
+        return new Response<>(false, true, "User not connected");
+    }
+
+    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID)
+    {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.removeDiscountRule(storeID, discountRuleID);
+        }
+        readLock.unlock();
+        return new Response<>(false, true, "User not connected");
+    }
+
+    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID)
+    {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.removePurchaseRule(storeID, purchaseRuleID);
+        }
+        readLock.unlock();
+        return new Response<>(false, true, "User not connected");
     }
 }
 
