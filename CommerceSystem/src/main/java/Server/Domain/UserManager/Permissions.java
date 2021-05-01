@@ -18,11 +18,13 @@ public enum Permissions {
     REMOVE_PRODUCT_FROM_STORE,
     UPDATE_PRODUCT_PRICE,
 
-    ADD_DISCOUNT_RULE,       /* Use Cases: 4.2.1, 4.2.2 */
-    REMOVE_DISCOUNT_RULE,    /* Use Cases: 4.2.3, 4.2.4 */
+    VIEW_DISCOUNT_POLICY,    /* Use Case: 4.2 */
+    VIEW_PURCHASE_POLICY,    /* Use Case: 4.2 */
 
-    ADD_PURCHASE_RULE,       /* Use Cases: 4.2.5, 4.2.6 */
-    REMOVE_PURCHASE_RULE,    /* Use Cases: 4.2.7, 4.2.8 */
+    ADD_DISCOUNT_RULE,       /* Use Case: 4.2.1 */
+    ADD_PURCHASE_RULE,       /* Use Case: 4.2.2 */
+    REMOVE_DISCOUNT_RULE,    /* Use Case: 4.2.3 */
+    REMOVE_PURCHASE_RULE,    /* Use Case: 4.2.4 */
 
     APPOINT_OWNER,              /* Use Case: 4.3 */
     REMOVE_OWNER_APPOINTMENT,   /* Use Case: 4.4 */

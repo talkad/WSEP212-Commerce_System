@@ -411,7 +411,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     }
 
     @Test
-    public void directPurchaseOutOfStock(){ // 2.9 good bad
+    public void directPurchaseOutOfStock(){ // 2.9 bad
         // opening a store and adding a product to it
         int storeID = bridge.openStore("aviad", "krusty crab").getResult();
         ProductDTO product = new ProductDTO("patty", storeID, 20,

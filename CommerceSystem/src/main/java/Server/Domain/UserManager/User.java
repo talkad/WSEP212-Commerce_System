@@ -1,12 +1,9 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
-import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
-import Server.Domain.ShoppingManager.Review;
-import Server.Domain.ShoppingManager.Store;
-import Server.Domain.ShoppingManager.StoreController;
 
 import java.security.Policy;
 import java.util.*;
@@ -542,4 +539,37 @@ public class User {
         }
     }
 
+    public Response<PurchasePolicy> getPurchasePolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(Permissions.VIEW_PURCHASE_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                PurchasePolicy policy = store.getPurchasePolicy();
+                return new Response<>(policy, false, "Successfully retrieved purchase policy");
+            }
+            else {
+                return new Response<>(null, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(null, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<DiscountPolicy> getDiscountPolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(Permissions.VIEW_DISCOUNT_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                DiscountPolicy policy = store.getDiscountPolicy();
+                return new Response<>(policy, false, "Successfully retrieved discount policy");
+            }
+            else {
+                return new Response<>(null, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(null, true, "The user doesn't have the right permissions");
+        }
+    }
 }
