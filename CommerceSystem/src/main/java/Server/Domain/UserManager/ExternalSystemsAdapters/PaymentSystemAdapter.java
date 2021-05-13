@@ -53,7 +53,7 @@ public class PaymentSystemAdapter
             connRes = conn.createHandshake();
 
             if(connRes.isFailure())
-                return new Response<>(-1, true, "pay transaction failed due to error in handshake");
+                return new Response<>(-1, true, "pay transaction failed due to error in handshake (CRITICAL)");
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "pay"));
@@ -66,7 +66,7 @@ public class PaymentSystemAdapter
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){
-            return new Response<>(-1, true, "payment failed due to sending error");
+            return new Response<>(-1, true, "payment failed due to sending error (CRITICAL)");
         }
         else{
             transactionID = Integer.parseInt(externalRes.getResult());
@@ -88,7 +88,7 @@ public class PaymentSystemAdapter
             connRes = conn.createHandshake();
 
             if(connRes.isFailure())
-                return new Response<>(-1, true, "pay cancellation transaction failed due to error in handshake");
+                return new Response<>(-1, true, "pay cancellation transaction failed due to error in handshake (CRITICAL)");
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "cancel_pay"));
@@ -96,7 +96,7 @@ public class PaymentSystemAdapter
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){
-            return new Response<>(-1, true, "payment cancellation failed due to sending error");
+            return new Response<>(-1, true, "payment cancellation failed due to sending error (CRITICAL)");
         }
         else{
             result = Integer.parseInt(externalRes.getResult());

@@ -60,11 +60,6 @@ public class CommerceSystem implements IService {
         return userController.login(prevName, username, pwd);
     }
 
-//    @Override
-//    public Response<Collection<Store>> getContent() {
-//        return storeController.getContent();
-//    }
-
     @Override
     public Response<List<StoreDTO>> searchByStoreName(String storeName) {
         return storeController.searchByStoreName(storeName);

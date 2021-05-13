@@ -44,7 +44,7 @@ public class ProductSupplyAdapter
             connRes = conn.createHandshake();
 
             if(connRes.isFailure())
-                return new Response<>(-1, true, "supply transaction failed due to error in handshake");
+                return new Response<>(-1, true, "supply transaction failed due to error in handshake (CRITICAL)");
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "supply"));
@@ -56,7 +56,7 @@ public class ProductSupplyAdapter
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){
-            return new Response<>(-1, true, "Supply failed due to sending error");
+            return new Response<>(-1, true, "Supply failed due to sending error (CRITICAL)");
         }
         else{
             transactionID = Integer.parseInt(externalRes.getResult());
@@ -78,7 +78,7 @@ public class ProductSupplyAdapter
             connRes = conn.createHandshake();
 
             if(connRes.isFailure())
-                return new Response<>(-1, true, "supply cancellation transaction failed due to error in handshake");
+                return new Response<>(-1, true, "supply cancellation transaction failed due to error in handshake (CRITICAL)");
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "cancel_supply"));
@@ -86,7 +86,7 @@ public class ProductSupplyAdapter
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){
-            return new Response<>(-1, true, "Supply cancellation failed due to sending error");
+            return new Response<>(-1, true, "Supply cancellation failed due to sending error (CRITICAL)");
         }
         else{
             result = Integer.parseInt(externalRes.getResult());

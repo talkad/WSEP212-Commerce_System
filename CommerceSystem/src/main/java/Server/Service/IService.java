@@ -58,7 +58,6 @@ public interface IService {
 
     User getUserByName(String username); // for tests purposes
 
-
     /**
      * Registered requirements - 3
      */

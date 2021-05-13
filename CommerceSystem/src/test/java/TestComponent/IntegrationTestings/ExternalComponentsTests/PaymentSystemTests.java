@@ -42,4 +42,14 @@ public class PaymentSystemTests {
 
         Assert.assertTrue(!res.isFailure() && res.getResult() == 1);
     }
+
+    // run this test offline
+    @Test
+    public void offlineTestFailure(){
+        Response<Integer> res;
+
+        res = payment.cancelPay("4568");
+
+        Assert.assertTrue(res.getErrMsg().contains("pay cancellation transaction failed due to error in handshake (CRITICAL)"));
+    }
 }

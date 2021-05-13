@@ -51,4 +51,14 @@ public class DeliverySystemTests {
 
         Assert.assertTrue(!res.isFailure() && res.getResult() == 1);
     }
+
+    // run this test offline
+    @Test
+    public void offlineTestFailure(){
+        Response<Integer> res;
+
+        res = supplier.cancelSupply("4568");
+
+        Assert.assertTrue(res.getErrMsg().contains("supply cancellation transaction failed due to error in handshake (CRITICAL)"));
+    }
 }
