@@ -9,6 +9,8 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.CategoryPurchaseRule;
 import Server.Domain.UserManager.*;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import TestComponent.AcceptanceTestings.Bridge.ProxyNotifier;
 import org.junit.Assert;
 import org.junit.Before;
@@ -280,6 +282,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void addDiscountRuleWithPermissionTest(){ // 4.2.1 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob1000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob1000", "123456"); // customer
@@ -304,7 +309,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob1000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob1000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob1000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -330,7 +335,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        purchaseResult = bridge.directPurchase("jacob1000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob1000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         historyResponse = bridge.getPurchaseHistory("jacob1000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -342,6 +347,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void addDiscountRuleWithoutPermissionTest(){ // 4.2.1 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob2000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob2000", "123456"); // customer
@@ -366,7 +374,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob2000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob2000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob2000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -392,7 +400,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        purchaseResult = bridge.directPurchase("jacob2000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob2000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         historyResponse = bridge.getPurchaseHistory("jacob2000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -404,6 +412,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void addPurchaseRuleWithPermissionTest(){ // 4.2.2 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob3000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob3000", "123456"); // customer
@@ -428,7 +439,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob3000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob3000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
 
         // owner wants to add a category purchase policy that a customer must buy 7 - 10 red products
@@ -448,12 +459,15 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user attempts the purchase
-        purchaseResult = bridge.directPurchase("jacob3000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob3000", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
     }
 
     @Test
     public void addPurchaseRuleWithoutPermissionTest(){ // 4.2.2 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob4000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob4000", "123456"); // customer
@@ -478,7 +492,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob4000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob4000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
 
         // customer wants to add a category purchase policy that a customer must buy 7 - 10 red products
@@ -498,12 +512,15 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user attempts the purchase
-        purchaseResult = bridge.directPurchase("jacob4000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob4000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
     }
 
     @Test
     public void removeDiscountRuleWithPermissionTest(){ // 4.2.3 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob5000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob5000", "123456"); // customer
@@ -531,7 +548,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob5000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob5000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob5000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -557,7 +574,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        purchaseResult = bridge.directPurchase("jacob5000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob5000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         historyResponse = bridge.getPurchaseHistory("jacob5000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -569,6 +586,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void removeDiscountRuleWithoutPermissionTest(){ // 4.2.3 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob6000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob6000", "123456"); // customer
@@ -596,7 +616,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob6000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob6000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob6000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -622,7 +642,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        purchaseResult = bridge.directPurchase("jacob6000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob6000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         historyResponse = bridge.getPurchaseHistory("jacob6000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -634,6 +654,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void removeDiscountRuleBadRuleInfoTest(){ // 4.2.3 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob7000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob7000", "123456"); // customer
@@ -664,7 +687,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob7000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob7000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         Response<List<PurchaseDTO>> historyResponse = bridge.getPurchaseHistory("jacob7000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -690,7 +713,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user does the purchase
-        purchaseResult = bridge.directPurchase("jacob7000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob7000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
         historyResponse = bridge.getPurchaseHistory("jacob7000");
         Assert.assertFalse(historyResponse.isFailure());
@@ -702,6 +725,9 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
     @Test
     public void removePurchaseRuleWithPermissionTest(){ // 4.2.4 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob8000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob8000", "123456"); // customer
@@ -729,7 +755,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user doesn't do the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob8000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob8000", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
 
         // owner wants to remove a category purchase policy that a customer must buy 7 - 10 red products
@@ -741,12 +767,15 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertNull(policy.getPurchaseRule(1));
 
         // a customer tries to purchase 5 red products again
-        purchaseResult = bridge.directPurchase("jacob8000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob8000", paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
     }
 
     @Test
     public void removePurchaseRuleWithoutPermissionTest(){ // 4.2.4 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob9000", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob9000", "123456"); // customer
@@ -774,7 +803,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user doesn't do the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9000", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9000", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
 
         // customer wants to remove a category purchase policy that a customer must buy 7 - 10 red products
@@ -786,12 +815,15 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertNotNull(policy.getPurchaseRule(1));
 
         // a customer tries to purchase 5 red products again
-        purchaseResult = bridge.directPurchase("jacob9000", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob9000", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
     }
 
     @Test
     public void removePurchaseRuleBadRuleInfoTest(){ // 4.2.4 bad
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "aviad", "123456"); // store owner
         bridge.register(bridge.addGuest().getResult(), "jacob9900", "123456");
         bridge.login(bridge.addGuest().getResult(), "jacob9900", "123456"); // customer
@@ -822,7 +854,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         }
 
         // the user doesn't do the purchase
-        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9900", "4580-1234-5678-9010", "Israel");
+        Response<Boolean> purchaseResult = bridge.directPurchase("jacob9900", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
 
         // owner wants to remove a non-existant purchase rule
@@ -834,7 +866,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertNotNull(policy.getPurchaseRule(1));
 
         // a customer tries to purchase 5 red products again
-        purchaseResult = bridge.directPurchase("jacob9900", "4580-1234-5678-9010", "Israel");
+        purchaseResult = bridge.directPurchase("jacob9900", paymentDetails, supplyDetails);
         Assert.assertFalse(purchaseResult.getResult());
     }
 

@@ -2,6 +2,8 @@ package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
@@ -34,10 +36,6 @@ public class UserIntegrationTests {
         int store1ID = userController.openStore("yaakov", "eggStore").getResult();
         int store2ID = userController.openStore("almog", "meatStore").getResult();
 
-        Store store = StoreController.getInstance().getStoreById(store2ID);
-        //store.setPurchasePolicy(new PurchasePolicy(1));
-        //store.setDiscountPolicy(new DiscountPolicy(1));
-
         List<String> categories1 = new LinkedList<>();
         categories1.add("food");
         List<String> keyword1 = new LinkedList<>();
@@ -58,13 +56,10 @@ public class UserIntegrationTests {
         userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
         userController.addToCart(almog.getName(), beef.getStoreID(), beef.getProductID());
 
-        store = StoreController.getInstance().getStoreById(beef.getStoreID());
-//        store.setPurchasePolicy(new PurchasePolicy(1));
-//        store.setDiscountPolicy(new DiscountPolicy(1));
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
-        System.out.println(store2ID + " " + beef.getStoreID());
-
-        Assert.assertFalse(userController.purchase(almog.getName(), "45801234", "Israel").isFailure());
+        Assert.assertFalse(userController.purchase(almog.getName(), paymentDetails, supplyDetails).isFailure());
         Assert.assertFalse(almog.addProductReview(beef.getStoreID(), beef.getProductID(), "good product").isFailure());
     }
 

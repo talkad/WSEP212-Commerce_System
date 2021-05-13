@@ -572,4 +572,5 @@ public class User {
             return new Response<>(null, true, "The user doesn't have the right permissions");
         }
     }
+
 }

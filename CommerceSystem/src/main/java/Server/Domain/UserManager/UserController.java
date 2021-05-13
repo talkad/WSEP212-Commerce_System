@@ -9,6 +9,8 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 
 import java.util.Collection;
 import java.util.List;
@@ -508,13 +510,13 @@ public class UserController {
         return new Vector<>();
     }
 
-    public Response<Boolean> purchase(String username, String bankAccount, String location){
+    public Response<Boolean> purchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails){
         Response<List<PurchaseDTO>> purchaseRes;
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
-            purchaseRes = purchaseController.handlePayment(bankAccount, user.getShoppingCart(), location);
+            purchaseRes = purchaseController.handlePayment(user.getShoppingCart(), paymentDetails, supplyDetails);
             readLock.unlock();
 
             if(purchaseRes.isFailure())

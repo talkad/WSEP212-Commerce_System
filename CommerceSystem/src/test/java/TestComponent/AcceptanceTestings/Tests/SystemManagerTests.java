@@ -2,6 +2,8 @@ package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,7 +58,10 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         productToAdd = bridge.searchByProductName("mitz petel").getResult().get(0);
         bridge.addToCart("avi", productToAdd.getStoreID(), productToAdd.getProductID());
 
-        bridge.directPurchase("avi", "4580-1234-5678-9010", "Israel");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        bridge.directPurchase("avi", paymentDetails, supplyDetails);
 
         initialized = true;
         }

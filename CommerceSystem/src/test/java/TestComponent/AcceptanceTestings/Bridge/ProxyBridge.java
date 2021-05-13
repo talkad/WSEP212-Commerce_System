@@ -4,6 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -142,9 +144,9 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, String creditCardDetails, String location) {
+    public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
         if (real != null){
-            return real.directPurchase(username, creditCardDetails, location);
+            return real.directPurchase(username, paymentDetails, supplyDetails);
         }
         return new Response<>(false, true, "not implemented");
     }

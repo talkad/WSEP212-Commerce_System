@@ -4,6 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -52,10 +54,9 @@ public interface IService {
 
     Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount); // 2.8 - c
 
-    Response<Boolean> directPurchase(String username, String bankAccount, String location); // 2.9
+    Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails); // 2.9
 
     User getUserByName(String username); // for tests purposes
-
 
     /**
      * Registered requirements - 3

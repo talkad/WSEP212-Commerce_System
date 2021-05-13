@@ -5,6 +5,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 
 import java.util.Collection;
@@ -58,11 +60,6 @@ public class CommerceSystem implements IService {
         return userController.login(prevName, username, pwd);
     }
 
-//    @Override
-//    public Response<Collection<Store>> getContent() {
-//        return storeController.getContent();
-//    }
-
     @Override
     public Response<List<StoreDTO>> searchByStoreName(String storeName) {
         return storeController.searchByStoreName(storeName);
@@ -104,8 +101,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, String bankAccount, String location) {
-        return userController.purchase(username, bankAccount, location);
+    public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return userController.purchase(username, paymentDetails, supplyDetails);
     }
 
     @Override
