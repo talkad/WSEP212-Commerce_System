@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
-import Server.Communication.WSS.Notifier;
-import Server.Communication.WSS.Notify;
+import Server.Service.Notifier;
+import Server.Service.Notify;
 
 import java.util.Map;
 import java.util.Vector;

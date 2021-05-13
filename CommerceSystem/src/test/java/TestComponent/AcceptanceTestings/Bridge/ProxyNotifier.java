@@ -1,6 +1,6 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
-import Server.Communication.WSS.Notify;
+import Server.Service.Notify;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;

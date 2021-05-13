@@ -1,4 +1,4 @@
-package Server.Communication.WSS;
+package Server.Service;
 
 
 import Server.Communication.WSS.DataObjects.NotificationData;
@@ -32,11 +32,6 @@ public class Notifier implements Notify{
     public void removeConnection(ChannelHandlerContext ctx){
         connections.values().remove(ctx);
     }
-
-//    public void replaceIdentifier(String prevIdentifier, String newIdentifier) {
-//        ChannelHandlerContext ctx = connections.remove(prevIdentifier);
-//        connections.put(newIdentifier, ctx);
-//    }
 
     public void notify(String identifier, String msg){
         Gson gson = new Gson();

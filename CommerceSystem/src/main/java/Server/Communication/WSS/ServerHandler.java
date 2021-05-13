@@ -1,25 +1,14 @@
 package Server.Communication.WSS;
 
-import Server.Communication.MessageHandler.CommerceHandler;
 import Server.Domain.CommonClasses.Response;
 import Server.Service.CommerceService;
-import com.google.gson.Gson;
+import Server.Service.Notifier;
+import Server.Service.Notify;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.util.CharsetUtil;
-
-import java.awt.*;
-import java.util.Locale;
-
-import static io.netty.handler.codec.http.HttpMethod.GET;
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
 
 public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
 

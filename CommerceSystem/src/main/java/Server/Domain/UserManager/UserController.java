@@ -1,7 +1,6 @@
 package Server.Domain.UserManager;
 
 
-import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -514,7 +513,7 @@ public class UserController {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
-            purchaseRes = purchaseController.handlePayment(bankAccount, user.getShoppingCart(), location);
+            purchaseRes = purchaseController.handlePurchase(bankAccount, user.getShoppingCart(), location);
             readLock.unlock();
 
             if(purchaseRes.isFailure())
