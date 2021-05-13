@@ -1,6 +1,6 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
-import Server.Domain.UserManager.PaymentSystemAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

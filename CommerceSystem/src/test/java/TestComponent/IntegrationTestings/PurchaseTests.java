@@ -5,7 +5,6 @@ import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
 import Server.Domain.ShoppingManager.Predicates.BasketPredicate;
-import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
 import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;

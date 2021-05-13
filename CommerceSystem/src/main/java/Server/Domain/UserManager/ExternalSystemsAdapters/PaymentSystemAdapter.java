@@ -1,4 +1,4 @@
-package Server.Domain.UserManager;
+package Server.Domain.UserManager.ExternalSystemsAdapters;
 
 import Server.Domain.ExternalComponents.PaymentSystem;
 

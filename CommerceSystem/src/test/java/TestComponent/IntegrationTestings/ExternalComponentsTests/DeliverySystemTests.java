@@ -1,7 +1,7 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
 import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.UserManager.ProductSupplyAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

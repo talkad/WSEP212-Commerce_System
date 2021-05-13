@@ -9,3 +9,4 @@ CommerceSystem/errors.txt
 out
 errors.txtCommerceSystem/out/production
 Client/node_modules
+*.class

@@ -1,8 +1,9 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 
 import java.util.List;
 
