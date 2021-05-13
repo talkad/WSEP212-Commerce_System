@@ -5,6 +5,8 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -82,6 +84,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void LoginDisplayStoredNotificationTest(){ // 9.1 good (2.4)
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
 
         // store owner subscribed to receive notifications, not logged in
@@ -91,7 +96,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+        bridge.directPurchase("shalom", paymentDetails, supplyDetails);
 
         // now he reviews it
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
@@ -158,12 +163,15 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void reviewProductSuccess(){ // 3.3 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
         // logged in user adding a product to his cart and buying it
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+        bridge.directPurchase("shalom", paymentDetails, supplyDetails);
 
         // now he reviews it
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
@@ -224,13 +232,16 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void getPurchaseHistorySuccess(){ // 3.7 good
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // logging in and buying a product
         String guestName = bridge.addGuest().getResult();
         bridge.login(guestName, "shalom", "123456");
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("mavrik sfarim");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+        bridge.directPurchase("shalom", paymentDetails, supplyDetails);
 
         // looking the purchase in the purchase history
         Response<List<PurchaseDTO>> historyResult = bridge.getPurchaseHistory("shalom");
@@ -267,6 +278,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void reviewProductSuccessNotificationTest(){ // 9.1 good (3.3)
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
         bridge.login(bridge.addGuest().getResult(), "tzemah", "123456");
 
@@ -278,7 +292,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+        bridge.directPurchase("shalom", paymentDetails, supplyDetails);
 
         // now he reviews it
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
@@ -324,6 +338,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void reviewProductSuccessStoredNotificationTest(){ // 9.1 good (3.3)
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         bridge.login(bridge.addGuest().getResult(), "shalom", "123456");
 
         notifier.addConnection("aviad", null);
@@ -334,7 +351,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<List<ProductDTO>> searchResult = bridge.searchByProductName("simania zoheret");
         ProductDTO productDTO = searchResult.getResult().get(0);
         bridge.addToCart("shalom", productDTO.getStoreID(), productDTO.getProductID());
-        bridge.directPurchase("shalom", "4580-1234-5678-9010", "Israel");
+        bridge.directPurchase("shalom", paymentDetails, supplyDetails);
 
         // now he reviews it
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),

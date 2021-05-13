@@ -2,6 +2,8 @@ package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import org.junit.Assert;
@@ -70,6 +72,9 @@ public class ParallelismTests extends ProjectAcceptanceTests{
     @Test
     public void parallelPurchaseTest() throws InterruptedException {
         // creating two threads which will compete over a product but not starting them yet
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
 
         final int[] buyer1Result = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread buyer1 = new Thread(){
@@ -81,7 +86,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
                         Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
-                                "4580-1234-5678-9010", "Israel");
+                                paymentDetails, supplyDetails);
                         if(!purchaseResult.isFailure()){
                             buyer1Result[0] = 1;
                         }
@@ -90,35 +95,8 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             }
         };
 
-//        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
-//        if(!searchResponse.getResult().isEmpty()) {
-//            ProductDTO productToAdd = searchResponse.getResult().get(0);
-//            Response<Boolean> cartResponse = bridge.addToCart("bolin",
-//                    productToAdd.getStoreID(), productToAdd.getProductID());
-//            if(!cartResponse.isFailure()) {
-//                Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
-//                        "4580-1234-5678-9010", "republic city");
-//                if(!purchaseResult.isFailure()){
-//                    System.out.println("hey");
-//                    buyer1Result[0] = 1;
-//                }
-//            }
-//        }
-
-//        Response<List<PurchaseDTO>> historyResult = this.bridge.getPurchaseHistory("bolin");
-//
-//        boolean exists = false;
-//        for(PurchaseDTO purchase: historyResult.getResult()){
-//            for(ProductDTO product: purchase.getBasket().keySet()){
-//                if(product.getName().equals("air bending")){
-//                    exists = true;
-//                }
-//            }
-//        }
-//
-//        System.out.println(exists);
-
         final int[] buyer2Result = new int[1]; // 0 - didn't get to buy. 1 - bought the product
+
         Thread buyer2 = new Thread(){
           public void run(){
               Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
@@ -127,8 +105,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                   Response<Boolean> cartResponse = bridge.addToCart("tenzin",
                           productToAdd.getStoreID(), productToAdd.getProductID());
                   if(!cartResponse.isFailure()) {
-                      Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
-                              "4580-1234-5678-9010", "Israel");
+                      Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",paymentDetails, supplyDetails);
                       if(!purchaseResult.isFailure()){
                           buyer2Result[0] = 1;
                       }
@@ -136,36 +113,6 @@ public class ParallelismTests extends ProjectAcceptanceTests{
               }
           }
         };
-
-//        searchResponse = bridge.searchByProductName("air bending");
-//        if(!searchResponse.getResult().isEmpty()) {
-//            System.out.println("heyoooooo");
-//            ProductDTO productToAdd = searchResponse.getResult().get(0);
-//            Response<Boolean> cartResponse = bridge.addToCart("tenzin",
-//                    productToAdd.getStoreID(), productToAdd.getProductID());
-//            if(!cartResponse.isFailure()) {
-//                Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
-//                        "4580-1234-5678-9010", "republic city");
-//                if(!purchaseResult.isFailure()){
-//                    buyer2Result[0] = 1;
-//                }
-//            }
-//        }
-
-
-//        historyResult = this.bridge.getPurchaseHistory("tenzin");
-//
-//        exists = false;
-//        for(PurchaseDTO purchase: historyResult.getResult()){
-//            for(ProductDTO product: purchase.getBasket().keySet()){
-//                if(product.getName().equals("air bending")){
-//                    exists = true;
-//                }
-//            }
-//        }
-//
-//        System.out.println(exists);
-
 
         // now that we have our threads ready we'll start them in random manner
         Random random = new Random(System.currentTimeMillis());
@@ -192,6 +139,9 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
     @Test
     public void parallelBuyAndRemoveTest() throws InterruptedException {
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // creating two threads where one tries to buy a product while the other tries to remove it
         final int[] buyerResult = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread buyer = new Thread(){
@@ -202,8 +152,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
-                        Response<Boolean> purchaseResult = bridge.directPurchase("bolin",
-                                "4580-1234-5678-9010", "republic city");
+                        Response<Boolean> purchaseResult = bridge.directPurchase("bolin", paymentDetails, supplyDetails);
                         if(!purchaseResult.isFailure()){
                             buyerResult[0] = 1;
                         }

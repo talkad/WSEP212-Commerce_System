@@ -1,5 +1,7 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
+import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,13 +16,30 @@ public class PaymentSystemTests {
 
     @Test
     public void externalPaymentTestPass(){
-        boolean b = payment.canPay(10,"4580-1111-1111-1111");
-        Assert.assertTrue(b);
+        Response<Integer> res;
+
+        PaymentDetails details = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        res = payment.pay(details);
+
+        Assert.assertTrue(!res.isFailure() && res.getResult() >= 10000 && res.getResult() <= 100000);
     }
 
+//    @Test
+//    public void externalPaymentTestFail(){ // the external systems always respond with positive result
+//        Response<Integer> res;
+//
+//        PaymentDetails details = new PaymentDetails("asd", "-3", "", "", "", "");
+//        res = payment.pay(details);
+//
+//        Assert.assertTrue(res.isFailure() && res.getResult() < 0);
+//    }
+
     @Test
-    public void externalPaymentTestFail(){
-        boolean b = payment.canPay(-10,"4580-1111-1111-1111");
-        Assert.assertFalse(b);
+    public void externalCancelPaymentTestPass(){
+        Response<Integer> res;
+
+        res = payment.cancelPay("4568");
+
+        Assert.assertTrue(!res.isFailure() && res.getResult() == 1);
     }
 }

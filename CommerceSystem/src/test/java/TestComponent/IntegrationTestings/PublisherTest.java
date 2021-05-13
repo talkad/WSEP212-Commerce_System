@@ -4,6 +4,8 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Publisher;
 import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
@@ -41,9 +43,12 @@ public class PublisherTest {
         // logout
         userController.logout("yoni");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase(costumerName, paymentDetails, supplyDetails);
 
         Assert.assertEquals(1, userController.getUserByName("yoni").getPendingMessages().size());
     }
@@ -79,9 +84,12 @@ public class PublisherTest {
         userController.register(costumerName, "tal", "pis");
         userController.login(costumerName, "tal", "pis");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart("tal", storeRes.getResult(), productID);
-        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase("tal", paymentDetails, supplyDetails);
 
         // logout
         userController.logout("yoni2");
@@ -119,9 +127,12 @@ public class PublisherTest {
         productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase(costumerName, paymentDetails, supplyDetails);
 
         Assert.assertEquals(0, userController.getUserByName("yoni3").getPendingMessages().size());
         Assert.assertEquals(1, mock.getMessages("yoni3").size());
@@ -158,9 +169,12 @@ public class PublisherTest {
         userController.register(costumerName, "tal", "pis");
         userController.login(costumerName, "tal", "pis");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart("tal", storeRes.getResult(), productID);
-        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase("tal", paymentDetails, supplyDetails);
 
         // add review
         userController.addProductReview("tal", store.getStoreID(), productID, "The best eggs");

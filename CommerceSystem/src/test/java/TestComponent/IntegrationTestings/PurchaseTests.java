@@ -6,6 +6,8 @@ import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
 import Server.Domain.ShoppingManager.Predicates.BasketPredicate;
 import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +33,10 @@ public class PurchaseTests {
         for(int i = 0; i < 5; i++)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.getResult());
     }
 
@@ -49,7 +54,10 @@ public class PurchaseTests {
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "1111-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure());
     }
 
@@ -67,7 +75,10 @@ public class PurchaseTests {
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Iran, Teheran");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure());
     }
 
@@ -86,14 +97,17 @@ public class PurchaseTests {
         store.addProduct(productDTO, 1);
         UserController.getInstance().addToCart(guestName1, storeID, 482163215); // product doesn't exists
 
-        response = UserController.getInstance().purchase(guestName1, "4580-1111-1111-1111", "Iran, Teheran");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName1, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure());
 
         UserController.getInstance().addToCart(guestName1, storeID, productID);
         UserController.getInstance().addToCart(guestName2, storeID, productID);
-        UserController.getInstance().purchase(guestName2, "4580-1111-1111-1111", "Israel, Winterfell");
+        UserController.getInstance().purchase(guestName2, paymentDetails, supplyDetails);
 
-        response = UserController.getInstance().purchase(guestName1, "4580-1111-1111-1111", "Iran, Teheran");
+        response = UserController.getInstance().purchase(guestName1, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure()); // product out of stock
     }
 
@@ -114,7 +128,10 @@ public class PurchaseTests {
         for(int i = 0; i < 10; i++)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Iran, Teheran");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure());
 
         Assert.assertEquals(5, store.getInventory().getProductAmount(productID));
@@ -138,7 +155,10 @@ public class PurchaseTests {
         for(int i = 0; i < 10; i++)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        UserController.getInstance().purchase("faruk", "4580-1111-1111-1111", "Israel");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        UserController.getInstance().purchase("faruk", paymentDetails, supplyDetails);
 
         Assert.assertEquals(0, UserController.getInstance().getPurchaseHistoryContents("faruk").getResult().size());
         Assert.assertEquals(0, store.getPurchaseHistory().getResult().size());
@@ -167,33 +187,16 @@ public class PurchaseTests {
 
         Map<Integer, Map<ProductDTO, Integer>> cart = UserController.getInstance().getShoppingCartContents(guestName).getResult();
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Iran, Teheran");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.isFailure());
 
         // check that cart didnt change
         Assert.assertEquals(1, cart.keySet().size());
         Assert.assertEquals(2, cart.get(storeID).keySet().size());
         Assert.assertTrue(cart.get(storeID).containsValue(1) && cart.get(storeID).containsValue(2));
-    }
-
-    @Test
-    public void badPurchaseNoExternalConnectionsTest(){
-        Response<Boolean> response;
-        String guestName = UserController.getInstance().addGuest().getResult();
-        int productID = 7537864;
-        int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
-        ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
-        Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
-
-        store.addProduct(productDTO, 5);
-
-        for(int i = 0; i < 10; i++)
-            UserController.getInstance().addToCart(guestName, storeID, productID);
-
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Eilat");
-        Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
     }
 
     @Test
@@ -211,7 +214,10 @@ public class PurchaseTests {
         for (int i = 0; i < 3; ++i)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.getResult());
     }
 
@@ -229,7 +235,10 @@ public class PurchaseTests {
         store.addProduct(productDTO, 5);
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        response = UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(response.getErrMsg().contains("Not qualified of policy demands."));
     }
 
@@ -247,7 +256,10 @@ public class PurchaseTests {
         for (int i = 0; i < 3; ++i)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
 
         double purchasePrice = store.getPurchaseHistory().getResult().stream().collect(Collectors.toList()).get(0).getTotalPrice();
         Assert.assertEquals(15000, purchasePrice, 0);
@@ -267,9 +279,57 @@ public class PurchaseTests {
         for (int i = 0; i < 5; ++i)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        UserController.getInstance().purchase(guestName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
 
         double purchasePrice = store.getPurchaseHistory().getResult().stream().collect(Collectors.toList()).get(0).getTotalPrice();
         Assert.assertEquals(22500, purchasePrice, 0);
+    }
+
+    @Test
+    public void badPurchaseNoExternalConnectionsTest(){
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 7537864;
+        int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
+        ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
+
+        store.addProduct(productDTO, 5);
+
+        for(int i = 0; i < 10; i++)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
+        Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
+    }
+
+    @Test
+    public void goodPurchaseConnectionTest(){
+        Response<Boolean> response;
+        String guestName = UserController.getInstance().addGuest().getResult();
+        int productID = 45734132;
+        int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
+        ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(1, 10));
+
+        store.addProduct(productDTO, 5);
+        for(int i = 0; i < 5; i++)
+            UserController.getInstance().addToCart(guestName, storeID, productID);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
+        Assert.assertFalse(response.getErrMsg().contains("doesn't created external connection"));
     }
 }
