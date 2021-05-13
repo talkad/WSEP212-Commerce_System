@@ -198,6 +198,15 @@ public class StoreController {
         return new Response<>(storeList, false, "all stores with name " + storeName);
     }
 
+    public double getTotalSystemRevenue() {
+        double totalRevenue = 0;
+
+        for(Store store: stores.values())
+            totalRevenue += store.getTotalRevenue();
+
+        return totalRevenue;
+    }
+
 //    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
 //        Response<Boolean> result;
 //        Store store;

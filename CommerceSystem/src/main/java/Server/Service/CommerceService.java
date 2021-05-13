@@ -225,6 +225,16 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return commerceSystem.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return commerceSystem.getTotalStoreRevenue(username, storeID);
+    }
+
+    @Override
     public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
         return commerceSystem.getStoreWorkersDetails(username, storeID);
     }

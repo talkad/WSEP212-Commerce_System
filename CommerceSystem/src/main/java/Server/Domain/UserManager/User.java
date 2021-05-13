@@ -573,4 +573,28 @@ public class User {
         }
     }
 
+    public Response<Double> getTotalSystemRevenue() {
+        if(this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) { //todo- check this permission
+            return new Response<>(StoreController.getInstance().getTotalSystemRevenue(), false, "System manager received total revenue");
+        }
+        else {
+            return new Response<>(null, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Double> getTotalStoreRevenue(int storeID) {
+        Store store;
+        if(this.storesOwned.contains(storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return new Response<>(store.getTotalRevenue(), false, "Total revenue in store " + storeID);
+            }
+            else {
+                return new Response<>(-1.0, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(-1.0, true, "The user doesn't have the right permissions");
+        }
+    }
 }

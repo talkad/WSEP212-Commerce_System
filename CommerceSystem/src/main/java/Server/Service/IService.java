@@ -94,9 +94,6 @@ public interface IService {
 
     Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID); // 4.2
 
-
-    // add policy and edit it ???? 4.2 - c
-
     Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID); // 4.3
 
     Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID);  // 4.4
@@ -115,6 +112,8 @@ public interface IService {
 
     Response<List<Permissions>> getUserPermissions(String username, int storeID); // for client
 
+    Response<Double> getTotalStoreRevenue(String username, int storeID);
+
 
 
 
@@ -124,4 +123,7 @@ public interface IService {
     Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username); // 6.4 - a
 
     Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID); // 6.4 - b
+
+    Response<Double> getTotalSystemRevenue(String username);
+
 }

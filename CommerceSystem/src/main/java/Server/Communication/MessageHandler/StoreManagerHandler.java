@@ -124,6 +124,12 @@ public class StoreManagerHandler extends Handler{
 
                 response = service.getUserPermissions(username, Integer.parseInt(storeID));
             }
+            case "getTotalStoreRevenue" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+
+                response = service.getTotalStoreRevenue(username, Integer.parseInt(storeID));
+            }
             default -> response = super.handle(input);
         }
 

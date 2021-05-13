@@ -25,6 +25,10 @@ public class PurchaseDTO {
         return totalPrice;
     }
 
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
     @Override
     public String toString() {
         return "PurchaseDTO{" +

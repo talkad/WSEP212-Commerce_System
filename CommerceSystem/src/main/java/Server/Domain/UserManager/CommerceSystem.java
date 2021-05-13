@@ -193,6 +193,16 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return userController.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return userController.getTotalStoreRevenue(username, storeID);
+    }
+
+    @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
         return userController.appointManager(appointerName, appointeeName, storeID);
     }

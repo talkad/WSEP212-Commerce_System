@@ -622,5 +622,29 @@ public class UserController {
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
+
+    public Response<Double> getTotalSystemRevenue(String username) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getTotalSystemRevenue();
+        }
+        readLock.unlock();
+        return new Response<>(-1.0, true, "User not connected");
+    }
+
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getTotalStoreRevenue(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(-1.0, true, "User not connected");
+    }
 }
 
