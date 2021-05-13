@@ -34,18 +34,7 @@ public class ProductSupplyAdapter
         return CreateThreadSafeSingleton.INSTANCE;
     }
 
-    public void deliver(String location, Map<Integer,Map<ProductDTO, Integer>> details){
-//        externalSupplier.deliver(location, details);
-    }
-
-    public boolean canDeliver(String location, Map<Integer,Map<ProductDTO, Integer>> details){
-        if (location==null) return false;
-//        return externalSupplier.canDeliver(location, details);
-        return false;
-    }
-
-
-    public Response<Integer> supply(String name, String address, String city, String country, String zip){
+    public Response<Integer> supply(SupplyDetails supplyDetails){
         List<NameValuePair> urlParameters = new LinkedList<>();
         Response<Boolean> connRes;
         Response<String> externalRes;
@@ -59,11 +48,11 @@ public class ProductSupplyAdapter
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "supply"));
-        urlParameters.add(new BasicNameValuePair("name", name));
-        urlParameters.add(new BasicNameValuePair("address", address));
-        urlParameters.add(new BasicNameValuePair("city", city));
-        urlParameters.add(new BasicNameValuePair("country", country));
-        urlParameters.add(new BasicNameValuePair("zip", zip));
+        urlParameters.add(new BasicNameValuePair("name", supplyDetails.getName()));
+        urlParameters.add(new BasicNameValuePair("address", supplyDetails.getAddress()));
+        urlParameters.add(new BasicNameValuePair("city", supplyDetails.getCity()));
+        urlParameters.add(new BasicNameValuePair("country", supplyDetails.getCountry()));
+        urlParameters.add(new BasicNameValuePair("zip", supplyDetails.getZip()));
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){

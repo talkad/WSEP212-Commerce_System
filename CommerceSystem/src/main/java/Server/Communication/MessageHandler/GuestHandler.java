@@ -1,6 +1,9 @@
 package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
@@ -96,10 +99,10 @@ public class GuestHandler extends Handler{
             }
             case "directPurchase" ->{
                 String username = data.getProperty("username");
-                String bankAccount = data.getProperty("bankAccount");
-                String location = data.getProperty("location");
+                String paymentDetails = data.getProperty("paymentDetails");
+                String supplyDetails = data.getProperty("supplyDetails");
 
-                response = service.directPurchase(username, bankAccount, location);
+                response = service.directPurchase(username, gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
             }
             default -> response = super.handle(input);
         }

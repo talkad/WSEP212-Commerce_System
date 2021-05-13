@@ -43,17 +43,7 @@ public class PaymentSystemAdapter
         return CreateThreadSafeSingleton.INSTANCE;
     }
 
-    // todo - remove
-    public void pay(double a, String b){
-//        externalSupplier.deliver(location, details);
-    }
-
-    public boolean canPay(double a, String b){
-//        return externalSupplier.canDeliver(location, details);
-        return false;
-    }
-
-    public Response<Integer> pay(String card_number, String month, String year, String holder, String ccv, String id){
+    public Response<Integer> pay(PaymentDetails paymentDetails){
         List<NameValuePair> urlParameters = new LinkedList<>();
         Response<Boolean> connRes;
         Response<String> externalRes;
@@ -67,12 +57,12 @@ public class PaymentSystemAdapter
         }
 
         urlParameters.add(new BasicNameValuePair("action_type", "pay"));
-        urlParameters.add(new BasicNameValuePair("card_number", card_number));
-        urlParameters.add(new BasicNameValuePair("month", month));
-        urlParameters.add(new BasicNameValuePair("year", year));
-        urlParameters.add(new BasicNameValuePair("holder", holder));
-        urlParameters.add(new BasicNameValuePair("ccv", ccv));
-        urlParameters.add(new BasicNameValuePair("id", id));
+        urlParameters.add(new BasicNameValuePair("card_number", paymentDetails.getCard_number()));
+        urlParameters.add(new BasicNameValuePair("month", paymentDetails.getMonth()));
+        urlParameters.add(new BasicNameValuePair("year", paymentDetails.getYear()));
+        urlParameters.add(new BasicNameValuePair("holder", paymentDetails.getHolder()));
+        urlParameters.add(new BasicNameValuePair("ccv", paymentDetails.getCcv()));
+        urlParameters.add(new BasicNameValuePair("id", paymentDetails.getId()));
 
         externalRes = conn.send(urlParameters);
         if(externalRes.isFailure()){

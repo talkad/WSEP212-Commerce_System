@@ -7,6 +7,8 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.CommerceSystem;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.User;
@@ -111,8 +113,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, String bankAccount, String location) {
-        return commerceSystem.directPurchase(username, bankAccount, location);
+    public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return commerceSystem.directPurchase(username, paymentDetails, supplyDetails);
     }
 
     @Override
