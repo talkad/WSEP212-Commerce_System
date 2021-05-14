@@ -106,6 +106,21 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return userController.bidOffer(username, productID, storeID, priceOffer);
+    }
+
+    @Override
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID ,int storeID, double bidReply) {
+        return userController.bidMangerReply(username, offeringUsername, productID, storeID, bidReply);
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return userController.bidUserReply(username, productID, storeID, toPurchase, paymentDetails, supplyDetails);
+    }
+
+    @Override
     public User getUserByName(String username) {
         return null;
     }

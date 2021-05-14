@@ -104,6 +104,24 @@ public class GuestHandler extends Handler{
 
                 response = service.directPurchase(username, gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
             }
+            case "bidOffer" ->{
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String productID = data.getProperty("productID");
+                String priceOffer = data.getProperty("priceOffer");
+
+                response = service.bidOffer(username, Integer.parseInt(storeID), Integer.parseInt(productID), Double.parseDouble(priceOffer));
+           }
+            case "bidUserReply" ->{
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String productID = data.getProperty("productID");
+                String toPurchase = data.getProperty("toPurchase");
+                String paymentDetails = data.getProperty("paymentDetails");
+                String supplyDetails = data.getProperty("supplyDetails");
+
+                response = service.bidUserReply(username, Integer.parseInt(productID), Integer.parseInt(storeID), Boolean.parseBoolean(toPurchase), gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
+            }
             default -> response = super.handle(input);
         }
 

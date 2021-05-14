@@ -101,11 +101,12 @@ public class Store {
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
         PurchaseDTO purchaseDTO;
-        double price = 0;
 
-        for(ProductDTO productDTO: shoppingBasket.keySet()){
-            price += productDTO.getPrice() * shoppingBasket.get(productDTO);
-        }
+//        double price = 0;
+//
+//        for(ProductDTO productDTO: shoppingBasket.keySet()){
+//            price += productDTO.getPrice() * shoppingBasket.get(productDTO);
+//        }
 
         double priceAfterDiscount = discountPolicy.calcDiscount(shoppingBasket);
 

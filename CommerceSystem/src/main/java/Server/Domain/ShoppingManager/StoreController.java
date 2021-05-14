@@ -105,6 +105,11 @@ public class StoreController {
         }
     }
 
+    // activated when purchase aborted and all products need to be added to their inventories
+    public void addProductsToInventories(Product product, int storeID) {
+        stores.get(storeID).addProduct(product.getProductDTO(), 1);
+    }
+
     public Response<List<PurchaseDTO>> purchase(ShoppingCart shoppingCart) {
         Store s;
         Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
@@ -136,6 +141,24 @@ public class StoreController {
         }
 
         return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
+    }
+
+    public Response<PurchaseDTO> purchase(Product product) {
+        Response<PurchaseDTO> res;
+        Store store = stores.get(product.getStoreID());
+        Map<ProductDTO, Integer> purchase = new HashMap<>();
+        purchase.put(product.getProductDTO(), 1);
+
+        if(store == null)
+            return new Response<>(null, true, "The store doesn't exists");
+
+        res = store.purchase(purchase);
+
+        if(!res.isFailure()){
+            store.addPurchaseHistory(res.getResult());
+        }
+
+        return res;
     }
 
     private Response<PurchaseDTO> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){

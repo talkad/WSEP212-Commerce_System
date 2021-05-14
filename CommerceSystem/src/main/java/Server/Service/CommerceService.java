@@ -108,13 +108,28 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount){
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount){
         return CommerceSystem.getInstance().updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
     public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
         return commerceSystem.directPurchase(username, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return commerceSystem.bidOffer(username, productID, storeID, priceOffer);
+    }
+
+    @Override
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+        return commerceSystem.bidMangerReply(username,offeringUsername, productID, storeID, bidReply);
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return commerceSystem.bidUserReply(username, productID, storeID, toPurchase, paymentDetails, supplyDetails);
     }
 
     @Override

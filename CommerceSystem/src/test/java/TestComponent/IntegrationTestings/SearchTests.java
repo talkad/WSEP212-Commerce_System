@@ -42,11 +42,11 @@ public class SearchTests {
         admins = new LinkedList<>();
 
         registeredUsers.put("shaked", new User(new UserDTO("shaked", new ConcurrentHashMap<>(),
-                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new PendingMessages())));
+                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(),new ConcurrentHashMap<>(), new PendingMessages())));
         registeredUsers.put("yaakov", new User(new UserDTO("yaakov", new ConcurrentHashMap<>(),
-                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new PendingMessages())));
+                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new ConcurrentHashMap<>(), new PendingMessages())));
         registeredUsers.put("almog", new User(new UserDTO("almog", new ConcurrentHashMap<>(),
-                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new PendingMessages())));
+                new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new ConcurrentHashMap<>(),new PendingMessages())));
 
         admins.add("shaked");
 

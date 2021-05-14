@@ -34,11 +34,15 @@ public enum Permissions {
     RECEIVE_STORE_WORKER_INFO,         /* Use Case: 4.9 */
     RECEIVE_STORE_HISTORY,      /* Use Case: 4.11 */
 
+    RECEIVE_STORE_REVENUE,
+    REPLY_TO_BID,
+
     /** Store Manager **/
     /* NOTE: Store manager will have permissions 4.9 and 4.10 immediately after he is appointed.
      *  all other permissions are taken from store owner above, depends on which permissions
      *  are given him by his appointer  */
 
     /** System Manager **/
-    RECEIVE_GENERAL_HISTORY    /* Use Case: 6.4 */
+    RECEIVE_GENERAL_HISTORY,    /* Use Case: 6.4 */
+    RECEIVE_GENERAL_REVENUE
 }

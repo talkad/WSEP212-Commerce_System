@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
@@ -46,6 +47,38 @@ public class PurchaseController {
                 supplyRes = supplySystemAdapter.supply(supplyDetails);
                 if(supplyRes.isFailure()) {
                         storeController.addProductsToInventories(cart);
+
+                        cancelRes = paymentSystemAdapter.cancelPay(paymentRes.getResult() + "");
+                        if(cancelRes.isFailure())
+                                return  new Response<>(null, true, "Delivery failed and you have been charged but the payment cancellation failed | created external connection");
+
+                        return new Response<>(null, true, "Delivery failed" + " | created external connection");
+                }
+
+                return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
+        }
+
+        public Response<PurchaseDTO> purchaseProduct(int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+
+                Response<Integer> cancelRes;
+                Response<Integer> supplyRes;
+                Response<Integer> paymentRes;
+
+                Response<Product> product = storeController.getProduct(storeID, productID);
+                Response<PurchaseDTO> res = storeController.purchase(product.getResult());
+
+                if (res.isFailure())
+                        return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
+
+                paymentRes = paymentSystemAdapter.pay(paymentDetails);
+                if(paymentRes.isFailure()) {
+                        storeController.addProductsToInventories(product.getResult(), storeID);
+                        return new Response<>(null, true, "Payment failed" + " | created external connection");
+                }
+
+                supplyRes = supplySystemAdapter.supply(supplyDetails);
+                if(supplyRes.isFailure()) {
+                        storeController.addProductsToInventories(product.getResult(), storeID);
 
                         cancelRes = paymentSystemAdapter.cancelPay(paymentRes.getResult() + "");
                         if(cancelRes.isFailure())

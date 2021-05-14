@@ -56,6 +56,10 @@ public interface IService {
 
     Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails); // 2.9
 
+    Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer);
+
+    Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails);
+
     User getUserByName(String username); // for tests purposes
 
     /**
@@ -113,6 +117,8 @@ public interface IService {
     Response<List<Permissions>> getUserPermissions(String username, int storeID); // for client
 
     Response<Double> getTotalStoreRevenue(String username, int storeID);
+
+    Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply);
 
 
 
