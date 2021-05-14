@@ -133,6 +133,16 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return commerceSystem.getStoreOwned(username);
+    }
+
+    @Override
+    public Response<StoreDTO> getStore(int storeID) {
+        return commerceSystem.getStore(storeID);
+    }
+
+    @Override
     public User getUserByName(String username) {
         return commerceSystem.getUserByName(username);
     }

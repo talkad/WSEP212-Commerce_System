@@ -338,7 +338,7 @@ public class User {
     }
 
     public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+        if (this.state.allowed(Permissions.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
                 UserDAO.getInstance().addPermission(storeId, permitted, permission);
                 return new Response<>(true, false, "Added permission");
@@ -350,7 +350,7 @@ public class User {
     }
 
     public Response<Boolean> removePermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+        if (this.state.allowed(Permissions.REMOVE_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             UserDAO.getInstance().removePermission(storeId, permitted, permission);
             return new Response<>(true, false, "Removed permission");
         } else {
@@ -665,4 +665,7 @@ public class User {
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 
+    public Response<List<Integer>> getStoreOwned() {
+        return new Response<>(this.getStoresOwned(), false, "Get store owned Successfully");
+    }
 }

@@ -60,7 +60,12 @@ public interface IService {
 
     Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails);
 
+    Response<List<Integer>> getStoreOwned(String username);
+
+    Response<StoreDTO> getStore(int storeID);
+
     User getUserByName(String username); // for tests purposes
+
 
     /**
      * Registered requirements - 3

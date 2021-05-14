@@ -1089,7 +1089,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to edit permissions
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.EDIT_PERMISSION);
+                Permissions.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.addPermission("e", this.storeID, "f",
@@ -1181,7 +1181,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // edit permission permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.EDIT_PERMISSION);
+                Permissions.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         // remove manager permission
@@ -1263,7 +1263,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // edit permissions removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.EDIT_PERMISSION);
+                Permissions.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         appointResult = bridge.appointStoreManager("aviad", "z",

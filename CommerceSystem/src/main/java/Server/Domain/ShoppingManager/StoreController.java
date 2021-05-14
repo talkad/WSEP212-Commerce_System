@@ -230,6 +230,16 @@ public class StoreController {
         return totalRevenue;
     }
 
+    public Response<StoreDTO> getStore(int storeID){
+        Store store = stores.get(storeID);
+
+        if(store == null)
+            return new Response<>(null, true, "The store doesn't exists");
+
+        return new Response<>(new StoreDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()), true, "store found");
+    }
+
+
 //    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
 //        Response<Boolean> result;
 //        Store store;

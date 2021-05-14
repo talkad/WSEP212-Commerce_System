@@ -1,7 +1,6 @@
 package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.CommerceService;
@@ -121,6 +120,16 @@ public class GuestHandler extends Handler{
                 String supplyDetails = data.getProperty("supplyDetails");
 
                 response = service.bidUserReply(username, Integer.parseInt(productID), Integer.parseInt(storeID), Boolean.parseBoolean(toPurchase), gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
+            }
+            case "getStore" ->{
+                String storeID = data.getProperty("storeID");
+
+                response = service.getStore( Integer.parseInt(storeID));
+            }
+            case "getStoreOwned" ->{
+                String username = data.getProperty("username");
+
+                response = service.getStoreOwned(username);
             }
             default -> response = super.handle(input);
         }

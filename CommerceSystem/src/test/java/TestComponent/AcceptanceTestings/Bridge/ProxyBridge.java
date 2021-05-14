@@ -167,6 +167,16 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return null;
+    }
+
+    @Override
+    public Response<StoreDTO> getStore(int storeID) {
+        return null;
+    }
+
+    @Override
     public User getUserByName(String username) {
         if (real != null){
             return real.getUserByName(username);

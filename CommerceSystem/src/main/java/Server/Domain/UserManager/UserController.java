@@ -1,7 +1,5 @@
 package Server.Domain.UserManager;
 
-
-import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -694,6 +692,17 @@ public class UserController {
             return user.bidUserReply(purchase.getResult(), storeID);
         }
 
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<List<Integer>> getStoreOwned(String username){
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getStoreOwned();
+        }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
