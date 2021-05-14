@@ -5,7 +5,6 @@ import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 
-import java.security.Policy;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -20,6 +19,7 @@ public class User {
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
     private Appointment appointments;
+    private Map<Integer, Offer> offers;
 
     private PendingMessages pendingMessages;
 
@@ -71,6 +71,7 @@ public class User {
         this.shoppingCart = userDTO.getShoppingCart();
         this.purchaseHistory = userDTO.getPurchaseHistory();
         this.appointments = userDTO.getAppointments();
+        this.offers = userDTO.getOffers();
         this.pendingMessages = userDTO.getPendingMessages();
     }
 
@@ -108,6 +109,10 @@ public class User {
 
     public PurchaseHistory getPurchaseHistory() {
         return purchaseHistory;
+    }
+
+    public Map<Integer, Offer> getOffers() {
+        return offers;
     }
 
     public Response<Boolean> register() {
@@ -333,7 +338,7 @@ public class User {
     }
 
     public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+        if (this.state.allowed(Permissions.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
                 UserDAO.getInstance().addPermission(storeId, permitted, permission);
                 return new Response<>(true, false, "Added permission");
@@ -345,7 +350,7 @@ public class User {
     }
 
     public Response<Boolean> removePermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.EDIT_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+        if (this.state.allowed(Permissions.REMOVE_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             UserDAO.getInstance().removePermission(storeId, permitted, permission);
             return new Response<>(true, false, "Removed permission");
         } else {
@@ -573,4 +578,94 @@ public class User {
         }
     }
 
+    public Response<Double> getTotalSystemRevenue() {
+        if(this.state.allowed(Permissions.RECEIVE_GENERAL_REVENUE, this)) { //todo- check this permission
+            return new Response<>(StoreController.getInstance().getTotalSystemRevenue(), false, "System manager received total revenue");
+        }
+        else {
+            return new Response<>(null, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Double> getTotalStoreRevenue(int storeID) {
+        Store store;
+        if(this.state.allowed(Permissions.RECEIVE_STORE_REVENUE, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                return new Response<>(store.getTotalRevenue(), false, "Total revenue in store " + storeID);
+            }
+            else {
+                return new Response<>(-1.0, true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>(-1.0, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Boolean> bidOffer(int productID, int storeID, double priceOffer) {
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        if (store != null)
+            return new Response<>(false, true, "The given store doesn't exists");
+
+        Offer offer = new Offer(productID, storeID, priceOffer);
+        UserDAO.getInstance().addOffer(this.name, productID ,storeID, priceOffer, OfferState.PENDING);
+
+        this.offers.put(productID, offer);
+        Publisher.getInstance().notify(storeID, "user " + this.name + "sent new offer to product " + productID + ". the new offer is: $" + priceOffer);
+        return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
+    }
+
+    public Response<Boolean> removeOffer(int productId){
+        if(this.offers.containsKey(productId)){
+            offers.remove(productId);
+            UserDAO.getInstance().removeOffer(this.name, productId);
+            return new Response<>(true, false, "successfully removed offer");
+        }
+        else{
+            return new Response<>(false, true, "offer doesn't exist");
+        }
+    }
+
+    public Response<Boolean> changeOfferStatus(String offeringUsername, int productID, int storeID, double bidReply) {
+
+        if (this.state.allowed(Permissions.REPLY_TO_BID, this, storeID)) {
+            if (bidReply == -1) {
+                Publisher.getInstance().notify(offeringUsername, "The offer was declined.");
+                return UserDAO.getInstance().removeOffer(offeringUsername, productID);
+            } else if (bidReply == 0) {
+                Publisher.getInstance().notify(offeringUsername, "The offer was accepted.");
+                return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
+            } else {
+                Publisher.getInstance().notify(offeringUsername, "The store presented a counter offer - " + bidReply);
+                return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
+            }
+        }
+        else{
+            return new Response<>(null, true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<Boolean> bidUserReply(PurchaseDTO purchase, int storeID) {
+        List<PurchaseDTO> purchases = new LinkedList<>();
+        purchases.add(purchase);
+
+        if (this.purchaseHistory != null){
+            purchaseHistory.addPurchase(purchases);
+        }
+
+        ProductDTO product = null;
+        for(ProductDTO p: purchase.getBasket().keySet())
+            product = p;
+
+        if(product == null)
+            return new Response<>(false, true, "The purchase failed");
+
+        Publisher.getInstance().notify(storeID, "Product " + product.getName() + " purchased successfully");
+        return new Response<>(true, false, "The purchase occurred successfully");
+    }
+
+    public Response<List<Integer>> getStoreOwned() {
+        return new Response<>(this.getStoresOwned(), false, "Get store owned Successfully");
+    }
 }

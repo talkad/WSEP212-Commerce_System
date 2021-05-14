@@ -124,6 +124,21 @@ public class StoreManagerHandler extends Handler{
 
                 response = service.getUserPermissions(username, Integer.parseInt(storeID));
             }
+            case "getTotalStoreRevenue" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+
+                response = service.getTotalStoreRevenue(username, Integer.parseInt(storeID));
+            }
+            case "bidManagerReply" -> {
+                String username = data.getProperty("username");
+                String offeringUsername = data.getProperty("offeringUsername");
+                String productID = data.getProperty("productID");
+                String storeID = data.getProperty("storeID");
+                String bidReply = data.getProperty("bidReply");
+
+                response = service.bidMangerReply(username, offeringUsername, Integer.parseInt(productID), Integer.parseInt(storeID), Double.parseDouble(bidReply));
+            }
             default -> response = super.handle(input);
         }
 

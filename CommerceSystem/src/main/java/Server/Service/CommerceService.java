@@ -108,13 +108,38 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount){
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount){
         return CommerceSystem.getInstance().updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
     public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
         return commerceSystem.directPurchase(username, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return commerceSystem.bidOffer(username, productID, storeID, priceOffer);
+    }
+
+    @Override
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+        return commerceSystem.bidMangerReply(username,offeringUsername, productID, storeID, bidReply);
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return commerceSystem.bidUserReply(username, productID, storeID, toPurchase, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return commerceSystem.getStoreOwned(username);
+    }
+
+    @Override
+    public Response<StoreDTO> getStore(int storeID) {
+        return commerceSystem.getStore(storeID);
     }
 
     @Override
@@ -222,6 +247,16 @@ public class CommerceService implements IService{
     @Override
     public Response<List<Permissions>> getUserPermissions(String username, int storeID){
         return commerceSystem.getUserPermissions(username, storeID);
+    }
+
+    @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return commerceSystem.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return commerceSystem.getTotalStoreRevenue(username, storeID);
     }
 
     @Override

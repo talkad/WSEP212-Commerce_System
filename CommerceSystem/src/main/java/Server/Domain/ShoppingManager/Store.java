@@ -8,6 +8,7 @@ import Server.Domain.UserManager.PurchaseDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -100,11 +101,12 @@ public class Store {
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
         PurchaseDTO purchaseDTO;
-        double price = 0;
 
-        for(ProductDTO productDTO: shoppingBasket.keySet()){
-            price += productDTO.getPrice() * shoppingBasket.get(productDTO);
-        }
+//        double price = 0;
+//
+//        for(ProductDTO productDTO: shoppingBasket.keySet()){
+//            price += productDTO.getPrice() * shoppingBasket.get(productDTO);
+//        }
 
         double priceAfterDiscount = discountPolicy.calcDiscount(shoppingBasket);
 
@@ -184,6 +186,18 @@ public class Store {
 
     public Response<Boolean> removePurchaseRule(int ruleID){
         return purchasePolicy.removePurchaseRule(ruleID);
+    }
+
+    public double getTotalRevenue(){
+        LocalDate yesterday = LocalDate.now().minus(Period.ofDays(1));
+        double totalRevenue = 0;
+
+        for(PurchaseDTO purchase: purchaseHistory.getPurchases()){
+            if(purchase.getPurchaseDate().isAfter(yesterday))
+                totalRevenue += purchase.getTotalPrice();
+        }
+
+        return totalRevenue;
     }
 
 }

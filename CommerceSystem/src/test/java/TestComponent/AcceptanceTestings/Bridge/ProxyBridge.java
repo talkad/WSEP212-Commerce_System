@@ -152,6 +152,31 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return null;
+    }
+
+    @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return null;
+    }
+
+    @Override
+    public Response<StoreDTO> getStore(int storeID) {
+        return null;
+    }
+
+    @Override
     public User getUserByName(String username) {
         if (real != null){
             return real.getUserByName(username);
@@ -335,6 +360,11 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return null;
+    }
+
+    @Override
     public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
         if (real != null){
             return real.getUserPurchaseHistory(adminName, username);
@@ -348,5 +378,10 @@ public class ProxyBridge implements IService {
             return real.getStorePurchaseHistory(adminName, storeID);
         }
         return new Response<>(null, true, "not implemented");
+    }
+
+    @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return null;
     }
 }

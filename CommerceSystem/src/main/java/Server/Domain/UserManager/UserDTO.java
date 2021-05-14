@@ -11,9 +11,10 @@ public class UserDTO {
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
     private Appointment appointments;
+    private Map<Integer, Offer> offers;
     private PendingMessages pendingMessages;
 
-    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, PendingMessages pendingMessages) {
+    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers, PendingMessages pendingMessages) {
         this.name = name;
         this.password = password;
         this.storesManaged = storesManaged;
@@ -21,16 +22,18 @@ public class UserDTO {
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
         this.appointments = appointments;
+        this.offers = offers;
         this.pendingMessages = pendingMessages;
     }
 
-    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, PendingMessages pendingMessages) {
+    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers,PendingMessages pendingMessages) {
         this.name = name;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;
         this.shoppingCart = shoppingCart;
         this.purchaseHistory = purchaseHistory;
         this.appointments = appointments;
+        this.offers = offers;
         this.pendingMessages = pendingMessages;
     }
 
@@ -60,6 +63,10 @@ public class UserDTO {
 
     public Appointment getAppointments() {
         return appointments;
+    }
+
+    public Map<Integer, Offer> getOffers() {
+        return offers;
     }
 
     public PendingMessages getPendingMessages() {

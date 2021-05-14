@@ -35,6 +35,11 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.getStorePurchaseHistory(adminName, Integer.parseInt(storeID));
             }
+            case "getTotalSystemRevenue" -> {
+                String username = data.getProperty("username");
+
+                response = service.getTotalSystemRevenue(username);
+            }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
 

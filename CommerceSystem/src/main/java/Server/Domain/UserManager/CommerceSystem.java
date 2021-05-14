@@ -106,6 +106,31 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return userController.bidOffer(username, productID, storeID, priceOffer);
+    }
+
+    @Override
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID ,int storeID, double bidReply) {
+        return userController.bidMangerReply(username, offeringUsername, productID, storeID, bidReply);
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return userController.bidUserReply(username, productID, storeID, toPurchase, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return userController.getStoreOwned(username);
+    }
+
+    @Override
+    public Response<StoreDTO> getStore(int storeID) {
+        return storeController.getStore(storeID);
+    }
+
+    @Override
     public User getUserByName(String username) {
         return null;
     }
@@ -190,6 +215,16 @@ public class CommerceSystem implements IService {
     @Override
     public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
         return userController.getUserPermissions(username, storeID);
+    }
+
+    @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return userController.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return userController.getTotalStoreRevenue(username, storeID);
     }
 
     @Override

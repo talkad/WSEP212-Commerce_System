@@ -18,6 +18,7 @@ public class UserDAO {
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
     private Map<String, Appointment> appointments;
+    private Map<String, Map<Integer, Offer>> offers;
     private Map<String, PendingMessages> pendingMessages;
     private List<String> admins;
 
@@ -45,6 +46,10 @@ public class UserDAO {
     private Lock appointmentsWriteLock;
     private Lock appointmentsReadLock;
 
+    private ReadWriteLock offersLock;
+    private Lock offersWriteLock;
+    private Lock offersReadLock;
+
     private ReadWriteLock pendingLock;
     private Lock pendingWriteLock;
     private Lock pendingReadLock;
@@ -62,6 +67,7 @@ public class UserDAO {
         this.purchaseHistories = new ConcurrentHashMap<>();
         this.pendingMessages = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
+        this.offers = new ConcurrentHashMap<>();
         this.admins = new Vector<>();
         this.admins.add("shaked");
 
@@ -93,6 +99,10 @@ public class UserDAO {
         adminsWriteLock = adminsLock.writeLock();
         adminsReadLock = adminsLock.readLock();
 
+        offersLock = new ReentrantReadWriteLock();
+        offersWriteLock = offersLock.writeLock();
+        offersReadLock = offersLock.readLock();
+
         pendingLock = new ReentrantReadWriteLock();
         pendingWriteLock = pendingLock.writeLock();
         pendingReadLock = pendingLock.readLock();
@@ -106,6 +116,7 @@ public class UserDAO {
         cartsReadLock.lock();
         historiesReadLock.lock();
         appointmentsReadLock.lock();
+        offersReadLock.lock();
         pendingReadLock.lock();
         if(registeredUsers.containsKey(name)) {
             List<Integer> storesOwned = testOwners.get(name);
@@ -130,9 +141,14 @@ public class UserDAO {
             if (appointment == null) {
                 appointment = new Appointment();
             }
-            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, pendindMSG);
+            Map<Integer, Offer> offer = offers.get(name);
+            if (offer == null) {
+                offer = new ConcurrentHashMap<>();
+            }
+            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
         }
         pendingReadLock.unlock();
+        offersReadLock.unlock();
         appointmentsReadLock.unlock();
         historiesReadLock.unlock();
         cartsReadLock.unlock();
@@ -171,6 +187,10 @@ public class UserDAO {
         historiesWriteLock.lock();
         this.purchaseHistories.put(name, new PurchaseHistory());
         historiesWriteLock.unlock();
+
+        offersWriteLock.lock();
+        this.offers.put(name, new ConcurrentHashMap<>());
+        offersWriteLock.unlock();
 
         pendingWriteLock.lock();
         this.pendingMessages.put(name, new PendingMessages());
@@ -293,6 +313,42 @@ public class UserDAO {
             result = this.testOwners.get(newOwnerOrManager).contains(storeId);
         }
         ownersReadLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> addOffer(String name, int productID, int storeID, double priceOffer, OfferState state){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        offersWriteLock.lock();
+        if(userExists(name)){
+            this.offers.get(name).put(productID, new Offer(productID, storeID, priceOffer, state));
+            result = new Response<>(true, false, "Offer added to the user's list");
+        }
+        offersWriteLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> removeOffer(String name, int productID){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        offersWriteLock.lock();
+        if(userExists(name)){
+            this.offers.get(name).remove(productID);
+            result = new Response<>(true, false, "Offer removed from the user's list");
+        }
+        offersWriteLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> changeStatus(String offeringUsername, int productID, double bidReply, OfferState state){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        offersWriteLock.lock();
+        if(userExists(offeringUsername)){
+            if(bidReply > 0){
+                this.offers.get(offeringUsername).get(productID).setOfferReply(bidReply);
+            }
+            this.offers.get(offeringUsername).get(productID).setState(state);
+            result = new Response<>(true, false, "Successfully updated offer status.");
+        }
+        offersWriteLock.unlock();
         return result;
     }
 

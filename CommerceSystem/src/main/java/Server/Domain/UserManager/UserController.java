@@ -1,7 +1,5 @@
 package Server.Domain.UserManager;
 
-
-import Server.Communication.WSS.Notifier;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -32,7 +30,7 @@ public class UserController {
     private Lock writeLock;
     private Lock readLock;
 
-    private UserController(){
+    private UserController() {
         this.availableId = new AtomicInteger(1);
         this.connectedUsers = new ConcurrentHashMap<>();
         this.purchaseController = PurchaseController.getInstance();
@@ -54,6 +52,7 @@ public class UserController {
 
         return new Response<>(name, false, "disconnected user successfully");
     }
+
 
     private static class CreateSafeThreadSingleton {
         private static final UserController INSTANCE = new UserController();
@@ -125,7 +124,6 @@ public class UserController {
     }
 
     public Response<Boolean> register(String prevName, String name, String password){
-        //@TODO prevent invalid usernames (Guest...)
         readLock.lock();
         if(connectedUsers.containsKey(prevName)) {
             User user = connectedUsers.get(prevName);
@@ -270,7 +268,7 @@ public class UserController {
             Response<Boolean> result = user.appointOwner(newOwner, storeId);
             if (!result.isFailure()) {
                 if (this.connectedUsers.containsKey(newOwner)) {
-                    connectedUsers.get(newOwner).addStoresOwned(storeId); //@TODO what about his permissions
+                    connectedUsers.get(newOwner).addStoresOwned(storeId);
                 }
                 // subscribe to get notifications
                 //Publisher.getInstance().subscribe(storeId, newOwner);
@@ -295,7 +293,7 @@ public class UserController {
                 List<Permissions> permissions = new Vector<>();
                 permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
                 if (this.connectedUsers.containsKey(newManager)) {
-                    connectedUsers.get(newManager).addStoresManaged(storeId, permissions); //@TODO list of permissions
+                    connectedUsers.get(newManager).addStoresManaged(storeId, permissions);
                 }
             }
             writeLock.unlock();
@@ -403,7 +401,7 @@ public class UserController {
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
             readLock.unlock();
-            writeLock.lock();   // TODO read or write lock? write because addSelfPermission
+            writeLock.lock();
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
             if (!response.isFailure()) {
                 if (connectedUsers.containsKey(permitted)) {
@@ -618,6 +616,92 @@ public class UserController {
             readLock.unlock();
 
             return user.getDiscountPolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Double> getTotalSystemRevenue(String username) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getTotalSystemRevenue();
+        }
+        readLock.unlock();
+        return new Response<>(-1.0, true, "User not connected");
+    }
+
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getTotalStoreRevenue(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(-1.0, true, "User not connected");
+    }
+
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {//todo add to if connected as well
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.changeOfferStatus(offeringUsername, productID, storeID, bidReply);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.bidOffer(productID, storeID, priceOffer);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {//todo add to if connected as well
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            if(!toPurchase)
+                return user.removeOffer(productID);
+
+            Offer offer = user.getOffers().get(productID);
+
+            if(offer == null)
+                return new Response<>(false, true, "The given product doesn't exists in offers");
+
+            if(offer.getState() != OfferState.APPROVED)
+                return new Response<>(false, true, "Your offered is not yet approved");
+
+            Response<PurchaseDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
+
+            if(purchase.isFailure())
+                return new Response<>(false, true, purchase.getErrMsg());
+
+            return user.bidUserReply(purchase.getResult(), storeID);
+        }
+
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<List<Integer>> getStoreOwned(String username){
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getStoreOwned();
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");

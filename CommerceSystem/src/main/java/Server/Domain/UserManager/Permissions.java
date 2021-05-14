@@ -29,10 +29,14 @@ public enum Permissions {
     APPOINT_OWNER,              /* Use Case: 4.3 */
     REMOVE_OWNER_APPOINTMENT,   /* Use Case: 4.4 */
     APPOINT_MANAGER,            /* Use Case: 4.5 */
-    EDIT_PERMISSION,             /* Use Case: 4.6 */
+    ADD_PERMISSION,             /* Use Case: 4.6 */
+    REMOVE_PERMISSION,             /* Use Case: 4.6 */
     REMOVE_MANAGER_APPOINTMENT, /* Use Case: 4.7 */
     RECEIVE_STORE_WORKER_INFO,         /* Use Case: 4.9 */
     RECEIVE_STORE_HISTORY,      /* Use Case: 4.11 */
+
+    RECEIVE_STORE_REVENUE,
+    REPLY_TO_BID,
 
     /** Store Manager **/
     /* NOTE: Store manager will have permissions 4.9 and 4.10 immediately after he is appointed.
@@ -40,5 +44,6 @@ public enum Permissions {
      *  are given him by his appointer  */
 
     /** System Manager **/
-    RECEIVE_GENERAL_HISTORY    /* Use Case: 6.4 */
+    RECEIVE_GENERAL_HISTORY,    /* Use Case: 6.4 */
+    RECEIVE_GENERAL_REVENUE
 }
