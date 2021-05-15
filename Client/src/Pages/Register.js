@@ -46,11 +46,11 @@ class Register extends React.Component{
             <div className="Register">
                 <h1>Create an account</h1>
                 <form>
-                    <input type="text" name="username" placeholder="Username" value={this.state.username}
+                    <input type="text" name="username" placeholder="Username:" value={this.state.username}
                     onChange={this.handleUsernameChange}/>
                 </form>
                 <form>
-                    <input type="password" name="password" placeholder="Password" value={this.state.password}
+                    <input type="password" name="password" placeholder="Password:" value={this.state.password}
                            onChange={this.handlePasswordChange}/>
                 </form>
                 <div>
