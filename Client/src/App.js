@@ -25,6 +25,7 @@ import RemoveManager from "./AppoinmentPages/RemoveManager";
 import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
+import ChooseMyStore from "./MainPages/ChooseMyStore";
 
 // var W3CWebSocket = require('websocket').w3cwebsocket;
 //
@@ -73,6 +74,7 @@ class App extends React.Component{
                         <Route path="/cart" component={Cart}/>
                         <Route path="/checkout" component={Checkout}/>
                         <Route path="/storeManagement" component={StoreManagment}/>
+                        <Route path="/choosemystore" component={ChooseMyStore}/>
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
