@@ -33,7 +33,7 @@ class Registered extends React.Component{
             <div className="Registered">
                 <p><Link onClick={this.handleLogout}>logout</Link></p>
                 <p><Link to="/purchaseHistory">view your purchase history</Link></p>
-                <p><Link to="/storeManagement">store management</Link></p>
+                <p><Link to="/choosemystore">store management</Link></p>
                 <Visitor isVisitor={false} history = {this.props.history}/>
                 <br/>
                 <Link to="/createStore"><button>Open your own store</button></Link>
