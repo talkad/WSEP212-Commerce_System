@@ -87,7 +87,6 @@ public class ProductDTO {
     public String toString() {
         return "Product id " + productID + ":\n" +
                 "name: " + name + ", price: " + price + ", categories=" + Arrays.toString(categories.toArray()) +
-                ", keywords=" + Arrays.toString(keywords.toArray()) + "\n" +
-                "Rating: " + rating +", keywords=" + Arrays.toString(reviews.toArray()) + "\n";
+                ", keywords=" + Arrays.toString(keywords.toArray()) + "\n";
     }
 }

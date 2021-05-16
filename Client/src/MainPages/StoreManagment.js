@@ -16,6 +16,7 @@ import UserPurchaseHistory from "../ReportsPages/UserPurchaseHistory";
 import StaticUserInfo from "../API/StaticUserInfo";
 import {Link} from "react-router-dom";
 import Connection from "../API/Connection";
+import {Button, Spinner} from "react-bootstrap";
 
 class StoreManagment extends React.Component {
     constructor(props) {
@@ -23,23 +24,29 @@ class StoreManagment extends React.Component {
         this.state = {
             username: StaticUserInfo.getUsername(),
             storeId: StaticUserInfo.getStoreId(),
-            permissions: '',
+            permissions: [],
+            loaded: false,
             //permissions: ['ADD_PRODUCT_TO_STORE','REMOVE_PRODUCT_FROM_STORE'],
         };
         //this.handleSearchResponse = this.handleSearchResponse.bind(this);
+        this.handleGetPermissionsResponse = this.handleGetPermissionsResponse.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //console.log('mounted!!!!!!!!!!!')
-        Connection.sendGetPermissionsRequest('getUserPermissions',this.state.username,this.state.storeId).then(this.handleGetPermissionsResponse, Connection.handleReject);
+        Connection.sendGetPermissionsRequest('getUserPermissions',this.state.username,this.state.storeId).then
+            (this.handleGetPermissionsResponse, Connection.handleReject)
     }
 
     /* result here is list of permissions (enums) */
     handleGetPermissionsResponse(result){
+
         if(!result.response.isFailure){
-            //var arrayOfPerm = result.response.result
-            console.log('the result isss:  ' + result)
-            //this.setState({permissions: arrayOfPerm});
+             var arrayOfPerm = result.response.result
+            this.setState({loaded: true});
+             //console.log('the result isss:  ' + result.response.result)
+             //console.log('the result isss:  ' + ['asd', 'asd'])
+             this.setState({permissions: arrayOfPerm});
         }
         else{
             alert(result.response.errMsg);
@@ -51,18 +58,18 @@ class StoreManagment extends React.Component {
 
         perm === 'ADD_PRODUCT_TO_STORE' ? ReactDOM.render(<React.StrictMode><AddProduct /></React.StrictMode>, document.getElementById('root')) :
             perm === 'REMOVE_PRODUCT_FROM_STORE' ? ReactDOM.render(<React.StrictMode><DeleteProduct /></React.StrictMode>, document.getElementById('root')) :
-                perm === 'UPDATE_PRODUCT_PRICE' ? ReactDOM.render(<React.StrictMode><EditProduct /></React.StrictMode>, document.getElementById('root')) :
-                    perm === 'ADD_DISCOUNTS' ? ReactDOM.render(<React.StrictMode><AddDiscount /></React.StrictMode>, document.getElementById('root')) :
+                //perm === 'UPDATE_PRODUCT_PRICE' ? ReactDOM.render(<React.StrictMode><EditProduct /></React.StrictMode>, document.getElementById('root')) :
+                    //perm === 'ADD_DISCOUNTS' ? ReactDOM.render(<React.StrictMode><AddDiscount /></React.StrictMode>, document.getElementById('root')) :
                         //perm === ' DELETE_DISCOUNTS' ? ReactDOM.render(<React.StrictMode><DeleteDiscount /></React.StrictMode>, document.getElementById('root')) :
                         perm === 'APPOINT_OWNER' ? ReactDOM.render(<React.StrictMode><AppointOwner /></React.StrictMode>, document.getElementById('root')) :
                             perm === 'REMOVE_OWNER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveOwner /></React.StrictMode>, document.getElementById('root')) :
-                                //perm === 'ADD_PERMISSION' ? ReactDOM.render(<React.StrictMode><AddPermission /></React.StrictMode>, document.getElementById('root')) :
+                                perm === 'ADD_PERMISSION' ? ReactDOM.render(<React.StrictMode><AddPermission /></React.StrictMode>, document.getElementById('root')) :
                                 //perm === 'DELETE_PERMISSION' ? ReactDOM.render(<React.StrictMode><DeletePermission /></React.StrictMode>, document.getElementById('root')) :
-                                //perm === 'APPOINT_MANAGER' ? ReactDOM.render(<React.StrictMode><AppointManager /></React.StrictMode>, document.getElementById('root')) :
-                                perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
+                                perm === 'APPOINT_MANAGER' ? ReactDOM.render(<React.StrictMode><AppointManager /></React.StrictMode>, document.getElementById('root')) :
                                     perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
-                                        perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
-                                            perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
+                                    //perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
+                                        //perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
+                                            //perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
                                                 //    perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><UserPurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
                                                 console.log('warning')
     }
@@ -70,7 +77,17 @@ class StoreManagment extends React.Component {
     render() {
         return (
             <div>
-                {this.state.permissions.map((perm) => {
+                {!this.state.loaded &&
+                <Spinner animation="border" />
+                // <Spinner
+                //     as="span"
+                //     animation="grow"
+                //     size="sm"
+                //     role="status"
+                //     aria-hidden="true"
+                // />
+                }
+                {this.state.loaded && this.state.permissions.map((perm) => {
                     return <div><Link to={perm}><button>{perm.toString().replaceAll('_',' ')}</button></Link></div>
                 })}
             </div>)

@@ -263,7 +263,7 @@ class Connection{
             action: functionName,
             appointerName: appointerName,
             appointeeName: appointeeName,
-            storeId: storeId,
+            storeID: storeId,
         }))
 
         return Connection.getResponse();
@@ -283,9 +283,9 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             permitting: permitting,
-            storeId: storeId,
+            storeID: storeId,
             permitted: permitted,
-            permissions: permissions,
+            permission: permissions,
         }))
 
         return Connection.getResponse();
@@ -294,11 +294,15 @@ class Connection{
     static sendAddProduct (functionName, username, name, storeId, price, categories, keywords, amount){
         var categoriesVar = categories.split(',')
         var keywordsVar = keywords.split(',')
-        var DTOtoSend = new ProductDTO(name, storeId, price, categoriesVar, keywordsVar);
+        // var DTOtoSend = new ProductDTO(name, storeId, price, categoriesVar, keywordsVar);
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
-            productDTO: DTOtoSend,
+            productDTO: JSON.stringify({name: name,
+                                               storeID: storeId,
+                                                price: price,
+                                                categories: categoriesVar,
+                                                keywords: keywordsVar}),
             amount: amount,
         }))
 
@@ -309,8 +313,8 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
-            storeId: storeId,
-            productId: productId,
+            storeID: storeId,
+            productID: productId,
             amount: amount,
         }))
 
@@ -322,8 +326,8 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
-            storeId: storeId,
-            productId: productId,
+            storeID: storeId,
+            productID: productId,
             newPrice: newPrice,
             newName: newName,
         }))
@@ -335,7 +339,7 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
-            storeId: storeId,
+            storeID: storeId,
         }))
 
         return Connection.getResponse();
@@ -348,7 +352,7 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
-            storeId: storeId,
+            storeID: storeId,
         }))
 
         return Connection.getResponse();

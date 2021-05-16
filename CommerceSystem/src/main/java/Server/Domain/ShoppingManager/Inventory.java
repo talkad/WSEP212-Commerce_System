@@ -32,7 +32,6 @@ public class Inventory {
         lock.writeLock().lock();
 
         productID = product.getProductID();
-
         result = pAmount.putIfAbsent(productID, 0);  // result will be null if not exists
 
         pAmount.put(productID, pAmount.get(productID) + amount);

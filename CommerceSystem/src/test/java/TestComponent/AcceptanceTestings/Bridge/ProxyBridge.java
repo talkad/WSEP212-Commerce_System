@@ -355,7 +355,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
+    public Response<List<String>> getUserPermissions(String username, int storeID) {
         return null; // todo - the manager is responsible for this shit
     }
 

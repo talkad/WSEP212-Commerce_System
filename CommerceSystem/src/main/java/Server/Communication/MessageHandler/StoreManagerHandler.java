@@ -30,8 +30,9 @@ public class StoreManagerHandler extends Handler{
                 String username = data.getProperty("username");
                 String productDTO = data.getProperty("productDTO");
                 String amount = data.getProperty("amount");
+                ProductDTO product = gson.fromJson(productDTO, ProductDTO.class);
 
-                response = service.addProductsToStore(username, gson.fromJson(productDTO, ProductDTO.class), Integer.parseInt(amount));
+                response = service.addProductsToStore(username, product, Integer.parseInt(amount));
             }
             case "removeProductsFromStore" ->{
                 String username = data.getProperty("username");
@@ -85,19 +86,19 @@ public class StoreManagerHandler extends Handler{
             }
             case "addPermission" ->{
                 String permitting = data.getProperty("permitting");
-                String storeId = data.getProperty("storeId");
+                String storeID = data.getProperty("storeID");
                 String permitted = data.getProperty("permitted");
                 String permission = data.getProperty("permission");
 
-                response = service.addPermission(permitting, Integer.parseInt(storeId), permitted, gson.fromJson(permission, Permissions.class));
+                response = service.addPermission(permitting, Integer.parseInt(storeID), permitted, Permissions.valueOf(permission));
             }
             case "removePermission" ->{
                 String permitting = data.getProperty("permitting");
-                String storeId = data.getProperty("storeId");
+                String storeID = data.getProperty("storeID");
                 String permitted = data.getProperty("permitted");
                 String permission = data.getProperty("permission");
 
-                response = service.removePermission(permitting, Integer.parseInt(storeId), permitted, gson.fromJson(permission, Permissions.class));
+                response = service.removePermission(permitting, Integer.parseInt(storeID), permitted, Permissions.valueOf(permission));
             }
             case "removeManagerAppointment" ->{
                 String appointerName = data.getProperty("appointerName");

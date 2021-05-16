@@ -85,10 +85,14 @@ public class UserController {
     }
 
     public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
+
             User user = connectedUsers.get(username);
             readLock.unlock();
+
+            System.out.println("");
             return user.addProductsToStore(productDTO, amount);
         }
         readLock.unlock();
@@ -540,7 +544,7 @@ public class UserController {
         return connectedUsers.containsKey(username);
     }
 
-    public Response<List<Permissions>> getUserPermissions(String username, int storeID){
+    public Response<List<String>> getUserPermissions(String username, int storeID){
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);

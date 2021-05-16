@@ -109,9 +109,9 @@ public interface IService {
 
     Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
 
-    Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission); // 4.6
+    Response<Boolean> addPermission(String permitting, int storeID, String permitted, Permissions permission); // 4.6
 
-    Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission); // 4.6
+    Response<Boolean> removePermission(String permitting, int storeID, String permitted, Permissions permission); // 4.6
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
@@ -119,7 +119,7 @@ public interface IService {
 
     Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 
-    Response<List<Permissions>> getUserPermissions(String username, int storeID); // for client
+    Response<List<String>> getUserPermissions(String username, int storeID); // for client
 
     Response<Double> getTotalStoreRevenue(String username, int storeID);
 

@@ -213,7 +213,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
+    public Response<List<String>> getUserPermissions(String username, int storeID) {
         return userController.getUserPermissions(username, storeID);
     }
 

@@ -1,6 +1,8 @@
 package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 import java.util.Properties;
@@ -40,9 +42,37 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.getTotalSystemRevenue(username);
             }
+//            case "addDiscountRule" -> {
+//                String username = data.getProperty("username");
+//                String storeID = data.getProperty("storeID");
+//                String type = data.getProperty("type");
+//                String discountRuleStr = data.getProperty("discountRule");
+//
+//                DiscountRule discountRule = parseToDiscountRule(type, discountRuleStr);
+//
+//                response = service.addDiscountRule(username, Integer.getInteger(storeID), discountRule);
+//            }
+//            case "addPurchaseRule" -> {
+//                String username = data.getProperty("username");
+//                String storeID = data.getProperty("storeID");
+//                String type = data.getProperty("type");
+//                String purchaseRuleStr = data.getProperty("purchaseRule");
+//
+//                PurchaseRule purchaseRule = parseToPurchaseRule(type, purchaseRuleStr);
+//
+//                response = service.addPurchaseRule(username, Integer.getInteger(storeID), purchaseRule);
+//            }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
 
         return response;
     }
+
+//    private PurchaseRule parseToPurchaseRule(String type, String purchaseRuleStr) {
+//
+//    }
+//
+//    private DiscountRule parseToDiscountRule(String type, String discountRuleStr) {
+//
+//    }
 }

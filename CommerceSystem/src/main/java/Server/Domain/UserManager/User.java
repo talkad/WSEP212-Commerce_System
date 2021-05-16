@@ -199,6 +199,7 @@ public class User {
         Store store;
 
         if (this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
+
             store = StoreController.getInstance().getStoreById(productDTO.getStoreID());
 
             if(store == null){
@@ -339,7 +340,7 @@ public class User {
 
     public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
         if (this.state.allowed(Permissions.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
-            if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
+            if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().containsKey(storeId) || !UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
                 UserDAO.getInstance().addPermission(storeId, permitted, permission);
                 return new Response<>(true, false, "Added permission");
             }
@@ -466,17 +467,37 @@ public class User {
         return new Response<>(true, false, "The purchase occurred");
     }
 
-    public Response<List<Permissions>> getPermissions(int storeID){
-        List<Permissions> permissions;
+    public Response<List<String>> getPermissions(int storeID){
+        List<Permissions> permissions = null;
+        List<String> permissionsStr = new LinkedList<>();
 
+        ownedReadLock.lock();
+        if(this.storesOwned.contains(storeID))
+        {
+            permissions = Arrays.asList( Permissions.ADD_PRODUCT_TO_STORE, Permissions.REMOVE_PRODUCT_FROM_STORE,
+                    Permissions.UPDATE_PRODUCT_PRICE, Permissions.VIEW_DISCOUNT_POLICY,  Permissions.VIEW_PURCHASE_POLICY,
+                    Permissions.ADD_DISCOUNT_RULE, Permissions.ADD_PURCHASE_RULE, Permissions.REMOVE_DISCOUNT_RULE,
+                    Permissions.REMOVE_PURCHASE_RULE, Permissions.APPOINT_OWNER, Permissions.REMOVE_OWNER_APPOINTMENT,
+                    Permissions.APPOINT_MANAGER, Permissions.ADD_PERMISSION, Permissions.REMOVE_PERMISSION,
+                    Permissions.REMOVE_MANAGER_APPOINTMENT, Permissions.RECEIVE_STORE_WORKER_INFO,
+                    Permissions.RECEIVE_STORE_HISTORY, Permissions.RECEIVE_STORE_REVENUE, Permissions.REPLY_TO_BID
+            );
+        }
+        ownedReadLock.unlock();
         managedReadLock.lock();
-        permissions = storesManaged.get(storeID);
+        if(this.storesManaged.containsKey(storeID))
+        {
+            permissions = storesManaged.get(storeID);
+        }
         managedReadLock.unlock();
 
         if(permissions == null)
             return new Response<>(null, true, "user "+ name + " doesn't manage the given store");
 
-        return new Response<>(permissions, false, "OK");
+        for(Permissions per: permissions)
+            permissionsStr.add(per.name());
+
+        return new Response<>(permissionsStr, false, "OK");
     }
 
     public Response<Boolean> addDiscountRule(int storeID, DiscountRule discountRule) {
