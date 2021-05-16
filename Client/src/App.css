@@ -40,8 +40,19 @@
   text-align: left;
 }
 
+.buttonStyle{
+  text-align: center;
+  padding-bottom: 15px;
+}
+
+.textStyle{
+  text-align: left;
+  padding-bottom: 15px;
+}
+
 .divStyle{
   padding-bottom: 15px;
+  text-align: center;
 }
 
 .Page{

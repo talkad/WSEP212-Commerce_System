@@ -26,7 +26,7 @@ import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
-import {Container, Form, FormControl, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
+import {Alert, Container, Form, FormControl, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
 import {Button} from "bootstrap";
 import Home from "./Pages/Home";
 import * as Icon from 'react-bootstrap-icons';
@@ -45,12 +45,21 @@ class App extends React.Component{
             visitor: true,
             registered: false,
             storeOwner: false,
+
+            showAlert: false,
+            alertVariant: '',
+            alertInfo: '',
         }
+
+        this.handleLogout = this.handleLogout.bind(this)
+        this.handleLogoutResponse = this.handleLogoutResponse.bind(this);
     }
 
     componentDidMount() {
-        let username = StaticUserInfo.getUsername();
-        if (username !== '' && username.substr(0, 5) !== "Guest") {
+        let username = window.sessionStorage.getItem('username');
+        console.log("hello there");
+        console.log(username);
+        if (username !== '' && username !== null && username.substr(0, 5) !== "Guest") {
             if(StaticUserInfo.getUserStores().length === 0){
                 this.setState({visitor: false, registered: true, storeOwner: false});
             }
@@ -58,6 +67,23 @@ class App extends React.Component{
                 this.setState({visitor: false, registered: true, storeOwner: true});
             }
         }
+        else{
+            this.setState({visitor: true, registered: false, storeOwner: false});
+        }
+    }
+
+    handleLogoutResponse(result){
+        if(!result.response.isFailure){
+            window.sessionStorage.removeItem('username');
+            this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
+        }
+        else{
+            this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+        }
+    }
+
+    handleLogout() {
+        Connection.sendLogout().then(this.handleLogoutResponse, Connection.handleReject);
     }
 
     render() {
@@ -86,10 +112,16 @@ class App extends React.Component{
                             <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
 
                             <Nav.Link href="/cart"><Icon.Cart/></Nav.Link>
+
+                            {this.state.registered &&
+                            <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>}
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
                 <div className="App">
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})} dismissible>
+                        <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
+                    </Alert>
                     <Switch>
                         <Route exact path="/" component={Home}/>} />
                         {/*<Route exact path="/" render={() => <Visitor isVisitor={true}/>} />*/}
