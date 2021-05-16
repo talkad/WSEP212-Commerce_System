@@ -514,7 +514,9 @@ public class UserController {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
+
             purchaseRes = purchaseController.handlePayment(user.getShoppingCart(), paymentDetails, supplyDetails);
+
             readLock.unlock();
 
             if(purchaseRes.isFailure())

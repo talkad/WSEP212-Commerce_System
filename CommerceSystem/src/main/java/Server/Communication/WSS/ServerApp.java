@@ -1,5 +1,6 @@
 package Server.Communication.WSS;
 
+import Server.Service.CommerceService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -13,6 +14,8 @@ public class ServerApp {
     static final int PORT = 8080;
 
     public static void main(String[] args) {
+
+        CommerceService.getInstance().init();
 
         // Configure the bootstrap
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);

@@ -3,6 +3,7 @@ package Server.Communication.WSS;
 import Server.Communication.MessageHandler.CommerceHandler;
 import Server.Communication.WSS.DataObjects.ActionData;
 import Server.Domain.CommonClasses.Response;
+import Server.Service.Notifier;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

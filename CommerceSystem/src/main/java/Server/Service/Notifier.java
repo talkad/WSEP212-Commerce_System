@@ -1,4 +1,4 @@
-package Server.Communication.WSS;
+package Server.Service;
 
 
 import Server.Communication.WSS.DataObjects.NotificationData;

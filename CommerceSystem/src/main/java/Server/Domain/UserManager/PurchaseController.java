@@ -36,7 +36,7 @@ public class PurchaseController {
                 Response<Integer> supplyRes;
 
                 if (res.isFailure())
-                        return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
+                        return new Response<>(null, true, "Purchase Failed:\n" + res.getErrMsg() + " | doesn't created external connection");
 
                 paymentRes = paymentSystemAdapter.pay(paymentDetails);
                 if(paymentRes.isFailure()) {

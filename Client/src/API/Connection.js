@@ -1,5 +1,6 @@
 import StaticUserInfo from "./StaticUserInfo";
 import {getMessage} from "@testing-library/jest-dom/dist/utils";
+import ProductDTO from "../JsonClasses/ProductDTO";
 
 class Connection{
     static connection;
@@ -291,14 +292,13 @@ class Connection{
     }
 
     static sendAddProduct (functionName, username, name, storeId, price, categories, keywords, amount){
+        var categoriesVar = categories.split(',')
+        var keywordsVar = keywords.split(',')
+        var DTOtoSend = new ProductDTO(name, storeId, price, categoriesVar, keywordsVar);
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
-            name: name,
-            storeId: storeId,
-            price: price,
-            categorires: categories,
-            keywords: keywords,
+            productDTO: DTOtoSend,
             amount: amount,
         }))
 
@@ -353,6 +353,17 @@ class Connection{
 
         return Connection.getResponse();
     }
+
+    static sendGetPermissionsRequest (functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse();
+    }
+
 }
 
 export default Connection;
