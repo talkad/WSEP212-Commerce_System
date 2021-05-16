@@ -1,6 +1,7 @@
 import StaticUserInfo from "./StaticUserInfo";
 import {getMessage} from "@testing-library/jest-dom/dist/utils";
 import ProductDTO from "../JsonClasses/ProductDTO";
+import Cookies from 'js-cookie'
 
 class Connection{
     static connection;
@@ -11,8 +12,12 @@ class Connection{
 
         this.connection.onopen = () => {
             console.log("connected to the server");
+            if(window.sessionStorage.getItem('username') !== null){
+                StaticUserInfo.setUsername(window.sessionStorage.getItem('username'));
+            }
+            console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(StaticUserInfo.getUsername() === '') {
-                console.log("got a new username");
+                console.log("doesn't have a cookie");
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -25,6 +30,8 @@ class Connection{
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
             if(receivedData.type === "startup"){
+                window.sessionStorage.setItem('username', receivedData.response.result);
+                console.log("new cookie: " + receivedData.response.result);
                 StaticUserInfo.setUsername(receivedData.response.result);
             }
             else if(receivedData.type === "notification"){

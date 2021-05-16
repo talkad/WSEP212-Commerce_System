@@ -90,18 +90,6 @@ class Login extends React.Component{
                         <p>not a member yet? <Link to="/register">register</Link></p>
                     </div>
                 </Container>
-
-                {/*<form>*/}
-                {/*    <input type="text" name="username" placeholder="Username" value={this.state.username}*/}
-                {/*           onChange={this.handleUsernameChange}/>*/}
-                {/*</form>*/}
-                {/*<form>*/}
-                {/*    <input type="password" name="password" placeholder="Password" value={this.state.password}*/}
-                {/*           onChange={this.handlePasswordChange}/>*/}
-                {/*</form>*/}
-                {/*<div>*/}
-                {/*    <button  onClick={this.handleSignIn}>Sign in</button>*/}
-                {/*</div>*/}
             </div>
         );
     }
