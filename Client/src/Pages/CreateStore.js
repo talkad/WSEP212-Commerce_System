@@ -1,6 +1,8 @@
 import React from "react";
 import Connection from "../API/Connection";
 import StaticUserInfo from "../API/StaticUserInfo";
+import {Alert, Button, Container, Form, Image, InputGroup, Spinner} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 
 class CreateStore extends React.Component{
@@ -8,7 +10,13 @@ class CreateStore extends React.Component{
         super(props);
 
         this.state = {
-            storeName: ''
+            storeName: '',
+            submitted: false,
+            validated: false,
+
+            showAlert: false,
+            alertVariant: '',
+            alertInfo: '',
         }
 
         this.handleStoreNameChange = this.handleStoreNameChange.bind(this);
@@ -22,28 +30,74 @@ class CreateStore extends React.Component{
 
     handleResponse(result){
         if(!result.response.isFailure){
-            StaticUserInfo.setStoreId(result.response.result);
-            alert("Store created successfully");
-            this.props.history.goBack();
+            this.setState({submitted: false,
+                showAlert: true, alertVariant: 'success', alertInfo: 'Store Created!'});
+            document.location.href = "/";
         }
         else{
-            alert(result.response.errMsg);
+            this.setState({storeName: '', submitted: false,
+                showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
         }
     }
 
     handleCreateStore(){
+        this.setState({submitted: true});
         Connection.sendOpenStore(this.state.storeName).then(this.handleResponse, Connection.handleReject);
     }
 
     render() {
+        const handleSubmit = (event) => {
+            const form = event.currentTarget;
+            event.preventDefault();
+            if (form.checkValidity() === false) {
+                event.stopPropagation();
+            }
+
+            this.setState({validated: true})
+            this.handleCreateStore();
+        };
+
         return (
             <div>
-                <h1>Create your own store</h1>
-                <form>
-                    <input type="text" placeholder="Store name" value={this.state.storeName}
-                    onChange={this.handleStoreNameChange}/>
-                </form>
-                <button onClick={this.handleCreateStore}>Create Store!</button>
+                <Container className="Page">
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
+                        <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
+                    </Alert>
+                    <h1>Create your own store</h1>
+                    <Image src="https://thumbs.dreamstime.com/b/open-opening-store-shop-young-people-holding-banner-isolated-59691070.jpg"/>
+                    <Form noValidate validated={this.state.validated} className="form" onSubmit={handleSubmit}>
+                        <div className="textStyle">
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Store name:</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control type="text" placeholder="Enter store name" value={this.state.username}
+                                                  onChange={this.handleUsernameChange} required/>
+                                    <Form.Control.Feedback type="invalid">
+                                        Please provide a store name.
+                                    </Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
+                        </div>
+                        <div className="buttonStyle">
+                            {!this.state.submitted &&
+                            <Button variant="primary" type="submit">
+                                Create Store!
+                            </Button>}
+
+                            {this.state.submitted &&
+                            <Button variant="primary" disabled>
+                                <Spinner animation="border" size="sm"/>
+                            </Button>}
+                        </div>
+                    </Form>
+                </Container>
+
+
+                {/*<form>*/}
+                {/*    <input type="text" placeholder="Store name" value={this.state.storeName}*/}
+                {/*    onChange={this.handleStoreNameChange}/>*/}
+                {/*</form>*/}
+                {/*<button onClick={this.handleCreateStore}>Create Store!</button>*/}
             </div>
         );
     }

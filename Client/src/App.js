@@ -111,6 +111,8 @@ class App extends React.Component{
                             {this.state.storeOwner &&
                             <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
 
+                        </Nav>
+                        <Nav>
                             <Nav.Link href="/cart"><Icon.Cart/></Nav.Link>
 
                             {this.state.registered &&

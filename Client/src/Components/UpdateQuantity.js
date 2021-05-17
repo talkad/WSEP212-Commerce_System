@@ -40,8 +40,8 @@ class UpdateQuantity extends React.Component{
                 <form>
                     <input type="text" name="quantity" placeholder="New quantity" value={this.state.quantity}
                               onChange={this.handleQuantityChange}/>
-                    <button onClick={this.handleQuantityUpdate}>Update quantity</button>
                 </form>
+                <button onClick={this.handleQuantityUpdate}>Update quantity</button>
             </div>
         );
     }
