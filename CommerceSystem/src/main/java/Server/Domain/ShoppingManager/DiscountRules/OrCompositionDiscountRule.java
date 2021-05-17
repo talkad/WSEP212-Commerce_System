@@ -8,8 +8,8 @@ import java.util.Map;
 public class OrCompositionDiscountRule extends CompoundDiscountRule {
     private String category;
 
-    public OrCompositionDiscountRule(int ruleID, String category, double discount, List<DiscountRule> policyRules) {
-        super(ruleID, discount, policyRules);
+    public OrCompositionDiscountRule(String category, double discount, List<DiscountRule> policyRules) {
+        super(discount, policyRules);
         this.category = category;
     }
 

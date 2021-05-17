@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class CompoundPurchaseRule implements PurchaseRule {
+    protected final static int NOT_SET = -1;
     protected int id;
     protected List<PurchaseRule> purchaseRules;
 
-    public CompoundPurchaseRule(int id, List<PurchaseRule> policyRules) {
+    public CompoundPurchaseRule(List<PurchaseRule> policyRules) {
         this.purchaseRules = (policyRules == null) ? Collections.synchronizedList(new LinkedList<>()) : Collections.synchronizedList(policyRules);
-        this.id = id;
+        this.id = NOT_SET;
     }
 
     public void add(PurchaseRule discountRule) {

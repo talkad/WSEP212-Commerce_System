@@ -1,15 +1,17 @@
 package Server.Service;
 
-import Server.Domain.UserManager.ExternalSystemsAdapters.ExternalSystemsConnection;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.CommerceSystem;
+import com.google.gson.Gson;
+
+import java.util.List;
+import java.util.Properties;
 
 public class runner {
 
 
     public static void main(String[] args){
-//        ExternalSystemsConnection conn = ExternalSystemsConnection.getInstance();
-//
-//        conn.createHandshake();
+
+        CommerceSystem.getInstance().initState();
 
     }
 }

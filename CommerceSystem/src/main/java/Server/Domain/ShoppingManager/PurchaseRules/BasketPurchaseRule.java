@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class BasketPurchaseRule extends LeafPurchaseRule {
 
-    public BasketPurchaseRule(int id, BasketPredicate predicate) {
-        super(id, predicate);
+    public BasketPurchaseRule(BasketPredicate predicate) {
+        super(predicate);
     }
 
     @Override

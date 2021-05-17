@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class CategoryPurchaseRule extends LeafPurchaseRule {
 
-    public CategoryPurchaseRule(int id, CategoryPredicate predicate) {
-        super(id, predicate);
+    public CategoryPurchaseRule(CategoryPredicate predicate) {
+        super(predicate);
     }
 
     @Override

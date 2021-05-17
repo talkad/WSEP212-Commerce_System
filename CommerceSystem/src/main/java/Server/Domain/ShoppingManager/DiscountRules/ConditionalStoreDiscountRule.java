@@ -9,14 +9,14 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
     private int productID;
     private StorePredicate storePredicate;
 
-    public ConditionalStoreDiscountRule(int ruleID, double discount, StorePredicate storePredicate) {
-        super(ruleID, discount);
+    public ConditionalStoreDiscountRule(double discount, StorePredicate storePredicate) {
+        super(discount);
         this.storePredicate = storePredicate;
         this.productID = -1;
     }
 
-    public ConditionalStoreDiscountRule(int ruleID, double discount, StorePredicate storePredicate, int productID) {
-        super(ruleID, discount);
+    public ConditionalStoreDiscountRule(double discount, StorePredicate storePredicate, int productID) {
+        super(discount);
         this.storePredicate = storePredicate;
         this.productID = productID;
     }

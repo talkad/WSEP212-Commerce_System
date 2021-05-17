@@ -7,10 +7,11 @@ import java.util.Map;
 public class CategoryDiscountRule extends LeafDiscountRule {
     protected String category;
 
-    public CategoryDiscountRule(int ruleID, String category, double discount){
-        super(ruleID, discount);
+    public CategoryDiscountRule(String category, double discount){
+        super(discount);
         this.category = category;
     }
+
     @Override
     public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
         double categoryTotalPrice = 0.0;

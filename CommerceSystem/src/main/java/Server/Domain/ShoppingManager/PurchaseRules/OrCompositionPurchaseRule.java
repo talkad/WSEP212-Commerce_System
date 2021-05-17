@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class OrCompositionPurchaseRule extends CompoundPurchaseRule {
 
-    public OrCompositionPurchaseRule(int ruleID, List<PurchaseRule> policyRules) {
-        super(ruleID, policyRules);
+    public OrCompositionPurchaseRule(List<PurchaseRule> policyRules) {
+        super(policyRules);
     }
 
     @Override

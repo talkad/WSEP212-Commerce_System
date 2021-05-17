@@ -9,8 +9,8 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
     private String category;
     private XorResolveType xorResolveType;
 
-    public XorCompositionDiscountRule(int id, String category, double discount, List<DiscountRule> policyRules, XorResolveType xorResolveType) {
-        super(id, discount, policyRules);
+    public XorCompositionDiscountRule(String category, double discount, List<DiscountRule> policyRules, XorResolveType xorResolveType) {
+        super(discount, policyRules);
         this.category = category;
         this.xorResolveType = xorResolveType;
     }

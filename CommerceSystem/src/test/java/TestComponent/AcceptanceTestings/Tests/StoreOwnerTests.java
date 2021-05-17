@@ -319,7 +319,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertEquals(100, (int)purchases.get(purchases.size()-1).getTotalPrice());
 
         // owner wants to add a category discount for 15% all red products
-        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store now contains a discount with id 1
         policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
@@ -384,7 +384,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertEquals(100, (int)purchases.get(purchases.size()-1).getTotalPrice());
 
         // customer wants to add a category discount for 50% all red products (sneaky!)
-        Assert.assertTrue(bridge.addDiscountRule("jacob2000", this.storeID, new CategoryDiscountRule(1, "green", 50)).isFailure());
+        Assert.assertTrue(bridge.addDiscountRule("jacob2000", this.storeID, new CategoryDiscountRule( "green", 50)).isFailure());
 
         // store still doesn't contain a discount with id 1
         policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
@@ -443,7 +443,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(purchaseResult.getResult());
 
         // owner wants to add a category purchase policy that a customer must buy 7 - 10 red products
-        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store now contains a purchase rule with id 1
         policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
@@ -496,7 +496,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(purchaseResult.getResult());
 
         // customer wants to add a category purchase policy that a customer must buy 7 - 10 red products
-        Assert.assertTrue(bridge.addPurchaseRule("jacob4000", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+        Assert.assertTrue(bridge.addPurchaseRule("jacob4000", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store still doesn't contain a purchase rule with id 1
         policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
@@ -530,7 +530,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a discount rule
-        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store owner will try to remove a discount rule from his store's policy
         Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
@@ -598,7 +598,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a discount rule
-        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // customer will try to remove a discount rule from the store's policy, for some reason
         Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
@@ -666,7 +666,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a discount rule
-        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule(1, "green", 15)).isFailure());
+        Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store owner will try to remove a discount rule from his store's policy
         Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
@@ -737,7 +737,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a category purchase policy that a customer must buy 7 - 10 red products
-        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store owner will try to remove the purchase rule from his store's policy
         Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
@@ -785,7 +785,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a category purchase policy that a customer must buy 7 - 10 red products
-        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("yarok", 7, 10))).isFailure());
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("yarok", 7, 10))).isFailure());
 
         // customer will try to remove the purchase rule from his store's policy
         Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
@@ -833,7 +833,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store has a category purchase policy that a customer must buy 7 - 10 red products
-        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(1, new CategoryPredicate("green", 7, 10))).isFailure());
+        Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store owner will try to remove the purchase rule from his store's policy
         Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);

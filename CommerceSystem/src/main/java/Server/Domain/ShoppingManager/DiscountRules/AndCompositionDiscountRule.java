@@ -8,8 +8,8 @@ import java.util.Map;
 public class AndCompositionDiscountRule extends CompoundDiscountRule {
     private String category;
 
-    public AndCompositionDiscountRule(int ruleID, String category, double discount, List<DiscountRule> policyRules) {
-        super(ruleID, discount, policyRules);
+    public AndCompositionDiscountRule(String category, double discount, List<DiscountRule> policyRules) {
+        super(discount, policyRules);
         this.category = category;
     }
 

@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class StoreDiscountRule extends LeafDiscountRule {
 
-    public StoreDiscountRule(int ruleID, double discount){
-        super(ruleID, discount);
+    public StoreDiscountRule(double discount){
+        super(discount);
     }
 
     @Override

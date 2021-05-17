@@ -7,8 +7,8 @@ import java.util.Map;
 public class ProductDiscountRule extends LeafDiscountRule {
     protected int productID;
 
-    public ProductDiscountRule(int ruleID, int productID, double discount){
-        super(ruleID, discount);
+    public ProductDiscountRule(int productID, double discount){
+        super(discount);
         this.productID = productID;
     }
 

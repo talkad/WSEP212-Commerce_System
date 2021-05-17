@@ -24,6 +24,7 @@ class Connection{
         }
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
+
             if(receivedData.type === "startup"){
                 StaticUserInfo.setUsername(receivedData.response.result);
             }

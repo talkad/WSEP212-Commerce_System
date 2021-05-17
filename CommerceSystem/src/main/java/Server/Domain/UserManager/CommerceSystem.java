@@ -9,35 +9,37 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.net.URL;
+import java.util.*;
+
+import java.io.*;
 
 
 public class CommerceSystem implements IService {
 
     private UserController userController;
     private StoreController storeController;
-    public static Log log = new Log("logs.txt");
+    public static Log log = new Log("Logs.txt");
+    public static Log logCrit = new Log("CriticalLogs.txt");
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
         this.storeController = StoreController.getInstance();
     }
 
-    private static class CreateSafeThreadSingleton
-    {
+    private static class CreateSafeThreadSingleton {
         private static final CommerceSystem INSTANCE = new CommerceSystem();
     }
 
-    public static CommerceSystem getInstance()
-    {
+    public static CommerceSystem getInstance() {
         return CommerceSystem.CreateSafeThreadSingleton.INSTANCE;
     }
 
     @Override
     public void init() {
         userController.adminBoot();
+        initState();
     }
 
     @Override
@@ -86,7 +88,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> removeFromCart(String username,  int storeID, int productID) {
+    public Response<Boolean> removeFromCart(String username, int storeID, int productID) {
         return userController.removeProduct(username, storeID, productID);
     }
 
@@ -96,7 +98,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount) {
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
         return userController.updateProductQuantity(username, storeID, productID, amount);
     }
 
@@ -111,7 +113,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID ,int storeID, double bidReply) {
+    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
         return userController.bidMangerReply(username, offeringUsername, productID, storeID, bidReply);
     }
 
@@ -181,7 +183,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule){
+    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule) {
         return userController.addDiscountRule(username, storeID, discountRule);
     }
 
@@ -191,14 +193,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID)
-    {
+    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID) {
         return userController.removeDiscountRule(username, storeID, discountRuleID);
     }
 
     @Override
-    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID)
-    {
+    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID) {
         return userController.removePurchaseRule(username, storeID, purchaseRuleID);
     }
 
@@ -267,4 +267,50 @@ public class CommerceSystem implements IService {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
+    public void initState() {
+        try {
+//            URL url = getClass().getResource("C:\\Users\\tal74\\IntelliJ Workspace\\WSEP212-Commerce_System\\CommerceSystem\\src\\main\\java\\Server\\Domain\\UserManager\\initfile.txt");
+            File file = new File("C:\\Users\\tal74\\IntelliJ Workspace\\WSEP212-Commerce_System\\CommerceSystem\\src\\main\\java\\Server\\Domain\\UserManager\\initfile.txt");
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            fis.read(data);
+            fis.close();
+            String str = new String(data, "UTF-8");
+            //System.out.println(str);
+            String[] funcs = str.split(";");
+            String[] attributes;
+            //int guestNum = 1;
+            String currUser = addGuest().getResult();
+            //int currStoreId;
+
+            for (int i = 0; i < funcs.length; i++){
+                if(funcs[i].startsWith("register")){
+                    attributes = funcs[i].substring(9).split(", ");
+
+                    System.out.println(attributes[1].substring(0, attributes[1].length() - 1));
+                    register(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
+                }
+                else if(funcs[i].startsWith("login")){
+                    attributes = funcs[i].substring(6).split(", ");
+                    currUser = login(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1)).getResult();
+
+                }
+                else if(funcs[i].startsWith("openStore")){
+                    attributes = funcs[i].substring(10).split(", ");
+                    //currStoreId =
+                    openStore(currUser, attributes[0].substring(0, attributes[0].length() - 1));
+
+                }
+                else if(funcs[i].startsWith("appointStoreManager")){
+                    attributes = funcs[i].substring(20).split(", ");
+                    appointStoreManager(currUser, attributes[0], Integer.parseInt(attributes[1].substring(0, attributes[1].length() - 1)));
+
+                }
+            }
+
+        }
+        catch (Exception e) {
+                e.printStackTrace();
+        }
+    }
 }

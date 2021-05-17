@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConditioningCompositionPurchaseRule extends CompoundPurchaseRule{
     Map<Predicate, Predicate> conditionsMap;
 
-    public ConditioningCompositionPurchaseRule(int id, List<Predicate> conditions, List<Predicate> impliedConditions) {
-        super(id, null);
+    public ConditioningCompositionPurchaseRule(List<Predicate> conditions, List<Predicate> impliedConditions) {
+        super( null);
         if(conditions == null || impliedConditions == null)
             throw new IllegalArgumentException("Error, one of lists given is null.");
         if(conditions.size() != impliedConditions.size())

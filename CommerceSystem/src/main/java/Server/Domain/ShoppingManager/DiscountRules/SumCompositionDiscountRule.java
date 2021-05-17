@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class SumCompositionDiscountRule extends CompoundDiscountRule {
 
-    public SumCompositionDiscountRule(int ruleID, List<DiscountRule> policyRules){
-        super(ruleID, 0, policyRules);
+    public SumCompositionDiscountRule(List<DiscountRule> policyRules){
+        super(0, policyRules);
     }
 
     @Override

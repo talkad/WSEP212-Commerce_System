@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class CompoundDiscountRule implements DiscountRule {
+    protected final static int NOT_SET = -1;
     protected final static double COMPOSITION_USE_ONLY = -100;
     protected int id;
     protected List<DiscountRule> discountRules;
     protected double discount;
 
-    public CompoundDiscountRule(int id, double discount,  List<DiscountRule> policyRules){
+    public CompoundDiscountRule(double discount,  List<DiscountRule> policyRules){
         this.discountRules = (policyRules == null) ? Collections.synchronizedList(new LinkedList<>()) : Collections.synchronizedList(policyRules);
-        this.id = id;
+        this.id = NOT_SET;
         this.discount = discount;
     }
 

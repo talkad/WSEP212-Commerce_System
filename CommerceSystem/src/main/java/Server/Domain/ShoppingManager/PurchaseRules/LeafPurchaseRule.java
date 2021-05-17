@@ -6,11 +6,12 @@ import Server.Domain.ShoppingManager.ProductDTO;
 import java.util.Map;
 
 public abstract class LeafPurchaseRule implements PurchaseRule {
+    protected final static int NOT_SET = -1;
     protected int id;
     protected Predicate predicate;
 
-    public LeafPurchaseRule(int id, Predicate predicate) {
-        this.id = id;
+    public LeafPurchaseRule(Predicate predicate) {
+        this.id = NOT_SET;
         this.predicate = predicate;
     }
 

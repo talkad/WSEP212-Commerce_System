@@ -10,8 +10,8 @@ public class TermsCompositionDiscountRule extends CompoundDiscountRule {
     private String category;
     private List<Predicate> predicates;
 
-    public TermsCompositionDiscountRule(int id, double discount, String category, List<Predicate> predicates) {
-        super(id, discount, null);
+    public TermsCompositionDiscountRule(double discount, String category, List<Predicate> predicates) {
+        super(discount, null);
         this.category = category;
         this.predicates = predicates;
     }

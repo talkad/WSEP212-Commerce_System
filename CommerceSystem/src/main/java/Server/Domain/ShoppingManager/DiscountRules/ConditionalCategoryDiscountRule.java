@@ -8,8 +8,8 @@ import java.util.Map;
 public class ConditionalCategoryDiscountRule extends CategoryDiscountRule {
     private CategoryPredicate categoryPredicate;
 
-    public ConditionalCategoryDiscountRule(int ruleID, String category, double discount, CategoryPredicate categoryPredicate) {
-        super(ruleID, category, discount);
+    public ConditionalCategoryDiscountRule(String category, double discount, CategoryPredicate categoryPredicate) {
+        super(category, discount);
         this.categoryPredicate = categoryPredicate;
     }
 

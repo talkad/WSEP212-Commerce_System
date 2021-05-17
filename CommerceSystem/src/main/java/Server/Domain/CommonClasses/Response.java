@@ -30,7 +30,7 @@ public class Response<T> {
 
     private void LogWriter (boolean isFailure, String errMsg){
         if(!isFailure) CommerceSystem.log.logger.info(errMsg);
-        else if (errMsg.startsWith("CRITICAL")) CommerceSystem.log.logger.severe(errMsg);
+        else if (errMsg.startsWith("CRITICAL")) CommerceSystem.logCrit.logger.severe(errMsg);
         else CommerceSystem.log.logger.warning(errMsg);
     }
 }

@@ -407,11 +407,11 @@ public class UserController {
             readLock.unlock();
             writeLock.lock();
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
-            if (!response.isFailure()) {
-                if (connectedUsers.containsKey(permitted)) {
-                    connectedUsers.get(permitted).addSelfPermission(storeId, permission);
-                }
-            }
+//            if (!response.isFailure()) {
+//                if (connectedUsers.containsKey(permitted)) {
+//                    connectedUsers.get(permitted).addSelfPermission(storeId, permission);
+//                }
+//            }
             writeLock.unlock();
             return response;
         }

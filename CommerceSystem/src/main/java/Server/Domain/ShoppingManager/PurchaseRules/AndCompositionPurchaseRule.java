@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class AndCompositionPurchaseRule extends CompoundPurchaseRule {
 
-    public AndCompositionPurchaseRule(int id, List<PurchaseRule> policyRules) {
-        super(id, policyRules);
+    public AndCompositionPurchaseRule(List<PurchaseRule> policyRules) {
+        super(policyRules);
     }
 
     @Override

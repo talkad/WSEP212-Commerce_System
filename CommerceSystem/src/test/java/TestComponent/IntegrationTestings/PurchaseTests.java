@@ -26,8 +26,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule( 10));
 
         store.addProduct(productDTO, 5);
         for(int i = 0; i < 5; i++)
@@ -48,8 +48,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Rami levi", "Rami levi").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule( 10));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -69,8 +69,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("ABU fahrizade", "Abu jihad").getResult();
         ProductDTO productDTO = new ProductDTO("sheep", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
         UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -91,8 +91,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("KFC", "Ned Stark").getResult();
         ProductDTO productDTO = new ProductDTO("sword", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 1);
         UserController.getInstance().addToCart(guestName1, storeID, 482163215); // product doesn't exists
@@ -120,8 +120,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Spongebob", "mr. krab").getResult();
         ProductDTO productDTO = new ProductDTO("jellyfish", productID, storeID, 120, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
 
@@ -144,8 +144,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Evil Inc.", "Dufenshmirtz").getResult();
         ProductDTO productDTO = new ProductDTO("IHateTestInator", productID, storeID, 99999.99, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 15, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 15, 0)));
+        store.addDiscountRule(new StoreDiscountRule( 10));
 
         UserController.getInstance().register(guestName, "faruk", "doda lola");
         UserController.getInstance().login(guestName, "faruk", "doda lola");
@@ -175,8 +175,8 @@ public class PurchaseTests {
         ProductDTO productDTO2 = new ProductDTO("tehini", productID2, storeID, 20, null, null, null, 0, 0);
 
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO1, 1);
         store.addProduct(productDTO2, 1);
@@ -207,8 +207,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 3; ++i)
@@ -229,8 +229,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
             UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -249,8 +249,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new ProductDiscountRule(2, 345345, 10));
+        store.addPurchaseRule(new BasketPurchaseRule( new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new ProductDiscountRule( 345345, 10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 3; ++i)
@@ -272,8 +272,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
         for (int i = 0; i < 5; ++i)
@@ -296,8 +296,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Avatar", "Tzuko").getResult();
         ProductDTO productDTO = new ProductDTO("scar", productID, storeID, 15, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
 
@@ -319,8 +319,8 @@ public class PurchaseTests {
         int storeID = StoreController.getInstance().openStore("Apple", "Bill Gates").getResult();
         ProductDTO productDTO = new ProductDTO("IPhone", productID, storeID, 5000, null, null, null, 0, 0);
         Store store = StoreController.getInstance().getStoreById(storeID);
-        store.addPurchaseRule(new BasketPurchaseRule(1, new BasketPredicate(2, 5, 0)));
-        store.addDiscountRule(new StoreDiscountRule(1, 10));
+        store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 5, 0)));
+        store.addDiscountRule(new StoreDiscountRule(10));
 
         store.addProduct(productDTO, 5);
         for(int i = 0; i < 5; i++)
