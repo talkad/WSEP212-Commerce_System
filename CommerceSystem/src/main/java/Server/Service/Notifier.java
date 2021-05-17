@@ -1,7 +1,7 @@
 package Server.Service;
 
 
-import Server.Communication.WSS.DataObjects.NotificationData;
+import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -26,6 +26,13 @@ public class Notifier implements Notify{
     }
 
     public void addConnection(String identifier, ChannelHandlerContext ctx){
+        ChannelHandlerContext prevCtx = connections.get(identifier);
+
+        if(prevCtx != null){
+            prevCtx.close();
+            connections.remove(identifier);
+        }
+
         connections.put(identifier, ctx);
     }
 
@@ -33,11 +40,11 @@ public class Notifier implements Notify{
         connections.values().remove(ctx);
     }
 
-    public void notify(String identifier, String msg){
+    public void notify(String identifier, ReplyMessage msg){
         Gson gson = new Gson();
         ChannelHandlerContext channel = connections.get(identifier);
 
         if(channel != null)
-            channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(new NotificationData(msg))));
+            channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(msg)));
     }
 }

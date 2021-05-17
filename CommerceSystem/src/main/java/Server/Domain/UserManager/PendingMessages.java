@@ -1,20 +1,22 @@
 package Server.Domain.UserManager;
 
+import Server.Service.DataObjects.ReplyMessage;
+
 import java.util.List;
 import java.util.Vector;
 
 public class PendingMessages {
-    private List<String> pendingMessages;
+    private List<ReplyMessage> pendingMessages;
 
     public PendingMessages() {
         this.pendingMessages = new Vector<>();
     }
 
-    public List<String> getPendingMessages() {
+    public List<ReplyMessage> getPendingMessages() {
         return pendingMessages;
     }
 
-    public void addMessage(String msg){
+    public void addMessage(ReplyMessage msg){
         pendingMessages.add(msg);
     }
 

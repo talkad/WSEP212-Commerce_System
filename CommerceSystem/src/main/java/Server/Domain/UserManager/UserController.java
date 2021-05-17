@@ -604,6 +604,7 @@ public class UserController {
         readLock.unlock();
         return new Response<>(false, true, "User not connected");
     }
+
     public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -615,6 +616,7 @@ public class UserController {
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
+
     public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -663,6 +665,9 @@ public class UserController {
     }
 
     public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        if(username.startsWith("Guest"))
+            return new Response<>(false, true, "Only registered users can use bid offer functionally");
+
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -673,22 +678,24 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {//todo add to if connected as well
             User user = connectedUsers.get(username);
             readLock.unlock();
-
-            if(!toPurchase)
-                return user.removeOffer(productID);
 
             Offer offer = user.getOffers().get(productID);
 
             if(offer == null)
                 return new Response<>(false, true, "The given product doesn't exists in offers");
 
+            if(offer.getState() == OfferState.DECLINED){
+                user.removeOffer(productID);
+                return new Response<>(false, true, "Your offer declined");
+            }
+
             if(offer.getState() != OfferState.APPROVED)
-                return new Response<>(false, true, "Your offered is not yet approved");
+                return new Response<>(false, true, "Your offer is not yet approved");
 
             Response<PurchaseDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
 

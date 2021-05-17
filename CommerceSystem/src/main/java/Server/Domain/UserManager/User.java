@@ -4,6 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Service.DataObjects.ReplyMessage;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -171,6 +172,7 @@ public class User {
     public Response<Boolean> addProductReview(int storeID, int productID, String reviewStr) {
         Store store;
         Response<Review> reviewRes = Review.createReview(name, reviewStr);
+        Response<Product> product;
 
         if(reviewRes.isFailure())
             return new Response<>(false, true, reviewRes.getErrMsg());
@@ -180,11 +182,16 @@ public class User {
             if (purchaseHistory.isPurchased(productID)) {
                 store = StoreController.getInstance().getStoreById(storeID);
 
-                Publisher.getInstance().notify(storeID, "New review to product "+ productID + ": " + reviewStr);
-
                 if(store == null){
                     return new Response<>(false, true, "This store doesn't exists");
                 }
+
+                product = StoreController.getInstance().getProduct(storeID, productID);
+                if(product.isFailure())
+                    return new Response<>(false, true, "The product " + product + " doesn't exists in store " + storeID);
+
+                Publisher.getInstance().notify(storeID, new ReplyMessage("addProductReview", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr));
+
 
                 return store.addProductReview(productID, reviewRes.getResult());
             }
@@ -257,7 +264,7 @@ public class User {
                     res = UserDAO.getInstance().addStoreOwned(newOwner, storeId);
 
                     if(!res.isFailure())
-                            Publisher.getInstance().subscribe(storeId, newOwner);
+                        Publisher.getInstance().subscribe(storeId, newOwner);
 
                     return res;
                 }
@@ -303,7 +310,7 @@ public class User {
         if (this.storesOwned.contains(storeID)) {
             Response<String> res = this.appointments.removeAppointment(storeID, appointeeName);
             if(!res.isFailure()){
-                Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
+                Publisher.getInstance().notify(appointeeName, new ReplyMessage("removeAppointment", "Your ownership canceled at store "+ storeID));
                 Publisher.getInstance().unsubscribe(storeID, appointeeName);
             }
             return res;
@@ -428,7 +435,7 @@ public class User {
         this.shoppingCart = new ShoppingCart();
     }
 
-    public List<String> getPendingMessages(){
+    public List<ReplyMessage> getPendingMessages(){
         return pendingMessages.getPendingMessages();
     }
 
@@ -436,13 +443,13 @@ public class User {
         pendingMessages.clear();
     }
 
-    public void addPendingMessage(String msg){
+    public void addPendingMessage(ReplyMessage msg){
         pendingMessages.addMessage(msg);
     }
 
     public void sendPendingNotifications() {
         // send pending notifications to the user
-        for(String msg: getPendingMessages()){
+        for(ReplyMessage msg: getPendingMessages()){
             Publisher.getInstance().notify(name, msg);
         }
         clearPendingMessages();
@@ -458,7 +465,7 @@ public class User {
                 msg.append("name: ").append(productDTO.getName()).append("amount: ").append(shoppingCart.getBasket(storeID).get(productDTO)).append("\n");
             }
 
-            Publisher.getInstance().notify(storeID, msg.toString());
+            Publisher.getInstance().notify(storeID, new ReplyMessage("purchase", msg.toString()));
         }
 
         addToPurchaseHistory(purchase);
@@ -633,7 +640,7 @@ public class User {
         UserDAO.getInstance().addOffer(this.name, productID ,storeID, priceOffer, OfferState.PENDING);
 
         this.offers.put(productID, offer);
-        Publisher.getInstance().notify(storeID, "user " + this.name + "sent new offer to product " + productID + ". the new offer is: $" + priceOffer);
+        Publisher.getInstance().notify(storeID, new ReplyMessage("bidOffer", "user " + this.name + "sent new offer to product " + productID + ". the new offer is: $" + priceOffer));
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
@@ -652,13 +659,13 @@ public class User {
 
         if (this.state.allowed(Permissions.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -1) {
-                Publisher.getInstance().notify(offeringUsername, "The offer was declined.");
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The offer was declined."));
                 return UserDAO.getInstance().removeOffer(offeringUsername, productID);
             } else if (bidReply == 0) {
-                Publisher.getInstance().notify(offeringUsername, "The offer was accepted.");
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The offer was accepted."));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             } else {
-                Publisher.getInstance().notify(offeringUsername, "The store presented a counter offer - " + bidReply);
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The store presented a counter offer - " + bidReply));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             }
         }
@@ -682,7 +689,7 @@ public class User {
         if(product == null)
             return new Response<>(false, true, "The purchase failed");
 
-        Publisher.getInstance().notify(storeID, "Product " + product.getName() + " purchased successfully");
+        Publisher.getInstance().notify(storeID, new ReplyMessage("bidUserReply", "Product " + product.getName() + " purchased successfully"));
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 

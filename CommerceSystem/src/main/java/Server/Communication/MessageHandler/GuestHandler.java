@@ -115,11 +115,10 @@ public class GuestHandler extends Handler{
                 String username = data.getProperty("username");
                 String storeID = data.getProperty("storeID");
                 String productID = data.getProperty("productID");
-                String toPurchase = data.getProperty("toPurchase");
                 String paymentDetails = data.getProperty("paymentDetails");
                 String supplyDetails = data.getProperty("supplyDetails");
 
-                response = service.bidUserReply(username, Integer.parseInt(productID), Integer.parseInt(storeID), Boolean.parseBoolean(toPurchase), gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
+                response = service.bidUserReply(username, Integer.parseInt(productID), Integer.parseInt(storeID), gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
             }
             case "getStore" ->{
                 String storeID = data.getProperty("storeID");

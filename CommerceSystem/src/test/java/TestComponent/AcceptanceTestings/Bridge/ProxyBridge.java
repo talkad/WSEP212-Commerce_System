@@ -162,7 +162,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
         return null;
     }
 

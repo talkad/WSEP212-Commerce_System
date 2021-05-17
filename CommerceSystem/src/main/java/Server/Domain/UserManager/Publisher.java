@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
 
@@ -33,7 +34,7 @@ public class Publisher{
      * @param name - name of the user to be notified
      * @param msg - the message that will be sent
      */
-    public void notify(String name, String msg) {
+    public void notify(String name, ReplyMessage msg) {
         notifier.notify(name, msg);
     }
 
@@ -42,7 +43,7 @@ public class Publisher{
      * @param storeID - the store id the event occurred
      * @param msg - the message that will be sent
      */
-    public void notify(int storeID, String msg) {
+    public void notify(int storeID, ReplyMessage msg) {
         Vector<String> users = storeSubscribers.get(storeID);
         User user;
 

@@ -58,7 +58,7 @@ public interface IService {
 
     Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer);
 
-    Response<Boolean> bidUserReply(String username, int productID, int storeID, boolean toPurchase, PaymentDetails paymentDetails, SupplyDetails supplyDetails);
+    Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails);
 
     Response<List<Integer>> getStoreOwned(String username);
 
