@@ -1,9 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ProductDTO {
 
@@ -13,14 +10,14 @@ public class ProductDTO {
     private double price;
     private List<String> categories;
     private List<String> keywords;
-    private Collection<Review> reviews;
+    private List<Review> reviews;
     private double rating;
     private int numRatings;
 
     /**
      *constructor for objects from database
      */
-    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, Collection<Review> reviews, double rating, int numRatings) {
+    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, List<Review> reviews, double rating, int numRatings) {
         this.name = name;
         this.productID = productID;
         this.storeID = storeID;
@@ -42,7 +39,7 @@ public class ProductDTO {
         this.price = price;
         this.categories = categories;
         this.keywords = keywords;
-        this.reviews = new LinkedList<>();
+        this.reviews = new Vector<>();
         this.rating = 0;
         this.numRatings = 0;
     }
@@ -71,7 +68,7 @@ public class ProductDTO {
         return keywords;
     }
 
-    public Collection<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 

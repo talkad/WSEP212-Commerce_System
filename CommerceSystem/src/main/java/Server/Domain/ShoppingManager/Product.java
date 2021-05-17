@@ -3,10 +3,7 @@ package Server.Domain.ShoppingManager;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,7 +19,7 @@ public class Product {
     private final List<String> keywords;
     private AtomicReference<Double> rating;
     private AtomicInteger numRatings;
-    private Collection<Review> reviews;
+    private List<Review> reviews;
 
 
     private Product(ProductDTO productDTO){
@@ -36,7 +33,7 @@ public class Product {
         this.rating = new AtomicReference<>(productDTO.getRating());
         this.numRatings = new AtomicInteger(productDTO.getNumRatings());
 
-        this.reviews = Collections.synchronizedCollection(productDTO.getReviews()!=null? productDTO.getReviews(): new LinkedList<>());
+        this.reviews = productDTO.getReviews()!=null? productDTO.getReviews(): new Vector<>();
     }
 
     public static Product createProduct(ProductDTO productDTO){

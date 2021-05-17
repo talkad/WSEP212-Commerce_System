@@ -4,13 +4,14 @@ import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Publisher{
 
-    private Map<Integer, Vector<String>> storeSubscribers;
+    private Map<Integer, List<String>> storeSubscribers;
     private UserController userController;
     private Notify notifier;
 
@@ -44,7 +45,7 @@ public class Publisher{
      * @param msg - the message that will be sent
      */
     public void notify(int storeID, ReplyMessage msg) {
-        Vector<String> users = storeSubscribers.get(storeID);
+        List<String> users = storeSubscribers.get(storeID);
         User user;
 
         if(users == null)
