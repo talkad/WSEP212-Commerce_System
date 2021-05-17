@@ -4,7 +4,10 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Service.DataObjects.OfferData;
 import Server.Service.DataObjects.ReplyMessage;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -640,7 +643,9 @@ public class User {
         UserDAO.getInstance().addOffer(this.name, productID ,storeID, priceOffer, OfferState.PENDING);
 
         this.offers.put(productID, offer);
-        Publisher.getInstance().notify(storeID, new ReplyMessage("bidOffer", "user " + this.name + "sent new offer to product " + productID + ". the new offer is: $" + priceOffer));
+
+        Gson gson = new Gson();
+        Publisher.getInstance().notify(storeID, new ReplyMessage("bidOffer", gson.toJson(new OfferData(this.name, productID, priceOffer))));
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
