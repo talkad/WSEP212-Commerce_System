@@ -233,7 +233,7 @@ class SearchResult extends React.Component{
 
         this.state = {
             searchOption: '',
-            responseResults: products,
+            responseResults: [],
             showStore: false,
             showProduct: false,
         }
@@ -243,18 +243,19 @@ class SearchResult extends React.Component{
     }
 
     handleSearchResponse(result){
-        if(!result.response.isFailure){
-            this.setState({responseResult: result.response.result});
+        if(!result.isFailure){
+            this.setState({responseResult: result.result});
+            console.log(this.state.responseResults);
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 
     componentDidMount() {
         const urlParams = new URLSearchParams(window.location.search);
         const searchOption = urlParams.get('searchOption');
-        const freeText = urlParams.get("freeText");
+        const freeText = urlParams.get("free-text");
 
         if(searchOption === "product"){
             this.setState({searchOption: searchOption, showProduct: true});
@@ -279,11 +280,11 @@ class SearchResult extends React.Component{
     }
 
     handleAddToCartResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("product added successfully to cart");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 

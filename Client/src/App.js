@@ -53,6 +53,7 @@ class App extends React.Component{
 
         this.handleLogout = this.handleLogout.bind(this)
         this.handleLogoutResponse = this.handleLogoutResponse.bind(this);
+        this.handleStoreOwnedResponse = this.handleStoreOwnedResponse.bind(this);
     }
 
     componentDidMount() {
@@ -70,15 +71,31 @@ class App extends React.Component{
         else{
             this.setState({visitor: true, registered: false, storeOwner: false});
         }
+
+        if(window.sessionStorage.getItem('username') !== null) {
+            Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
+        }
+    }
+
+    handleStoreOwnedResponse(result){
+        if(!result.isFailue){
+            if(result.result.length !== 0){
+                this.setState({storeOwner: true});
+            }
+            else{
+                this.setState({storeOwner: false});
+            }
+        }
     }
 
     handleLogoutResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             window.sessionStorage.removeItem('username');
             this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
+            window.location.reload();
         }
         else{
-            this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+            this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
 
@@ -121,7 +138,7 @@ class App extends React.Component{
                     </Navbar.Collapse>
                 </Navbar>
                 <div className="App">
-                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})} dismissible>
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
                     </Alert>
                     <Switch>

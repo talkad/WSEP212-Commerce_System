@@ -34,14 +34,14 @@ class Register extends React.Component{
     }
 
     handleResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             this.setState({submitted: false,
                 showAlert: true, alertVariant: 'success', alertInfo: 'registered successfully'});
             document.location.href = "/";
         }
         else{
             this.setState({username: '', password: '', submitted: false,
-                showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+                showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
 

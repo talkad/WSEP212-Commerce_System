@@ -140,7 +140,9 @@ public class User {
     }
 
     public Response<Boolean> logout() {
-        return new Response<>(true, !this.state.allowed(Permissions.LOGOUT, this), "Cannot logout without being logged in");
+        if(this.state.allowed(Permissions.LOGOUT, this) )
+            return new Response<>(true, false, "logged out successfully");
+        return new Response<>(false, true, "Cannot logout without being logged in");
     }
 
     public Response<Integer> openStore(String storeName) {
@@ -193,7 +195,7 @@ public class User {
                 if(product.isFailure())
                     return new Response<>(false, true, "The product " + product + " doesn't exists in store " + storeID);
 
-                Publisher.getInstance().notify(storeID, new ReplyMessage("addProductReview", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr));
+                Publisher.getInstance().notify(storeID, new ReplyMessage("addProductReview", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr, "addProductReview"));
 
 
                 return store.addProductReview(productID, reviewRes.getResult());
@@ -313,7 +315,7 @@ public class User {
         if (this.storesOwned.contains(storeID)) {
             Response<String> res = this.appointments.removeAppointment(storeID, appointeeName);
             if(!res.isFailure()){
-                Publisher.getInstance().notify(appointeeName, new ReplyMessage("removeAppointment", "Your ownership canceled at store "+ storeID));
+                Publisher.getInstance().notify(appointeeName, new ReplyMessage("removeAppointment", "Your ownership canceled at store "+ storeID, "removeAppointment"));
                 Publisher.getInstance().unsubscribe(storeID, appointeeName);
             }
             return res;
@@ -468,7 +470,7 @@ public class User {
                 msg.append("name: ").append(productDTO.getName()).append("amount: ").append(shoppingCart.getBasket(storeID).get(productDTO)).append("\n");
             }
 
-            Publisher.getInstance().notify(storeID, new ReplyMessage("purchase", msg.toString()));
+            Publisher.getInstance().notify(storeID, new ReplyMessage("purchase", msg.toString(), "purchase"));
         }
 
         addToPurchaseHistory(purchase);
@@ -645,7 +647,7 @@ public class User {
         this.offers.put(productID, offer);
 
         Gson gson = new Gson();
-        Publisher.getInstance().notify(storeID, new ReplyMessage("bidOffer", gson.toJson(new OfferData(this.name, productID, priceOffer))));
+        Publisher.getInstance().notify(storeID, new ReplyMessage("bidOffer", gson.toJson(new OfferData(this.name, productID, priceOffer)), "bidOffer"));
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
@@ -664,13 +666,13 @@ public class User {
 
         if (this.state.allowed(Permissions.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -1) {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The offer was declined."));
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The offer was declined.", "changeOfferStatus"));
                 return UserDAO.getInstance().removeOffer(offeringUsername, productID);
             } else if (bidReply == 0) {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The offer was accepted."));
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changdeOfferStatus", "The offer was accepted.", "changeOfferStatus"));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             } else {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The store presented a counter offer - " + bidReply));
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("changeOfferStatus", "The store presented a counter offer - " + bidReply, "changeOfferStatus"));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             }
         }
@@ -694,11 +696,13 @@ public class User {
         if(product == null)
             return new Response<>(false, true, "The purchase failed");
 
-        Publisher.getInstance().notify(storeID, new ReplyMessage("bidUserReply", "Product " + product.getName() + " purchased successfully"));
+        Publisher.getInstance().notify(storeID, new ReplyMessage("bidUserReply", "Product " + product.getName() + " purchased successfully", "bidUserReply"));
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 
     public Response<List<Integer>> getStoreOwned() {
+        if(getStoresOwned() == null)
+            return new Response<>(new LinkedList<>(), false, "Get store owned Successfully");
         return new Response<>(this.getStoresOwned(), false, "Get store owned Successfully");
     }
 }

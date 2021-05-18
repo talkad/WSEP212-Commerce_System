@@ -36,22 +36,36 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         Gson gson = new Gson();
 
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaa" + msg.text());
+
         Properties data = gson.fromJson(msg.text(), Properties.class);
         String action = data.getProperty("action");
 
         if(action.equals("reconnection")) {
-            String response = gson.toJson(new ReplyMessage("response", gson.toJson(new Response<>(true, false, "Reconnected successfully"))));
+            String response = gson.toJson(new ReplyMessage("reconnection", gson.toJson(new Response<>(true, false, "Reconnected successfully")), "reconnection"));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
 
             Notifier.getInstance().addConnection(data.getProperty("username"), ctx);
         }
-        else {
+        else if(action.equals("startup")) {
             String content = msg.text();
+            System.out.println("Server received: " + content);  // todo - remove this line
             Response<?> result = CommerceHandler.getInstance().handle(content);
 
-            String response = gson.toJson(new ReplyMessage("response", gson.toJson(result)));
+            String response = gson.toJson(new ReplyMessage("startup", gson.toJson(result), "startup"));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
 
+            System.out.println("server response: " + gson.toJson(result));//todo - remove
+        }
+        else {
+            String content = msg.text();
+            System.out.println("Server received: " + content);  // todo - remove this line
+            Response<?> result = CommerceHandler.getInstance().handle(content);
+
+            String response = gson.toJson(new ReplyMessage("response", gson.toJson(result), action));
+            ctx.writeAndFlush(new TextWebSocketFrame(response));
+
+            System.out.println("server response: " + gson.toJson(result));//todo - remove
 
             if (action.equals("login") && !result.isFailure())
                 Notifier.getInstance().addConnection((String) result.getResult(), ctx);

@@ -22,27 +22,32 @@ class CreateStore extends React.Component{
         this.handleStoreNameChange = this.handleStoreNameChange.bind(this);
         this.handleCreateStore = this.handleCreateStore.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleStoreNameChange(event) {
         this.setState({storeName: event.target.value})
     }
 
+    handleChange(event) {
+        this.setState({[event.target.id]: event.target.value})
+    }
+
     handleResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             this.setState({submitted: false,
                 showAlert: true, alertVariant: 'success', alertInfo: 'Store Created!'});
             document.location.href = "/";
         }
         else{
             this.setState({storeName: '', submitted: false,
-                showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+                showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
 
     handleCreateStore(){
-        this.setState({submitted: true});
         Connection.sendOpenStore(this.state.storeName).then(this.handleResponse, Connection.handleReject);
+        this.setState({submitted: true});
     }
 
     render() {
@@ -67,11 +72,11 @@ class CreateStore extends React.Component{
                     <Image src="https://thumbs.dreamstime.com/b/open-opening-store-shop-young-people-holding-banner-isolated-59691070.jpg"/>
                     <Form noValidate validated={this.state.validated} className="form" onSubmit={handleSubmit}>
                         <div className="textStyle">
-                            <Form.Group controlId="formBasicEmail">
+                            <Form.Group>
                                 <Form.Label>Store name:</Form.Label>
                                 <InputGroup hasValidation>
-                                    <Form.Control type="text" placeholder="Enter store name" value={this.state.username}
-                                                  onChange={this.handleUsernameChange} required/>
+                                    <Form.Control id="storeName"  type="text" placeholder="Enter store name"
+                                                  onChange={this.handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide a store name.
                                     </Form.Control.Feedback>

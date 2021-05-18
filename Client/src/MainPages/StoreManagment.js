@@ -41,15 +41,15 @@ class StoreManagment extends React.Component {
     /* result here is list of permissions (enums) */
     handleGetPermissionsResponse(result){
 
-        if(!result.response.isFailure){
-             var arrayOfPerm = result.response.result
+        if(!result.isFailure){
+             var arrayOfPerm = result.result
             this.setState({loaded: true});
              //console.log('the result isss:  ' + result.response.result)
              //console.log('the result isss:  ' + ['asd', 'asd'])
              this.setState({permissions: arrayOfPerm});
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 

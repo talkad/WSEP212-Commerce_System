@@ -29,10 +29,10 @@ public class GuestHandler extends Handler{
             case "startup" -> {
                 response = service.addGuest();
             }
-            case "removeGuest" -> {
-                String name = data.getProperty("name");
+            case "logout" -> {
+                String username = data.getProperty("username");
 
-                response = service.logout(name);
+                response = service.logout(username);
             }
             case "register" ->{
                 String identifier = data.getProperty("identifier");

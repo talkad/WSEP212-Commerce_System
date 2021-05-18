@@ -27,11 +27,11 @@ class AddProduct extends React.Component {
     }
 
     handleAddProductResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("adding product success");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 
