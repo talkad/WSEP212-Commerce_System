@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity(value = "users")
 public class UserDTO {
-    //TODO sort out persistant state status
+
     @Property(value = "state")
     private UserStateEnum state;
 

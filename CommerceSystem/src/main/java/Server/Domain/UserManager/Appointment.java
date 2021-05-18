@@ -1,5 +1,7 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.AppointmentDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 
 import java.util.List;
@@ -25,6 +27,21 @@ public class Appointment {
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
+    }
+
+    public Appointment(AppointmentDTO appointmentDTO){
+        this.storeAppointments = new ConcurrentHashMap<>();
+
+        lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
+        readLock = lock.readLock();
+
+        List<Pair<Integer, List<String>>> appointments = appointmentDTO.getStoreAppointments();
+        if(appointments != null){
+            for(Pair<Integer, List<String>> pair : appointments){
+                this.storeAppointments.put(pair.getFirst(), pair.getSecond());
+            }
+        }
     }
 
     public void addAppointment(int storeId, String name){
@@ -73,5 +90,15 @@ public class Appointment {
         }
         readLock.unlock();
         return false;
+    }
+
+    public AppointmentDTO toDTO(){
+        readLock.lock();
+        List<Pair<Integer, List<String>>> appointments = new Vector<>();
+        for(int storeID : this.storeAppointments.keySet()){
+            appointments.add(new Pair<>(storeID, new Vector<>(this.storeAppointments.get(storeID))));
+        }
+        readLock.unlock();
+        return new AppointmentDTO(appointments);
     }
 }
