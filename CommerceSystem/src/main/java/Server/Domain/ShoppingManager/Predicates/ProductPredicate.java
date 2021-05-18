@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.Predicates;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ public class ProductPredicate implements Predicate {
         this.maxUnits = maxUnits;
     }
     @Override
-    public boolean isValid(Map<ProductDTO, Integer> shoppingBasket) {
-        for(Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+    public boolean isValid(Map<ProductClientDTO, Integer> shoppingBasket) {
+        for(Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
             if(entry.getKey().getProductID() == productID)
                 return (entry.getValue() >= minUnits && entry.getValue() <= maxUnits);
        return true;

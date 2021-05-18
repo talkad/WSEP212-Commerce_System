@@ -1,6 +1,7 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,8 +11,8 @@ public class StoreTest {
     public void addProductsTestSuccess(){
 
        Store store1 = new Store(0, "h&m",  "talkad");
-       ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null);
-       ProductDTO product2 = new ProductDTO("AirPods", 0, 799.9, null , null);
+       ProductClientDTO product1 = new ProductClientDTO( "TV", 0, 1299.9  , null , null);
+       ProductClientDTO product2 = new ProductClientDTO("AirPods", 0, 799.9, null , null);
 
         int pAmount = 0;
         store1.addProduct(product1, 5);
@@ -25,7 +26,7 @@ public class StoreTest {
     public void addProductsTestFailure(){
 
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product1 = new ProductDTO( "TV", 0, 1299.9  , null , null);
+        ProductClientDTO product1 = new ProductClientDTO( "TV", 0, 1299.9  , null , null);
 
         int pAmount = 0;
         store1.addProduct(product1, -3);
@@ -38,7 +39,7 @@ public class StoreTest {
     @Test
     public void addExistingProductTestSuccess1(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product1 = new ProductDTO( "TV", 997,0, 1299.9  , null , null, null, 0 ,0);
+        ProductClientDTO product1 = new ProductClientDTO( "TV", 997,0, 1299.9  , null , null, null, 0 ,0);
 
         int inventorySize = 0;
         store1.addProduct(product1, 5);
@@ -52,7 +53,7 @@ public class StoreTest {
     @Test
     public void addExistingProductTestSuccess2(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product3 = new ProductDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
+        ProductClientDTO product3 = new ProductClientDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
 
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
@@ -62,7 +63,7 @@ public class StoreTest {
     @Test
     public void removeExistingProductTestSuccess(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product3 = new ProductDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
+        ProductClientDTO product3 = new ProductClientDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
 
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
@@ -73,7 +74,7 @@ public class StoreTest {
     @Test
     public void removeExistingProductTestSuccess2(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product3 = new ProductDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
+        ProductClientDTO product3 = new ProductClientDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
 
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
@@ -84,7 +85,7 @@ public class StoreTest {
     @Test
     public void removeExistingProductTestFailure(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product3 = new ProductDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
+        ProductClientDTO product3 = new ProductClientDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
 
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);
@@ -95,7 +96,7 @@ public class StoreTest {
     @Test
     public void removeExistingProductTestFailure2(){
         Store store1 = new Store(0, "h&m",  "talkad");
-        ProductDTO product3 = new ProductDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
+        ProductClientDTO product3 = new ProductClientDTO("Watch", 999, 0, 799.9, null, null, null, 0, 0);
 
         store1.addProduct(product3, 5);
         store1.addProduct(product3, 10);

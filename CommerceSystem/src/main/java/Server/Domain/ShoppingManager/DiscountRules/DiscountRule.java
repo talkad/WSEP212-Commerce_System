@@ -1,12 +1,12 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
 public interface DiscountRule {
 
-    double calcDiscount(Map<ProductDTO, Integer> shoppingBasket);
+    double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket);
 
     int getID();
 

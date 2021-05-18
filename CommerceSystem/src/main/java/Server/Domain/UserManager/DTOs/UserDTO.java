@@ -1,4 +1,6 @@
-package Server.Domain.UserManager;
+package Server.Domain.UserManager.DTOs;
+
+import Server.Domain.UserManager.*;
 
 import java.util.List;
 import java.util.Map;

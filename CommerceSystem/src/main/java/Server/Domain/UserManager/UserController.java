@@ -3,10 +3,13 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.DTOs.UserDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 
@@ -84,7 +87,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -195,7 +198,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents(String userName){
+    public Response<List<BasketClientDTO>> getShoppingCartContents(String userName){
         readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
@@ -252,7 +255,7 @@ public class UserController {
     }
 
 
-    public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
+    public Response<List<PurchaseClientDTO>> getPurchaseHistoryContents(String userName){
         readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
@@ -439,7 +442,7 @@ public class UserController {
     }
 
 
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
@@ -450,7 +453,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
@@ -469,7 +472,7 @@ public class UserController {
     }
 
 
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -513,7 +516,7 @@ public class UserController {
     }
 
     public Response<Boolean> purchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails){
-        Response<List<PurchaseDTO>> purchaseRes;
+        Response<List<PurchaseClientDTO>> purchaseRes;
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -697,7 +700,7 @@ public class UserController {
             if(offer.getState() != OfferState.APPROVED)
                 return new Response<>(false, true, "Your offer is not yet approved");
 
-            Response<PurchaseDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
+            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
 
             if(purchase.isFailure())
                 return new Response<>(false, true, purchase.getErrMsg());

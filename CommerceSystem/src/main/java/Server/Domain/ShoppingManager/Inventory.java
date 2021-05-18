@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -24,7 +25,7 @@ public class Inventory {
     }
 
 
-    public void addProducts(ProductDTO productDTO, int amount){
+    public void addProducts(ProductClientDTO productDTO, int amount){
         int productID;
         Integer result;
         Product product = Product.createProduct(productDTO);
@@ -72,17 +73,17 @@ public class Inventory {
         return res;
     }
 
-    public Response<Boolean> removeProducts(Map<ProductDTO, Integer> shoppingBasket){
+    public Response<Boolean> removeProducts(Map<ProductClientDTO, Integer> shoppingBasket){
         purchaseLock.writeLock().lock();
 
-        for(ProductDTO productDTO: shoppingBasket.keySet()){ // check if no product exceeding current amount in inventory
+        for(ProductClientDTO productDTO: shoppingBasket.keySet()){ // check if no product exceeding current amount in inventory
             if(shoppingBasket.get(productDTO) > getProductAmount(productDTO.getProductID())) {
                 purchaseLock.writeLock().unlock();
                 return new Response<>(false, true, "Inventory: Product " + productDTO.getName() + " exceeding to inventory capacity");
             }
         }
 
-        for(ProductDTO productDTO: shoppingBasket.keySet()){
+        for(ProductClientDTO productDTO: shoppingBasket.keySet()){
             removeProducts(productDTO.getProductID(), shoppingBasket.get(productDTO));
         }
 
@@ -164,8 +165,8 @@ public class Inventory {
         return res;
     }
 
-    public List<ProductDTO> getProductsDTO() {
-        List<ProductDTO> result = new LinkedList<>();
+    public List<ProductClientDTO> getProductsDTO() {
+        List<ProductClientDTO> result = new LinkedList<>();
 
         lock.readLock().lock();
 

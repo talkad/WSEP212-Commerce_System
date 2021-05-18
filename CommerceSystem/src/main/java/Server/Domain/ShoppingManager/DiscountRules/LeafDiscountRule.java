@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public abstract class LeafDiscountRule implements DiscountRule {
         this.id = NOT_SET;
     }
 
-    public abstract double calcDiscount(Map<ProductDTO, Integer> shoppingBasket);
+    public abstract double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket);
 
     public abstract String getDescription();
 

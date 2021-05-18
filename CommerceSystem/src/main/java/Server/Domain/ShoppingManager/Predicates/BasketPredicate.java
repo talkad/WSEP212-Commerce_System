@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.Predicates;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class BasketPredicate implements Predicate {
     }
 
     @Override
-    public boolean isValid(Map<ProductDTO, Integer> shoppingBasket) {
+    public boolean isValid(Map<ProductClientDTO, Integer> shoppingBasket) {
         double totalPrice = 0.0;
         int amountOfProducts = 0;
 
@@ -36,7 +36,7 @@ public class BasketPredicate implements Predicate {
                     return false;
         }
 
-        for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet()) {
+        for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet()) {
             totalPrice += entry.getKey().getPrice() * entry.getValue();
             amountOfProducts += entry.getValue();
         }

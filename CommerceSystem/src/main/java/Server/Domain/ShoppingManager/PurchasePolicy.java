@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class PurchasePolicy {
         indexer = new AtomicInteger(0);
     }
 
-    public Response<Boolean> isValidPurchase(Map<ProductDTO, Integer> shoppingBasket){
+    public Response<Boolean> isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket){
         for(PurchaseRule purchaseRule : purchaseRules)
             if(!purchaseRule.isValidPurchase(shoppingBasket))
                 return new Response<>(false, true, "Not qualified of policy demands.");

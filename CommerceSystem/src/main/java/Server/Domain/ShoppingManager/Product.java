@@ -2,6 +2,7 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +23,7 @@ public class Product {
     private List<Review> reviews;
 
 
-    private Product(ProductDTO productDTO){
+    private Product(ProductClientDTO productDTO){
         this.productID = productDTO.getProductID();
         this.storeID = productDTO.getStoreID();
         this.name = new AtomicReference<>(productDTO.getName());
@@ -36,7 +37,7 @@ public class Product {
         this.reviews = productDTO.getReviews()!=null? productDTO.getReviews(): new Vector<>();
     }
 
-    public static Product createProduct(ProductDTO productDTO){
+    public static Product createProduct(ProductClientDTO productDTO){
         Product product = new Product(productDTO);
 
         if(productDTO.getProductID() == -1){
@@ -125,7 +126,7 @@ public class Product {
         return keywords != null && keywords.contains(key);
     }
 
-    public ProductDTO getProductDTO(){
-        return new ProductDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get(), numRatings.get());
+    public ProductClientDTO getProductDTO(){
+        return new ProductClientDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get(), numRatings.get());
     }
 }

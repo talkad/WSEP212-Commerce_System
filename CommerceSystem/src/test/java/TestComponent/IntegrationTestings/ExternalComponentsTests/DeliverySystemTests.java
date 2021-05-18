@@ -1,22 +1,19 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DeliverySystemTests {
     ProductSupplyAdapter supplier;
-    ProductDTO productDTO;
-    Map<Integer,Map<ProductDTO, Integer>> toDeliver;
+    ProductClientDTO productDTO;
+    Map<Integer,Map<ProductClientDTO, Integer>> toDeliver;
 
     @Before
     public void setUp(){

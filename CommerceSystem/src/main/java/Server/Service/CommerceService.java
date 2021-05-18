@@ -3,20 +3,20 @@ package Server.Service;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.CommerceSystem;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
-import Server.Domain.ShoppingManager.StoreDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -73,22 +73,22 @@ public class CommerceService implements IService{
 //    }
 
     @Override
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         return commerceSystem.searchByStoreName(storeName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         return commerceSystem.searchByProductName(productName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
         return commerceSystem.searchByProductCategory(category);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
+    public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
         return commerceSystem.searchByProductKeyword(keyword);
     }
 
@@ -103,7 +103,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) { //todo - fix that
+    public Response<List<BasketClientDTO>> getCartDetails(String username) {
         return CommerceSystem.getInstance().getCartDetails(username);
     }
 
@@ -138,7 +138,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<StoreDTO> getStore(int storeID) {
+    public Response<StoreClientDTO> getStore(int storeID) {
         return commerceSystem.getStore(storeID);
     }
 
@@ -163,12 +163,12 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
         return commerceSystem.getPurchaseHistory(username);
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
         return CommerceSystem.getInstance().addProductsToStore(username, productDTO, amount);
     }
 
@@ -265,17 +265,17 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         return commerceSystem.getPurchaseDetails(username, storeID);
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         return commerceSystem.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 }

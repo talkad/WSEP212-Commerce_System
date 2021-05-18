@@ -1,8 +1,10 @@
-package Server.Domain.ShoppingManager;
+package Server.Domain.ShoppingManager.DTOs;
+
+import Server.Domain.ShoppingManager.Review;
 
 import java.util.*;
 
-public class ProductDTO {
+public class ProductClientDTO {
 
     private String name;
     private int productID;
@@ -17,7 +19,7 @@ public class ProductDTO {
     /**
      *constructor for objects from database
      */
-    public ProductDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, List<Review> reviews, double rating, int numRatings) {
+    public ProductClientDTO(String name, int productID, int storeID, double price, List<String> categories, List<String> keywords, List<Review> reviews, double rating, int numRatings) {
         this.name = name;
         this.productID = productID;
         this.storeID = storeID;
@@ -32,7 +34,7 @@ public class ProductDTO {
     /**
      *constructor for new products
      */
-    public ProductDTO(String name, int storeID, double price, List<String> categories, List<String> keywords) {
+    public ProductClientDTO(String name, int storeID, double price, List<String> categories, List<String> keywords) {
         this.name = name;
         this.productID = -1;
         this.storeID = storeID;

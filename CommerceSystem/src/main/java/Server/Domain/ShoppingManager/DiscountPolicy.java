@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 
 import java.util.Collections;
@@ -18,10 +19,10 @@ public class DiscountPolicy {
         indexer = new AtomicInteger(0);
     }
 
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double totalPrice = 0.0;
         double discount = 0.0;
-        for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+        for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
             totalPrice += entry.getKey().getPrice() * entry.getValue();
         for (DiscountRule discountRule : discountRules)
             discount += discountRule.calcDiscount(shoppingBasket);

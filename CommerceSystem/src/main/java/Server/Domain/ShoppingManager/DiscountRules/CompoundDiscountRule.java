@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ public abstract class CompoundDiscountRule implements DiscountRule {
     }
 
     @Override
-    public abstract double calcDiscount(Map<ProductDTO, Integer> shoppingBasket);
+    public abstract double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket);
 
     @Override
     public abstract String getDescription();

@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.Domain.ShoppingManager.Predicates.StorePredicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -22,15 +22,15 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
     }
 
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         if(storePredicate.isValid(shoppingBasket)) {
             double totalPrice = 0.0;
             if(productID != -1) {
-                for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+                for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
                     totalPrice += entry.getKey().getPrice() * entry.getValue();
             }
             else{
-                for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+                for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
                     if(entry.getKey().getProductID() == productID) {
                         totalPrice += entry.getKey().getPrice() * entry.getValue();
                         break;

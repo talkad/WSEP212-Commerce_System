@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public class ProductPurchaseRule extends LeafPurchaseRule {
     }
 
     @Override
-    public boolean isValidPurchase(Map<ProductDTO, Integer> shoppingBasket) {
+    public boolean isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket) {
         return predicate.isValid(shoppingBasket);
     }
 

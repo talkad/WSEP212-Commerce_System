@@ -1,7 +1,9 @@
 package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.ShoppingCart;
 import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
@@ -48,25 +50,25 @@ public class StoreController {
         return new Response<>(id, false, "Store with id " + id + " opened successfully");
     }
 
-    public Response<List<ProductDTO>> searchByProductName(String productName){
+    public Response<List<ProductClientDTO>> searchByProductName(String productName){
         return SearchEngine.getInstance().searchByProductName(productName);
     }
 
-    public Response<List<ProductDTO>> searchByCategory(String category){
+    public Response<List<ProductClientDTO>> searchByCategory(String category){
         return SearchEngine.getInstance().searchByCategory(category);
     }
 
-    public Response<List<ProductDTO>> searchByKeyWord(String keyword) {
+    public Response<List<ProductClientDTO>> searchByKeyWord(String keyword) {
         return SearchEngine.getInstance().searchByKeyWord(keyword);
     }
 
-    public Response<List<ProductDTO>> filterByRating(double rating){ return SearchEngine.getInstance().filterByRating(rating);}
+    public Response<List<ProductClientDTO>> filterByRating(double rating){ return SearchEngine.getInstance().filterByRating(rating);}
 
-    public Response<List<ProductDTO>> filterByPriceRange(double lowRate, double highRate){ return SearchEngine.getInstance().filterByPriceRange(lowRate, highRate);}
+    public Response<List<ProductClientDTO>> filterByPriceRange(double lowRate, double highRate){ return SearchEngine.getInstance().filterByPriceRange(lowRate, highRate);}
 
-    public Response<List<ProductDTO>> filterByStoreRating(double rating){ return SearchEngine.getInstance().filterByStoreRating(rating);}
+    public Response<List<ProductClientDTO>> filterByStoreRating(double rating){ return SearchEngine.getInstance().filterByStoreRating(rating);}
 
-    public Response<List<ProductDTO>> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
+    public Response<List<ProductClientDTO>> filterByCategory(String category){ return SearchEngine.getInstance().searchByCategory(category);}
 
     private void printSuggestedCorrection(Collection<Product> productsList, String faultWord){
         if (productsList.isEmpty()){
@@ -93,13 +95,13 @@ public class StoreController {
 
     // activated when purchase aborted and all products need to be added to their inventories
     public void addProductsToInventories(ShoppingCart shoppingCart) {
-        Map<ProductDTO, Integer> basket;
+        Map<ProductClientDTO, Integer> basket;
 
         for(Integer storeID : shoppingCart.getBaskets().keySet()){
 
             basket = shoppingCart.getBasket(storeID);
 
-            for(ProductDTO productDTO : basket.keySet()){
+            for(ProductClientDTO productDTO : basket.keySet()){
                 stores.get(storeID).addProduct(productDTO, basket.get(productDTO));
             }
         }
@@ -110,23 +112,23 @@ public class StoreController {
         stores.get(storeID).addProduct(product.getProductDTO(), 1);
     }
 
-    public Response<List<PurchaseDTO>> purchase(ShoppingCart shoppingCart) {
+    public Response<List<PurchaseClientDTO>> purchase(ShoppingCart shoppingCart) {
         Store s;
-        Map<Integer, Map<ProductDTO, Integer>> prods = new ConcurrentHashMap<>();
-        Map<Integer, PurchaseDTO> purchases = new HashMap<>();
-        Response<PurchaseDTO> resPurchase;
-        Map<Integer, Map<ProductDTO, Integer>> baskets = shoppingCart.getBaskets();
+        Map<Integer, Map<ProductClientDTO, Integer>> prods = new ConcurrentHashMap<>();
+        Map<Integer, PurchaseClientDTO> purchases = new HashMap<>();
+        Response<PurchaseClientDTO> resPurchase;
+        Map<Integer, Map<ProductClientDTO, Integer>> baskets = shoppingCart.getBaskets();
 
         if(baskets.isEmpty())
             return new Response<>(null, true, "You cannot purchase an empty cart");
 
-        for (Map.Entry<Integer, Map<ProductDTO, Integer>> entry : baskets.entrySet()) {
+        for (Map.Entry<Integer, Map<ProductClientDTO, Integer>> entry : baskets.entrySet()) {
             resPurchase = purchaseFromStore(entry.getKey(), entry.getValue());
 
             if (resPurchase.isFailure()) {
-                for (Map.Entry<Integer, Map<ProductDTO, Integer>> refundEntries : prods.entrySet()) {
+                for (Map.Entry<Integer, Map<ProductClientDTO, Integer>> refundEntries : prods.entrySet()) {
                     s = getStoreById(refundEntries.getKey());
-                    for (Map.Entry<ProductDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
+                    for (Map.Entry<ProductClientDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
                         s.addProduct(shopRefund.getKey(), shopRefund.getValue());
                 }
                 return new Response<>(null, true, "Problem with purchase from store " + entry.getKey() + " " + resPurchase.getErrMsg());
@@ -143,10 +145,10 @@ public class StoreController {
         return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
     }
 
-    public Response<PurchaseDTO> purchase(Product product) {
-        Response<PurchaseDTO> res;
+    public Response<PurchaseClientDTO> purchase(Product product) {
+        Response<PurchaseClientDTO> res;
         Store store = stores.get(product.getStoreID());
-        Map<ProductDTO, Integer> purchase = new HashMap<>();
+        Map<ProductClientDTO, Integer> purchase = new HashMap<>();
         purchase.put(product.getProductDTO(), 1);
 
         if(store == null)
@@ -161,8 +163,8 @@ public class StoreController {
         return res;
     }
 
-    private Response<PurchaseDTO> purchaseFromStore(int storeID, Map<ProductDTO, Integer> shoppingBasket){
-        Response<PurchaseDTO> result;
+    private Response<PurchaseClientDTO> purchaseFromStore(int storeID, Map<ProductClientDTO, Integer> shoppingBasket){
+        Response<PurchaseClientDTO> result;
         Store store;
 
        if(!stores.containsKey(storeID)) {
@@ -210,12 +212,12 @@ public class StoreController {
         }
     }
 
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
-        List<StoreDTO> storeList = new LinkedList<>();
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
+        List<StoreClientDTO> storeList = new LinkedList<>();
 
         for(Store store: stores.values()){
             if(store.getName().equals(storeName))
-                storeList.add(new StoreDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()));
+                storeList.add(new StoreClientDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()));
         }
 
         return new Response<>(storeList, false, "all stores with name " + storeName);
@@ -230,13 +232,13 @@ public class StoreController {
         return totalRevenue;
     }
 
-    public Response<StoreDTO> getStore(int storeID){
+    public Response<StoreClientDTO> getStore(int storeID){
         Store store = stores.get(storeID);
 
         if(store == null)
             return new Response<>(null, true, "The store doesn't exists");
 
-        return new Response<>(new StoreDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()), true, "store found");
+        return new Response<>(new StoreClientDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()), true, "store found");
     }
 
 

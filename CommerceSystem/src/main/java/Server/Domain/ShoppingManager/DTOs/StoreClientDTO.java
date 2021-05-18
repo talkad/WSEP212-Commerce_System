@@ -1,15 +1,15 @@
-package Server.Domain.ShoppingManager;
+package Server.Domain.ShoppingManager.DTOs;
 
 
 import java.util.List;
 
-public class StoreDTO {
+public class StoreClientDTO {
 
     private int storeID;
     private String storeName;
-    private List<ProductDTO> products;
+    private List<ProductClientDTO> products;
 
-    public StoreDTO(int storeID, String storeName, List<ProductDTO> products){
+    public StoreClientDTO(int storeID, String storeName, List<ProductClientDTO> products){
         this.storeID = storeID;
         this.storeName = storeName;
         this.products = products;

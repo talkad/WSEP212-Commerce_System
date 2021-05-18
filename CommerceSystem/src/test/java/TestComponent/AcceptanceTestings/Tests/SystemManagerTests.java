@@ -1,10 +1,10 @@
 package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +34,13 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         bridge.login(bridge.addGuest().getResult(), "shemesh", "123456");
         this.storeID = bridge.openStore("shemesh", "ha imperia shel shemesh").getResult();
 
-        ProductDTO product = new ProductDTO("pastrama hodu", storeID, 10,
+        ProductClientDTO product = new ProductClientDTO("pastrama hodu", storeID, 10,
                 new LinkedList<String>(Arrays.asList("food", "yummy")),
                 new LinkedList<String>(Arrays.asList("pastrama")));
 
         bridge.addProductsToStore("shemesh", product, 100);
 
-        product = new ProductDTO("mitz petel", storeID, 5,
+        product = new ProductClientDTO("mitz petel", storeID, 5,
                 new LinkedList<String>(Arrays.asList("beverage", "yummy")),
                 new LinkedList<String>(Arrays.asList("mitz")));
 
@@ -52,7 +52,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
         bridge.login(bridge.addGuest().getResult(), "avi", "123456");
 
         // user adding products to cart and buying them
-        ProductDTO productToAdd = bridge.searchByProductName("pastrama hodu").getResult().get(0);
+        ProductClientDTO productToAdd = bridge.searchByProductName("pastrama hodu").getResult().get(0);
         bridge.addToCart("avi", productToAdd.getStoreID(), productToAdd.getProductID());
 
         productToAdd = bridge.searchByProductName("mitz petel").getResult().get(0);
@@ -69,7 +69,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void getUserPurchaseHistoryTest(){ // 6.4 - a good
         // getting the purchase history of a user as an admin
-        Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "avi");
+        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "avi");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
         Assert.assertFalse(userPurchaseHistoryResult.getResult().isEmpty());
 
@@ -82,21 +82,21 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void getUserPurchaseHistoryOfNonExistentUser(){ // 6.4 - a bad
         // trying to get the purchase history of a non existent user. should fail
-        Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "hemi");
+        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "hemi");
         Assert.assertTrue(userPurchaseHistoryResult.isFailure());
     }
 
     @Test
     public void notAdminGetUserPurchaseHistoryTest(){ // 6.4 - a bad
         // trying to get the purchase history of a user while not being an admin. should fail
-        Response<List<PurchaseDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shemesh", "avi");
+        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shemesh", "avi");
         Assert.assertTrue(userPurchaseHistoryResult.isFailure());
     }
 
     @Test
     public void getStorePurchaseHistory(){ // 6.4 - b
         // getting the purchase history of a store as an admin
-        Response<Collection<PurchaseDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shaked",
+        Response<Collection<PurchaseClientDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shaked",
                 this.storeID);
         Assert.assertFalse(storeHistoryResult.isFailure());
         Assert.assertFalse(storeHistoryResult.getResult().isEmpty());
@@ -107,14 +107,14 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void notAdminGetStorePurchaseHistoryTest() { // 6.4 - b bad
         // trying to get the purchase history of a store while not being an admin. should fail
-        Response<Collection<PurchaseDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID);
+        Response<Collection<PurchaseClientDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID);
         Assert.assertTrue(storeHistoryResult.isFailure());
     }
 
     @Test
     public void getUserPurchaseHistoryOfNonExistentStore() { // 6.4 - b bad
         // trying to get the purchase history of a non existent store. should fail
-        Response<Collection<PurchaseDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID+1);
+        Response<Collection<PurchaseClientDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shemesh", this.storeID+1);
         Assert.assertTrue(storeHistoryResult.isFailure());
     }
 }

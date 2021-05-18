@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ public class OrCompositionPurchaseRule extends CompoundPurchaseRule {
     }
 
     @Override
-    public boolean isValidPurchase(Map<ProductDTO, Integer> shoppingBasket) {
+    public boolean isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket) {
         for(PurchaseRule purchaseRule : purchaseRules)
             if(purchaseRule.isValidPurchase(shoppingBasket))
                 return true;

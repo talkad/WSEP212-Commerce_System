@@ -2,7 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;
@@ -75,8 +75,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<Integer, Map<ProductDTO, Integer>> getBaskets(){
-        Map<Integer, Map<ProductDTO, Integer>> products = new HashMap<>();
+    public Map<Integer, Map<ProductClientDTO, Integer>> getBaskets(){
+        Map<Integer, Map<ProductClientDTO, Integer>> products = new HashMap<>();
 
         lock.readLock().lock();
 
@@ -93,8 +93,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<ProductDTO, Integer> getBasket(int storeID){
-        Map<ProductDTO, Integer> products;
+    public Map<ProductClientDTO, Integer> getBasket(int storeID){
+        Map<ProductClientDTO, Integer> products;
 
         lock.readLock().lock();
         products = new HashMap<>(baskets.get(storeID).getProducts());

@@ -1,21 +1,11 @@
 package Server.Domain.UserManager.ExternalSystemsAdapters;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
-import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class in the only class who communicates with the external payment system,

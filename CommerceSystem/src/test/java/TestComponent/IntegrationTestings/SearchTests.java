@@ -1,10 +1,11 @@
 package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.SearchEngine;
 import Server.Domain.UserManager.*;
+import Server.Domain.UserManager.DTOs.UserDTO;
 import Server.Service.CommerceService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class SearchTests {
         List<String> keyword = new LinkedList<>();
         keyword.add("meat");
         Collection<Review> review = new LinkedList<>();
-        guest.addProductsToStore(new ProductDTO("beef", 0, 5, categories, keyword), 5).isFailure();
+        guest.addProductsToStore(new ProductClientDTO("beef", 0, 5, categories, keyword), 5).isFailure();
     }
 
 
@@ -71,7 +72,7 @@ public class SearchTests {
     @Test
     public void SearchByNameTestNotFound(){
         //empty list will be returned
-        Response<List<ProductDTO>> r2 = searchEngine.searchByKeyWord("banana");
+        Response<List<ProductClientDTO>> r2 = searchEngine.searchByKeyWord("banana");
         Assert.assertTrue(r2.getResult().isEmpty());
     }
 
@@ -84,7 +85,7 @@ public class SearchTests {
     @Test
     public void SearchByCategoryTestNotFound(){
         //empty list will be returned
-        Response<List<ProductDTO>> r2 = searchEngine.searchByCategory("electronics");
+        Response<List<ProductClientDTO>> r2 = searchEngine.searchByCategory("electronics");
         Assert.assertTrue(r2.getResult().isEmpty());
     }
 }

@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.Predicates;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -16,9 +16,9 @@ public class CategoryPredicate implements Predicate {
     }
 
     @Override
-    public boolean isValid(Map<ProductDTO, Integer> shoppingBasket) {
+    public boolean isValid(Map<ProductClientDTO, Integer> shoppingBasket) {
         int numOfProducts = 0;
-        for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+        for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
             if (entry.getKey().getCategories().contains(category))
                 numOfProducts += entry.getValue();
 

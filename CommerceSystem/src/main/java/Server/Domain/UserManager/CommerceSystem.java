@@ -3,17 +3,17 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 
-import java.io.File;
-import java.net.URL;
 import java.util.*;
-
-import java.io.*;
 
 
 public class CommerceSystem implements IService {
@@ -63,22 +63,22 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         return storeController.searchByStoreName(storeName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         return storeController.searchByProductName(productName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
         return storeController.searchByCategory(category);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
+    public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
         return storeController.searchByKeyWord(keyword);
     }
 
@@ -93,7 +93,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
+    public Response<List<BasketClientDTO>> getCartDetails(String username) {
         return userController.getShoppingCartContents(username);
     }
 
@@ -128,7 +128,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<StoreDTO> getStore(int storeID) {
+    public Response<StoreClientDTO> getStore(int storeID) {
         return storeController.getStore(storeID);
     }
 
@@ -153,12 +153,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
         return userController.getPurchaseHistoryContents(username);
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
         return userController.addProductsToStore(username, productDTO, amount);
     }
 
@@ -253,17 +253,17 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         return userController.getPurchaseDetails(username, storeID);
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         return userController.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 

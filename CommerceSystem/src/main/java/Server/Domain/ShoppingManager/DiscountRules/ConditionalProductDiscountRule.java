@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -14,8 +14,8 @@ public class ConditionalProductDiscountRule extends ProductDiscountRule {
     }
 
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
-        for(Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet()) {
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
+        for(Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet()) {
             if (entry.getKey().getProductID() == productID) {
                 return productPredicate.isValid(shoppingBasket) ? (entry.getValue() * entry.getKey().getPrice()) * (discount / 100) : 0.0;
             }

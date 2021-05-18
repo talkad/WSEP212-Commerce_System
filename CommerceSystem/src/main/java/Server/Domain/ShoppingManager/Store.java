@@ -2,9 +2,10 @@ package Server.Domain.ShoppingManager;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
 import java.time.LocalDate;
@@ -45,7 +46,7 @@ public class Store {
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(ProductDTO productDTO, int amount){
+    public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
         if(amount <= 0){
             return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
@@ -94,13 +95,13 @@ public class Store {
         return purchasePolicy;
     }
 
-     public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
+     public Response<PurchaseClientDTO> purchase(Map<ProductClientDTO, Integer> shoppingBasket) {
         Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket);
         if(validatePurchase.isFailure())
             return new Response<>(null, true, validatePurchase.getErrMsg());
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
-        PurchaseDTO purchaseDTO;
+        PurchaseClientDTO purchaseDTO;
 
 //        double price = 0;
 //
@@ -114,12 +115,12 @@ public class Store {
             return new Response<>(null, true, "Store: Product deletion failed successfully");
         }
 
-        purchaseDTO = new PurchaseDTO(shoppingBasket, priceAfterDiscount, LocalDate.now());
+        purchaseDTO = new PurchaseClientDTO(shoppingBasket, priceAfterDiscount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
 
-    public Response<Collection<PurchaseDTO>> getPurchaseHistory() {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseHistory() {
         return new Response<>(purchaseHistory.getPurchases(), false, "OK");
     }
 
@@ -166,7 +167,7 @@ public class Store {
         }while (!isActiveStore.compareAndSet(currentActive, activeStore));
     }
 
-    public void addPurchaseHistory(PurchaseDTO purchaseDTO) {
+    public void addPurchaseHistory(PurchaseClientDTO purchaseDTO) {
         readWriteLock.writeLock().lock();
         purchaseHistory.addSinglePurchase(purchaseDTO);
         readWriteLock.writeLock().unlock();
@@ -192,7 +193,7 @@ public class Store {
         LocalDate yesterday = LocalDate.now().minus(Period.ofDays(1));
         double totalRevenue = 0;
 
-        for(PurchaseDTO purchase: purchaseHistory.getPurchases()){
+        for(PurchaseClientDTO purchase: purchaseHistory.getPurchases()){
             if(purchase.getPurchaseDate().isAfter(yesterday))
                 totalRevenue += purchase.getTotalPrice();
         }

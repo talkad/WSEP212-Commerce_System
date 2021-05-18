@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,7 +25,7 @@ public abstract class CompoundPurchaseRule implements PurchaseRule {
         purchaseRules.remove(discountRule);
     }
 
-    public abstract boolean isValidPurchase(Map<ProductDTO, Integer> shoppingBasket);
+    public abstract boolean isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket);
 
     public int getID() {
         return id;

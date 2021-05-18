@@ -1,13 +1,11 @@
 package Server.Domain.UserManager.ExternalSystemsAdapters;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class in the only class who communicates with the external delivery system,

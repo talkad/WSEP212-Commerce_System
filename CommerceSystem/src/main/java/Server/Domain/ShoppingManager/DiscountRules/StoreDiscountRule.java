@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -11,9 +11,9 @@ public class StoreDiscountRule extends LeafDiscountRule {
     }
 
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double totalPrice = 0.0;
-        for(Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+        for(Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
             totalPrice += entry.getKey().getPrice() * entry.getValue();
         return totalPrice * (this.discount / 100);
     }

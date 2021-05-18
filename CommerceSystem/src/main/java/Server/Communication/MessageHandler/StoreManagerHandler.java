@@ -1,7 +1,7 @@
 package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.Permissions;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
@@ -30,7 +30,7 @@ public class StoreManagerHandler extends Handler{
                 String username = data.getProperty("username");
                 String productDTO = data.getProperty("productDTO");
                 String amount = data.getProperty("amount");
-                ProductDTO product = gson.fromJson(productDTO, ProductDTO.class);
+                ProductClientDTO product = gson.fromJson(productDTO, ProductClientDTO.class);
 
                 response = service.addProductsToStore(username, product, Integer.parseInt(amount));
             }

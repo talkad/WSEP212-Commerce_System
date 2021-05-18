@@ -2,7 +2,7 @@ package TestComponent.UnitTesting.ShopComponentTests;
 
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class ProductTest {
 
     @Test
     public void simplePriceUpdateTest(){
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null);
+        ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
         product.updatePrice(19.9);
@@ -23,7 +23,7 @@ public class ProductTest {
 
     @Test
     public void complexPriceUpdateTest()  throws InterruptedException {
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null);
+        ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
         int numberOfThreads = 100;
@@ -54,7 +54,7 @@ public class ProductTest {
 
     @Test
     public void simpleAddRateTest(){
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null);
+        ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
         product.addRating(Rating.HIGH);
@@ -63,7 +63,7 @@ public class ProductTest {
 
     @Test
     public void mediumAddRateTest(){
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null);
+        ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
         for(int i=0; i < 20; i++)
@@ -84,7 +84,7 @@ public class ProductTest {
 
     @Test
     public void complexAddRateTest() throws InterruptedException {
-        ProductDTO productDTO = new ProductDTO("Oreo", 1, 22.9, null, null);
+        ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
         int numberOfThreads = 100;

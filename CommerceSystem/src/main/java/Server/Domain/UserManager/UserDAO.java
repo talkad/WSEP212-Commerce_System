@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.DTOs.UserDTO;
 
 import java.util.List;
 import java.util.Map;

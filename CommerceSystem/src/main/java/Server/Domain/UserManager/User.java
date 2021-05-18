@@ -2,12 +2,15 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.DTOs.UserDTO;
 import Server.Service.DataObjects.OfferData;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -131,8 +134,19 @@ public class User {
         return this.shoppingCart.addProduct(storeID, productID);
     }
 
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getShoppingCartContents() {
-        return new Response<>(this.shoppingCart.getBaskets(), false, null);
+    public Response<List<BasketClientDTO>> getShoppingCartContents() {
+        List<BasketClientDTO> basketsDTO = new LinkedList<>();
+        Map<Integer, Map<ProductClientDTO, Integer>> baskets = shoppingCart.getBaskets();
+
+        for(Integer storeID: baskets.keySet()){
+            Store store = StoreController.getInstance().getStoreById(storeID);
+
+            if(store != null){
+                basketsDTO.add(new BasketClientDTO(storeID, store.getName(), baskets.get(storeID).keySet(), baskets.get(storeID).values()));
+            }
+        }
+
+        return new Response<>(basketsDTO, false, "get shopping cart occurred");
     }
 
     public Response<Boolean> removeProduct(int storeID, int productID) {
@@ -163,7 +177,7 @@ public class User {
         return result;
     }
 
-    public Response<List<PurchaseDTO>> getPurchaseHistoryContents() {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistoryContents() {
         if (this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
             return new Response<>(this.purchaseHistory.getPurchases(), false, null);
         }
@@ -207,7 +221,7 @@ public class User {
         }
     }
 
-    public Response<Boolean> addProductsToStore(ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(ProductClientDTO productDTO, int amount) {
         Store store;
 
         if (this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
@@ -383,7 +397,7 @@ public class User {
         managedWriteLock.unlock();
     }
 
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String username) {       // req 6.4
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String username) {       // req 6.4
         if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
             if (UserDAO.getInstance().userExists(username)) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
@@ -395,7 +409,7 @@ public class User {
         }
     }
 
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(int storeID) {
         Store store;
 
         if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
@@ -414,7 +428,7 @@ public class User {
         return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
 
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(int storeID) {     // req 4.11
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(int storeID) {     // req 4.11
         Store store;
 
         if (this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)) {
@@ -430,7 +444,7 @@ public class User {
         }
     }
 
-    public void addToPurchaseHistory(List<PurchaseDTO> result) {
+    public void addToPurchaseHistory(List<PurchaseClientDTO> result) {
         if (this.purchaseHistory != null){
             purchaseHistory.addPurchase(result);
         }
@@ -460,13 +474,13 @@ public class User {
         clearPendingMessages();
     }
 
-    public Response<Boolean> purchase(List<PurchaseDTO> purchase) {
+    public Response<Boolean> purchase(List<PurchaseClientDTO> purchase) {
         StringBuilder msg;
 
         // notify to subscribers about purchase
         for(Integer storeID : getShoppingCart().getBaskets().keySet()){
             msg = new StringBuilder("Purchase occurred:\n");
-            for(ProductDTO productDTO: getShoppingCart().getBasket(storeID).keySet()){
+            for(ProductClientDTO productDTO: getShoppingCart().getBasket(storeID).keySet()){
                 msg.append("name: ").append(productDTO.getName()).append("amount: ").append(shoppingCart.getBasket(storeID).get(productDTO)).append("\n");
             }
 
@@ -681,16 +695,16 @@ public class User {
         }
     }
 
-    public Response<Boolean> bidUserReply(PurchaseDTO purchase, int storeID) {
-        List<PurchaseDTO> purchases = new LinkedList<>();
+    public Response<Boolean> bidUserReply(PurchaseClientDTO purchase, int storeID) {
+        List<PurchaseClientDTO> purchases = new LinkedList<>();
         purchases.add(purchase);
 
         if (this.purchaseHistory != null){
             purchaseHistory.addPurchase(purchases);
         }
 
-        ProductDTO product = null;
-        for(ProductDTO p: purchase.getBasket().keySet())
+        ProductClientDTO product = null;
+        for(ProductClientDTO p: purchase.getBasket().keySet())
             product = p;
 
         if(product == null)

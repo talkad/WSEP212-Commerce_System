@@ -3,6 +3,7 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
@@ -29,8 +30,8 @@ public class PurchaseController {
                 return PurchaseController.CreateSafeThreadSingleton.INSTANCE;
         }
 
-        public Response<List<PurchaseDTO>> handlePayment(ShoppingCart cart, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
-                Response<List<PurchaseDTO>> res = storeController.purchase(cart);
+        public Response<List<PurchaseClientDTO>> handlePayment(ShoppingCart cart, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+                Response<List<PurchaseClientDTO>> res = storeController.purchase(cart);
                 Response<Integer> paymentRes;
                 Response<Integer> cancelRes;
                 Response<Integer> supplyRes;
@@ -58,14 +59,14 @@ public class PurchaseController {
                 return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
         }
 
-        public Response<PurchaseDTO> purchaseProduct(int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        public Response<PurchaseClientDTO> purchaseProduct(int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
 
                 Response<Integer> cancelRes;
                 Response<Integer> supplyRes;
                 Response<Integer> paymentRes;
 
                 Response<Product> product = storeController.getProduct(storeID, productID);
-                Response<PurchaseDTO> res = storeController.purchase(product.getResult());
+                Response<PurchaseClientDTO> res = storeController.purchase(product.getResult());
 
                 if (res.isFailure())
                         return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
