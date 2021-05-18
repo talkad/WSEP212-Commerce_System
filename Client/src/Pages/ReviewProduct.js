@@ -30,7 +30,7 @@ class ReviewProduct extends React.Component{
     }
 
     handleReviewSubmit(){
-        Connection.sendAddProductReview(this.props.storeID, this.props.productID, this.state.review).then(this.handleResponse, Connection.handleReject);
+        Connection.sendAddProductReview(this.props.storeID2, this.props.productID2, this.state.review).then(this.handleResponse, Connection.handleReject);
     }
 
     render() {

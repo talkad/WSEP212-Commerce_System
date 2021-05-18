@@ -2,29 +2,230 @@ import React from "react";
 import ProductEntry from '../Components/ProductEntry'
 import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
+import {Button, Col, Container, Row} from "react-bootstrap";
 
-// const products = [
-//     {
-//         name: "brioche",
-//         productID: 1,
-//         storeID: 1,
-//         price: 50.5,
-//         seller: "ma'afia",
-//         categories: ["pastry", "tasty"],
-//         rating: 5,
-//         numReview: 200,
-//     },
-//     {
-//         name: "eclair",
-//         productID: 2,
-//         storeID: 2,
-//         price: 50.5,
-//         seller: "ma'afia2",
-//         categories: ["pastry", "tasty"],
-//         rating: 4.5,
-//         numReview: 300,
-//     }
-// ]
+const products = [
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+]
+
+const products1 = [
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 100,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 1,
+        price: 100,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    }
+]
+
+const products2 = [
+    {
+        name: "brioche",
+        productID: 3,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2323",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 4,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2323",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    },
+
+]
+
+const stores = [
+    {
+        id: 1,
+        name: 'hanut1',
+        products: products1
+    },
+    {
+        id: 2,
+        name: 'hanut2',
+        products: products2
+    }
+]
 
 class SearchResult extends React.Component{
     constructor(props) {
@@ -32,7 +233,7 @@ class SearchResult extends React.Component{
 
         this.state = {
             searchOption: '',
-            responseResults: [],
+            responseResults: products,
             showStore: false,
             showProduct: false,
         }
@@ -55,18 +256,18 @@ class SearchResult extends React.Component{
         const searchOption = urlParams.get('searchOption');
         const freeText = urlParams.get("freeText");
 
-        if(searchOption === "Product"){
+        if(searchOption === "product"){
             this.setState({searchOption: searchOption, showProduct: true});
 
             const searchProductBy = urlParams.get("searchProductBy");
 
-            if(searchProductBy === "Name"){
+            if(searchProductBy === "name"){
                 Connection.sendSearchProductByName(freeText).then(this.handleSearchResponse, Connection.handleReject);
             }
-            else if(searchProductBy === "Category"){
+            else if(searchProductBy === "category"){
                 Connection.sendSearchProductByCategory(freeText).then(this.handleSearchResponse, Connection.handleReject);
             }
-            else{ // Keyword
+            else{ // keyword
                 Connection.sendSearchProductByKeyword(freeText).then(this.handleSearchResponse, Connection.handleReject);
             }
 
@@ -87,6 +288,7 @@ class SearchResult extends React.Component{
     }
 
     handleAddToCart(productID, storeID){
+        console.log("hello there");
         Connection.sendAddToCart(productID, storeID).then(this.handleAddToCartResponse, Connection.handleReject);
     }
 
@@ -98,39 +300,35 @@ class SearchResult extends React.Component{
         return(
           <div>
               <h1>Search Results</h1>
-              {this.state.showProduct &&
-              <ul>
-                  {this.state.responseResults.map(({name, productID, storeID, price,
+              {this.state.showProduct && this.state.responseResults.map(({name, productID, storeID, price,
                                                        categories, keywords, reviews, rating, numRatings}) =>(
                       <div>
-                          <li>
                               <ProductEntry
                                   name = {name}
                                   price = {price}
+                                  storeID = {storeID}
                                   categories = {categories}
                                   reviews = {reviews}
+                                  action = {"Add to cart"}
+                                  action_handler = {() => this.handleAddToCart(productID, storeID)}
                               />
-                          </li>
-                          <button onClick={() => this.handleAddToCart(productID, storeID)}>add to cart</button>
                       </div>
                   ) ) }
-              </ul>
-              }
-              {this.state.showStore &&
-              <ul>
-                  {this.state.responseResults.map(({id, name, products}) =>(
-                      <div>
-                          <li>
-                              <StoreEntry
-                                  name = {name}
-                                  id = {id}
-                              />
-                          </li>
-                          <button onClick={() => this.handleShowStoreProducts(products)}>show store products</button>
-                      </div>
-                  ) ) }
-              </ul>
-              }
+              {/*{this.state.showStore &&*/}
+              {/*<ul>*/}
+              {/*    {this.state.responseResults.map(({id, name, products}) =>(*/}
+              {/*        <div>*/}
+              {/*            <li>*/}
+              {/*                <StoreEntry*/}
+              {/*                    name = {name}*/}
+              {/*                    id = {id}*/}
+              {/*                />*/}
+              {/*            </li>*/}
+              {/*            <Button onClick={() => this.handleShowStoreProducts(products)}>show store products</Button>*/}
+              {/*        </div>*/}
+              {/*    ) ) }*/}
+              {/*</ul>*/}
+              {/*}*/}
           </div>
         );
     }

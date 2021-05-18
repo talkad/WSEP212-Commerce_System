@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Visitor from "./Pages/Visitor";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -26,48 +26,110 @@ import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
-
-// var W3CWebSocket = require('websocket').w3cwebsocket;
-//
-// var client = new W3CWebSocket('ws://localhost:80/', 'echo-protocol');
-
-// const client = new WebSocket('http://localhost:8080');
-
-// let WebSocketClient = require('websocket').client;
-
-// let client = new WebSocketClient();
-
-// var W3CWebSocket = require('ws')
-//
-// var client = new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
-
-
-// client.connect('ws://localhost:8080/', 'echo-protocol');
-
-// Connection.setConnection(client);
+import {Alert, Container, Form, FormControl, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
+import {Button} from "bootstrap";
+import Home from "./Pages/Home";
+import * as Icon from 'react-bootstrap-icons';
+import StaticUserInfo from "./API/StaticUserInfo";
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
 Connection.setConnection(client);
 
-// if(!result.response.isFailure){
-//
-// }
-// else{
-//     alert(result.response.errMsg);
-// }
 
 class App extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            visitor: true,
+            registered: false,
+            storeOwner: false,
+
+            showAlert: false,
+            alertVariant: '',
+            alertInfo: '',
+        }
+
+        this.handleLogout = this.handleLogout.bind(this)
+        this.handleLogoutResponse = this.handleLogoutResponse.bind(this);
+    }
+
+    componentDidMount() {
+        let username = window.sessionStorage.getItem('username');
+        console.log("hello there");
+        console.log(username);
+        if (username !== '' && username !== null && username.substr(0, 5) !== "Guest") {
+            if(StaticUserInfo.getUserStores().length === 0){
+                this.setState({visitor: false, registered: true, storeOwner: false});
+            }
+            else{
+                this.setState({visitor: false, registered: true, storeOwner: true});
+            }
+        }
+        else{
+            this.setState({visitor: true, registered: false, storeOwner: false});
+        }
+    }
+
+    handleLogoutResponse(result){
+        if(!result.response.isFailure){
+            window.sessionStorage.removeItem('username');
+            this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
+        }
+        else{
+            this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+        }
+    }
+
+    handleLogout() {
+        Connection.sendLogout().then(this.handleLogoutResponse, Connection.handleReject);
+    }
 
     render() {
         return(
             <Router>
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Brand href="/">Very Cool Commerce System</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="mr-auto">
+
+                            <Nav.Link href="/">Home</Nav.Link>
+
+                            {this.state.visitor &&
+                            <Navbar.Text>
+                                <Link to="/login">Sign in</Link> or <Link to="/register">register</Link>
+                            </Navbar.Text>}
+
+                            {this.state.registered &&
+                            <NavDropdown id={"registered-nav-dropdown"} title={"More"}>
+                                <NavDropdown.Item href="/purchaseHistory">Purchase history</NavDropdown.Item>
+                                <NavDropdown.Item href="/createStore">Open your own store</NavDropdown.Item>
+                            </NavDropdown>}
+
+                            {this.state.storeOwner &&
+                            <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
+
+                        </Nav>
+                        <Nav>
+                            <Nav.Link href="/cart"><Icon.Cart/></Nav.Link>
+
+                            {this.state.registered &&
+                            <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>}
+                        </Nav>
+                    </Navbar.Collapse>
+                </Navbar>
                 <div className="App">
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})} dismissible>
+                        <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
+                    </Alert>
                     <Switch>
-                        <Route exact path="/" render={() => <Visitor isVisitor={true}/>} />
+                        <Route exact path="/" component={Home}/>} />
+                        {/*<Route exact path="/" render={() => <Visitor isVisitor={true}/>} />*/}
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
-                        <Route path="/registered" component={Registered} />
+                        {/*<Route path="/registered" component={Registered} />*/}
                         <Route path="/search/" component={SearchResult} />
                         <Route path="/createStore" component={CreateStore}/>
                         <Route path="/purchaseHistory" component={PurchaseHistory}/>

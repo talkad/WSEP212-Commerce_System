@@ -2,30 +2,31 @@ import React from "react";
 import ProductEntry from "../Components/ProductEntry";
 import ReviewProduct from "./ReviewProduct";
 import Connection from "../API/Connection";
+import ProductEntryHistory from "../Components/ProductEntryHistory";
 
 
-// const products = [
-//     {
-//         name: "brioche",
-//         productID: 1,
-//         storeID: 1,
-//         price: 50.5,
-//         seller: "ma'afia",
-//         categories: ["pastry", "tasty"],
-//         rating: 5,
-//         numReview: 200,
-//     },
-//     {
-//         name: "eclair",
-//         productID: 2,
-//         storeID: 2,
-//         price: 50.5,
-//         seller: "ma'afia2",
-//         categories: ["pastry", "tasty"],
-//         rating: 4.5,
-//         numReview: 300,
-//     }
-// ]
+const products = [
+    {
+        name: "brioche",
+        productID: 1,
+        storeID: 1,
+        price: 50.5,
+        seller: "ma'afia",
+        categories: ["pastry", "tasty"],
+        rating: 5,
+        numReview: 200,
+    },
+    {
+        name: "eclair",
+        productID: 2,
+        storeID: 2,
+        price: 50.5,
+        seller: "ma'afia2",
+        categories: ["pastry", "tasty"],
+        rating: 4.5,
+        numReview: 300,
+    }
+]
 
 class PurchaseHistory extends React.Component{
 
@@ -33,8 +34,10 @@ class PurchaseHistory extends React.Component{
         super(props);
 
         this.state = {
-            purchaseHistory: [],
+            purchaseHistory: products,
         }
+
+        this.handleResponse = this.handleResponse.bind(this);
     }
 
     handleResponse(result){
@@ -43,7 +46,8 @@ class PurchaseHistory extends React.Component{
         }
         else{
             alert(result.response.errMsg);
-            this.state.history.goBack();
+            //this.props.history.goBack();
+            // this.state.history.goBack();
         }
     }
 
@@ -55,28 +59,21 @@ class PurchaseHistory extends React.Component{
         return (
             <div>
                 <h1>Purchase History</h1>
-                <ul>
                     {this.state.purchaseHistory.map(({name, productID, storeID, price, seller,
                                        categories, rating, numReview, showReview}) =>(
                         <div>
-                            <li>
-                                <ProductEntry
+                                <ProductEntryHistory
                                     name = {name}
                                     price = {price}
                                     seller = {seller}
-                                    categories = {categories}
-                                    rating = {rating}
-                                    numReview = {numReview}
+                                    productID = {productID}
+                                    storeID = {storeID}
                                 />
-                            </li>
-                            <ReviewProduct storeID={storeID} productID={productID} submitHandler={() => showReview = false}/>
                         </div>
                     ) ) }
-                </ul>
             </div>
         );
     }
-
 }
 
 export default PurchaseHistory;
