@@ -33,7 +33,8 @@ class Cart extends React.Component{
         super(props);
 
         this.state = {
-            cart: products,
+            cart: [],
+            loaded: false
         }
 
         this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this);
@@ -42,12 +43,14 @@ class Cart extends React.Component{
     }
 
     handleGetCartDetailsResponse(result){
-        if(!result.response.isFailure){
-            this.setState({cart: result.response.result});
+        if(!result.isFailure){
+            console.log("just got");
+            console.log(result.result);
+            this.setState({cart: result.result, loaded: true});
         }
         else{
-            alert(result.response.errMsg);
-            //this.props.history.goBack();
+            alert(result.errMsg);
+            this.props.history.goBack();
         }
     }
 
@@ -65,11 +68,8 @@ class Cart extends React.Component{
     }
 
     handleRemoveFromCart(storeID, productID){
-        console.log("store id is " + storeID);
-        console.log("product id is " + productID);
         Connection.sendRemoveFromCart(storeID, productID).then(this.handleRemoveFromCart, Connection.handleReject);
     }
-
 
     handleQuantityChange(){
         Connection.sendGetCartDetails().then(this.handleGetCartDetailsResponse, Connection.handleReject);
@@ -80,8 +80,8 @@ class Cart extends React.Component{
             <div>
                 <h1>Cart</h1>
                 <p><Link to="/checkout">Checkout</Link></p>
-                {this.state.cart.map(({name, productID, storeID, price, seller,
-                                   categories, rating, numReview, showReview}) =>(
+                {this.state.loaded && this.state.cart.map(({name, productID, storeID, price,
+                                                               categories, keywords, reviews, rating, numRatings}) =>(
                     <div>
                             <ProductEntryCart
                                 name = {name}

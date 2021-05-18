@@ -2,7 +2,7 @@ import React from "react";
 import ProductEntry from '../Components/ProductEntry'
 import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
 
 const products = [
     {
@@ -236,6 +236,7 @@ class SearchResult extends React.Component{
             responseResults: [],
             showStore: false,
             showProduct: false,
+            loaded: true,
         }
 
         this.handleSearchResponse = this.handleSearchResponse.bind(this);
@@ -244,8 +245,7 @@ class SearchResult extends React.Component{
 
     handleSearchResponse(result){
         if(!result.isFailure){
-            this.setState({responseResult: result.result});
-            console.log(this.state.responseResults);
+            this.setState({responseResults: result.result, loaded: false});
         }
         else{
             alert(result.errMsg);
@@ -289,32 +289,33 @@ class SearchResult extends React.Component{
     }
 
     handleAddToCart(productID, storeID){
-        console.log("hello there");
         Connection.sendAddToCart(productID, storeID).then(this.handleAddToCartResponse, Connection.handleReject);
     }
 
     handleShowStoreProducts(products){
-        this.setState({showStore: false, showProduct: true, responseResult: products});
+        this.setState({showStore: false, showProduct: true, responseResults: products});
     }
 
     render() {
         return(
           <div>
               <h1>Search Results</h1>
-              {this.state.showProduct && this.state.responseResults.map(({name, productID, storeID, price,
-                                                       categories, keywords, reviews, rating, numRatings}) =>(
+              {this.state.loaded && <Spinner animation="grow" />}
+              {!this.state.loaded && this.state.showProduct && this.state.responseResults.map(({name, productID, storeID, price,
+                                                                                                   categories, keywords, reviews, rating, numRatings}) =>(
                       <div>
-                              <ProductEntry
-                                  name = {name}
-                                  price = {price}
-                                  storeID = {storeID}
-                                  categories = {categories}
-                                  reviews = {reviews}
-                                  action = {"Add to cart"}
-                                  action_handler = {() => this.handleAddToCart(productID, storeID)}
-                              />
+                          <ProductEntry
+                              name = {name}
+                              price = {price}
+                              storeID = {storeID}
+                              categories = {categories}
+                              reviews = {reviews}
+                              action = {"Add to cart"}
+                              action_handler = {() => this.handleAddToCart(productID, storeID)}
+                          />
                       </div>
                   ) ) }
+
               {/*{this.state.showStore &&*/}
               {/*<ul>*/}
               {/*    {this.state.responseResults.map(({id, name, products}) =>(*/}

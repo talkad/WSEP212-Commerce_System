@@ -36,7 +36,6 @@ class Connection{
             console.log(receivedData);
 
             if(receivedData.type === "startup"){
-                console.log("getting here");
                 //console.log(receivedData.message().result);
                 const inner_parse = JSON.parse(receivedData.message);
                 window.sessionStorage.setItem('username', inner_parse.result);
@@ -89,10 +88,7 @@ class Connection{
 
     static searchAndReturn(action){
         for(let i=0; i < Connection.dataFromServer.length; i++){
-            console.log("current data");
-            console.log(Connection.dataFromServer[i]);
             if(Connection.dataFromServer[i] !== undefined && Connection.dataFromServer[i].action === action){
-                console.log("found it");
                 return i;
             }
         }

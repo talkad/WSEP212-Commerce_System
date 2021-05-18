@@ -58,8 +58,6 @@ class App extends React.Component{
 
     componentDidMount() {
         let username = window.sessionStorage.getItem('username');
-        console.log("hello there");
-        console.log(username);
         if (username !== '' && username !== null && username.substr(0, 5) !== "Guest") {
             if(StaticUserInfo.getUserStores().length === 0){
                 this.setState({visitor: false, registered: true, storeOwner: false});
