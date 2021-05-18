@@ -202,12 +202,12 @@ class Connection{
         return Connection.getResponse();
     }
 
-    static sendDirectPurchase(backAccount, location){
+    static sendDirectPurchase(paymentDetails, supplyDetails){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "directPurchase",
-            username: StaticUserInfo.getUsername(),
-            backAccount: backAccount,
-            location: location,
+            username: window.sessionStorage.getItem('username'),
+            paymentDetails: paymentDetails,
+            supplyDetails: supplyDetails,
         }));
 
         return Connection.getResponse();
