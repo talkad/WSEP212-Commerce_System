@@ -1,7 +1,6 @@
 package Server.DAL;
 
 import Server.Domain.CommonClasses.Pair;
-import Server.Domain.ShoppingManager.Product;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -11,32 +10,24 @@ import java.util.Vector;
 @Embedded
 public class InventoryDTO {
 
-    @Property(value = "amounts")
-    // map productID to the amount of it
-    private List<Pair<Integer, Integer>> amounts;
-
     @Property(value = "products")
-    // map productID to Product
+    // map product to the amount of it
     // TODO must be converted to vector in domain layer
-    private List<Product> products;
+    private List<Pair<ProductDTO, Integer>> products;
 
     public InventoryDTO(){
         // For Morphia
     }
 
-    public List<Pair<Integer, Integer>> getAmounts() {
-        return amounts;
+    public InventoryDTO(List<Pair<ProductDTO, Integer>> products) {
+        this.products = products;
     }
 
-    public void setAmounts(List<Pair<Integer, Integer>> amounts) {
-        this.amounts = new Vector<>(amounts);
-    }
-
-    public List<Product> getProducts() {
+    public List<Pair<ProductDTO, Integer>> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProducts(List<Pair<ProductDTO, Integer>> products) {
+        this.products = new Vector<>(products);
     }
 }
