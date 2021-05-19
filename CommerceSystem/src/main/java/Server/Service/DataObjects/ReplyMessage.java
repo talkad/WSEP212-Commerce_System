@@ -6,9 +6,13 @@ public class ReplyMessage {
     String message;
     String action;
 
-    public ReplyMessage(String type, String msg, String action){
+    public ReplyMessage(String type, String message, String action){
         this.type = type;
-        this.message = msg;
+        this.message = message;
         this.action = action;
+    }
+
+    public String getMessage(){
+        return message;
     }
 }

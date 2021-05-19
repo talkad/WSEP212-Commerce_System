@@ -44,7 +44,9 @@ public class Notifier implements Notify{
         Gson gson = new Gson();
         ChannelHandlerContext channel = connections.get(identifier);
 
-        if(channel != null)
+        if(channel != null) {
             channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(msg)));
+            System.out.println("server sent to client " + identifier+ " the msg " + gson.toJson(msg));
+        }
     }
 }

@@ -14,8 +14,9 @@ class ProductEntryHistory extends React.Component{
                 <Card border='dark' className='card'>
                     <Card.Body>
                         <Card.Title>{this.props.name}</Card.Title>
-                        <Card.Subtitle>price: {this.props.price}</Card.Subtitle>
+                        <Card.Subtitle>Bought for: {this.props.price}</Card.Subtitle>
                         <Card.Text>Sold by: {this.props.storeID}</Card.Text>
+                        <Card.Text>Quantity Bought: {this.props.amount}</Card.Text>
                         <ReviewProduct storeID2={this.props.storeID} productID2={this.props.productID}/>
                         {/*<ReviewProduct storeID={this.props.storeID} productID={this.props.productID} submitHandler={() => showReview = false}/>*/}
                         {/*<Button variant="primary" className='card-button' size="sm" onClick={this.props.action_handler}><span style={{fontSize: "small"}}>{this.props.action}</span></Button>*/}

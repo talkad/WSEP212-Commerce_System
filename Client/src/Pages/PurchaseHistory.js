@@ -65,22 +65,23 @@ class PurchaseHistory extends React.Component {
                 {this.state.loaded && this.state.purchaseHistory.map(({basket, totalPrice, purchaseDate}) => (
                     <div>
                         <h2>Purchase from: {purchaseDate}</h2>
-                        <h2>Total amount: {totalPrice}</h2>
-                        {basket.map(({storeID, storeName, productsDTO, amounts}) => (
-                            <CardGroup>
-                                {zip(productsDTO, amounts).map( entry => (
-                                    <div>
-                                        <ProductEntryHistory
-                                            name={entry[0].name}
-                                            price={entry[0].price}
-                                            seller={storeName}
-                                            productID={entry[0].productID}
-                                            storeID={storeID}
-                                        />
-                                    </div>
-                                ) ) }
-                            </CardGroup>
-                        ))}
+                        <h2>Total price: {totalPrice}</h2>
+
+                        <CardGroup>
+                            {zip(basket.productsDTO, basket.amounts).map( entry => (
+                                <div>
+                                    <ProductEntryHistory
+                                        name={entry[0].name}
+                                        price={entry[0].price}
+                                        seller={basket.storeName}
+                                        productID={entry[0].productID}
+                                        storeID={basket.storeID}
+                                        amount={entry[1]}
+                                    />
+                                </div>
+                            ) ) }
+                        </CardGroup>
+
                     </div>
                 ))}
             </div>

@@ -15,6 +15,9 @@ class ProductEntry extends React.Component{
                      <Card.Title>{this.props.name}</Card.Title>
                      <Card.Subtitle>price: {this.props.price} ₪</Card.Subtitle>
                      <Card.Text>Sold by: {this.props.storeID}</Card.Text>
+                     <Card.Subtitle>Reviews:</Card.Subtitle>
+                     <Card.Text>{this.props.reviews.map(({username, review}) => username + ": " + review + "\n")}</Card.Text>
+
                      <Button variant="primary" className='card-button' size="sm" onClick={this.props.action_handler}><span style={{fontSize: "small"}}>{this.props.action}</span></Button>
                  </Card.Body>
               </Card>

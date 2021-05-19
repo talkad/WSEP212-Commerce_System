@@ -22,7 +22,6 @@ class ReviewProduct extends React.Component{
         if(!result.isFailure){
             alert("product reviewed successfully");
             this.setState({review: ''});
-            this.props.submitHandler();
         }
         else{
             alert(result.errMsg);

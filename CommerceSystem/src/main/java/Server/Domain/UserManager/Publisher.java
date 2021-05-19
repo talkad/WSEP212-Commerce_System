@@ -55,9 +55,12 @@ public class Publisher{
 
             if(userController.isConnected(username))
             {
+                System.out.println("notification sent to " + username + ": " + msg.getMessage());
+
                 notify(username, msg);
             }
             else {
+                System.out.println("notification added to pending |" + username + ": " + msg.getMessage());
                 user = userController.getUserByName(username);
                 user.addPendingMessage(msg);
             }

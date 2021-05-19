@@ -45,10 +45,10 @@ class Connection{
             else if(receivedData.type === "notification"){
                 alert(receivedData.message);
             }
-            else if(receivedData.type === "reconnection"){
-
+            else if(receivedData.type === "reactiveNotification"){
+                
             }
-            else{
+            else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
             }
         }
