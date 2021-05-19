@@ -73,7 +73,7 @@ class Search extends React.Component{
                             aria-describedby="basic-addon2"
                         />
                         <InputGroup.Append>
-                            <Button type='submit' variant="outline-secondary">Button</Button>
+                            <Button type='submit' variant="outline-secondary">Search</Button>
                         </InputGroup.Append>
                     </InputGroup>
                 </form>

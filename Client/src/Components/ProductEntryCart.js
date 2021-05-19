@@ -15,7 +15,7 @@ class ProductEntryCart extends React.Component{
                     <Card.Body>
                         <Card.Title>{this.props.name}</Card.Title>
                         <Card.Subtitle>price: {this.props.price}</Card.Subtitle>
-                        <Card.Text>Sold by: {this.props.storeID}</Card.Text>
+                        <Card.Text>Amount: {this.props.amount}</Card.Text>
                         <UpdateQuantity storeID={this.props.storeID} productID={this.props.productID} handler={this.props.handler}/>
                         <button onClick={this.props.handlerRemove}>Remove from cart</button>
                     </Card.Body>

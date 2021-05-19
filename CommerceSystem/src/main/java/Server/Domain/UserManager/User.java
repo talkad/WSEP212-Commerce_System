@@ -179,9 +179,9 @@ public class User {
 
     public Response<List<PurchaseClientDTO>> getPurchaseHistoryContents() {
         if (this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
-            return new Response<>(this.purchaseHistory.getPurchases(), false, null);
+            return new Response<>(this.purchaseHistory.getPurchases(), false, "get purchase history successfully");
         }
-        return new Response<>(null, true, "User not allowed to view purchase history");
+        return new Response<>(new LinkedList<>(), true, "User not allowed to view purchase history");
     }
 
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
@@ -416,7 +416,7 @@ public class User {
             store = StoreController.getInstance().getStoreById(storeID);
 
             if(store == null){
-                return new Response<>(null, true, "This store doesn't exists");
+                return new Response<>(new LinkedList<>(), true, "This store doesn't exists");
             }
 
             return store.getPurchaseHistory();
@@ -435,12 +435,12 @@ public class User {
             store = StoreController.getInstance().getStoreById(storeID);
 
             if(store == null){
-                return new Response<>(null, true, "This store doesn't exists");
+                return new Response<>(new LinkedHashSet<>(), true, "This store doesn't exists");
             }
 
             return store.getPurchaseHistory();
         } else {
-            return new Response<>(null, true, "User not allowed to receive store history");
+            return new Response<>(new LinkedHashSet<>(), true, "User not allowed to receive store history");
         }
     }
 
@@ -518,7 +518,7 @@ public class User {
         managedReadLock.unlock();
 
         if(permissions == null)
-            return new Response<>(null, true, "user "+ name + " doesn't manage the given store");
+            return new Response<>(new LinkedList<>(), true, "user "+ name + " doesn't manage the given store");
 
         for(Permissions per: permissions)
             permissionsStr.add(per.name());
@@ -630,7 +630,7 @@ public class User {
             return new Response<>(StoreController.getInstance().getTotalSystemRevenue(), false, "System manager received total revenue");
         }
         else {
-            return new Response<>(null, true, "The user doesn't have the right permissions");
+            return new Response<>(-1.0, true, "The user doesn't have the right permissions");
         }
     }
 
@@ -691,7 +691,7 @@ public class User {
             }
         }
         else{
-            return new Response<>(null, true, "The user doesn't have the right permissions");
+            return new Response<>(false, true, "The user doesn't have the right permissions");
         }
     }
 
@@ -704,7 +704,7 @@ public class User {
         }
 
         ProductClientDTO product = null;
-        for(ProductClientDTO p: purchase.getBasket().keySet())
+        for(ProductClientDTO p: purchase.getBasket().getProductsDTO())
             product = p;
 
         if(product == null)

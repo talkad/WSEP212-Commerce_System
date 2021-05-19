@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 
 public class InventoryTest {
 
-
     @Test
     public void addProductTest(){
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");

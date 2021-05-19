@@ -1,23 +1,21 @@
 package Server.Domain.UserManager.DTOs;
 
-import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 public class PurchaseClientDTO {
 
-    private Map<ProductClientDTO, Integer> basket;
+    private BasketClientDTO basket;
     private double totalPrice;
-    private LocalDate purchaseDate;
+    private String purchaseDate;
 
-    public PurchaseClientDTO(Map<ProductClientDTO, Integer> basket, double totalPrice, LocalDate purchaseDate) {
+    public PurchaseClientDTO(BasketClientDTO basket, double totalPrice, LocalDate purchaseDate) {
         this.basket = basket;
         this.totalPrice = totalPrice;
-        this.purchaseDate = purchaseDate;
+        this.purchaseDate = purchaseDate.toString();
     }
 
-    public Map<ProductClientDTO, Integer> getBasket() {
+    public BasketClientDTO getBasket() {
         return basket;
     }
 
@@ -25,7 +23,7 @@ public class PurchaseClientDTO {
         return totalPrice;
     }
 
-    public LocalDate getPurchaseDate() {
+    public String getPurchaseDate() {
         return purchaseDate;
     }
 

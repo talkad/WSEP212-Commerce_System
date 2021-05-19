@@ -125,6 +125,7 @@ class Connection{
 
     static handleReject(error){
         alert(error);
+        window.history.back();
     }
 
     static async getResponse(action){
@@ -236,8 +237,8 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "directPurchase",
             username: window.sessionStorage.getItem('username'),
-            paymentDetails: paymentDetails,
-            supplyDetails: supplyDetails,
+            paymentDetails: JSON.stringify(paymentDetails),
+            supplyDetails: JSON.stringify(supplyDetails),
         }));
 
         return Connection.getResponse("directPurchase");

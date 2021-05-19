@@ -248,7 +248,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
         boolean exists = false;
         for(PurchaseClientDTO purchased: historyResult.getResult()){
-            for(ProductClientDTO product: purchased.getBasket().keySet()){
+            for(ProductClientDTO product: purchased.getBasket().getProductsDTO()){
                 if(product.getProductID() == productDTO.getProductID() && product.getStoreID() == productDTO.getStoreID()) {
                     exists = true;
                 }

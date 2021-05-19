@@ -28,7 +28,7 @@ public class PurchaseHistory {
     public boolean isPurchased(int productID) {
 
         for(PurchaseClientDTO purchaseDTO: purchases){
-            for(ProductClientDTO productDTO: purchaseDTO.getBasket().keySet())
+            for(ProductClientDTO productDTO: purchaseDTO.getBasket().getProductsDTO())
                 if(productDTO.getProductID() == productID)
                     return true;
         }

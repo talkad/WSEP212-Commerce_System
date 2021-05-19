@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import UpdateQuantity from "../Components/UpdateQuantity";
 import Connection from "../API/Connection";
 import ProductEntryCart from "../Components/ProductEntryCart";
+import {CardGroup, Spinner} from "react-bootstrap";
 
 const products = [
     {
@@ -28,7 +29,7 @@ const products = [
     }
     ]
 
-class Cart extends React.Component{
+class Cart extends React.Component {
     constructor(props) {
         super(props);
 
@@ -42,13 +43,10 @@ class Cart extends React.Component{
         this.handleGetCartDetailsResponse = this.handleGetCartDetailsResponse.bind(this);
     }
 
-    handleGetCartDetailsResponse(result){
-        if(!result.isFailure){
-            console.log("just got");
-            console.log(result.result);
+    handleGetCartDetailsResponse(result) {
+        if (!result.isFailure) {
             this.setState({cart: result.result, loaded: true});
-        }
-        else{
+        } else {
             alert(result.errMsg);
             this.props.history.goBack();
         }
@@ -58,42 +56,61 @@ class Cart extends React.Component{
         Connection.sendGetCartDetails().then(this.handleGetCartDetailsResponse, Connection.handleReject);
     }
 
-    handleRemoveFromCartResponse(result){
-        if(!result.response.isFailure){
-            Connection.sendGetCartDetails().then(this.handleGetCartDetailsResponse, Connection.handleReject);
-        }
-        else{
-            alert(result.response.errMsg);
+
+    handleRemoveFromCartResponse(result) {
+        if (!result.isFailure) {
+            window.location.reload();
+            // Connection.sendGetCartDetails().then(this.handleGetCartDetailsResponse, Connection.handleReject);
+        } else {
+            alert(result.errMsg);
         }
     }
 
-    handleRemoveFromCart(storeID, productID){
-        Connection.sendRemoveFromCart(storeID, productID).then(this.handleRemoveFromCart, Connection.handleReject);
+    handleRemoveFromCart(storeID, productID) {
+        Connection.sendRemoveFromCart(storeID, productID).then(this.handleRemoveFromCartResponse, Connection.handleReject);
     }
 
-    handleQuantityChange(){
-        Connection.sendGetCartDetails().then(this.handleGetCartDetailsResponse, Connection.handleReject);
+    handleQuantityChange() {
+        window.location.reload();
     }
 
     render() {
+        const zip = (a, b) => a.map((k, i) => [k, b[i]]);
         return (
             <div>
                 <h1>Cart</h1>
                 <p><Link to="/checkout">Checkout</Link></p>
-                {this.state.loaded && this.state.cart.map(({name, productID, storeID, price,
-                                                               categories, keywords, reviews, rating, numRatings}) =>(
+                {!this.state.loaded && <Spinner animation="grow"/>}
+                {this.state.loaded && this.state.cart.map(({storeID, storeName, productsDTO, amounts}) => (
                     <div>
-                            <ProductEntryCart
-                                name = {name}
-                                price = {price}
-                                seller = {storeID}
-                                storeID = {storeID}
-                                productID = {productID}
-                                handler = {() => this.handleQuantityChange()}
-                                handlerRemove = {() => this.handleRemoveFromCart(storeID, productID)}
-                            />
+                        <h2>{storeName}</h2>
+                        <CardGroup>
+                            {zip(productsDTO, amounts).map( entry => (
+                                <ProductEntryCart
+                                    name = {entry[0].name}
+                                    price = {entry[0].price}
+                                    storeID = {storeID}
+                                    amount = {entry[1]}
+                                    productID = {entry[0].productID}
+                                    handler = {() => this.handleQuantityChange()}
+                                    handlerRemove = {() => this.handleRemoveFromCart(storeID, entry[0].productID)}
+                                />
+                            ) ) }
+                        </CardGroup>
                     </div>
-                ) ) }
+                    // <div>
+                    //     <h1>{storeID}</h1>
+                    //     <h1>{storeName}</h1>
+                    //     {/*<h1>{productsDTO}</h1>*/}
+                    //     {/*<h1>{amounts}</h1>*/}
+                    // </div>
+                ))}
+                {/*{this.state.loaded && this.state.cart.map(({name, productID, storeID, price,*/}
+                {/*                                               categories, keywords, reviews, rating, numRatings}) =>(*/}
+                {/*    <div>*/}
+
+                {/*    </div>*/}
+                {/*) ) }*/}
             </div>
         );
     }

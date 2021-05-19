@@ -20,12 +20,12 @@ class UpdateQuantity extends React.Component{
     }
 
     handleResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("quantity updated successfully");
             this.props.handler();
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
         this.setState({quantity: ''})
     }

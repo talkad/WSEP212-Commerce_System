@@ -39,14 +39,14 @@ class Checkout extends React.Component{
     }
 
     handleResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             this.setState({submitted: false,
                 showAlert: true, alertVariant: 'success', alertInfo: 'Thank you for your purchase'});
             window.location.href = '/';
         }
         else{
             this.setState({submitted: false,
-                showAlert: true, alertVariant: 'danger', alertInfo: result.response.errMsg});
+                showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
 

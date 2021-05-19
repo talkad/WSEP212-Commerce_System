@@ -3,6 +3,8 @@ import ProductEntry from "../Components/ProductEntry";
 import ReviewProduct from "./ReviewProduct";
 import Connection from "../API/Connection";
 import ProductEntryHistory from "../Components/ProductEntryHistory";
+import {CardGroup, Spinner} from "react-bootstrap";
+import ProductEntryCart from "../Components/ProductEntryCart";
 
 
 const products = [
@@ -28,26 +30,25 @@ const products = [
     }
 ]
 
-class PurchaseHistory extends React.Component{
+class PurchaseHistory extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            purchaseHistory: products,
+            purchaseHistory: [],
+            loaded: false,
         }
 
         this.handleResponse = this.handleResponse.bind(this);
     }
 
-    handleResponse(result){
-        if(!result.response.isFailure){
-            this.setState({purchaseHistory: result.response.result});
-        }
-        else{
-            alert(result.response.errMsg);
-            //this.props.history.goBack();
-            // this.state.history.goBack();
+    handleResponse(result) {
+        if (!result.isFailure) {
+            this.setState({purchaseHistory: result.result, loaded: true});
+        } else {
+            alert(result.errMsg);
+            this.props.history.goBack();
         }
     }
 
@@ -56,21 +57,32 @@ class PurchaseHistory extends React.Component{
     }
 
     render() {
+        const zip = (a, b) => a.map((k, i) => [k, b[i]]);
         return (
             <div>
                 <h1>Purchase History</h1>
-                    {this.state.purchaseHistory.map(({name, productID, storeID, price, seller,
-                                       categories, rating, numReview, showReview}) =>(
-                        <div>
-                                <ProductEntryHistory
-                                    name = {name}
-                                    price = {price}
-                                    seller = {seller}
-                                    productID = {productID}
-                                    storeID = {storeID}
-                                />
-                        </div>
-                    ) ) }
+                {!this.state.loaded && <Spinner animation="grow"/>}
+                {this.state.loaded && this.state.purchaseHistory.map(({basket, totalPrice, purchaseDate}) => (
+                    <div>
+                        <h2>Purchase from: {purchaseDate}</h2>
+                        <h2>Total amount: {totalPrice}</h2>
+                        {basket.map(({storeID, storeName, productsDTO, amounts}) => (
+                            <CardGroup>
+                                {zip(productsDTO, amounts).map( entry => (
+                                    <div>
+                                        <ProductEntryHistory
+                                            name={entry[0].name}
+                                            price={entry[0].price}
+                                            seller={storeName}
+                                            productID={entry[0].productID}
+                                            storeID={storeID}
+                                        />
+                                    </div>
+                                ) ) }
+                            </CardGroup>
+                        ))}
+                    </div>
+                ))}
             </div>
         );
     }

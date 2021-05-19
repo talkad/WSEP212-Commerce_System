@@ -2,7 +2,7 @@ import React from "react";
 import ProductEntry from '../Components/ProductEntry'
 import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
-import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
+import {Button, Col, Container, Image, Row, Spinner} from "react-bootstrap";
 
 const products = [
     {
@@ -227,7 +227,7 @@ const stores = [
     }
 ]
 
-class SearchResult extends React.Component{
+class SearchResult extends React.Component {
     constructor(props) {
         super(props);
 
@@ -236,18 +236,17 @@ class SearchResult extends React.Component{
             responseResults: [],
             showStore: false,
             showProduct: false,
-            loaded: true,
+            loaded: false,
         }
 
         this.handleSearchResponse = this.handleSearchResponse.bind(this);
         this.handleAddToCartResponse = this.handleAddToCartResponse.bind(this);
     }
 
-    handleSearchResponse(result){
-        if(!result.isFailure){
-            this.setState({responseResults: result.result, loaded: false});
-        }
-        else{
+    handleSearchResponse(result) {
+        if (!result.isFailure) {
+            this.setState({responseResults: result.result, loaded: true});
+        } else {
             alert(result.errMsg);
         }
     }
@@ -257,81 +256,88 @@ class SearchResult extends React.Component{
         const searchOption = urlParams.get('searchOption');
         const freeText = urlParams.get("free-text");
 
-        if(searchOption === "product"){
+        if (searchOption === "product") {
             this.setState({searchOption: searchOption, showProduct: true});
 
             const searchProductBy = urlParams.get("searchProductBy");
 
-            if(searchProductBy === "name"){
+            if (searchProductBy === "name") {
                 Connection.sendSearchProductByName(freeText).then(this.handleSearchResponse, Connection.handleReject);
-            }
-            else if(searchProductBy === "category"){
+            } else if (searchProductBy === "category") {
                 Connection.sendSearchProductByCategory(freeText).then(this.handleSearchResponse, Connection.handleReject);
-            }
-            else{ // keyword
+            } else { // keyword
                 Connection.sendSearchProductByKeyword(freeText).then(this.handleSearchResponse, Connection.handleReject);
             }
 
-        }
-        else{
+        } else {
             this.setState({searchOption: searchOption, showStore: true})
             Connection.sendSearchStoreByName(freeText).then(this.handleSearchResponse, Connection.handleReject);
         }
     }
 
-    handleAddToCartResponse(result){
-        if(!result.isFailure){
+    handleAddToCartResponse(result) {
+        if (!result.isFailure) {
             alert("product added successfully to cart");
-        }
-        else{
+        } else {
             alert(result.errMsg);
         }
     }
 
-    handleAddToCart(productID, storeID){
-        Connection.sendAddToCart(productID, storeID).then(this.handleAddToCartResponse, Connection.handleReject);
+    handleAddToCart(productID, storeID) {
+        Connection.sendAddToCart(storeID, productID).then(this.handleAddToCartResponse, Connection.handleReject);
     }
 
-    handleShowStoreProducts(products){
+    handleShowStoreProducts(products) {
         this.setState({showStore: false, showProduct: true, responseResults: products});
     }
 
     render() {
-        return(
-          <div>
-              <h1>Search Results</h1>
-              {this.state.loaded && <Spinner animation="grow" />}
-              {!this.state.loaded && this.state.showProduct && this.state.responseResults.map(({name, productID, storeID, price,
-                                                                                                   categories, keywords, reviews, rating, numRatings}) =>(
-                      <div>
-                          <ProductEntry
-                              name = {name}
-                              price = {price}
-                              storeID = {storeID}
-                              categories = {categories}
-                              reviews = {reviews}
-                              action = {"Add to cart"}
-                              action_handler = {() => this.handleAddToCart(productID, storeID)}
-                          />
-                      </div>
-                  ) ) }
+        return (
+            <div>
+                <h1>Search Results</h1>
+                {this.state.loaded && (this.state.responseResults.length === 0) &&
+                <Image src="https://i.imgflip.com/5a4a1e.jpg"/>}
+                {! this.state.loaded && <Spinner animation="grow"/>}
+                {this.state.loaded && this.state.showProduct && this.state.responseResults.map(({
+                                                                                                     name,
+                                                                                                     productID,
+                                                                                                     storeID,
+                                                                                                     price,
+                                                                                                     categories,
+                                                                                                     keywords,
+                                                                                                     reviews,
+                                                                                                     rating,
+                                                                                                     numRatings
+                                                                                                 }) => (
+                    <div>
+                        <ProductEntry
+                            name={name}
+                            price={price}
+                            storeID={storeID}
+                            categories={categories}
+                            reviews={reviews}
+                            action={"Add to cart"}
+                            action_handler={() => this.handleAddToCart(productID, storeID)}
+                        />
+                    </div>
+                ))}
 
-              {/*{this.state.showStore &&*/}
-              {/*<ul>*/}
-              {/*    {this.state.responseResults.map(({id, name, products}) =>(*/}
-              {/*        <div>*/}
-              {/*            <li>*/}
-              {/*                <StoreEntry*/}
-              {/*                    name = {name}*/}
-              {/*                    id = {id}*/}
-              {/*                />*/}
-              {/*            </li>*/}
-              {/*            <Button onClick={() => this.handleShowStoreProducts(products)}>show store products</Button>*/}
-              {/*        </div>*/}
-              {/*    ) ) }*/}
-              {/*</ul>*/}
-              {/*}*/}
-          </div>
+                {/*{this.state.showStore &&*/}
+                {/*<ul>*/}
+                {/*    {this.state.responseResults.map(({id, name, products}) =>(*/}
+                {/*        <div>*/}
+                {/*            <li>*/}
+                {/*                <StoreEntry*/}
+                {/*                    name = {name}*/}
+                {/*                    id = {id}*/}
+                {/*                />*/}
+                {/*            </li>*/}
+                {/*            <Button onClick={() => this.handleShowStoreProducts(products)}>show store products</Button>*/}
+                {/*        </div>*/}
+                {/*    ) ) }*/}
+                {/*</ul>*/}
+                {/*}*/}
+            </div>
         );
     }
 }

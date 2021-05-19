@@ -5,6 +5,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
@@ -47,6 +48,7 @@ public class Store {
     }
 
     public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
+
         if(amount <= 0){
             return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
@@ -112,10 +114,10 @@ public class Store {
         double priceAfterDiscount = discountPolicy.calcDiscount(shoppingBasket);
 
         if(result.isFailure()){
-            return new Response<>(null, true, "Store: Product deletion failed successfully");
+            return new Response<>(null, true, "The product is sold out");
         }
 
-        purchaseDTO = new PurchaseClientDTO(shoppingBasket, priceAfterDiscount, LocalDate.now());
+        purchaseDTO = new PurchaseClientDTO(new BasketClientDTO(storeID ,name , shoppingBasket.keySet(), shoppingBasket.values()), priceAfterDiscount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
@@ -194,7 +196,7 @@ public class Store {
         double totalRevenue = 0;
 
         for(PurchaseClientDTO purchase: purchaseHistory.getPurchases()){
-            if(purchase.getPurchaseDate().isAfter(yesterday))
+            if(LocalDate.parse(purchase.getPurchaseDate()).isAfter(yesterday))
                 totalRevenue += purchase.getTotalPrice();
         }
 

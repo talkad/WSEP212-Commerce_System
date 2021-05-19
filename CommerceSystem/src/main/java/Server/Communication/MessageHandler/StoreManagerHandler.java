@@ -31,6 +31,7 @@ public class StoreManagerHandler extends Handler{
                 String productDTO = data.getProperty("productDTO");
                 String amount = data.getProperty("amount");
                 ProductClientDTO product = gson.fromJson(productDTO, ProductClientDTO.class);
+                product = new ProductClientDTO(product.getName(), product.getStoreID(), product.getPrice(), product.getCategories(), product.getKeywords());
 
                 response = service.addProductsToStore(username, product, Integer.parseInt(amount));
             }

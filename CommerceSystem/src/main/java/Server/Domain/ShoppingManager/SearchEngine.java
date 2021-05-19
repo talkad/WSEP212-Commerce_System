@@ -28,13 +28,17 @@ public class SearchEngine {
 
     public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         Collection<Store> stores = StoreController.getInstance().getStores();
-
+        System.out.println("search by name " + productName);
         List<ProductClientDTO> productList = new LinkedList<>();
         if (productName != null) {
-            for (Store store : stores)
-                for (Product product : store.getInventory().getProducts())
+            for (Store store : stores) {
+                System.out.println("search in store " + store.getName());
+                for (Product product : store.getInventory().getProducts()) {
+                    System.out.println("product " + product.getName());
                     if (product.getName().equals(productName))
                         productList.add(product.getProductDTO());
+                }
+            }
         }
 
         return new Response<>(productList, false, "products by name");

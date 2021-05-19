@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React from "react";
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
@@ -26,11 +25,12 @@ import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
-import {Alert, Container, Form, FormControl, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
+import {Alert, Container, Form, FormControl, Image, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
 import {Button} from "bootstrap";
 import Home from "./Pages/Home";
 import * as Icon from 'react-bootstrap-icons';
 import StaticUserInfo from "./API/StaticUserInfo";
+import {ReactComponent as OurLogo} from "./image2vector.svg";
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
@@ -105,10 +105,14 @@ class App extends React.Component{
         return(
             <Router>
                 <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="/">Very Cool Commerce System</Navbar.Brand>
+                    <Navbar.Brand href="/">
+                        <OurLogo height={50} width={150}/>
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
+
+                            {this.state.registered &&<Navbar.Text style={{color: "black"}}> Hi, {window.sessionStorage.getItem('username')}</Navbar.Text>}
 
                             <Nav.Link href="/">Home</Nav.Link>
 
