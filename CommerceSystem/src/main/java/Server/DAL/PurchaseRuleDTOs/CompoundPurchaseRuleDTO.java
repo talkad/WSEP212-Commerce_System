@@ -1,9 +1,13 @@
 package Server.DAL.PurchaseRuleDTOs;
 
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO{
@@ -38,4 +42,13 @@ public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO{
     public void setPurchaseRules(List<PurchaseRuleDTO> purchaseRules) {
         this.purchaseRules = purchaseRules;
     }
+
+    public List<PurchaseRule> getConcretePurchaseRules(){
+        List<PurchaseRule> concretePurchaseRules = new Vector<>();
+        for(PurchaseRuleDTO purchaseRuleDTO : this.purchaseRules){
+            concretePurchaseRules.add(purchaseRuleDTO.toConcretePurchaseRule());
+        }
+        return concretePurchaseRules;
+    }
+
 }

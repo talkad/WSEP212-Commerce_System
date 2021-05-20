@@ -1,5 +1,6 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.StoreDTO;
 import Server.Domain.CommonClasses.Rating;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -43,6 +44,33 @@ public class Store {
         this.rating = new AtomicReference<>(0.0);
         this.numRatings = new AtomicInteger(0);
         this.readWriteLock = new ReentrantReadWriteLock();
+    }
+
+    public Store(StoreDTO storeDTO){
+        this.name = storeDTO.getName();
+        this.storeID = storeDTO.getStoreID();
+        this.ownerName = storeDTO.getOwnerName();
+        this.inventory = new Inventory(storeDTO.getInventory());
+        this.isActiveStore = new AtomicBoolean(storeDTO.isActiveStore());
+        this.discountPolicy = new DiscountPolicy(storeDTO.getDiscountPolicy());
+        this.purchasePolicy = new PurchasePolicy(storeDTO.getPurchasePolicy());
+        this.purchaseHistory = new PurchaseHistory(storeDTO.getPurchaseHistory());
+        this.rating = new AtomicReference<>(storeDTO.getRating());
+        this.numRatings = new AtomicInteger(storeDTO.getNumRatings());
+        this.readWriteLock = new ReentrantReadWriteLock();
+    }
+
+    public StoreDTO toDTO(){
+        return new StoreDTO(this.storeID,
+                            this.name,
+                            this.ownerName,
+                            this.inventory.toDTO(),
+                            this.isActiveStore.get(),
+                            this.discountPolicy.toDTO(),
+                            this.purchasePolicy.toDTO(),
+                            this.rating.get(),
+                            this.numRatings.get(),
+                            this.purchaseHistory.toDTO());
     }
 
     public Response<Boolean> addProduct(ProductDTO productDTO, int amount){

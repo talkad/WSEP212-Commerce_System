@@ -2,6 +2,8 @@ package Server.DAL.PurchaseRuleDTOs;
 
 import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.Domain.CommonClasses.Pair;
+import Server.Domain.ShoppingManager.PurchaseRules.ConditioningCompositionPurchaseRule;
+import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -30,5 +32,10 @@ public class ConditioningCompositionPurchaseRuleDTO extends CompoundPurchaseRule
 
     public void setConditionsMap(List<Pair<PredicateDTO, PredicateDTO>> conditionsMap) {
         this.conditionsMap = conditionsMap;
+    }
+
+    @Override
+    public PurchaseRule toConcretePurchaseRule() {
+        return new ConditioningCompositionPurchaseRule(this);
     }
 }

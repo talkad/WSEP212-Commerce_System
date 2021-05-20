@@ -1,13 +1,12 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.PurchasePolicyDTO;
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PurchasePolicy {
@@ -17,6 +16,25 @@ public class PurchasePolicy {
     public PurchasePolicy(){
         this.purchaseRules = Collections.synchronizedList(new LinkedList<>());
         indexer = new AtomicInteger(0);
+    }
+
+    public PurchasePolicy(PurchasePolicyDTO policyDTO){
+        this.purchaseRules = new Vector<>();
+        List<PurchaseRuleDTO> rulesList = policyDTO.getPurchaseRules();
+        if(rulesList != null){
+            for(PurchaseRuleDTO ruleDTO : rulesList){
+                this.purchaseRules.add(ruleDTO.toConcretePurchaseRule());
+            }
+        }
+        this.indexer = new AtomicInteger(policyDTO.getIndexer());
+    }
+
+    public PurchasePolicyDTO toDTO(){
+        List<PurchaseRuleDTO> rulesList = new Vector<>();
+        for(PurchaseRule rule : this.purchaseRules){
+            rulesList.add(rule.toDTO());
+        }
+        return new PurchasePolicyDTO(rulesList, this.indexer.get());
     }
 
     public Response<Boolean> isValidPurchase(Map<ProductDTO, Integer> shoppingBasket){
