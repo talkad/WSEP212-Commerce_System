@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import AddProduct from "../ProductPages/AddProduct";
 import DeleteProduct from "../ProductPages/DeleteProduct";
 import EditProduct from "../ProductPages/EditProduct";
-import AddDiscount from "../DiscountPurchasePolicyPages/AddDiscount";
 import AppointOwner from "../AppoinmentPages/AppointOwner";
 import RemoveOwner from "../AppoinmentPages/RemoveOwner";
 import AddPermission from "../PermissionsPages/AddPermission";

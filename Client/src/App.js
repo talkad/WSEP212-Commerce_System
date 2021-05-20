@@ -14,7 +14,6 @@ import StoreManagment from "./MainPages/StoreManagment";
 import AddProduct from "./ProductPages/AddProduct";
 import DeleteProduct from "./ProductPages/DeleteProduct";
 import EditProduct from "./ProductPages/EditProduct";
-import AddDiscount from "./DiscountPurchasePolicyPages/AddDiscount";
 import AppointOwner from "./AppoinmentPages/AppointOwner";
 import RemoveOwner from "./AppoinmentPages/RemoveOwner";
 import AddPermission from "./PermissionsPages/AddPermission";
@@ -159,7 +158,6 @@ class App extends React.Component{
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
-                        <Route path="/ADD_DISCOUNTS" component={AddDiscount}/>
                         {/*<Route path="/DELETE_DISCOUNTS" component={DeleteDiscount}/>*/}
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>
                         <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>

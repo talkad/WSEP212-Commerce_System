@@ -19,11 +19,11 @@ class AppointManager extends React.Component {
     }
 
     handleAppointResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("appointing successful");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 
