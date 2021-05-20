@@ -9,7 +9,7 @@ import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
@@ -316,7 +316,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         if (real != null){
             return real.addPermission(permitting, storeId, permitted, permission);
         }
@@ -324,7 +324,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         if (real != null){
             return real.removePermission(permitting, storeId, permitted, permission);
         }

@@ -1,6 +1,8 @@
 package Server.Domain.ShoppingManager.Predicates;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
 
 import java.util.Map;
 
@@ -13,6 +15,16 @@ public class CategoryPredicate implements Predicate {
         this.category = category;
         this.minUnits = minUnits;
         this.maxUnits = maxUnits;
+    }
+
+    public CategoryPredicate(CategoryPredicateDTO categoryPredicateDTO){
+        this.category = categoryPredicateDTO.getCategory();
+        this.minUnits = categoryPredicateDTO.getMinUnits();
+        this.maxUnits = categoryPredicateDTO.getMaxUnits();
+    }
+
+    public PredicateDTO toDTO(){
+        return new CategoryPredicateDTO(this.category, this.minUnits, this.maxUnits);
     }
 
     @Override

@@ -233,12 +233,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.removePermission(permitting, storeId, permitted, permission);
     }
 

@@ -5,7 +5,7 @@ import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.SearchEngine;
 import Server.Domain.UserManager.*;
-import Server.Domain.UserManager.DTOs.UserDTO;
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Service.CommerceService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,11 +42,11 @@ public class SearchTests {
         registeredUsers = new ConcurrentHashMap<>();
         admins = new LinkedList<>();
 
-        registeredUsers.put("shaked", new User(new UserDTO("shaked", new ConcurrentHashMap<>(),
+        registeredUsers.put("shaked", new User(new UserDTOTemp("shaked", new ConcurrentHashMap<>(),
                 new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(),new ConcurrentHashMap<>(), new PendingMessages())));
-        registeredUsers.put("yaakov", new User(new UserDTO("yaakov", new ConcurrentHashMap<>(),
+        registeredUsers.put("yaakov", new User(new UserDTOTemp("yaakov", new ConcurrentHashMap<>(),
                 new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new ConcurrentHashMap<>(), new PendingMessages())));
-        registeredUsers.put("almog", new User(new UserDTO("almog", new ConcurrentHashMap<>(),
+        registeredUsers.put("almog", new User(new UserDTOTemp("almog", new ConcurrentHashMap<>(),
                 new LinkedList<>(), new ShoppingCart(), new PurchaseHistory(), new Appointment(), new ConcurrentHashMap<>(),new PendingMessages())));
 
         admins.add("shaked");

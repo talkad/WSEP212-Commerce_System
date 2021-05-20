@@ -5,7 +5,7 @@ import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
@@ -677,7 +677,7 @@ public class UserIntegrationTests {
         yaakov.appointManager("shaked", store1ID);
 
         Assert.assertTrue(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
-        Assert.assertFalse(yaakov.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertFalse(yaakov.addPermission(store1ID, "shaked", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
         Assert.assertFalse(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
     }
 
@@ -723,7 +723,7 @@ public class UserIntegrationTests {
 
         yaakov.appointManager("shaked", store1ID);
         Assert.assertTrue(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
-        Assert.assertTrue(almog.addPermission(store1ID, "shaked", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertTrue(almog.addPermission(store1ID, "shaked", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
         Assert.assertTrue(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
     }
 }

@@ -1,6 +1,6 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import org.junit.Assert;
@@ -57,7 +57,7 @@ public class ProductTest {
         ProductClientDTO productDTO = new ProductClientDTO("Oreo", 1, 22.9, null, null);
         Product product = Product.createProduct(productDTO);
 
-        product.addRating(Rating.HIGH);
+        product.addRating(RatingEnum.HIGH);
         Assert.assertEquals(4, product.getRating(), 0);
     }
 
@@ -67,17 +67,17 @@ public class ProductTest {
         Product product = Product.createProduct(productDTO);
 
         for(int i=0; i < 20; i++)
-            product.addRating(Rating.HIGH);
+            product.addRating(RatingEnum.HIGH);
 
         Assert.assertEquals(4, product.getRating(), 0.0);
 
         for(int i=0; i < 10; i++)
-            product.addRating(Rating.VERY_HIGH);
+            product.addRating(RatingEnum.VERY_HIGH);
 
         Assert.assertEquals((double)130/30, product.getRating(), 0);
 
         for(int i=0; i < 5; i++)
-            product.addRating(Rating.VERY_BAD);
+            product.addRating(RatingEnum.VERY_BAD);
 
         Assert.assertEquals((double)135/35, product.getRating(), 0);
     }
@@ -93,7 +93,7 @@ public class ProductTest {
         ExecutorService service1 = Executors.newFixedThreadPool(numberOfThreads);
         for (int i = 0; i < numberOfThreads; i++) {
             service1.execute(() -> {
-                product.addRating(Rating.VERY_HIGH);
+                product.addRating(RatingEnum.VERY_HIGH);
                 latch.countDown();
             });
         }
@@ -101,7 +101,7 @@ public class ProductTest {
         ExecutorService service2 = Executors.newFixedThreadPool(numberOfThreads);
         for (int i = 0; i < numberOfThreads; i++) {
             service2.execute(() -> {
-                product.addRating(Rating.VERY_BAD);
+                product.addRating(RatingEnum.VERY_BAD);
                 latch.countDown();
             });
         }

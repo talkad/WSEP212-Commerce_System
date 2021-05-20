@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.DAL.ReviewDTO;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -45,6 +46,37 @@ public class Product {
         }
 
         return product;
+    }
+
+    // TODO DAL Constructor - DONT REFACTOR NAME
+    public Product(Server.DAL.ProductDTO productDTO){
+        this.productID = productDTO.getProductID();
+        this.storeID = productDTO.getStoreID();
+        this.name = new AtomicReference<>(productDTO.getName());
+        this.price = new AtomicReference<>(productDTO.getPrice());
+        this.categories = new Vector<>(productDTO.getCategories());
+        this.keywords = new Vector<>(productDTO.getKeywords());
+
+        this.rating = new AtomicReference<>(productDTO.getRating());
+        this.numRatings = new AtomicInteger(productDTO.getNumRatings());
+
+        this.reviews = new Vector<>();
+        List<ReviewDTO> reviewsList = productDTO.getReviews();
+        if(reviewsList != null){
+            for(ReviewDTO reviewDTO : reviewsList){
+                this.reviews.add(new Review(reviewDTO));
+            }
+        }
+    }
+
+    public Server.DAL.ProductDTO toDTO(){
+        //TODO maybe make thread-safe
+        List<ReviewDTO> reviewsList = new Vector<>();
+        for(Review review : this.reviews) {
+            reviewsList.add(review.toDTO());
+        }
+
+        return new Server.DAL.ProductDTO(this.getProductID(), this.getStoreID(), this.getPrice(), this.getName(), new Vector<>(this.categories), new Vector<>(this.keywords), this.getRating(), this.numRatings.get(), reviewsList);
     }
 
     private void setProductID(int id) {
@@ -92,7 +124,7 @@ public class Product {
         return reviews;
     }
 
-    public void addRating(Rating rate){
+    public void addRating(RatingEnum rate){
         int prevNum;
         Double currentRating;
         Double newRating;

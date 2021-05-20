@@ -1032,7 +1032,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to add a product
         Response<Boolean> permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.ADD_PRODUCT_TO_STORE);
+                PermissionsEnum.ADD_PRODUCT_TO_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         ProductClientDTO productDTO = new ProductClientDTO("masmer krem", this.storeID, 20,
@@ -1046,7 +1046,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to update a product
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_PRICE);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.updateProductInfo("e", this.storeID, product.getProductID(),
@@ -1055,7 +1055,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to remove a product
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.REMOVE_PRODUCT_FROM_STORE);
+                PermissionsEnum.REMOVE_PRODUCT_FROM_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.removeProductsFromStore("e", this.storeID, product.getProductID(),
@@ -1064,7 +1064,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to appoint an owner
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.APPOINT_OWNER);
+                PermissionsEnum.APPOINT_OWNER);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.appointStoreOwner("e", "d", this.storeID);
@@ -1072,7 +1072,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to remove an owner appointment
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.REMOVE_OWNER_APPOINTMENT);
+                PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.removeOwnerAppointment("e", "d", this.storeID);
@@ -1080,7 +1080,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to appoint a manager
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.APPOINT_MANAGER);
+                PermissionsEnum.APPOINT_MANAGER);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.appointStoreManager("e", "f", this.storeID);
@@ -1088,11 +1088,11 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to edit permissions
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.ADD_PERMISSION);
+                PermissionsEnum.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.addPermission("e", this.storeID, "f",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(actionResult.getResult());
 
         Response<Collection<PurchaseClientDTO>> newActionResult = bridge.getPurchaseDetails("f", this.storeID);
@@ -1100,7 +1100,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         //permission to remove a manager appointment
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                Permissions.REMOVE_MANAGER_APPOINTMENT);
+                PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.removeManagerAppointment("e", "f", this.storeID);
@@ -1123,7 +1123,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         Response<Boolean> actionResult = bridge.addPermission("j", this.storeID, "h",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertFalse(actionResult.getResult());
 
         // making sure he can't do that
@@ -1150,52 +1150,52 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // add product permission
         Response<Boolean> permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.ADD_PRODUCT_TO_STORE);
+                PermissionsEnum.ADD_PRODUCT_TO_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         // remove product permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_PRODUCT_FROM_STORE);
+                PermissionsEnum.REMOVE_PRODUCT_FROM_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         // update product permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_PRICE);
         Assert.assertTrue(permissionResult.getResult());
 
         // appoint owner permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.APPOINT_OWNER);
+                PermissionsEnum.APPOINT_OWNER);
         Assert.assertTrue(permissionResult.getResult());
 
         // remove owner permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_OWNER_APPOINTMENT);
+                PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         // appoint manager permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.APPOINT_MANAGER);
+                PermissionsEnum.APPOINT_MANAGER);
         Assert.assertTrue(permissionResult.getResult());
 
         // edit permission permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.ADD_PERMISSION);
+                PermissionsEnum.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         // remove manager permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_MANAGER_APPOINTMENT);
+                PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         // receive store worker info permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x", // although it is given to him beforehand
-                Permissions.RECEIVE_STORE_WORKER_INFO);
+                PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.isFailure()); // should fail cause he already has it
 
         // receive store history permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
 
@@ -1203,7 +1203,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // add product removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.ADD_PRODUCT_TO_STORE);
+                PermissionsEnum.ADD_PRODUCT_TO_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         ProductClientDTO productDTO = new ProductClientDTO("masmer hum", this.storeID, 20,
@@ -1215,7 +1215,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // remove product removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_PRODUCT_FROM_STORE);
+                PermissionsEnum.REMOVE_PRODUCT_FROM_STORE);
         Assert.assertTrue(permissionResult.getResult());
 
         ProductClientDTO product = bridge.searchByProductName("masmer varod").getResult().get(0);
@@ -1225,7 +1225,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // update product removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_PRICE);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.updateProductInfo("x", this.storeID, product.getProductID(),
@@ -1234,7 +1234,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // appoint owner removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.APPOINT_OWNER);
+                PermissionsEnum.APPOINT_OWNER);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.appointStoreOwner("x", "y", this.storeID);
@@ -1242,7 +1242,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // remove owner removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_OWNER_APPOINTMENT);
+                PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         appointResult = bridge.appointStoreOwner("aviad", "y",
@@ -1254,7 +1254,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // appoint manager removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.APPOINT_MANAGER);
+                PermissionsEnum.APPOINT_MANAGER);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.appointStoreManager("x", "z", this.storeID);
@@ -1262,7 +1262,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // edit permissions removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.ADD_PERMISSION);
+                PermissionsEnum.ADD_PERMISSION);
         Assert.assertTrue(permissionResult.getResult());
 
         appointResult = bridge.appointStoreManager("aviad", "z",
@@ -1270,12 +1270,12 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         actionResult = bridge.addPermission("x", this.storeID, "z",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertFalse(actionResult.getResult());
 
         // remove manager removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.REMOVE_MANAGER_APPOINTMENT);
+                PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.removeManagerAppointment("x", "z", this.storeID);
@@ -1283,7 +1283,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // receive store worker info removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.RECEIVE_STORE_WORKER_INFO);
+                PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
         Response<List<User>> workersDetailsResult = bridge.getStoreWorkersDetails("x", this.storeID);
@@ -1291,7 +1291,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // receive store history
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
         Response<Collection<PurchaseClientDTO>> historyResult = bridge.getPurchaseDetails("x", this.storeID);
@@ -1314,12 +1314,12 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // receive store history permission
         Response<Boolean> permissionResult = bridge.addPermission("aviad", this.storeID, "xx",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
         // a user without permissions trying to take the permission. should fail
         permissionResult = bridge.removePermission("yy", this.storeID, "xx",
-                Permissions.RECEIVE_STORE_HISTORY);
+                PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertFalse(permissionResult.getResult());
 
         // making sure he still has the permission
@@ -1344,7 +1344,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         // giving permission to appoint to the new manager
-        appointResult = bridge.addPermission("aviad", this.storeID, "a", Permissions.APPOINT_MANAGER);
+        appointResult = bridge.addPermission("aviad", this.storeID, "a", PermissionsEnum.APPOINT_MANAGER);
         Assert.assertTrue(appointResult.getResult());
 
         // the new appointee tries to appoint a new owner
@@ -1436,7 +1436,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // taking the permission to view it from the manager and he tries to view it. should fail
         Response<Boolean> permissionResult = bridge.removePermission("aviad", this.storeID,
-                "shaoli", Permissions.RECEIVE_STORE_WORKER_INFO);
+                "shaoli", PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
         Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
@@ -1465,7 +1465,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // giving him the permission
         Response<Boolean> permissionResult = bridge.addPermission("aviad", this.storeID,
-                "bibi", Permissions.RECEIVE_STORE_HISTORY);
+                "bibi", PermissionsEnum.RECEIVE_STORE_HISTORY);
         Assert.assertTrue(permissionResult.getResult());
 
         // manager and owner trying to view it

@@ -1,5 +1,7 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.OfferDTO;
+
 public class Offer {
     private int productId;
     private int storeId;
@@ -20,6 +22,16 @@ public class Offer {
         this.state = state;
     }
 
+    public Offer(OfferDTO offerDTO){
+        this.productId = offerDTO.getProductId();
+        this.storeId = offerDTO.getStoreId();
+        this.offerReply = offerDTO.getOfferReply();
+        this.state = offerDTO.getState();
+    }
+
+    public OfferDTO toDTO(){
+        return new OfferDTO(this.getProductId(), this.getStoreId(), this.getOfferReply(), this.getState());
+    }
 
     public int getProductId() {
         return this.productId;

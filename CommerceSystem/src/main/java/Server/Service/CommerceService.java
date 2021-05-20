@@ -10,11 +10,10 @@ import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -193,7 +192,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> addDiscountRule(String username, int storeID,DiscountRule discountRule){
+    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule){
         return commerceSystem.addDiscountRule(username, storeID, discountRule);
     }
 
@@ -230,12 +229,12 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return commerceSystem.addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return commerceSystem.removePermission(permitting, storeId, permitted, permission);
     }
 

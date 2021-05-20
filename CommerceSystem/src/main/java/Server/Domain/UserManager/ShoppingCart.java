@@ -1,12 +1,16 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.ShoppingBasketDTO;
+import Server.DAL.ShoppingCartDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,6 +25,28 @@ public class ShoppingCart {
     public ShoppingCart(){
         this.baskets = new ConcurrentHashMap<>();
         this.lock = new ReentrantReadWriteLock();
+    }
+
+    public ShoppingCart(ShoppingCartDTO shoppingCartDTO){
+        this.baskets = new ConcurrentHashMap<>();
+        this.lock = new ReentrantReadWriteLock();
+
+        List<ShoppingBasketDTO> basketsList = shoppingCartDTO.getBaskets();
+        if(basketsList != null){
+            for(ShoppingBasketDTO basket : basketsList){
+                this.baskets.put(basket.getStoreID(), new ShoppingBasket(basket));
+            }
+        }
+    }
+
+    public ShoppingCartDTO toDTO(){
+        List<ShoppingBasketDTO> basketsList = new Vector<>();
+
+        for(int key : this.baskets.keySet()){
+            basketsList.add(this.baskets.get(key).toDTO());
+        }
+
+        return new ShoppingCartDTO(basketsList);
     }
 
     public Response<Boolean> addProduct(int storeID, int productID){

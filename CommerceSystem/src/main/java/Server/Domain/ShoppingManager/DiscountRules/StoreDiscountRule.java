@@ -1,6 +1,9 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
+
 
 import java.util.Map;
 
@@ -8,6 +11,16 @@ public class StoreDiscountRule extends LeafDiscountRule {
 
     public StoreDiscountRule(double discount){
         super(discount);
+    }
+
+    public StoreDiscountRule(StoreDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount());
+        this.setID(ruleDTO.getId());
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO() {
+        return new StoreDiscountRuleDTO(this.id, this.discount);
     }
 
     @Override

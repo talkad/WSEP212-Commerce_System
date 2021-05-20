@@ -2,7 +2,7 @@ package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
@@ -91,7 +91,7 @@ public class StoreManagerHandler extends Handler{
                 String permitted = data.getProperty("permitted");
                 String permission = data.getProperty("permission");
 
-                response = service.addPermission(permitting, Integer.parseInt(storeID), permitted, Permissions.valueOf(permission));
+                response = service.addPermission(permitting, Integer.parseInt(storeID), permitted, PermissionsEnum.valueOf(permission));
             }
             case "removePermission" ->{
                 String permitting = data.getProperty("permitting");
@@ -99,7 +99,7 @@ public class StoreManagerHandler extends Handler{
                 String permitted = data.getProperty("permitted");
                 String permission = data.getProperty("permission");
 
-                response = service.removePermission(permitting, Integer.parseInt(storeID), permitted, Permissions.valueOf(permission));
+                response = service.removePermission(permitting, Integer.parseInt(storeID), permitted, PermissionsEnum.valueOf(permission));
             }
             case "removeManagerAppointment" ->{
                 String appointerName = data.getProperty("appointerName");

@@ -1,11 +1,15 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.ShoppingBasketDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -27,6 +31,31 @@ public class ShoppingBasket {
         this.pAmount = new ConcurrentHashMap<>();
         this.totalPrice = 0;
         this.lock = new ReentrantReadWriteLock();
+    }
+
+    public ShoppingBasket(ShoppingBasketDTO shoppingBasketDTO){
+        this.storeID = shoppingBasketDTO.getStoreID();
+        this.products = new ConcurrentHashMap<>();
+        this.pAmount = new ConcurrentHashMap<>();
+        this.totalPrice = shoppingBasketDTO.getTotalPrice();
+        this.lock = new ReentrantReadWriteLock();
+
+        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = shoppingBasketDTO.getProducts();
+        if(productsList != null){
+            for(Pair<Server.DAL.ProductDTO, Integer> pair : productsList){
+                this.pAmount.put(pair.getFirst().getProductID(), pair.getSecond());
+                this.products.put(pair.getFirst().getProductID(), new Product(pair.getFirst()));
+            }
+        }
+    }
+
+    public ShoppingBasketDTO toDTO(){
+        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = new Vector<>();
+        for(int key : this.pAmount.keySet()){
+            productsList.add(new Pair<>(this.products.get(key).toDTO(), this.pAmount.get(key)));
+        }
+
+        return new ShoppingBasketDTO(this.storeID, productsList, this.totalPrice);
     }
 
     public Response<Boolean> addProduct(ProductClientDTO product){

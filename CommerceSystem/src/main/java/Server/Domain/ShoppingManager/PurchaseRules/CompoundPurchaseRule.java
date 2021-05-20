@@ -1,11 +1,9 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CompoundPurchaseRule implements PurchaseRule {
     protected final static int NOT_SET = -1;
@@ -15,6 +13,14 @@ public abstract class CompoundPurchaseRule implements PurchaseRule {
     public CompoundPurchaseRule(List<PurchaseRule> policyRules) {
         this.purchaseRules = (policyRules == null) ? Collections.synchronizedList(new LinkedList<>()) : Collections.synchronizedList(policyRules);
         this.id = NOT_SET;
+    }
+
+    public List<PurchaseRuleDTO> getPurchaseRulesDTO(){
+        List<PurchaseRuleDTO> purchaseRuleDTOS = new Vector<>();
+        for(PurchaseRule purchaseRule : this.purchaseRules){
+            purchaseRuleDTOS.add(purchaseRule.toDTO());
+        }
+        return purchaseRuleDTOS;
     }
 
     public void add(PurchaseRule discountRule) {

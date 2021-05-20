@@ -9,10 +9,9 @@ import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
-import Server.Domain.UserManager.DTOs.UserDTO;
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +24,6 @@ public class UserController {
     private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
     private Security security;
-
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
@@ -294,8 +292,8 @@ public class UserController {
             writeLock.lock();
             Response<Boolean> result = user.appointManager(newManager, storeId);
             if (!result.isFailure()) {
-                List<Permissions> permissions = new Vector<>();
-                permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
+                List<PermissionsEnum> permissions = new Vector<>();
+                permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
                 if (this.connectedUsers.containsKey(newManager)) {
                     connectedUsers.get(newManager).addStoresManaged(storeId, permissions);
                 }
@@ -313,7 +311,7 @@ public class UserController {
             //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-            response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_OWNER_APPOINTMENT);
+            response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
             if (!response.isFailure()) {
                 User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
                 if (appointee.isOwner(storeID)) {
@@ -353,7 +351,7 @@ public class UserController {
             //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-            response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_MANAGER_APPOINTMENT);
+            response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
             if (!response.isFailure()) {
                 User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
                 if (appointee.isManager(storeID)) {
@@ -400,7 +398,7 @@ public class UserController {
         }
     }
 
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission){
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission){
         readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
@@ -419,7 +417,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission){
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission){
         readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
@@ -464,7 +462,7 @@ public class UserController {
     public void adminBoot() {
         String admin = "shaked";
         UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
-        UserDTO userDTO = UserDAO.getInstance().getUser(admin);
+        UserDTOTemp userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
     }
 

@@ -9,7 +9,7 @@ import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
 
@@ -111,9 +111,9 @@ public interface IService {
 
     Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID); // 4.5
 
-    Response<Boolean> addPermission(String permitting, int storeID, String permitted, Permissions permission); // 4.6
+    Response<Boolean> addPermission(String permitting, int storeID, String permitted, PermissionsEnum permission); // 4.6
 
-    Response<Boolean> removePermission(String permitting, int storeID, String permitted, Permissions permission); // 4.6
+    Response<Boolean> removePermission(String permitting, int storeID, String permitted, PermissionsEnum permission); // 4.6
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 

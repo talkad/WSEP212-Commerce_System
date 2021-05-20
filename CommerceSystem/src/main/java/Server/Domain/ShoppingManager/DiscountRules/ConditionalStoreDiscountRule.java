@@ -1,5 +1,9 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.ConditionalStoreDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
+import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.StorePredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -20,6 +24,19 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
         this.storePredicate = storePredicate;
         this.productID = productID;
     }
+
+    public ConditionalStoreDiscountRule(ConditionalStoreDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount());
+        this.setID(ruleDTO.getId());
+        this.storePredicate = (StorePredicate) ruleDTO.getStorePredicate().toConcretePredicate();
+        this.productID = ruleDTO.getProductID();
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO() {
+        return new ConditionalStoreDiscountRuleDTO(this.id, this.discount, this.productID, (StorePredicateDTO) this.storePredicate.toDTO());
+    }
+
 
     @Override
     public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {

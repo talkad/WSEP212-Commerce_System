@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -88,7 +88,7 @@ public class SearchEngine {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
-        if (rating <= Rating.VERY_HIGH.rate) {
+        if (rating <= RatingEnum.VERY_HIGH.rate) {
             for (Store store : stores)
                 for (Product product : store.getInventory().getProducts())
                     if (product.getRating() >= rating)
@@ -102,7 +102,7 @@ public class SearchEngine {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
-        if (rating <= Rating.VERY_HIGH.rate) {
+        if (rating <= RatingEnum.VERY_HIGH.rate) {
             for (Store store : stores)
                 if (store.getRating() >= rating)
                     for(Product product: store.getInventory().getProducts())

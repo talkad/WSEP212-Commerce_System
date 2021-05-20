@@ -1,8 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.DTOs.UserDTO;
-
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -14,7 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserDAO {
 
     private Map<String, String> registeredUsers;
-    private Map<String, Map<Integer, List<Permissions>>> testManagers;
+    private Map<String, Map<Integer, List<PermissionsEnum>>> testManagers;
     private Map<String, List<Integer>> testOwners;
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
@@ -109,8 +108,8 @@ public class UserDAO {
         pendingReadLock = pendingLock.readLock();
     }
 
-    public UserDTO getUser(String name){
-        UserDTO user = null;
+    public UserDTOTemp getUser(String name){
+        UserDTOTemp user = null;
         registeredReadLock.lock();
         ownersReadLock.lock();
         managersReadLock.lock();
@@ -123,7 +122,7 @@ public class UserDAO {
             List<Integer> storesOwned = testOwners.get(name);
             if (storesOwned == null)
                 storesOwned = new Vector<>();
-            Map<Integer, List<Permissions>> storesManaged = testManagers.get(name);
+            Map<Integer, List<PermissionsEnum>> storesManaged = testManagers.get(name);
             if (storesManaged == null)
                 storesManaged = new ConcurrentHashMap<>();
             ShoppingCart shoppingCart = shoppingCarts.get(name);
@@ -146,7 +145,7 @@ public class UserDAO {
             if (offer == null) {
                 offer = new ConcurrentHashMap<>();
             }
-            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
+            user = new UserDTOTemp(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
         }
         pendingReadLock.unlock();
         offersReadLock.unlock();
@@ -227,8 +226,8 @@ public class UserDAO {
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
         managersWriteLock.lock();
         if(userExists(name)){
-            List<Permissions> permissions = new Vector<>();
-            permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
+            List<PermissionsEnum> permissions = new Vector<>();
+            permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
@@ -282,7 +281,7 @@ public class UserDAO {
         }
     }
 
-    public void addPermission(int storeId, String permitted, Permissions permission) {
+    public void addPermission(int storeId, String permitted, PermissionsEnum permission) {
         managersWriteLock.lock();
         if(this.testManagers.containsKey(permitted)) {
             this.testManagers.get(permitted).get(storeId).add(permission);
@@ -290,7 +289,7 @@ public class UserDAO {
         managersWriteLock.unlock();
     }
 
-    public void removePermission(int storeId, String permitted, Permissions permission) {
+    public void removePermission(int storeId, String permitted, PermissionsEnum permission) {
         managersWriteLock.lock();
         if(this.testManagers.containsKey(permitted)) {
             this.testManagers.get(permitted).get(storeId).remove(permission);

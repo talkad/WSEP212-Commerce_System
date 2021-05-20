@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import java.util.Map;
 
 public interface PurchaseRule {
@@ -9,4 +9,5 @@ public interface PurchaseRule {
     int getID();
     String getDescription();
     void setID(int id);
+    PurchaseRuleDTO toDTO();
 }

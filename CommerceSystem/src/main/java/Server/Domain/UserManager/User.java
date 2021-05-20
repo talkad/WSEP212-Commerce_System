@@ -1,5 +1,8 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.OfferDTO;
+import Server.DAL.UserDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -7,12 +10,13 @@ import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
-import Server.Domain.UserManager.DTOs.UserDTO;
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Service.DataObjects.OfferData;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,7 +25,7 @@ public class User {
 
     private UserState state;
     private List<Integer> storesOwned;
-    private Map<Integer, List<Permissions>> storesManaged;
+    private Map<Integer, List<PermissionsEnum>> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
     private PurchaseHistory purchaseHistory;
@@ -58,7 +62,8 @@ public class User {
         this.appointments = null;
     }
 
-    public User(UserDTO userDTO) {
+    //TODO Old UserDTO
+    public User(UserDTOTemp userDTO) {
         ownedLock = new ReentrantReadWriteLock();
         ownedWriteLock = ownedLock.writeLock();
         ownedReadLock = ownedLock.readLock();
@@ -82,6 +87,79 @@ public class User {
         this.pendingMessages = userDTO.getPendingMessages();
     }
 
+    public User(UserDTO userDTO){
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
+
+        UserStateEnum stateEnum = userDTO.getState();
+        switch(stateEnum){
+            case ADMIN:
+                this.state = new Admin();
+                break;
+            case REGISTERED:
+                this.state = new Registered();
+                break;
+            default:
+                // TODO add error message
+                this.state = new Guest();
+                break;
+        }
+
+        this.storesOwned = new Vector<>(userDTO.getStoresOwned());
+
+        this.storesManaged = new ConcurrentHashMap<>();
+        List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
+        if(managedList != null){
+            for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+                this.storesManaged.put(pair.getFirst(), new Vector<>(pair.getSecond()));
+            }
+        }
+
+        this.name = userDTO.getName();
+        this.shoppingCart = new ShoppingCart(userDTO.getShoppingCart());
+        this.purchaseHistory = new PurchaseHistory(userDTO.getPurchaseHistory());
+        this.appointments = new Appointment(userDTO.getAppointments());
+
+        this.offers = new ConcurrentHashMap<>();
+        List<OfferDTO> offersList = userDTO.getOffers();
+        if(offersList != null){
+            for(OfferDTO offer : offersList){
+                this.offers.put(offer.getProductId(), new Offer(offer));
+            }
+        }
+
+        this.pendingMessages = new PendingMessages(userDTO.getPendingMessages());
+    }
+
+    public UserDTO toDTO(){
+        List<Pair<Integer, List<PermissionsEnum>>> managedList = new Vector<>();
+        List<OfferDTO> offersList = new Vector<>();
+
+        for(int key : this.getStoresManaged().keySet()){
+            managedList.add(new Pair<>(key, this.getStoresManaged().get(key)));
+        }
+
+        for(int key : this.getOffers().keySet()){
+            offersList.add(this.getOffers().get(key).toDTO());
+        }
+
+        return new UserDTO( this.state.getStateEnum(),
+                            this.getStoresOwned(),
+                            managedList,
+                            this.getName(),
+                            this.shoppingCart.toDTO(),
+                            this.purchaseHistory.toDTO(),
+                            this.appointments.toDTO(),
+                            offersList,
+                            this.pendingMessages.toDTO());
+
+    }
+
     public List<Integer> getStoresOwned() {
         return storesOwned;
     }
@@ -96,11 +174,11 @@ public class User {
 
     }
 
-    public Map<Integer, List<Permissions>> getStoresManaged() {
+    public Map<Integer, List<PermissionsEnum>> getStoresManaged() {
         return storesManaged;
     }
 
-    public void addStoresManaged(int storeId, List<Permissions> permission) {
+    public void addStoresManaged(int storeId, List<PermissionsEnum> permission) {
         managedWriteLock.lock();
         this.storesManaged.put(storeId, permission);
         managedWriteLock.unlock();
@@ -123,7 +201,7 @@ public class User {
     }
 
     public Response<Boolean> register() {
-        if (state.allowed(Permissions.REGISTER, this)) {
+        if (state.allowed(PermissionsEnum.REGISTER, this)) {
             return new Response<>(true, false, "User is allowed to register");
         }
         return new Response<>(false, true, "User is not allowed to register");
@@ -154,14 +232,14 @@ public class User {
     }
 
     public Response<Boolean> logout() {
-        if(this.state.allowed(Permissions.LOGOUT, this) )
+        if(this.state.allowed(PermissionsEnum.LOGOUT, this) )
             return new Response<>(true, false, "logged out successfully");
         return new Response<>(false, true, "Cannot logout without being logged in");
     }
 
     public Response<Integer> openStore(String storeName) {
         Response<Integer> result;
-        if (!this.state.allowed(Permissions.OPEN_STORE, this)) {
+        if (!this.state.allowed(PermissionsEnum.OPEN_STORE, this)) {
             return new Response<>(-1, true, "Not allowed to open store");
         }
 
@@ -178,7 +256,7 @@ public class User {
     }
 
     public Response<List<PurchaseClientDTO>> getPurchaseHistoryContents() {
-        if (this.state.allowed(Permissions.GET_PURCHASE_HISTORY, this)) {
+        if (this.state.allowed(PermissionsEnum.GET_PURCHASE_HISTORY, this)) {
             return new Response<>(this.purchaseHistory.getPurchases(), false, "get purchase history successfully");
         }
         return new Response<>(new LinkedList<>(), true, "User not allowed to view purchase history");
@@ -196,7 +274,7 @@ public class User {
         if(reviewRes.isFailure())
             return new Response<>(false, true, reviewRes.getErrMsg());
 
-        if (this.state.allowed(Permissions.REVIEW_PRODUCT, this)) {
+        if (this.state.allowed(PermissionsEnum.REVIEW_PRODUCT, this)) {
 
             if (purchaseHistory.isPurchased(productID)) {
                 store = StoreController.getInstance().getStoreById(storeID);
@@ -224,7 +302,7 @@ public class User {
     public Response<Boolean> addProductsToStore(ProductClientDTO productDTO, int amount) {
         Store store;
 
-        if (this.state.allowed(Permissions.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
+        if (this.state.allowed(PermissionsEnum.ADD_PRODUCT_TO_STORE, this, productDTO.getStoreID())) {
 
             store = StoreController.getInstance().getStoreById(productDTO.getStoreID());
 
@@ -240,7 +318,7 @@ public class User {
     public Response<Boolean> removeProductsFromStore(int storeID, int productID, int amount) {
         Store store;
 
-        if (this.state.allowed(Permissions.REMOVE_PRODUCT_FROM_STORE, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.REMOVE_PRODUCT_FROM_STORE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
 
             if(store == null){
@@ -253,7 +331,7 @@ public class User {
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
-        if (this.state.allowed(Permissions.UPDATE_PRODUCT_PRICE, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_PRICE, this, storeID)) {
             return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
@@ -274,7 +352,7 @@ public class User {
 
     public Response<Boolean> appointOwner(String newOwner, int storeId) {
         Response<Boolean> res;
-        if (this.state.allowed(Permissions.APPOINT_OWNER, this, storeId)) {
+        if (this.state.allowed(PermissionsEnum.APPOINT_OWNER, this, storeId)) {
             if (UserDAO.getInstance().userExists(newOwner)) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
                     this.appointments.addAppointment(storeId, newOwner);
@@ -296,7 +374,7 @@ public class User {
     }
 
     public Response<Boolean> appointManager(String newManager, int storeId) {
-        if (this.state.allowed(Permissions.APPOINT_MANAGER, this, storeId)) {
+        if (this.state.allowed(PermissionsEnum.APPOINT_MANAGER, this, storeId)) {
             if (UserDAO.getInstance().userExists(newManager)) {
                 if (!UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
                     this.appointments.addAppointment(storeId, newManager);
@@ -352,7 +430,7 @@ public class User {
         }
     }
 
-    public Response<Boolean> appointedAndAllowed(int storeId, String appointeeName, Permissions permission) {
+    public Response<Boolean> appointedAndAllowed(int storeId, String appointeeName, PermissionsEnum permission) {
         if (this.state.allowed(permission, this, storeId)) {
             if (this.appointments.contains(storeId, appointeeName)) {
                 return new Response<>(true, false, "success");
@@ -364,8 +442,8 @@ public class User {
         }
     }
 
-    public Response<Boolean> addPermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+    public Response<Boolean> addPermission(int storeId, String permitted, PermissionsEnum permission) {     // req 4.6
+        if (this.state.allowed(PermissionsEnum.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().containsKey(storeId) || !UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
                 UserDAO.getInstance().addPermission(storeId, permitted, permission);
                 return new Response<>(true, false, "Added permission");
@@ -376,8 +454,8 @@ public class User {
         }
     }
 
-    public Response<Boolean> removePermission(int storeId, String permitted, Permissions permission) {     // req 4.6
-        if (this.state.allowed(Permissions.REMOVE_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
+    public Response<Boolean> removePermission(int storeId, String permitted, PermissionsEnum permission) {     // req 4.6
+        if (this.state.allowed(PermissionsEnum.REMOVE_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
             UserDAO.getInstance().removePermission(storeId, permitted, permission);
             return new Response<>(true, false, "Removed permission");
         } else {
@@ -385,20 +463,20 @@ public class User {
         }
     }
 
-    public void addSelfPermission(int storeId, Permissions permission) {
+    public void addSelfPermission(int storeId, PermissionsEnum permission) {
         managedWriteLock.lock();
         this.storesManaged.get(storeId).add(permission);
         managedWriteLock.unlock();
     }
 
-    public void removeSelfPermission(int storeId, Permissions permission) {
+    public void removeSelfPermission(int storeId, PermissionsEnum permission) {
         managedWriteLock.lock();
         this.storesManaged.get(storeId).remove(permission);
         managedWriteLock.unlock();
     }
 
     public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String username) {       // req 6.4
-        if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+        if (this.state.allowed(PermissionsEnum.RECEIVE_GENERAL_HISTORY, this)) {
             if (UserDAO.getInstance().userExists(username)) {
                 return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
             } else {
@@ -412,7 +490,7 @@ public class User {
     public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(int storeID) {
         Store store;
 
-        if (this.state.allowed(Permissions.RECEIVE_GENERAL_HISTORY, this)) {
+        if (this.state.allowed(PermissionsEnum.RECEIVE_GENERAL_HISTORY, this)) {
             store = StoreController.getInstance().getStoreById(storeID);
 
             if(store == null){
@@ -425,13 +503,13 @@ public class User {
     }
 
     public Response<Boolean> getStoreWorkersDetails(int storeID) {       // req 4.9
-        return new Response<>(true, !this.state.allowed(Permissions.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
+        return new Response<>(true, !this.state.allowed(PermissionsEnum.RECEIVE_STORE_WORKER_INFO, this, storeID), "User not allowed to receive store workers information");
     }
 
     public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(int storeID) {     // req 4.11
         Store store;
 
-        if (this.state.allowed(Permissions.RECEIVE_STORE_HISTORY, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.RECEIVE_STORE_HISTORY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
 
             if(store == null){
@@ -494,19 +572,19 @@ public class User {
     }
 
     public Response<List<String>> getPermissions(int storeID){
-        List<Permissions> permissions = null;
+        List<PermissionsEnum> permissions = null;
         List<String> permissionsStr = new LinkedList<>();
 
         ownedReadLock.lock();
         if(this.storesOwned.contains(storeID))
         {
-            permissions = Arrays.asList( Permissions.ADD_PRODUCT_TO_STORE, Permissions.REMOVE_PRODUCT_FROM_STORE,
-                    Permissions.UPDATE_PRODUCT_PRICE, Permissions.VIEW_DISCOUNT_POLICY,  Permissions.VIEW_PURCHASE_POLICY,
-                    Permissions.ADD_DISCOUNT_RULE, Permissions.ADD_PURCHASE_RULE, Permissions.REMOVE_DISCOUNT_RULE,
-                    Permissions.REMOVE_PURCHASE_RULE, Permissions.APPOINT_OWNER, Permissions.REMOVE_OWNER_APPOINTMENT,
-                    Permissions.APPOINT_MANAGER, Permissions.ADD_PERMISSION, Permissions.REMOVE_PERMISSION,
-                    Permissions.REMOVE_MANAGER_APPOINTMENT, Permissions.RECEIVE_STORE_WORKER_INFO,
-                    Permissions.RECEIVE_STORE_HISTORY, Permissions.RECEIVE_STORE_REVENUE, Permissions.REPLY_TO_BID
+            permissions = Arrays.asList( PermissionsEnum.ADD_PRODUCT_TO_STORE, PermissionsEnum.REMOVE_PRODUCT_FROM_STORE,
+                    PermissionsEnum.UPDATE_PRODUCT_PRICE, PermissionsEnum.VIEW_DISCOUNT_POLICY,  PermissionsEnum.VIEW_PURCHASE_POLICY,
+                    PermissionsEnum.ADD_DISCOUNT_RULE, PermissionsEnum.ADD_PURCHASE_RULE, PermissionsEnum.REMOVE_DISCOUNT_RULE,
+                    PermissionsEnum.REMOVE_PURCHASE_RULE, PermissionsEnum.APPOINT_OWNER, PermissionsEnum.REMOVE_OWNER_APPOINTMENT,
+                    PermissionsEnum.APPOINT_MANAGER, PermissionsEnum.ADD_PERMISSION, PermissionsEnum.REMOVE_PERMISSION,
+                    PermissionsEnum.REMOVE_MANAGER_APPOINTMENT, PermissionsEnum.RECEIVE_STORE_WORKER_INFO,
+                    PermissionsEnum.RECEIVE_STORE_HISTORY, PermissionsEnum.RECEIVE_STORE_REVENUE, PermissionsEnum.REPLY_TO_BID
             );
         }
         ownedReadLock.unlock();
@@ -520,7 +598,7 @@ public class User {
         if(permissions == null)
             return new Response<>(new LinkedList<>(), true, "user "+ name + " doesn't manage the given store");
 
-        for(Permissions per: permissions)
+        for(PermissionsEnum per: permissions)
             permissionsStr.add(per.name());
 
         return new Response<>(permissionsStr, false, "OK");
@@ -528,7 +606,7 @@ public class User {
 
     public Response<Boolean> addDiscountRule(int storeID, DiscountRule discountRule) {
         Store store;
-        if(this.state.allowed(Permissions.ADD_DISCOUNT_RULE, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.ADD_DISCOUNT_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 return store.addDiscountRule(discountRule);
@@ -544,7 +622,7 @@ public class User {
 
     public Response<Boolean> addPurchaseRule(int storeID, PurchaseRule purchaseRule) {
         Store store;
-        if(this.state.allowed(Permissions.ADD_PURCHASE_RULE, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.ADD_PURCHASE_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 return store.addPurchaseRule(purchaseRule);
@@ -561,7 +639,7 @@ public class User {
 
     public Response<Boolean> removeDiscountRule(int storeID, int discountRuleID) {
         Store store;
-        if(this.state.allowed(Permissions.REMOVE_DISCOUNT_RULE, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.REMOVE_DISCOUNT_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 return store.removeDiscountRule(discountRuleID);
@@ -577,7 +655,7 @@ public class User {
 
     public Response<Boolean> removePurchaseRule(int storeID, int purchaseRuleID) {
         Store store;
-        if(this.state.allowed(Permissions.REMOVE_PURCHASE_RULE, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.REMOVE_PURCHASE_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 return store.removePurchaseRule(purchaseRuleID);
@@ -593,7 +671,7 @@ public class User {
 
     public Response<PurchasePolicy> getPurchasePolicy(int storeID) {
         Store store;
-        if(this.state.allowed(Permissions.VIEW_PURCHASE_POLICY, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.VIEW_PURCHASE_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 PurchasePolicy policy = store.getPurchasePolicy();
@@ -610,7 +688,7 @@ public class User {
 
     public Response<DiscountPolicy> getDiscountPolicy(int storeID) {
         Store store;
-        if(this.state.allowed(Permissions.VIEW_DISCOUNT_POLICY, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.VIEW_DISCOUNT_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 DiscountPolicy policy = store.getDiscountPolicy();
@@ -626,7 +704,7 @@ public class User {
     }
 
     public Response<Double> getTotalSystemRevenue() {
-        if(this.state.allowed(Permissions.RECEIVE_GENERAL_REVENUE, this)) { //todo- check this permission
+        if(this.state.allowed(PermissionsEnum.RECEIVE_GENERAL_REVENUE, this)) { //todo- check this permission
             return new Response<>(StoreController.getInstance().getTotalSystemRevenue(), false, "System manager received total revenue");
         }
         else {
@@ -636,7 +714,7 @@ public class User {
 
     public Response<Double> getTotalStoreRevenue(int storeID) {
         Store store;
-        if(this.state.allowed(Permissions.RECEIVE_STORE_REVENUE, this, storeID)) {
+        if(this.state.allowed(PermissionsEnum.RECEIVE_STORE_REVENUE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
                 return new Response<>(store.getTotalRevenue(), false, "Total revenue in store " + storeID);
@@ -678,7 +756,7 @@ public class User {
 
     public Response<Boolean> changeOfferStatus(String offeringUsername, int productID, int storeID, double bidReply) {
 
-        if (this.state.allowed(Permissions.REPLY_TO_BID, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -1) {
                 Publisher.getInstance().notify(offeringUsername, new ReplyMessage("notification", "The offer was declined.", "changeOfferStatus"));
                 return UserDAO.getInstance().removeOffer(offeringUsername, productID);

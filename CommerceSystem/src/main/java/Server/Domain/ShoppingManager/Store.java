@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.DAL.StoreDTO;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -47,8 +48,34 @@ public class Store {
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
+    public Store(StoreDTO storeDTO){
+        this.name = storeDTO.getName();
+        this.storeID = storeDTO.getStoreID();
+        this.ownerName = storeDTO.getOwnerName();
+        this.inventory = new Inventory(storeDTO.getInventory());
+        this.isActiveStore = new AtomicBoolean(storeDTO.isActiveStore());
+        this.discountPolicy = new DiscountPolicy(storeDTO.getDiscountPolicy());
+        this.purchasePolicy = new PurchasePolicy(storeDTO.getPurchasePolicy());
+        this.purchaseHistory = new PurchaseHistory(storeDTO.getPurchaseHistory());
+        this.rating = new AtomicReference<>(storeDTO.getRating());
+        this.numRatings = new AtomicInteger(storeDTO.getNumRatings());
+        this.readWriteLock = new ReentrantReadWriteLock();
+    }
 
+    public StoreDTO toDTO(){
+        return new StoreDTO(this.storeID,
+                            this.name,
+                            this.ownerName,
+                            this.inventory.toDTO(),
+                            this.isActiveStore.get(),
+                            this.discountPolicy.toDTO(),
+                            this.purchasePolicy.toDTO(),
+                            this.rating.get(),
+                            this.numRatings.get(),
+                            this.purchaseHistory.toDTO());
+    }
+
+    public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
         if(amount <= 0){
             return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
@@ -126,7 +153,7 @@ public class Store {
         return new Response<>(purchaseHistory.getPurchases(), false, "OK");
     }
 
-    public void addRating(Rating rate){
+    public void addRating(RatingEnum rate){
         int prevNum;
         Double currentRating;
         Double newRating;
@@ -202,5 +229,6 @@ public class Store {
 
         return totalRevenue;
     }
+
 
 }

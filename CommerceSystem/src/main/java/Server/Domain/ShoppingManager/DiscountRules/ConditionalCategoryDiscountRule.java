@@ -1,5 +1,8 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.ConditionalCategoryDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -11,6 +14,17 @@ public class ConditionalCategoryDiscountRule extends CategoryDiscountRule {
     public ConditionalCategoryDiscountRule(String category, double discount, CategoryPredicate categoryPredicate) {
         super(category, discount);
         this.categoryPredicate = categoryPredicate;
+    }
+
+    public ConditionalCategoryDiscountRule(ConditionalCategoryDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getCategory(), ruleDTO.getDiscount());
+        this.setID(ruleDTO.getId());
+        this.categoryPredicate = (CategoryPredicate) ruleDTO.getCategoryPredicate().toConcretePredicate();
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO(){
+        return new ConditionalCategoryDiscountRuleDTO(this.id, this.discount, this.category, (CategoryPredicateDTO) this.categoryPredicate.toDTO());
     }
 
     @Override

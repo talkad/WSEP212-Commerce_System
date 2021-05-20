@@ -1,9 +1,13 @@
 package Server.Domain.ShoppingManager.Predicates;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.PredicateDTOs.BasketPredicateDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
+
 
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class BasketPredicate implements Predicate {
     private int minUnits;
@@ -23,6 +27,29 @@ public class BasketPredicate implements Predicate {
         this.maxUnits = maxUnits;
         this.minPrice = minPrice;
         this.basketPredicates = basketPredicates;
+    }
+
+    public BasketPredicate(BasketPredicateDTO basketPredicateDTO){
+        this.minUnits = basketPredicateDTO.getMinUnits();
+        this.maxUnits = basketPredicateDTO.getMaxUnits();
+        this.minPrice = basketPredicateDTO.getMinPrice();
+
+        this.basketPredicates = new Vector<>();
+        List<PredicateDTO> predicateDTOS = basketPredicateDTO.getBasketPredicates();
+        if(predicateDTOS != null){
+            for(PredicateDTO predicateDTO : predicateDTOS){
+                this.basketPredicates.add(predicateDTO.toConcretePredicate());
+            }
+        }
+    }
+
+    @Override
+    public PredicateDTO toDTO(){
+        List<PredicateDTO> predicates = new Vector<>();
+        for(Predicate predicate : this.basketPredicates){
+            predicates.add(predicate.toDTO());
+        }
+        return new BasketPredicateDTO(this.minUnits, this.maxUnits, this.minPrice, predicates);
     }
 
     @Override

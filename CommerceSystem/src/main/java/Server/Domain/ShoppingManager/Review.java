@@ -1,5 +1,6 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.ReviewDTO;
 import Server.Domain.CommonClasses.Response;
 
 /**
@@ -13,6 +14,15 @@ public class Review {
     private Review(String username, String review) {
         this.username = username;
         this.review = review;
+    }
+
+    public Review(ReviewDTO reviewDTO){
+        this.username = reviewDTO.getUsername();
+        this.review = reviewDTO.getReview();
+    }
+
+    public ReviewDTO toDTO(){
+        return new ReviewDTO(this.getUsername(), this.getReview());
     }
 
     public static Response<Review> createReview(String username, String review){

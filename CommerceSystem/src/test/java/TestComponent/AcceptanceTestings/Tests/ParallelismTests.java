@@ -4,7 +4,7 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             bridge.register(guestName, "jinora", "123456");
             bridge.login(bridge.addGuest().getResult(), "jinora", "123456");
             bridge.appointStoreManager("korra", "jinora", storeID);
-            bridge.addPermission("korra", storeID, "jinora", Permissions.RECEIVE_STORE_HISTORY);
+            bridge.addPermission("korra", storeID, "jinora", PermissionsEnum.RECEIVE_STORE_HISTORY);
 
             initialized = true;
         }
@@ -259,7 +259,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         Thread remover = new Thread(){
             public void run(){
                 Response<Boolean> removeResponse = bridge.removePermission("korra", storeID, "jinora",
-                        Permissions.RECEIVE_STORE_HISTORY);
+                        PermissionsEnum.RECEIVE_STORE_HISTORY);
                 if(!removeResponse.isFailure()) {
                     removerResult[0] = 1;
                 }
