@@ -101,8 +101,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<Integer, Map<ProductClientDTO, Integer>> getBaskets(){
-        Map<Integer, Map<ProductClientDTO, Integer>> products = new HashMap<>();
+    public Map<Integer, Map<Product, Integer>> getBaskets(){
+        Map<Integer, Map<Product, Integer>> products = new HashMap<>();
 
         lock.readLock().lock();
 
@@ -119,8 +119,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<ProductClientDTO, Integer> getBasket(int storeID){
-        Map<ProductClientDTO, Integer> products;
+    public Map<Product, Integer> getBasket(int storeID){
+        Map<Product, Integer> products;
 
         lock.readLock().lock();
         products = new HashMap<>(baskets.get(storeID).getProducts());

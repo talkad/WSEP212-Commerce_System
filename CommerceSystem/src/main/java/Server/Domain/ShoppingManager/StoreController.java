@@ -1,5 +1,6 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
@@ -18,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StoreController {
     private static volatile StoreController storeController = null;
     // map storeID to its corresponding store
-    private Map<Integer, Store> stores;
+    //private Map<Integer, Store> stores;
     private AtomicInteger indexer;
     private SpellChecker spellChecker;
     private SpellRequest spellRequest;
@@ -26,7 +27,7 @@ public class StoreController {
 
 
     private StoreController(){
-        stores = new ConcurrentHashMap<>();
+        //stores = new ConcurrentHashMap<>();
         indexer = new AtomicInteger(0);
         spellChecker = new SpellChecker();
         spellRequest = new SpellRequest();
@@ -45,7 +46,8 @@ public class StoreController {
     public Response<Integer> openStore(String StoreName, String ownerName){
         int id = indexer.getAndIncrement();
         Store store = new Store(id, StoreName, ownerName);
-        stores.put(id, store);
+        //stores.put(id, store);
+        DALService.getInstance().insertStore(store.toDTO());
 
         return new Response<>(id, false, "Store with id " + id + " opened successfully");
     }
@@ -82,7 +84,8 @@ public class StoreController {
     }
 
     public Store getStoreById(int storeId) {
-        return stores.get(storeId);
+        //return stores.get(storeId);
+        return DALService.getInstance().getStore(storeId);
     }
 
     /**
@@ -90,12 +93,14 @@ public class StoreController {
      * @return stores list
      */
     public Collection<Store> getStores(){
-        return stores.values();
+        // TODO get joni to change implementation
+        //return stores.values();
+        return DALService.getInstance().getAllStores();
     }
 
     // activated when purchase aborted and all products need to be added to their inventories
     public void addProductsToInventories(ShoppingCart shoppingCart) {
-        Map<ProductClientDTO, Integer> basket;
+        Map<Product, Integer> basket;
 
         for(Integer storeID : shoppingCart.getBaskets().keySet()){
 
