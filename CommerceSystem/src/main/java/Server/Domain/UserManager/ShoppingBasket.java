@@ -2,6 +2,7 @@ package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.Product;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class ShoppingBasket {
 
     // the store these products are belong to
     private final int storeID;
-    private Map<Integer, ProductClientDTO> products;
+    private Map<Integer, Product> products;
     // map between productID and its amount in the basket
     private Map<Integer, Integer> pAmount;
     private double totalPrice;
@@ -39,7 +40,7 @@ public class ShoppingBasket {
 
             lock.writeLock().lock();
             if(!pAmount.containsKey(productID)){
-                products.put(productID, product);
+                products.put(productID, Product.createProduct(product));
                 pAmount.put(productID, 1);
             }
             else{
@@ -57,7 +58,7 @@ public class ShoppingBasket {
 
     public Response<Boolean> removeProduct(int productID) {
         Response<Boolean> res;
-        ProductClientDTO product;
+        Product product;
 
         lock.readLock().lock();
         product = products.get(productID);
@@ -87,8 +88,8 @@ public class ShoppingBasket {
         Map<ProductClientDTO, Integer> basketProducts = new HashMap<>();
 
         lock.readLock().lock();
-        for(ProductClientDTO product: products.values()){
-            basketProducts.put(product, pAmount.get(product.getProductID()));
+        for(Product product: products.values()){
+            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
         }
         lock.readLock().unlock();
 
@@ -102,7 +103,7 @@ public class ShoppingBasket {
     public Response<Boolean> updateProductQuantity(int productID, int amount) {
         Response<Boolean> res;
         int prevAmount;
-        ProductClientDTO product;
+        Product product;
 
         if(amount < 0){
             res = new Response<>(false, true, "ShoppingBasket: The amount can't be negative");
