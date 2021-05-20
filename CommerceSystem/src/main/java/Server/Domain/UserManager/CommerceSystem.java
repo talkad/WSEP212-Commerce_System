@@ -314,13 +314,28 @@ public class CommerceSystem implements IService {
                 }
                 else if(funcs[i].startsWith("addProductsToStore")){
                     attributes = funcs[i].substring(19).split(", ");
-//                    addProductsToStore(currUser, new ProductClientDTO((attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), new vector<>(attributes), ""))
+                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), stringToList(attributes, 3),stringToList(attributes, 4)), Integer.parseInt(attributes[5].substring(0, attributes[5].length() - 1)));
+                }
+                else if(funcs[i].startsWith("addPermission")){
+                    attributes = funcs[i].substring(14).split(", ");
+                    addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
             }
-
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<String> stringToList(String[] str, int index){
+        List<String> lst = new Vector<>();
+        str[index] = str[index].substring(1);
+        for(int i = index; i < str.length; i++){
+            if(str[i].endsWith("]")){
+                lst.add(str[i]);
+                break;
+            }
+        }
+        return lst;
     }
 }
