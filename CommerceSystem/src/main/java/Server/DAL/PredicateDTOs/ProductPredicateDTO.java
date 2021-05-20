@@ -1,5 +1,7 @@
 package Server.DAL.PredicateDTOs;
 
+import Server.Domain.ShoppingManager.Predicates.Predicate;
+import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -47,5 +49,10 @@ public class ProductPredicateDTO implements PredicateDTO{
 
     public void setMaxUnits(int maxUnits) {
         this.maxUnits = maxUnits;
+    }
+
+    @Override
+    public Predicate toConcretePredicate() {
+        return new ProductPredicate(this);
     }
 }

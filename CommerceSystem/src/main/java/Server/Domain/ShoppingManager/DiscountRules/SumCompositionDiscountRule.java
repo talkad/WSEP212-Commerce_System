@@ -1,5 +1,8 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.OrCompositionDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.SumCompositionDiscountRuleDTO;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.List;
@@ -9,6 +12,16 @@ public class SumCompositionDiscountRule extends CompoundDiscountRule {
 
     public SumCompositionDiscountRule(List<DiscountRule> policyRules){
         super(0, policyRules);
+    }
+
+    public SumCompositionDiscountRule(SumCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO(){
+        return new SumCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package Server.DAL.PredicateDTOs;
 
+import Server.Domain.ShoppingManager.Predicates.Predicate;
+import Server.Domain.ShoppingManager.Predicates.StorePredicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -47,5 +49,10 @@ public class StorePredicateDTO implements PredicateDTO{
 
     public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
+    }
+
+    @Override
+    public Predicate toConcretePredicate() {
+        return new StorePredicate(this);
     }
 }

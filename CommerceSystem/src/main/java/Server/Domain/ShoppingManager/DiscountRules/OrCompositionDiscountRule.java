@@ -1,5 +1,8 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.MaximumCompositionDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.OrCompositionDiscountRuleDTO;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.List;
@@ -11,6 +14,17 @@ public class OrCompositionDiscountRule extends CompoundDiscountRule {
     public OrCompositionDiscountRule(String category, double discount, List<DiscountRule> policyRules) {
         super(discount, policyRules);
         this.category = category;
+    }
+
+    public OrCompositionDiscountRule(OrCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
+        this.category = ruleDTO.getCategory();
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO(){
+        return new OrCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount, this.category);
     }
 
     @Override

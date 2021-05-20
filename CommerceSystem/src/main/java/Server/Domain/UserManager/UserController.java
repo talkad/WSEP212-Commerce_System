@@ -464,7 +464,7 @@ public class UserController {
     public void adminBoot() {
         String admin = "shaked";
         UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
-        UserDTO userDTO = UserDAO.getInstance().getUser(admin);
+        UserDTOTemp userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
     }
 

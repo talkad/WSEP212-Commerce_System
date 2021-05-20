@@ -108,8 +108,8 @@ public class UserDAO {
         pendingReadLock = pendingLock.readLock();
     }
 
-    public UserDTO getUser(String name){
-        UserDTO user = null;
+    public UserDTOTemp getUser(String name){
+        UserDTOTemp user = null;
         registeredReadLock.lock();
         ownersReadLock.lock();
         managersReadLock.lock();
@@ -145,7 +145,7 @@ public class UserDAO {
             if (offer == null) {
                 offer = new ConcurrentHashMap<>();
             }
-            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
+            user = new UserDTOTemp(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
         }
         pendingReadLock.unlock();
         offersReadLock.unlock();

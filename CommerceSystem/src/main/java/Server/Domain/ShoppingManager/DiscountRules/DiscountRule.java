@@ -1,5 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.Map;
@@ -15,4 +16,6 @@ public interface DiscountRule {
     void setDiscount(double discount);
 
     void setID(int id);
+
+    DiscountRuleDTO toDTO();
 }

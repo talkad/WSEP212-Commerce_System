@@ -3,7 +3,7 @@ package Server.Domain.UserManager;
 import java.util.List;
 import java.util.Map;
 
-public class UserDTO {
+public class UserDTOTemp {
     private String name;
     private String password;
     private Map<Integer, List<Permissions>> storesManaged;
@@ -14,7 +14,7 @@ public class UserDTO {
     private Map<Integer, Offer> offers;
     private PendingMessages pendingMessages;
 
-    public UserDTO(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers, PendingMessages pendingMessages) {
+    public UserDTOTemp(String name, String password, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers, PendingMessages pendingMessages) {
         this.name = name;
         this.password = password;
         this.storesManaged = storesManaged;
@@ -26,7 +26,7 @@ public class UserDTO {
         this.pendingMessages = pendingMessages;
     }
 
-    public UserDTO(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers,PendingMessages pendingMessages) {
+    public UserDTOTemp(String name, Map<Integer, List<Permissions>> storesManaged, List<Integer> storesOwned, ShoppingCart shoppingCart, PurchaseHistory purchaseHistory, Appointment appointments, Map<Integer, Offer> offers, PendingMessages pendingMessages) {
         this.name = name;
         this.storesManaged = storesManaged;
         this.storesOwned = storesOwned;

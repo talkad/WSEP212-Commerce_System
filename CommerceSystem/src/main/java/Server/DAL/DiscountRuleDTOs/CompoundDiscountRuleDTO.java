@@ -1,9 +1,11 @@
 package Server.DAL.DiscountRuleDTOs;
 
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public abstract class CompoundDiscountRuleDTO implements DiscountRuleDTO {
@@ -49,5 +51,13 @@ public abstract class CompoundDiscountRuleDTO implements DiscountRuleDTO {
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    public List<DiscountRule> getConcreteDiscountRules(){
+        List<DiscountRule> concreteDiscountRules = new Vector<>();
+        for(DiscountRuleDTO discountRuleDTO : this.discountRules){
+            concreteDiscountRules.add(discountRuleDTO.toConcreteDiscountRule());
+        }
+        return concreteDiscountRules;
     }
 }

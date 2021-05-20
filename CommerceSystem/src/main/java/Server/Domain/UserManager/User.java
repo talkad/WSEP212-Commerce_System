@@ -1,5 +1,8 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.OfferDTO;
+import Server.DAL.UserDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -7,9 +10,9 @@ import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Service.DataObjects.OfferData;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -55,7 +58,8 @@ public class User {
         this.appointments = null;
     }
 
-    public User(UserDTO userDTO) {
+    //TODO Old UserDTO
+    public User(UserDTOTemp userDTO) {
         ownedLock = new ReentrantReadWriteLock();
         ownedWriteLock = ownedLock.writeLock();
         ownedReadLock = ownedLock.readLock();
@@ -77,6 +81,79 @@ public class User {
         this.appointments = userDTO.getAppointments();
         this.offers = userDTO.getOffers();
         this.pendingMessages = userDTO.getPendingMessages();
+    }
+
+    public User(UserDTO userDTO){
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
+
+        UserStateEnum stateEnum = userDTO.getState();
+        switch(stateEnum){
+            case ADMIN:
+                this.state = new Admin();
+                break;
+            case REGISTERED:
+                this.state = new Registered();
+                break;
+            default:
+                // TODO add error message
+                this.state = new Guest();
+                break;
+        }
+
+        this.storesOwned = new Vector<>(userDTO.getStoresOwned());
+
+        this.storesManaged = new ConcurrentHashMap<>();
+        List<Pair<Integer, List<Permissions>>> managedList = userDTO.getStoresManaged();
+        if(managedList != null){
+            for(Pair<Integer, List<Permissions>> pair : managedList){
+                this.storesManaged.put(pair.getFirst(), new Vector<>(pair.getSecond()));
+            }
+        }
+
+        this.name = userDTO.getName();
+        this.shoppingCart = new ShoppingCart(userDTO.getShoppingCart());
+        this.purchaseHistory = new PurchaseHistory(userDTO.getPurchaseHistory());
+        this.appointments = new Appointment(userDTO.getAppointments());
+
+        this.offers = new ConcurrentHashMap<>();
+        List<OfferDTO> offersList = userDTO.getOffers();
+        if(offersList != null){
+            for(OfferDTO offer : offersList){
+                this.offers.put(offer.getProductId(), new Offer(offer));
+            }
+        }
+
+        this.pendingMessages = new PendingMessages(userDTO.getPendingMessages());
+    }
+
+    public UserDTO toDTO(){
+        List<Pair<Integer, List<Permissions>>> managedList = new Vector<>();
+        List<OfferDTO> offersList = new Vector<>();
+
+        for(int key : this.getStoresManaged().keySet()){
+            managedList.add(new Pair<>(key, this.getStoresManaged().get(key)));
+        }
+
+        for(int key : this.getOffers().keySet()){
+            offersList.add(this.getOffers().get(key).toDTO());
+        }
+
+        return new UserDTO( this.state.getStateEnum(),
+                            this.getStoresOwned(),
+                            managedList,
+                            this.getName(),
+                            this.shoppingCart.toDTO(),
+                            this.purchaseHistory.toDTO(),
+                            this.appointments.toDTO(),
+                            offersList,
+                            this.pendingMessages.toDTO());
+
     }
 
     public List<Integer> getStoresOwned() {

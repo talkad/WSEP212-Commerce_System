@@ -1,6 +1,8 @@
 package Server.DAL.DiscountRuleDTOs;
 
 import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
+import Server.Domain.ShoppingManager.DiscountRules.ConditionalCategoryDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -26,5 +28,10 @@ public class ConditionalCategoryDiscountRuleDTO extends CategoryDiscountRuleDTO{
 
     public void setCategoryPredicate(CategoryPredicateDTO categoryPredicate) {
         this.categoryPredicate = categoryPredicate;
+    }
+
+    @Override
+    public DiscountRule toConcreteDiscountRule(){
+        return new ConditionalCategoryDiscountRule(this);
     }
 }

@@ -1,5 +1,7 @@
 package Server.DAL.DiscountRuleDTOs;
 
+import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -25,5 +27,10 @@ public class CategoryDiscountRuleDTO extends LeafDiscountRuleDTO{
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @Override
+    public DiscountRule toConcreteDiscountRule() {
+        return new CategoryDiscountRule(this);
     }
 }

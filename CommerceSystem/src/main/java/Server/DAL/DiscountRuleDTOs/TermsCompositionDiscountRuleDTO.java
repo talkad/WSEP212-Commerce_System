@@ -1,6 +1,8 @@
 package Server.DAL.DiscountRuleDTOs;
 
 import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.TermsCompositionDiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -40,5 +42,11 @@ public class TermsCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
 
     public void setPredicates(List<PredicateDTO> predicates) {
         this.predicates = predicates;
+    }
+
+
+    @Override
+    public DiscountRule toConcreteDiscountRule() {
+        return new TermsCompositionDiscountRule(this);
     }
 }

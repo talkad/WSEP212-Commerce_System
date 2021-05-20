@@ -1,9 +1,12 @@
 package Server.DAL.PredicateDTOs;
 
+import Server.Domain.ShoppingManager.Predicates.BasketPredicate;
+import Server.Domain.ShoppingManager.Predicates.Predicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class BasketPredicateDTO implements PredicateDTO{
@@ -61,5 +64,10 @@ public class BasketPredicateDTO implements PredicateDTO{
 
     public void setBasketPredicates(List<PredicateDTO> basketPredicates) {
         this.basketPredicates = basketPredicates;
+    }
+
+    @Override
+    public Predicate toConcretePredicate() {
+        return new BasketPredicate(this);
     }
 }

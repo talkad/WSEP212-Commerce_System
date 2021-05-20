@@ -20,4 +20,9 @@ public class Guest extends UserState {
     public boolean allowed(Permissions func, User user, int storeId) {
         return false;
     }
+
+    @Override
+    public UserStateEnum getStateEnum(){
+        return UserStateEnum.GUEST;
+    }
 }

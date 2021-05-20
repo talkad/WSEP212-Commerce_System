@@ -1,5 +1,7 @@
 package Server.DAL.DiscountRuleDTOs;
 
+import Server.Domain.ShoppingManager.DiscountRules.AndCompositionDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -27,5 +29,13 @@ public class AndCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+
+    @Override
+    public DiscountRule toConcreteDiscountRule() {
+        AndCompositionDiscountRule rule = new AndCompositionDiscountRule(this.category, this.discount, this.getConcreteDiscountRules());
+        rule.setID(this.id);
+        return rule;
     }
 }

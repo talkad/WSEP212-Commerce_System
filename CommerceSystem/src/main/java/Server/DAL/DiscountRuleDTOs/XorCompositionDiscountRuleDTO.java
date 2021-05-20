@@ -1,5 +1,7 @@
 package Server.DAL.DiscountRuleDTOs;
 
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.XorCompositionDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.XorResolveType;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
@@ -40,5 +42,10 @@ public class XorCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
 
     public void setXorResolveType(XorResolveType xorResolveType) {
         this.xorResolveType = xorResolveType;
+    }
+
+    @Override
+    public DiscountRule toConcreteDiscountRule() {
+        return new XorCompositionDiscountRule(this);
     }
 }

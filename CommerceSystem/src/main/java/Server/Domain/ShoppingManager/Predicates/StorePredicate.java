@@ -1,5 +1,7 @@
 package Server.Domain.ShoppingManager.Predicates;
 
+import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.Map;
@@ -13,6 +15,17 @@ public class StorePredicate implements Predicate {
         this.minUnits = minUnits;
         this.maxUnits = maxUnits;
         this.minPrice = minPrice;
+    }
+
+    public StorePredicate(StorePredicateDTO storePredicateDTO){
+        this.minUnits = storePredicateDTO.getMinUnits();
+        this.maxUnits = storePredicateDTO.getMaxUnits();
+        this.minPrice = storePredicateDTO.getMinPrice();
+    }
+
+    @Override
+    public PredicateDTO toDTO(){
+        return new StorePredicateDTO(this.minUnits, this.maxUnits, this.minPrice);
     }
 
     @Override

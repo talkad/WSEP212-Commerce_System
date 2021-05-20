@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.ShoppingBasketDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.ProductDTO;
 
@@ -26,6 +27,21 @@ public class ShoppingBasket {
         this.pAmount = new ConcurrentHashMap<>();
         this.totalPrice = 0;
         this.lock = new ReentrantReadWriteLock();
+    }
+
+    public ShoppingBasket(ShoppingBasketDTO shoppingBasketDTO){
+        this.storeID = shoppingBasketDTO.getStoreID();
+        this.products = new ConcurrentHashMap<>();
+        this.pAmount = new ConcurrentHashMap<>();
+        this.totalPrice = shoppingBasketDTO.getTotalPrice();
+        this.lock = new ReentrantReadWriteLock();
+
+        //TODO sort out productdto
+    }
+
+    public ShoppingBasketDTO toDTO(){
+        //TODO sort out productdto
+        return new ShoppingBasketDTO();
     }
 
     public Response<Boolean> addProduct(ProductDTO product){

@@ -1,9 +1,15 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.TermsCompositionDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.XorCompositionDiscountRuleDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.Domain.ShoppingManager.Predicates.Predicate;
 import Server.Domain.ShoppingManager.ProductDTO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class XorCompositionDiscountRule extends CompoundDiscountRule {
     private String category;
@@ -13,6 +19,18 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
         super(discount, policyRules);
         this.category = category;
         this.xorResolveType = xorResolveType;
+    }
+
+    public XorCompositionDiscountRule(XorCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
+        this.category = ruleDTO.getCategory();
+        this.xorResolveType = ruleDTO.getXorResolveType();
+    }
+
+    @Override
+    public DiscountRuleDTO toDTO(){
+        return new XorCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount, this.category, this.xorResolveType);
     }
 
     @Override

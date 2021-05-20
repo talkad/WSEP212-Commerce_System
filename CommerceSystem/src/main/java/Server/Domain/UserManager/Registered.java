@@ -30,4 +30,9 @@ public class Registered extends UserState {
         }
         else return false;
     }
+
+    @Override
+    public UserStateEnum getStateEnum(){
+        return UserStateEnum.REGISTERED;
+    }
 }

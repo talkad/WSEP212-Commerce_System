@@ -1,6 +1,9 @@
 package Server.DAL.DiscountRuleDTOs;
 
 import Server.DAL.PredicateDTOs.StorePredicateDTO;
+import Server.Domain.ShoppingManager.DiscountRules.ConditionalStoreDiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
+import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -38,5 +41,10 @@ public class ConditionalStoreDiscountRuleDTO extends StoreDiscountRuleDTO{
 
     public void setStorePredicate(StorePredicateDTO storePredicate) {
         this.storePredicate = storePredicate;
+    }
+
+    @Override
+    public DiscountRule toConcreteDiscountRule() {
+        return new ConditionalStoreDiscountRule(this);
     }
 }
