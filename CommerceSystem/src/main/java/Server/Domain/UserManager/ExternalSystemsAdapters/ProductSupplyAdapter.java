@@ -1,6 +1,8 @@
 package Server.Domain.UserManager.ExternalSystemsAdapters;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ExternalSystemsMock.PaymentSystemMock;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ExternalSystemsMock.SupplySystemMock;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -15,9 +17,11 @@ import java.util.List;
 public class ProductSupplyAdapter
 {
 
-    ExternalSystemsConnection conn;
+    private boolean mockFlag;
+    private ExternalSystemsConnection conn;
 
     private ProductSupplyAdapter(){
+        mockFlag = false;
         conn = ExternalSystemsConnection.getInstance();
     }
 
@@ -37,6 +41,13 @@ public class ProductSupplyAdapter
         Response<Boolean> connRes;
         Response<String> externalRes;
         int transactionID;
+
+        if(mockFlag){ // mock guard
+            int result = SupplySystemMock.getInstance().supply(supplyDetails);
+            if(result < 0)
+                return new Response<>(result, true, "The supply failed");
+            return new Response<>(result, false, "supply succeed");
+        }
 
         if(!conn.isConnected()){
             connRes = conn.createHandshake();
@@ -67,10 +78,17 @@ public class ProductSupplyAdapter
     }
 
     public Response<Integer> cancelSupply(String transactionID){
-        List<NameValuePair> urlParameters = new LinkedList<>();
+        int result;
         Response<Boolean> connRes;
         Response<String> externalRes;
-        int result;
+        List<NameValuePair> urlParameters = new LinkedList<>();
+
+        if(mockFlag){ // mock guard
+            int cancelResult = PaymentSystemMock.getInstance().cancelPay(Integer.parseInt(transactionID));
+            if(cancelResult < 0)
+                return new Response<>(cancelResult, true, "Payment cancellation failed");
+            return new Response<>(cancelResult, false, "cancel payment succeed");
+        }
 
         if(!conn.isConnected()){
             connRes = conn.createHandshake();
@@ -95,4 +113,10 @@ public class ProductSupplyAdapter
             return new Response<>(result, false, "Supply cancellation occurred successfully");
         }
     }
+
+    // for testing purposes
+    public void setMockFlag(){
+        mockFlag = true;
+    }
+
 }
