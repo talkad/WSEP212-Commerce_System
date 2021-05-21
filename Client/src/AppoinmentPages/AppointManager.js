@@ -15,7 +15,7 @@ class AppointManager extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName, this.state.storeId).then(this.handleAppointResponse, Connection.handleReject())
+        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName, this.state.storeId).then(this.handleAppointResponse, Connection.handleReject)
     }
 
     handleAppointResponse(result){

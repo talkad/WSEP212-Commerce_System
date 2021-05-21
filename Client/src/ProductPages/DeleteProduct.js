@@ -22,15 +22,15 @@ class DeleteProduct extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendDeleteProduct(this.state.functionName, this.state.username, this.state.storeId, this.state.productId, this.state.amount).then(this.handleDeleteProductResponse, Connection.handleReject())
+        Connection.sendDeleteProduct(this.state.functionName, this.state.username, this.state.storeId, this.state.productId, this.state.amount).then(this.handleDeleteProductResponse, Connection.handleReject)
     }
 
     handleDeleteProductResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("deleting product successful");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 

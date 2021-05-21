@@ -170,7 +170,7 @@ class App extends React.Component{
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
                         <Route path="/ADD_DISCOUNT_RULE" component={MainDiscountPolicyPage}/>
-                        {/*<Route path="/DELETE_DISCOUNTS" component={DeleteDiscount}/>*/}
+                        <Route path="/DELETE_DISCOUNT_RULE" component={DeleteDiscountRule}/>
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>
                         <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>
                         <Route path="/ADD_PERMISSION" component={AddPermission}/>

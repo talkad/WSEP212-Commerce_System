@@ -21,15 +21,15 @@ class EditProduct extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendEditProduct(this.state.functionName,this.state.username,this.state.storeId,this.state.productId, this.state.newPrice, this.state.newName).then(this.handleEditProductResponse, Connection.handleReject())
+        Connection.sendEditProduct(this.state.functionName,this.state.username,this.state.storeId,this.state.productId, this.state.newPrice, this.state.newName).then(this.handleEditProductResponse, Connection.handleReject)
     }
 
     handleEditProductResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("edit product success");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 
