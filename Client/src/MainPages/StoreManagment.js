@@ -16,6 +16,7 @@ import StaticUserInfo from "../API/StaticUserInfo";
 import {Link} from "react-router-dom";
 import Connection from "../API/Connection";
 import {Button, Spinner} from "react-bootstrap";
+import MainDiscountPolicyPage from "../DiscountPurchasePolicyPages/MainDiscountPolicyPage";
 
 class StoreManagment extends React.Component {
     constructor(props) {
@@ -57,8 +58,8 @@ class StoreManagment extends React.Component {
 
         perm === 'ADD_PRODUCT_TO_STORE' ? ReactDOM.render(<React.StrictMode><AddProduct /></React.StrictMode>, document.getElementById('root')) :
             perm === 'REMOVE_PRODUCT_FROM_STORE' ? ReactDOM.render(<React.StrictMode><DeleteProduct /></React.StrictMode>, document.getElementById('root')) :
-                //perm === 'UPDATE_PRODUCT_PRICE' ? ReactDOM.render(<React.StrictMode><EditProduct /></React.StrictMode>, document.getElementById('root')) :
-                    //perm === 'ADD_DISCOUNTS' ? ReactDOM.render(<React.StrictMode><AddDiscount /></React.StrictMode>, document.getElementById('root')) :
+                perm === 'UPDATE_PRODUCT_PRICE' ? ReactDOM.render(<React.StrictMode><EditProduct /></React.StrictMode>, document.getElementById('root')) :
+                    perm === 'ADD_DISCOUNT_RULE' ? ReactDOM.render(<React.StrictMode><MainDiscountPolicyPage /></React.StrictMode>, document.getElementById('root')) :
                         //perm === ' DELETE_DISCOUNTS' ? ReactDOM.render(<React.StrictMode><DeleteDiscount /></React.StrictMode>, document.getElementById('root')) :
                         perm === 'APPOINT_OWNER' ? ReactDOM.render(<React.StrictMode><AppointOwner /></React.StrictMode>, document.getElementById('root')) :
                             perm === 'REMOVE_OWNER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveOwner /></React.StrictMode>, document.getElementById('root')) :

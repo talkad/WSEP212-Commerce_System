@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import StaticUserInfo from "../API/StaticUserInfo";
 
 const DiscountOptions = [
     { value: 'AND', label: 'AND' },
@@ -16,8 +17,8 @@ class CompositionPoliciesPage extends React.Component {
         this.state = {
             selectedOption: '',
             functionName: 'addDiscountRule',
-            username: '1',
-            storeId: '2',
+            username: StaticUserInfo.getUsername(),
+            storeId: StaticUserInfo.getStoreId(),
             type: 'AndCompositionDiscountRule',
             category: '',
             discount: '',

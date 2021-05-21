@@ -1,16 +1,16 @@
 import React from 'react';
 import Select from 'react-select';
-import StaticUserInfo from "../MainPages/StaticUserInfo";
+import StaticUserInfo from "../API/StaticUserInfo";
 
 
-class AddCategoryDiscountRule extends React.Component {
+class CategoryDiscountRule extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             functionName: 'addDiscountRule',
-            username: '1',
-            storeId: '2',
-            type: 'AddCategoryDiscountRule',
+            username: StaticUserInfo.getUsername(),
+            storeId: StaticUserInfo.getStoreId(),
+            type: 'CategoryDiscountRule',
             category: '',
             discount: '',
         };
@@ -42,4 +42,4 @@ class AddCategoryDiscountRule extends React.Component {
 }
 
 
-export default AddCategoryDiscountRule;
+export default CategoryDiscountRule;

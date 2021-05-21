@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import StaticUserInfo from "../MainPages/StaticUserInfo";
+import StaticUserInfo from "../API/StaticUserInfo";
 
 
 class ConditionalProductDiscountRule extends React.Component {
@@ -8,8 +8,8 @@ class ConditionalProductDiscountRule extends React.Component {
         super(props);
         this.state = {
             functionName: 'addDiscountRule',
-            username: '1',
-            storeId: '2',
+            username: StaticUserInfo.getUsername(),
+            storeId: StaticUserInfo.getStoreId(),
             type: 'ConditionalProductDiscountRule',
             productId: '',
             discount: '',

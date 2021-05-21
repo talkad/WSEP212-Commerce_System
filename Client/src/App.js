@@ -30,6 +30,17 @@ import Home from "./Pages/Home";
 import * as Icon from 'react-bootstrap-icons';
 import StaticUserInfo from "./API/StaticUserInfo";
 import {ReactComponent as OurLogo} from "./image2vector.svg";
+import CategoryDiscountRule from "./DiscountPurchasePolicyPages/CategoryDiscountRule";
+//import AndCompositionDiscountRule from "./DiscountPurchasePolicyPages/NoNeedForNow/AndCompositionDiscountRule";
+import CompositionPoliciesPage from "./DiscountPurchasePolicyPages/CompositionPoliciesPage";
+import ConditionalCategoryDiscountRule from "./DiscountPurchasePolicyPages/ConditionalCategoryDiscountRule";
+import ConditionalProductDiscountRule from "./DiscountPurchasePolicyPages/ConditionalProductDiscountRule";
+import ConditionalStoreDiscountRule from "./DiscountPurchasePolicyPages/ConditionalStoreDiscountRule";
+import DeleteDiscountRule from "./DiscountPurchasePolicyPages/DeleteDiscountRule";
+import DeletePurchaseRule from "./DiscountPurchasePolicyPages/DeletePurchaseRule";
+import MainDiscountPolicyPage from "./DiscountPurchasePolicyPages/MainDiscountPolicyPage";
+import ProductDiscountRule from "./DiscountPurchasePolicyPages/ProductDiscountRule";
+import StoreDiscountRule from "./DiscountPurchasePolicyPages/StoreDiscountRule";
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
@@ -158,6 +169,7 @@ class App extends React.Component{
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
+                        <Route path="/ADD_DISCOUNT_RULE" component={MainDiscountPolicyPage}/>
                         {/*<Route path="/DELETE_DISCOUNTS" component={DeleteDiscount}/>*/}
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>
                         <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>
@@ -167,6 +179,15 @@ class App extends React.Component{
                         <Route path="/REMOVE_MANAGER_APPOINTMENT" component={RemoveManager}/>
                         <Route path="/RECEIVE_STORE_WORKER_INFO" component={WorkerDetails}/>
                         <Route path="/RECEIVE_STORE_HISTORY" component={StorePurchaseHistory}/>
+                        <Route path="/Category_Discount_Rule" component={CategoryDiscountRule}/>
+                        <Route path="/Composition_Policies_Page" component={CompositionPoliciesPage}/>
+                        <Route path="/Conditional_Category_Discount_Rule" component={ConditionalCategoryDiscountRule}/>
+                        <Route path="/Conditional_Product_Discount_Rule" component={ConditionalProductDiscountRule}/>
+                        <Route path="/Conditional_Store_Discount_Rule" component={ConditionalStoreDiscountRule}/>
+                        <Route path="/Delete_Discount_Rule" component={DeleteDiscountRule}/>
+                        <Route path="/Delete_Purchase_Rule" component={DeletePurchaseRule}/>
+                        <Route path="/Product_Discount_Rule" component={ProductDiscountRule}/>
+                        <Route path="/Store_Discount_Rule" component={StoreDiscountRule}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>
