@@ -52,7 +52,8 @@ public class SystemManagerHandler extends  Handler{
                 String discountRuleStr = data.getProperty("discountRule");
 
                 DiscountRule discountRule = parseDiscountRule(discountRuleStr);
-                response = service.addDiscountRule(username, Integer.getInteger(storeID), discountRule);
+                System.out.println(storeID);
+                response = service.addDiscountRule(username, Integer.parseInt(storeID), discountRule);
             }
             case "addPurchaseRule" -> {
                 String username = data.getProperty("username");
@@ -61,7 +62,7 @@ public class SystemManagerHandler extends  Handler{
 
                 PurchaseRule purchaseRule = parsePurchaseRule(purchaseRuleStr);
 
-                response = service.addPurchaseRule(username, Integer.getInteger(storeID), purchaseRule);
+                response = service.addPurchaseRule(username, Integer.parseInt(storeID), purchaseRule);
             }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
@@ -169,7 +170,6 @@ public class SystemManagerHandler extends  Handler{
             case "CategoryDiscountRule" -> {
                 String category = data.getProperty("category");
                 String discount = data.getProperty("discount");
-
                 rule = new CategoryDiscountRule(category, Double.parseDouble(discount));
             }
             case "StoreDiscountRule" -> {

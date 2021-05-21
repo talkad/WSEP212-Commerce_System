@@ -67,7 +67,7 @@ class CompositionPoliciesPage extends React.Component {
                 else show = ''
         return (
             <form>
-                <h1>And Composition Discount Rule Page</h1>
+                <h1>Policy Page</h1>
                 <Select value={this.state.selectedOption} onChange={this.handleOptionChange} options={DiscountOptions}/>
                 <div> <label> Username : <input readOnly value = {this.state.username} className = "username" type = "text" onChange = {(e) => this.handleInputChange(e, 'username')}/> </label> </div>
                 <div> <label> Store Id : <input readOnly value = {this.state.storeId} className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>

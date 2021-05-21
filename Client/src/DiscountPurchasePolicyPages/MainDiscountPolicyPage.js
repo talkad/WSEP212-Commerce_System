@@ -3,6 +3,9 @@ import StaticUserInfo from "../API/StaticUserInfo";
 import ReactDOM from "react-dom";
 import CategoryDiscountRule from "./CategoryDiscountRule";
 import StoreDiscountRule from "./StoreDiscountRule";
+import EditProduct from "../ProductPages/EditProduct";
+import {Link} from "react-router-dom";
+//import {Link} from "react";
 
 class MainDiscountPolicyPage extends React.Component {
     constructor(props) {
@@ -13,10 +16,10 @@ class MainDiscountPolicyPage extends React.Component {
         };
     }
 
-    handleClick(e) {
-        // access input values in the state
-        console.log(this.state)
+    handleClick(e, page) {
+        //console.log(this.state)
         e.preventDefault();
+        //page === 'Category Discount' ? ReactDOM.render(<React.StrictMode><CategoryDiscountRule /></React.StrictMode>, document.getElementById('root')) : null
     }
 
     handleInputChange = (e, name) => {
@@ -29,13 +32,13 @@ class MainDiscountPolicyPage extends React.Component {
         return (
             <form>
                 <h1>Choose Discount Policy Page </h1>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Category Discount </button>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Store Discount </button>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Product Discount </button>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Conditional Category Discount </button>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Conditional Store Discount </button>
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Conditional Product Discount </button>
-                <div><button type = "button" onClick = {(e) => this.handleClick(e)}> Add Policy </button> </div>
+                <Link to = '/Category_Discount_Rule'> <button type = "button"> Category Discount </button> </Link>
+                <Link to = '/Store_Discount_Rule'> <button type = "button"> Store Discount </button> </Link>
+                <Link to = '/Product_Discount_Rule'> <button type = "button"> Product Discount </button> </Link>
+                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Category Rule </button> </Link>
+                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Store Rule </button> </Link>
+                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Product Rule </button> </Link>
+                <div><Link to = '/Composition_Policies_Page'> <button type = "button"> Add Policy Rule </button> </Link></div>
             </form>
         )
     }

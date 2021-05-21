@@ -316,13 +316,6 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
-    //ADD TO SERVICE FIRST!
-    // static sendDiscount (){
-    //     this.connection.send(JSON.stringify({
-    //         action: functionName,
-    //     }))
-    // }
-
     /*
     Holds for 2 Permission Pages
      */
@@ -412,6 +405,24 @@ class Connection{
             storeID: storeId,
         }))
 
+        return Connection.getResponse(functionName);
+    }
+
+    static sendAddCategoryDiscount (functionName, username, storeId, type, category, discount){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+            }),
+
+            // type: type,
+            // category: category,
+            // discount: discount,
+        }))
         return Connection.getResponse(functionName);
     }
 
