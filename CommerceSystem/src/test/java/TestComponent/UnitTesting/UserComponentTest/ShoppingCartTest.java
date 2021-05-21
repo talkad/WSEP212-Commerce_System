@@ -45,7 +45,7 @@ public class ShoppingCartTest {
         store1.addProduct(productsDTO[3], 10);
         store2.addProduct(productsDTO[2], 10);
 
-        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
+        Map<Integer, Map<Product, Integer>> baskets;
         int numProducts = 0;
 
 
@@ -58,7 +58,7 @@ public class ShoppingCartTest {
         baskets = cart.getBaskets();
         Assert.assertEquals(2, baskets.size());
 
-        for(Map<ProductClientDTO, Integer> basket: baskets.values()){
+        for(Map<Product, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -93,7 +93,7 @@ public class ShoppingCartTest {
         store1.addProduct(productsDTO[3], 50);
         store2.addProduct(productsDTO[2], 50);
 
-        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
+        Map<Integer, Map<Product, Integer>> baskets;
         Response<Boolean> res;
         int numProducts = 0;
 
@@ -106,7 +106,7 @@ public class ShoppingCartTest {
         Assert.assertTrue(res.getResult());
 
         baskets = cart.getBaskets();
-        for(Map<ProductClientDTO, Integer> basket: baskets.values()){
+        for(Map<Product, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -142,7 +142,7 @@ public class ShoppingCartTest {
 
         int numberOfThreads1 = 100;
         int numberOfThreads2 = 50;
-        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
+        Map<Integer, Map<Product, Integer>> baskets;
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads1);
 

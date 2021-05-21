@@ -23,7 +23,7 @@ public class CommerceSystem implements IService {
     private UserController userController;
     private StoreController storeController;
     public static Log log = new Log("Logs.txt");
-//    public static Log logCrit = new Log("CriticalLogs.txt"); // todo - add this line
+//    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();

@@ -13,10 +13,10 @@ public class DALService {
     public void insertStore(StoreDTO toDTO) {
     }
 
-    public Store getStore(int storeId) {
+    public StoreDTO getStore(int storeId) {
     }
 
-    public Collection<Store> getAllStores() {
+    public Collection<StoreDTO> getAllStores() {
     }
 
     private static class CreateSafeThreadSingleton {
