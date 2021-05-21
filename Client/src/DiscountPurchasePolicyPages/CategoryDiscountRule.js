@@ -25,8 +25,8 @@ class CategoryDiscountRule extends React.Component {
     }
 
     handleClick(e) {
-        //e.preventDefault();
-        Connection.sendAddCategoryDiscount(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount).then(this.handleAddCategoryDiscountResponse, Connection.handleReject)
+        e.preventDefault();
+        Connection.sendCategoryDiscountRule(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount).then(this.handleAddCategoryDiscountResponse, Connection.handleReject)
     }
 
     handleAddCategoryDiscountResponse(result){
