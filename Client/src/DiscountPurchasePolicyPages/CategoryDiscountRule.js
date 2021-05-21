@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 
 class CategoryDiscountRule extends React.Component {
@@ -24,7 +25,17 @@ class CategoryDiscountRule extends React.Component {
     }
 
     handleClick(e) {
-        e.preventDefault();
+        //e.preventDefault();
+        Connection.sendAddCategoryDiscount(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount).then(this.handleAddCategoryDiscountResponse, Connection.handleReject())
+    }
+
+    handleAddCategoryDiscountResponse(result){
+        if(!result.isFailure){
+            alert("adding discount success");
+        }
+        else{
+            alert(result.errMsg);
+        }
     }
 
     render() {
