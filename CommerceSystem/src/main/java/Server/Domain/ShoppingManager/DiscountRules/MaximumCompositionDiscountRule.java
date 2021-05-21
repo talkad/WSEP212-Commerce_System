@@ -1,6 +1,9 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.MaximumCompositionDiscountRuleDTO;
+
 
 import java.util.List;
 import java.util.Map;
@@ -11,8 +14,18 @@ public class MaximumCompositionDiscountRule extends CompoundDiscountRule {
         super(0, discountRules);
     }
 
+    public MaximumCompositionDiscountRule(MaximumCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
+    }
+
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public DiscountRuleDTO toDTO(){
+        return new MaximumCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount);
+    }
+
+    @Override
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double discount;
         double maxDiscount = 0.0;
 

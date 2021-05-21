@@ -40,18 +40,25 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
         String action = data.getProperty("action");
 
         if(action.equals("reconnection")) {
-            String response = gson.toJson(new ReplyMessage("response", gson.toJson(new Response<>(true, false, "Reconnected successfully"))));
+            String response = gson.toJson(new ReplyMessage("reconnection", gson.toJson(new Response<>(true, false, "Reconnected successfully")), "reconnection"));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
 
             Notifier.getInstance().addConnection(data.getProperty("username"), ctx);
+        }
+        else if(action.equals("startup")) {
+            String content = msg.text();
+            Response<?> result = CommerceHandler.getInstance().handle(content);
+
+            String response = gson.toJson(new ReplyMessage("startup", gson.toJson(result), "startup"));
+            ctx.writeAndFlush(new TextWebSocketFrame(response));
+
         }
         else {
             String content = msg.text();
             Response<?> result = CommerceHandler.getInstance().handle(content);
 
-            String response = gson.toJson(new ReplyMessage("response", gson.toJson(result)));
+            String response = gson.toJson(new ReplyMessage("response", gson.toJson(result), action));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
-
 
             if (action.equals("login") && !result.isFailure())
                 Notifier.getInstance().addConnection((String) result.getResult(), ctx);

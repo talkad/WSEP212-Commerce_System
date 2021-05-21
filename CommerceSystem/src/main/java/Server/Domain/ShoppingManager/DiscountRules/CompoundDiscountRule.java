@@ -1,11 +1,9 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CompoundDiscountRule implements DiscountRule {
     protected final static int NOT_SET = -1;
@@ -26,8 +24,15 @@ public abstract class CompoundDiscountRule implements DiscountRule {
         discountRules.remove(discountRule);
     }
 
+    public List<DiscountRuleDTO> getDiscountRulesDTO(){
+        List<DiscountRuleDTO> discountRuleDTOS = new Vector<>();
+        for(DiscountRule discountRule : this.discountRules){
+            discountRuleDTOS.add(discountRule.toDTO());
+        }
+        return discountRuleDTOS;
+    }
     @Override
-    public abstract double calcDiscount(Map<ProductDTO, Integer> shoppingBasket);
+    public abstract double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket);
 
     @Override
     public abstract String getDescription();

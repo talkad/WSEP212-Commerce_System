@@ -3,17 +3,16 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.PurchasePolicy;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -25,7 +24,6 @@ public class UserController {
     private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
     private Security security;
-
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
@@ -84,7 +82,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -195,7 +193,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Map<Integer ,Map<ProductDTO, Integer>>> getShoppingCartContents(String userName){
+    public Response<List<BasketClientDTO>> getShoppingCartContents(String userName){
         readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
@@ -252,7 +250,7 @@ public class UserController {
     }
 
 
-    public Response<List<PurchaseDTO>> getPurchaseHistoryContents(String userName){
+    public Response<List<PurchaseClientDTO>> getPurchaseHistoryContents(String userName){
         readLock.lock();
         if(connectedUsers.containsKey(userName)) {
             User user = connectedUsers.get(userName);
@@ -260,7 +258,7 @@ public class UserController {
             return user.getPurchaseHistoryContents();
         }
         readLock.unlock();
-        return new Response<>(null, true, "User not connected");
+        return new Response<>(new LinkedList<>(), true, "User not connected");
     }
 
     public Response<Boolean> appointOwner(String userName, String newOwner, int storeId) {
@@ -294,8 +292,8 @@ public class UserController {
             writeLock.lock();
             Response<Boolean> result = user.appointManager(newManager, storeId);
             if (!result.isFailure()) {
-                List<Permissions> permissions = new Vector<>();
-                permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
+                List<PermissionsEnum> permissions = new Vector<>();
+                permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
                 if (this.connectedUsers.containsKey(newManager)) {
                     connectedUsers.get(newManager).addStoresManaged(storeId, permissions);
                 }
@@ -313,7 +311,7 @@ public class UserController {
             //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-            response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_OWNER_APPOINTMENT);
+            response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
             if (!response.isFailure()) {
                 User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
                 if (appointee.isOwner(storeID)) {
@@ -353,7 +351,7 @@ public class UserController {
             //writeLock.lock();
             Response<Boolean> response;
             User appointer = new User(UserDAO.getInstance().getUser(appointerName));
-            response = appointer.appointedAndAllowed(storeID, appointeeName, Permissions.REMOVE_MANAGER_APPOINTMENT);
+            response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
             if (!response.isFailure()) {
                 User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
                 if (appointee.isManager(storeID)) {
@@ -400,7 +398,7 @@ public class UserController {
         }
     }
 
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission){
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission){
         readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
@@ -419,7 +417,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission){
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission){
         readLock.lock();
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
@@ -439,7 +437,7 @@ public class UserController {
     }
 
 
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
@@ -450,7 +448,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(adminName)) {
             User user = connectedUsers.get(adminName);
@@ -464,12 +462,12 @@ public class UserController {
     public void adminBoot() {
         String admin = "shaked";
         UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
-        UserDTO userDTO = UserDAO.getInstance().getUser(admin);
+        UserDTOTemp userDTO = UserDAO.getInstance().getUser(admin);
         connectedUsers.put(admin, new User(userDTO));
     }
 
 
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -513,7 +511,7 @@ public class UserController {
     }
 
     public Response<Boolean> purchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails){
-        Response<List<PurchaseDTO>> purchaseRes;
+        Response<List<PurchaseClientDTO>> purchaseRes;
 
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
@@ -697,7 +695,7 @@ public class UserController {
             if(offer.getState() != OfferState.APPROVED)
                 return new Response<>(false, true, "Your offer is not yet approved");
 
-            Response<PurchaseDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
+            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
 
             if(purchase.isFailure())
                 return new Response<>(false, true, purchase.getErrMsg());

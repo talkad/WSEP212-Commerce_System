@@ -1,10 +1,13 @@
 package Server.Domain.ShoppingManager;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.DAL.StoreDTO;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.PurchaseHistory;
 
 import java.time.LocalDate;
@@ -45,7 +48,34 @@ public class Store {
         this.readWriteLock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(ProductDTO productDTO, int amount){
+    public Store(StoreDTO storeDTO){
+        this.name = storeDTO.getName();
+        this.storeID = storeDTO.getStoreID();
+        this.ownerName = storeDTO.getOwnerName();
+        this.inventory = new Inventory(storeDTO.getInventory());
+        this.isActiveStore = new AtomicBoolean(storeDTO.isActiveStore());
+        this.discountPolicy = new DiscountPolicy(storeDTO.getDiscountPolicy());
+        this.purchasePolicy = new PurchasePolicy(storeDTO.getPurchasePolicy());
+        this.purchaseHistory = new PurchaseHistory(storeDTO.getPurchaseHistory());
+        this.rating = new AtomicReference<>(storeDTO.getRating());
+        this.numRatings = new AtomicInteger(storeDTO.getNumRatings());
+        this.readWriteLock = new ReentrantReadWriteLock();
+    }
+
+    public StoreDTO toDTO(){
+        return new StoreDTO(this.storeID,
+                            this.name,
+                            this.ownerName,
+                            this.inventory.toDTO(),
+                            this.isActiveStore.get(),
+                            this.discountPolicy.toDTO(),
+                            this.purchasePolicy.toDTO(),
+                            this.rating.get(),
+                            this.numRatings.get(),
+                            this.purchaseHistory.toDTO());
+    }
+
+    public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
         if(amount <= 0){
             return new Response<>(false, true, "The product amount cannot be negative or zero");
         }
@@ -94,13 +124,13 @@ public class Store {
         return purchasePolicy;
     }
 
-     public Response<PurchaseDTO> purchase(Map<ProductDTO, Integer> shoppingBasket) {
+     public Response<PurchaseClientDTO> purchase(Map<ProductClientDTO, Integer> shoppingBasket) {
         Response<Boolean> validatePurchase = purchasePolicy.isValidPurchase(shoppingBasket);
         if(validatePurchase.isFailure())
             return new Response<>(null, true, validatePurchase.getErrMsg());
 
         Response<Boolean> result = inventory.removeProducts(shoppingBasket);
-        PurchaseDTO purchaseDTO;
+        PurchaseClientDTO purchaseDTO;
 
 //        double price = 0;
 //
@@ -111,19 +141,19 @@ public class Store {
         double priceAfterDiscount = discountPolicy.calcDiscount(shoppingBasket);
 
         if(result.isFailure()){
-            return new Response<>(null, true, "Store: Product deletion failed successfully");
+            return new Response<>(null, true, "The product is sold out");
         }
 
-        purchaseDTO = new PurchaseDTO(shoppingBasket, priceAfterDiscount, LocalDate.now());
+        purchaseDTO = new PurchaseClientDTO(new BasketClientDTO(storeID ,name , shoppingBasket.keySet(), shoppingBasket.values()), priceAfterDiscount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
 
-    public Response<Collection<PurchaseDTO>> getPurchaseHistory() {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseHistory() {
         return new Response<>(purchaseHistory.getPurchases(), false, "OK");
     }
 
-    public void addRating(Rating rate){
+    public void addRating(RatingEnum rate){
         int prevNum;
         Double currentRating;
         Double newRating;
@@ -166,7 +196,7 @@ public class Store {
         }while (!isActiveStore.compareAndSet(currentActive, activeStore));
     }
 
-    public void addPurchaseHistory(PurchaseDTO purchaseDTO) {
+    public void addPurchaseHistory(PurchaseClientDTO purchaseDTO) {
         readWriteLock.writeLock().lock();
         purchaseHistory.addSinglePurchase(purchaseDTO);
         readWriteLock.writeLock().unlock();
@@ -192,12 +222,13 @@ public class Store {
         LocalDate yesterday = LocalDate.now().minus(Period.ofDays(1));
         double totalRevenue = 0;
 
-        for(PurchaseDTO purchase: purchaseHistory.getPurchases()){
-            if(purchase.getPurchaseDate().isAfter(yesterday))
+        for(PurchaseClientDTO purchase: purchaseHistory.getPurchases()){
+            if(LocalDate.parse(purchase.getPurchaseDate()).isAfter(yesterday))
                 totalRevenue += purchase.getTotalPrice();
         }
 
         return totalRevenue;
     }
+
 
 }

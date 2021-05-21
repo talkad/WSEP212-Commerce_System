@@ -1,10 +1,15 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.ShoppingBasketDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.Product;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -13,7 +18,7 @@ public class ShoppingBasket {
 
     // the store these products are belong to
     private final int storeID;
-    private Map<Integer, ProductDTO> products;
+    private Map<Integer, Product> products;
     // map between productID and its amount in the basket
     private Map<Integer, Integer> pAmount;
     private double totalPrice;
@@ -28,7 +33,32 @@ public class ShoppingBasket {
         this.lock = new ReentrantReadWriteLock();
     }
 
-    public Response<Boolean> addProduct(ProductDTO product){
+    public ShoppingBasket(ShoppingBasketDTO shoppingBasketDTO){
+        this.storeID = shoppingBasketDTO.getStoreID();
+        this.products = new ConcurrentHashMap<>();
+        this.pAmount = new ConcurrentHashMap<>();
+        this.totalPrice = shoppingBasketDTO.getTotalPrice();
+        this.lock = new ReentrantReadWriteLock();
+
+        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = shoppingBasketDTO.getProducts();
+        if(productsList != null){
+            for(Pair<Server.DAL.ProductDTO, Integer> pair : productsList){
+                this.pAmount.put(pair.getFirst().getProductID(), pair.getSecond());
+                this.products.put(pair.getFirst().getProductID(), new Product(pair.getFirst()));
+            }
+        }
+    }
+
+    public ShoppingBasketDTO toDTO(){
+        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = new Vector<>();
+        for(int key : this.pAmount.keySet()){
+            productsList.add(new Pair<>(this.products.get(key).toDTO(), this.pAmount.get(key)));
+        }
+
+        return new ShoppingBasketDTO(this.storeID, productsList, this.totalPrice);
+    }
+
+    public Response<Boolean> addProduct(ProductClientDTO product){
         Response<Boolean> res;
         int productID = product.getProductID();
 
@@ -39,7 +69,7 @@ public class ShoppingBasket {
 
             lock.writeLock().lock();
             if(!pAmount.containsKey(productID)){
-                products.put(productID, product);
+                products.put(productID, Product.createProduct(product));
                 pAmount.put(productID, 1);
             }
             else{
@@ -57,7 +87,7 @@ public class ShoppingBasket {
 
     public Response<Boolean> removeProduct(int productID) {
         Response<Boolean> res;
-        ProductDTO product;
+        Product product;
 
         lock.readLock().lock();
         product = products.get(productID);
@@ -83,12 +113,12 @@ public class ShoppingBasket {
         return res;
     }
 
-    public Map<ProductDTO, Integer> getProducts() {
-        Map<ProductDTO, Integer> basketProducts = new HashMap<>();
+    public Map<ProductClientDTO, Integer> getProducts() {
+        Map<ProductClientDTO, Integer> basketProducts = new HashMap<>();
 
         lock.readLock().lock();
-        for(ProductDTO product: products.values()){
-            basketProducts.put(product, pAmount.get(product.getProductID()));
+        for(Product product: products.values()){
+            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
         }
         lock.readLock().unlock();
 
@@ -102,7 +132,7 @@ public class ShoppingBasket {
     public Response<Boolean> updateProductQuantity(int productID, int amount) {
         Response<Boolean> res;
         int prevAmount;
-        ProductDTO product;
+        Product product;
 
         if(amount < 0){
             res = new Response<>(false, true, "ShoppingBasket: The amount can't be negative");
@@ -141,10 +171,10 @@ public class ShoppingBasket {
 
     @Override
     public String toString() {
-        Map<ProductDTO, Integer> products = getProducts();
+        Map<ProductClientDTO, Integer> products = getProducts();
         StringBuilder result = new StringBuilder("ShoppingBasket id " + storeID + ":\n");
 
-        for(ProductDTO product: products.keySet()){
+        for(ProductClientDTO product: products.keySet()){
             result.append(product.toString()).append("Amount :").append(products.get(product)).append("\n");
         }
 

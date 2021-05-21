@@ -1,12 +1,16 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.ShoppingBasketDTO;
+import Server.DAL.ShoppingCartDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,6 +25,28 @@ public class ShoppingCart {
     public ShoppingCart(){
         this.baskets = new ConcurrentHashMap<>();
         this.lock = new ReentrantReadWriteLock();
+    }
+
+    public ShoppingCart(ShoppingCartDTO shoppingCartDTO){
+        this.baskets = new ConcurrentHashMap<>();
+        this.lock = new ReentrantReadWriteLock();
+
+        List<ShoppingBasketDTO> basketsList = shoppingCartDTO.getBaskets();
+        if(basketsList != null){
+            for(ShoppingBasketDTO basket : basketsList){
+                this.baskets.put(basket.getStoreID(), new ShoppingBasket(basket));
+            }
+        }
+    }
+
+    public ShoppingCartDTO toDTO(){
+        List<ShoppingBasketDTO> basketsList = new Vector<>();
+
+        for(int key : this.baskets.keySet()){
+            basketsList.add(this.baskets.get(key).toDTO());
+        }
+
+        return new ShoppingCartDTO(basketsList);
     }
 
     public Response<Boolean> addProduct(int storeID, int productID){
@@ -75,8 +101,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<Integer, Map<ProductDTO, Integer>> getBaskets(){
-        Map<Integer, Map<ProductDTO, Integer>> products = new HashMap<>();
+    public Map<Integer, Map<ProductClientDTO, Integer>> getBaskets(){
+        Map<Integer, Map<ProductClientDTO, Integer>> products = new HashMap<>();
 
         lock.readLock().lock();
 
@@ -93,8 +119,8 @@ public class ShoppingCart {
      * get DTO products from cart
      * @return map contains the storeID of a basket and its content
      */
-    public Map<ProductDTO, Integer> getBasket(int storeID){
-        Map<ProductDTO, Integer> products;
+    public Map<ProductClientDTO, Integer> getBasket(int storeID){
+        Map<ProductClientDTO, Integer> products;
 
         lock.readLock().lock();
         products = new HashMap<>(baskets.get(storeID).getProducts());

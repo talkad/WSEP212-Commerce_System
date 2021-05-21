@@ -3,17 +3,19 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 
 import java.io.File;
-import java.net.URL;
+import java.io.FileInputStream;
 import java.util.*;
-
-import java.io.*;
 
 
 public class CommerceSystem implements IService {
@@ -21,7 +23,7 @@ public class CommerceSystem implements IService {
     private UserController userController;
     private StoreController storeController;
     public static Log log = new Log("Logs.txt");
-    public static Log logCrit = new Log("CriticalLogs.txt");
+//    public static Log logCrit = new Log("CriticalLogs.txt"); // todo - add this line
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
@@ -39,7 +41,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-        initState();
+//        initState();
     }
 
     @Override
@@ -63,22 +65,22 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         return storeController.searchByStoreName(storeName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         return storeController.searchByProductName(productName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
         return storeController.searchByCategory(category);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
+    public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
         return storeController.searchByKeyWord(keyword);
     }
 
@@ -93,7 +95,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
+    public Response<List<BasketClientDTO>> getCartDetails(String username) {
         return userController.getShoppingCartContents(username);
     }
 
@@ -128,7 +130,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<StoreDTO> getStore(int storeID) {
+    public Response<StoreClientDTO> getStore(int storeID) {
         return storeController.getStore(storeID);
     }
 
@@ -138,8 +140,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<String> logout(String userName) {
-        return userController.logout(userName);
+    public Response<String> logout(String username) {
+        return userController.logout(username);
     }
 
     @Override
@@ -153,12 +155,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
         return userController.getPurchaseHistoryContents(username);
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
         return userController.addProductsToStore(username, productDTO, amount);
     }
 
@@ -233,12 +235,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.removePermission(permitting, storeId, permitted, permission);
     }
 
@@ -253,17 +255,17 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         return userController.getPurchaseDetails(username, storeID);
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         return userController.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
@@ -306,11 +308,34 @@ public class CommerceSystem implements IService {
                     appointStoreManager(currUser, attributes[0], Integer.parseInt(attributes[1].substring(0, attributes[1].length() - 1)));
 
                 }
+                else if(funcs[i].startsWith("logout")){
+                    attributes = funcs[i].substring(7).split(", ");
+                    currUser = logout(attributes[0].substring(0, attributes[0].length() - 1)).getResult();
+                }
+                else if(funcs[i].startsWith("addProductsToStore")){
+                    attributes = funcs[i].substring(19).split(", ");
+                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), stringToList(attributes, 3),stringToList(attributes, 4)), Integer.parseInt(attributes[5].substring(0, attributes[5].length() - 1)));
+                }
+                else if(funcs[i].startsWith("addPermission")){
+                    attributes = funcs[i].substring(14).split(", ");
+                    addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
+                }
             }
-
         }
         catch (Exception e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
+    }
+
+    private List<String> stringToList(String[] str, int index){
+        List<String> lst = new Vector<>();
+        str[index] = str[index].substring(1);
+        for(int i = index; i < str.length; i++){
+            if(str[i].endsWith("]")){
+                lst.add(str[i]);
+                break;
+            }
+        }
+        return lst;
     }
 }

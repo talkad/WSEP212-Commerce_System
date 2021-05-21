@@ -5,23 +5,23 @@ import java.util.Vector;
 
 public class Registered extends UserState {
 
-    protected final List<Permissions> allowedFunctions;
+    protected final List<PermissionsEnum> allowedFunctions;
 
     public Registered() {
         this.allowedFunctions = new Vector<>();
-        this.allowedFunctions.add(Permissions.LOGOUT);
-        this.allowedFunctions.add(Permissions.OPEN_STORE);
-        this.allowedFunctions.add(Permissions.REVIEW_PRODUCT);
-        this.allowedFunctions.add(Permissions.GET_PURCHASE_HISTORY);
+        this.allowedFunctions.add(PermissionsEnum.LOGOUT);
+        this.allowedFunctions.add(PermissionsEnum.OPEN_STORE);
+        this.allowedFunctions.add(PermissionsEnum.REVIEW_PRODUCT);
+        this.allowedFunctions.add(PermissionsEnum.GET_PURCHASE_HISTORY);
     }
 
     @Override
-    public boolean allowed(Permissions func, User user) {
+    public boolean allowed(PermissionsEnum func, User user) {
         return this.allowedFunctions.contains(func);
     }
 
     @Override
-    public boolean allowed(Permissions permission, User user, int storeId) {
+    public boolean allowed(PermissionsEnum permission, User user, int storeId) {
         if (user.getStoresOwned().contains(storeId)) {
             return true;
         }
@@ -29,5 +29,10 @@ public class Registered extends UserState {
             return user.getStoresManaged().get(storeId).contains(permission);
         }
         else return false;
+    }
+
+    @Override
+    public UserStateEnum getStateEnum(){
+        return UserStateEnum.REGISTERED;
     }
 }

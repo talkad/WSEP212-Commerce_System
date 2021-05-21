@@ -2,19 +2,20 @@ package TestComponent.AcceptanceTestings.Bridge;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.UserManager.PermissionsEnum;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ProxyBridge implements IService {
     private IService real;
@@ -80,7 +81,7 @@ public class ProxyBridge implements IService {
 //    }
 
     @Override
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         if (real != null){
             return real.searchByStoreName(storeName);
         }
@@ -88,7 +89,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         if (real != null){
             return real.searchByProductName(productName);
         }
@@ -96,7 +97,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
         if (real != null){
             return real.searchByProductCategory(category);
         }
@@ -104,7 +105,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
+    public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
         if (real != null){
             return real.searchByProductKeyword(keyword);
         }
@@ -128,7 +129,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
+    public Response<List<BasketClientDTO>> getCartDetails(String username) {
         if (real != null){
             return real.getCartDetails(username);
         }
@@ -172,7 +173,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<StoreDTO> getStore(int storeID) {
+    public Response<StoreClientDTO> getStore(int storeID) {
         return null;
     }
 
@@ -211,7 +212,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
         if (real != null){
             return real.getPurchaseHistory(username);
         }
@@ -219,7 +220,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
         if (real != null){
             return real.addProductsToStore(username,productDTO, amount);
         }
@@ -315,7 +316,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         if (real != null){
             return real.addPermission(permitting, storeId, permitted, permission);
         }
@@ -323,7 +324,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         if (real != null){
             return real.removePermission(permitting, storeId, permitted, permission);
         }
@@ -347,7 +348,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         if (real != null){
             return real.getPurchaseDetails(username, storeID);
         }
@@ -365,7 +366,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         if (real != null){
             return real.getUserPurchaseHistory(adminName, username);
         }
@@ -373,7 +374,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         if (real != null){
             return real.getStorePurchaseHistory(adminName, storeID);
         }

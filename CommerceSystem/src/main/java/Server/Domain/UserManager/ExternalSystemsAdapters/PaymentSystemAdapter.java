@@ -1,21 +1,12 @@
 package Server.Domain.UserManager.ExternalSystemsAdapters;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
-import org.apache.http.HttpEntity;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ExternalSystemsMock.PaymentSystemMock;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class in the only class who communicates with the external payment system,
@@ -25,10 +16,12 @@ import java.util.Map;
 public class PaymentSystemAdapter
 {
 
-    ExternalSystemsConnection conn;
+    private boolean mockFlag;
+    private ExternalSystemsConnection conn;
 
     private PaymentSystemAdapter()
     {
+        mockFlag = false;
         conn = ExternalSystemsConnection.getInstance();
     }
 
@@ -48,6 +41,13 @@ public class PaymentSystemAdapter
         Response<Boolean> connRes;
         Response<String> externalRes;
         int transactionID;
+
+        if(mockFlag){ // mock guard
+            int result = PaymentSystemMock.getInstance().pay(paymentDetails);
+            if(result < 0)
+                return new Response<>(result, true, "The payment failed");
+            return new Response<>(result, false, "payment succeed");
+        }
 
         if(!conn.isConnected()){
             connRes = conn.createHandshake();
@@ -84,6 +84,13 @@ public class PaymentSystemAdapter
         Response<String> externalRes;
         int result;
 
+        if(mockFlag){ // mock guard
+            int cancelResult = PaymentSystemMock.getInstance().cancelPay(Integer.parseInt(transactionID));
+            if(cancelResult < 0)
+                return new Response<>(cancelResult, true, "Payment cancellation failed");
+            return new Response<>(cancelResult, false, "cancel payment succeed");
+        }
+
         if(!conn.isConnected()){
             connRes = conn.createHandshake();
 
@@ -106,6 +113,11 @@ public class PaymentSystemAdapter
 
             return new Response<>(result, false, "payment cancellation occurred successfully");
         }
+    }
+
+    // for testing purposes
+    public void setMockFlag(){
+        mockFlag = true;
     }
 
 }

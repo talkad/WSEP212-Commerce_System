@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.Predicates.Predicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public abstract class LeafPurchaseRule implements PurchaseRule {
     }
 
     @Override
-    public abstract boolean isValidPurchase(Map<ProductDTO, Integer> shoppingBasket);
+    public abstract boolean isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket);
 
     @Override
     public int getID() {

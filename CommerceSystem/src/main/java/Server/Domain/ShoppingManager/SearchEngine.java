@@ -1,7 +1,8 @@
 package Server.Domain.ShoppingManager;
 
-import Server.Domain.CommonClasses.Rating;
+import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,24 +26,28 @@ public class SearchEngine {
         return searcher;
     }
 
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         Collection<Store> stores = StoreController.getInstance().getStores();
-
-        List<ProductDTO> productList = new LinkedList<>();
+        System.out.println("search by name " + productName);
+        List<ProductClientDTO> productList = new LinkedList<>();
         if (productName != null) {
-            for (Store store : stores)
-                for (Product product : store.getInventory().getProducts())
+            for (Store store : stores) {
+                System.out.println("search in store " + store.getName());
+                for (Product product : store.getInventory().getProducts()) {
+                    System.out.println("product " + product.getName());
                     if (product.getName().equals(productName))
                         productList.add(product.getProductDTO());
+                }
+            }
         }
 
         return new Response<>(productList, false, "products by name");
     }
 
-    public Response<List<ProductDTO>> searchByCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByCategory(String category) {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
-        List<ProductDTO> productList = new LinkedList<>();
+        List<ProductClientDTO> productList = new LinkedList<>();
         if (category != null) {
             for (Store store : stores)
                 for (Product product : store.getInventory().getProducts())
@@ -53,10 +58,10 @@ public class SearchEngine {
         return new Response<>(productList, false, "products by category");
     }
 
-    public Response<List<ProductDTO>> searchByKeyWord(String keyword) {
+    public Response<List<ProductClientDTO>> searchByKeyWord(String keyword) {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
-        List<ProductDTO> productList = new LinkedList<>();
+        List<ProductClientDTO> productList = new LinkedList<>();
         if (keyword != null) {
             for (Store store : stores)
                 for (Product product : store.getInventory().getProducts())
@@ -66,10 +71,10 @@ public class SearchEngine {
         return new Response<>(productList, false, "products by keyword");
     }
 
-    public Response<List<ProductDTO>> filterByPriceRange(double lowPart, double highPart) {
+    public Response<List<ProductClientDTO>> filterByPriceRange(double lowPart, double highPart) {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
-        List<ProductDTO> productList = new LinkedList<>();
+        List<ProductClientDTO> productList = new LinkedList<>();
         if (!(lowPart < 0 || highPart < 0 || lowPart > highPart)) {
             for (Store store : stores)
                 for (Product product : store.getInventory().getProducts())
@@ -79,11 +84,11 @@ public class SearchEngine {
         return new Response<>(productList, false, "products filtered by price");
     }
 
-    public Response<List<ProductDTO>> filterByRating(double rating) {
+    public Response<List<ProductClientDTO>> filterByRating(double rating) {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
-        List<ProductDTO> productList = new LinkedList<>();
-        if (rating <= Rating.VERY_HIGH.rate) {
+        List<ProductClientDTO> productList = new LinkedList<>();
+        if (rating <= RatingEnum.VERY_HIGH.rate) {
             for (Store store : stores)
                 for (Product product : store.getInventory().getProducts())
                     if (product.getRating() >= rating)
@@ -93,11 +98,11 @@ public class SearchEngine {
         return new Response<>(productList, false, "products filtered by rating");
     }
 
-    public Response<List<ProductDTO>> filterByStoreRating(double rating) {
+    public Response<List<ProductClientDTO>> filterByStoreRating(double rating) {
         Collection<Store> stores = StoreController.getInstance().getStores();
 
-        List<ProductDTO> productList = new LinkedList<>();
-        if (rating <= Rating.VERY_HIGH.rate) {
+        List<ProductClientDTO> productList = new LinkedList<>();
+        if (rating <= RatingEnum.VERY_HIGH.rate) {
             for (Store store : stores)
                 if (store.getRating() >= rating)
                     for(Product product: store.getInventory().getProducts())

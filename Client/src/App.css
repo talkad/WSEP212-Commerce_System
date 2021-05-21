@@ -40,8 +40,54 @@
   text-align: left;
 }
 
+.form-search{
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  height: 100%;
+  padding-top: 30px;
+  font-size: 20px;
+  text-align: left;
+}
+
+input[type="radio"]{
+  margin: 0 10px 0 10px;
+}
+
+.card{
+  width: 200px;
+
+}
+
+.search-result-div{
+  align-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0 5px 0;
+}
+
+.card-button{
+  margin: 10px 0 0 0;
+  /*height: 20px;*/
+  /*max-width: fit-content;*/
+  /*max-height: fit-content;*/
+}
+
+
+.buttonStyle{
+  text-align: center;
+  padding-bottom: 15px;
+}
+
+.textStyle{
+  text-align: left;
+  padding-bottom: 15px;
+}
+
 .divStyle{
   padding-bottom: 15px;
+  text-align: center;
 }
 
 .Page{

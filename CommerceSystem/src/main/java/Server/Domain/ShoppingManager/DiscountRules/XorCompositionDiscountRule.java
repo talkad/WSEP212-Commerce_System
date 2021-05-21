@@ -1,7 +1,8 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
-
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.XorCompositionDiscountRuleDTO;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +14,19 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
         this.xorResolveType = xorResolveType;
     }
 
+    public XorCompositionDiscountRule(XorCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
+        this.xorResolveType = ruleDTO.getXorResolveType();
+    }
+
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public DiscountRuleDTO toDTO(){
+        return new XorCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount, this.xorResolveType);
+    }
+
+    @Override
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double totalPriceToDiscount = 0.0;
         double discountRes;
 

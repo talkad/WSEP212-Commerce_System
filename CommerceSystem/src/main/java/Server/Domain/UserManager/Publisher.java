@@ -1,16 +1,19 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.PublisherDTO;
+import Server.Domain.CommonClasses.Pair;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Publisher{
 
-    private Map<Integer, Vector<String>> storeSubscribers;
+    private Map<Integer, List<String>> storeSubscribers;
     private UserController userController;
     private Notify notifier;
 
@@ -44,7 +47,7 @@ public class Publisher{
      * @param msg - the message that will be sent
      */
     public void notify(int storeID, ReplyMessage msg) {
-        Vector<String> users = storeSubscribers.get(storeID);
+        List<String> users = storeSubscribers.get(storeID);
         User user;
 
         if(users == null)
@@ -54,9 +57,12 @@ public class Publisher{
 
             if(userController.isConnected(username))
             {
+                System.out.println("notification sent to " + username + ": " + msg.getMessage());
+
                 notify(username, msg);
             }
             else {
+                System.out.println("notification added to pending |" + username + ": " + msg.getMessage());
                 user = userController.getUserByName(username);
                 user.addPendingMessage(msg);
             }
@@ -79,6 +85,24 @@ public class Publisher{
         this.notifier = notifier;
     }
 
+    public PublisherDTO toDTO(){
+        //TODO may need to make thread-safe
+        List<Pair<Integer, List<String>>> subscribers = new Vector<>();
+        for(int storeID : this.storeSubscribers.keySet()){
+            subscribers.add(new Pair<>(storeID, new Vector<>(this.storeSubscribers.get(storeID))));
+        }
 
+        return new PublisherDTO(subscribers);
+    }
+
+    public void loadFromDTO(PublisherDTO publisherDTO){
+        //TODO may need to make thread-safe
+        List<Pair<Integer, List<String>>> subscribers = publisherDTO.getStoreSubscribers();
+        if(subscribers != null){
+            for(Pair<Integer, List<String>> pair : subscribers){
+                this.storeSubscribers.put(pair.getFirst(), new Vector<>(pair.getSecond()));
+            }
+        }
+    }
 
 }

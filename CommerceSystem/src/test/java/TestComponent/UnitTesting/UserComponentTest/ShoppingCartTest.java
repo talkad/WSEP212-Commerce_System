@@ -2,7 +2,7 @@ package TestComponent.UnitTesting.UserComponentTest;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.ShoppingCart;
@@ -26,14 +26,14 @@ public class ShoppingCartTest {
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
         Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
 
-        ProductDTO[] productsDTO = new ProductDTO[]{
-                new ProductDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
+        ProductClientDTO[] productsDTO = new ProductClientDTO[]{
+                new ProductClientDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("Watch",2222, res1.getResult(), 600, new LinkedList<>(),
+                new ProductClientDTO("Watch",2222, res1.getResult(), 600, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("AirPods",3333, res2.getResult(), 799.9, new LinkedList<>(),
+                new ProductClientDTO("AirPods",3333, res2.getResult(), 799.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("Watch2",4444, res1.getResult(), 600, new LinkedList<>(),
+                new ProductClientDTO("Watch2",4444, res1.getResult(), 600, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0)
         };
 
@@ -45,7 +45,7 @@ public class ShoppingCartTest {
         store1.addProduct(productsDTO[3], 10);
         store2.addProduct(productsDTO[2], 10);
 
-        Map<Integer, Map<ProductDTO, Integer>> baskets;
+        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
         int numProducts = 0;
 
 
@@ -58,7 +58,7 @@ public class ShoppingCartTest {
         baskets = cart.getBaskets();
         Assert.assertEquals(2, baskets.size());
 
-        for(Map<ProductDTO, Integer> basket: baskets.values()){
+        for(Map<ProductClientDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -74,14 +74,14 @@ public class ShoppingCartTest {
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
         Response<Integer> res2 = StoreController.getInstance().openStore("Renuar", "Yoni");
 
-        ProductDTO[] productsDTO = new ProductDTO[]{
-                new ProductDTO("TV", 73725, res1.getResult(), 1299.9, new LinkedList<>(),
+        ProductClientDTO[] productsDTO = new ProductClientDTO[]{
+                new ProductClientDTO("TV", 73725, res1.getResult(), 1299.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("Watch",12372, res1.getResult(), 600, new LinkedList<>(),
+                new ProductClientDTO("Watch",12372, res1.getResult(), 600, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("AirPods",564521, res2.getResult(), 799.9, new LinkedList<>(),
+                new ProductClientDTO("AirPods",564521, res2.getResult(), 799.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0),
-                new ProductDTO("Watch2",345387, res1.getResult(), 600, new LinkedList<>(),
+                new ProductClientDTO("Watch2",345387, res1.getResult(), 600, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0)
         };
 
@@ -93,7 +93,7 @@ public class ShoppingCartTest {
         store1.addProduct(productsDTO[3], 50);
         store2.addProduct(productsDTO[2], 50);
 
-        Map<Integer, Map<ProductDTO, Integer>> baskets;
+        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
         Response<Boolean> res;
         int numProducts = 0;
 
@@ -106,7 +106,7 @@ public class ShoppingCartTest {
         Assert.assertTrue(res.getResult());
 
         baskets = cart.getBaskets();
-        for(Map<ProductDTO, Integer> basket: baskets.values()){
+        for(Map<ProductClientDTO, Integer> basket: baskets.values()){
             for(Integer pBasket: basket.values()) {
                 numProducts += pBasket;
             }
@@ -131,7 +131,7 @@ public class ShoppingCartTest {
 
         Response<Integer> res1 = StoreController.getInstance().openStore("American Eagle", "Tal");
 
-        ProductDTO productDTO = new ProductDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
+        ProductClientDTO productDTO = new ProductClientDTO("TV", 1111, res1.getResult(), 1299.9, new LinkedList<>(),
                         new LinkedList<>(), new LinkedList<>(),0,0);
 
 
@@ -142,7 +142,7 @@ public class ShoppingCartTest {
 
         int numberOfThreads1 = 100;
         int numberOfThreads2 = 50;
-        Map<Integer, Map<ProductDTO, Integer>> baskets;
+        Map<Integer, Map<ProductClientDTO, Integer>> baskets;
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads1);
 

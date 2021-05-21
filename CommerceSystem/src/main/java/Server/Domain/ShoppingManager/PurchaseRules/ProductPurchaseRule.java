@@ -1,7 +1,9 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
+import Server.DAL.PurchaseRuleDTOs.ProductPurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -11,8 +13,18 @@ public class ProductPurchaseRule extends LeafPurchaseRule {
         super(predicate);
     }
 
+    public ProductPurchaseRule(ProductPurchaseRuleDTO ruleDTO){
+        super(ruleDTO.getPredicate().toConcretePredicate());
+        this.setID(ruleDTO.getId());
+    }
+
     @Override
-    public boolean isValidPurchase(Map<ProductDTO, Integer> shoppingBasket) {
+    public PurchaseRuleDTO toDTO() {
+        return new ProductPurchaseRuleDTO(this.id, this.predicate.toDTO());
+    }
+
+    @Override
+    public boolean isValidPurchase(Map<ProductClientDTO, Integer> shoppingBasket) {
         return predicate.isValid(shoppingBasket);
     }
 
@@ -20,4 +32,6 @@ public class ProductPurchaseRule extends LeafPurchaseRule {
     public String getDescription() {
         return "Product Purchase rule: " + id;
     }
+
+
 }

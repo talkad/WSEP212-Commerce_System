@@ -17,8 +17,6 @@ class Visitor extends React.Component{
                 {this.props.isVisitor &&
                 <p><Link to="/login">Sign in</Link> or <Link to="/register">register</Link></p>}
                 <Link to="/cart">Cart</Link>
-                <h1>welcome to the commerce system</h1>
-                <Search/>
             </div>
         );
     }

@@ -1,7 +1,8 @@
 package Server.Domain.ShoppingManager.Predicates;
 
-import Server.Domain.ShoppingManager.ProductDTO;
-
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import java.util.Map;
 
 public class StorePredicate implements Predicate {
@@ -15,12 +16,23 @@ public class StorePredicate implements Predicate {
         this.minPrice = minPrice;
     }
 
+    public StorePredicate(StorePredicateDTO storePredicateDTO){
+        this.minUnits = storePredicateDTO.getMinUnits();
+        this.maxUnits = storePredicateDTO.getMaxUnits();
+        this.minPrice = storePredicateDTO.getMinPrice();
+    }
+
     @Override
-    public boolean isValid(Map<ProductDTO, Integer> shoppingBasket) {
+    public PredicateDTO toDTO(){
+        return new StorePredicateDTO(this.minUnits, this.maxUnits, this.minPrice);
+    }
+
+    @Override
+    public boolean isValid(Map<ProductClientDTO, Integer> shoppingBasket) {
         int numOfProducts = 0;
         double totalPrice = 0.0;
 
-        for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet()) {
+        for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet()) {
             numOfProducts += entry.getValue();
             totalPrice += entry.getKey().getPrice() * entry.getValue();
         }

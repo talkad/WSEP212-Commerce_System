@@ -11,7 +11,7 @@ public class runner {
 
     public static void main(String[] args){
 
-        CommerceSystem.getInstance().initState();
+//        CommerceSystem.getInstance().initState();
 
     }
 }

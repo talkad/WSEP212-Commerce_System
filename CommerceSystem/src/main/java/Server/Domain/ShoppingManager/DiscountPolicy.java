@@ -1,12 +1,12 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.DiscountPolicyDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiscountPolicy {
@@ -18,10 +18,29 @@ public class DiscountPolicy {
         indexer = new AtomicInteger(0);
     }
 
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public DiscountPolicy(DiscountPolicyDTO policyDTO){
+        this.discountRules = new Vector<>();
+        List<DiscountRuleDTO> ruleDTOS = policyDTO.getDiscountRules();
+        if(ruleDTOS != null){
+            for(DiscountRuleDTO ruleDTO : ruleDTOS){
+                this.discountRules.add(ruleDTO.toConcreteDiscountRule());
+            }
+        }
+        this.indexer = new AtomicInteger(policyDTO.getIndexer());
+    }
+
+    public DiscountPolicyDTO toDTO(){
+        List<DiscountRuleDTO> ruleDTOS = new Vector<>();
+        for(DiscountRule rule : this.discountRules){
+            ruleDTOS.add(rule.toDTO());
+        }
+        return new DiscountPolicyDTO(ruleDTOS, this.indexer.get());
+    }
+
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double totalPrice = 0.0;
         double discount = 0.0;
-        for (Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet())
+        for (Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet())
             totalPrice += entry.getKey().getPrice() * entry.getValue();
         for (DiscountRule discountRule : discountRules)
             discount += discountRule.calcDiscount(shoppingBasket);

@@ -1,4 +1,3 @@
-import AddDiscount from "../DiscountPurchasePolicyPages/AddDiscount";
 
 class ProductDTO{
     constructor(name, storeID, price, categories, keywords) {

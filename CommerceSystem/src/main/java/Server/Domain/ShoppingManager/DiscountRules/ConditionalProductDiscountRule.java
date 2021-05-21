@@ -1,7 +1,13 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
+import Server.DAL.DiscountRuleDTOs.ConditionalCategoryDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.ConditionalProductDiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
+import Server.DAL.PredicateDTOs.ProductPredicateDTO;
+import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
 import java.util.Map;
 
@@ -13,9 +19,20 @@ public class ConditionalProductDiscountRule extends ProductDiscountRule {
         this.productPredicate = productPredicate;
     }
 
+    public ConditionalProductDiscountRule(ConditionalProductDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getProductID(), ruleDTO.getDiscount());
+        this.setID(ruleDTO.getId());
+        this.productPredicate = (ProductPredicate) ruleDTO.getProductPredicate().toConcretePredicate();
+    }
+
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
-        for(Map.Entry<ProductDTO, Integer> entry : shoppingBasket.entrySet()) {
+    public DiscountRuleDTO toDTO(){
+        return new ConditionalProductDiscountRuleDTO(this.id, this.discount, this.productID, (ProductPredicateDTO) this.productPredicate.toDTO());
+    }
+
+    @Override
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
+        for(Map.Entry<ProductClientDTO, Integer> entry : shoppingBasket.entrySet()) {
             if (entry.getKey().getProductID() == productID) {
                 return productPredicate.isValid(shoppingBasket) ? (entry.getValue() * entry.getKey().getPrice()) * (discount / 100) : 0.0;
             }

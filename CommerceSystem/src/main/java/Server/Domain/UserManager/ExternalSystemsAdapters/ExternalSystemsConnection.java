@@ -5,6 +5,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -15,9 +16,12 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import javax.net.ssl.SSLContext;
 import java.io.BufferedReader;
@@ -73,10 +77,23 @@ public class ExternalSystemsConnection {
 
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
         cm.setMaxTotal(100);
-        this.client = HttpClients.custom()
+
+        int timeout = 5; // seconds
+        RequestConfig config = RequestConfig.custom() // configure timeout to connection if there is no response
+                .setConnectTimeout(timeout * 1000)
+                .setConnectionRequestTimeout(timeout * 1000)
+                .setSocketTimeout(timeout * 1000).build();
+
+        this.client = HttpClientBuilder.create()
+                .setDefaultRequestConfig(config)
                 .setSSLSocketFactory(sslsf)
                 .setConnectionManager(cm)
                 .build();
+
+//                HttpClients.custom()
+//                .setSSLSocketFactory(sslsf)
+//                .setConnectionManager(cm)
+//                .build();
 
         List<NameValuePair> urlParameters = new LinkedList<>();
         urlParameters.add(new BasicNameValuePair("action_type", "handshake"));

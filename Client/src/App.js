@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import Visitor from "./Pages/Visitor";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -15,7 +14,6 @@ import StoreManagment from "./MainPages/StoreManagment";
 import AddProduct from "./ProductPages/AddProduct";
 import DeleteProduct from "./ProductPages/DeleteProduct";
 import EditProduct from "./ProductPages/EditProduct";
-import AddDiscount from "./DiscountPurchasePolicyPages/AddDiscount";
 import AppointOwner from "./AppoinmentPages/AppointOwner";
 import RemoveOwner from "./AppoinmentPages/RemoveOwner";
 import AddPermission from "./PermissionsPages/AddPermission";
@@ -26,48 +24,130 @@ import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
-
-// var W3CWebSocket = require('websocket').w3cwebsocket;
-//
-// var client = new W3CWebSocket('ws://localhost:80/', 'echo-protocol');
-
-// const client = new WebSocket('http://localhost:8080');
-
-// let WebSocketClient = require('websocket').client;
-
-// let client = new WebSocketClient();
-
-// var W3CWebSocket = require('ws')
-//
-// var client = new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
-
-
-// client.connect('ws://localhost:8080/', 'echo-protocol');
-
-// Connection.setConnection(client);
+import {Alert, Container, Form, FormControl, Image, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
+import {Button} from "bootstrap";
+import Home from "./Pages/Home";
+import * as Icon from 'react-bootstrap-icons';
+import StaticUserInfo from "./API/StaticUserInfo";
+import {ReactComponent as OurLogo} from "./image2vector.svg";
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
 Connection.setConnection(client);
 
-// if(!result.response.isFailure){
-//
-// }
-// else{
-//     alert(result.response.errMsg);
-// }
 
 class App extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            visitor: true,
+            registered: false,
+            storeOwner: false,
+
+            showAlert: false,
+            alertVariant: '',
+            alertInfo: '',
+        }
+
+        this.handleLogout = this.handleLogout.bind(this)
+        this.handleLogoutResponse = this.handleLogoutResponse.bind(this);
+        this.handleStoreOwnedResponse = this.handleStoreOwnedResponse.bind(this);
+    }
+
+    componentDidMount() {
+        let username = window.sessionStorage.getItem('username');
+        if (username !== '' && username !== null && username.substr(0, 5) !== "Guest") {
+            if(StaticUserInfo.getUserStores().length === 0){
+                this.setState({visitor: false, registered: true, storeOwner: false});
+            }
+            else{
+                this.setState({visitor: false, registered: true, storeOwner: true});
+            }
+        }
+        else{
+            this.setState({visitor: true, registered: false, storeOwner: false});
+        }
+
+        if(window.sessionStorage.getItem('username') !== null) {
+            Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
+        }
+    }
+
+    handleStoreOwnedResponse(result){
+        if(!result.isFailue){
+            if(result.result.length !== 0){
+                this.setState({storeOwner: true});
+            }
+            else{
+                this.setState({storeOwner: false});
+            }
+        }
+    }
+
+    handleLogoutResponse(result){
+        if(!result.isFailure){
+            window.sessionStorage.removeItem('username');
+            this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
+            window.location.reload();
+        }
+        else{
+            this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
+        }
+    }
+
+    handleLogout() {
+        Connection.sendLogout().then(this.handleLogoutResponse, Connection.handleReject);
+    }
 
     render() {
         return(
             <Router>
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Brand href="/">
+                        <OurLogo height={50} width={150}/>
+                    </Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="mr-auto">
+
+                            {this.state.registered &&<Navbar.Text style={{color: "black"}}> Hi, {window.sessionStorage.getItem('username')}</Navbar.Text>}
+
+                            <Nav.Link href="/">Home</Nav.Link>
+
+                            {this.state.visitor &&
+                            <Navbar.Text>
+                                <Link to="/login">Sign in</Link> or <Link to="/register">register</Link>
+                            </Navbar.Text>}
+
+                            {this.state.registered &&
+                            <NavDropdown id={"registered-nav-dropdown"} title={"More"}>
+                                <NavDropdown.Item href="/purchaseHistory">Purchase history</NavDropdown.Item>
+                                <NavDropdown.Item href="/createStore">Open your own store</NavDropdown.Item>
+                            </NavDropdown>}
+
+                            {this.state.storeOwner &&
+                            <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
+
+                        </Nav>
+                        <Nav>
+                            <Nav.Link href="/cart"><Icon.Cart/></Nav.Link>
+
+                            {this.state.registered &&
+                            <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>}
+                        </Nav>
+                    </Navbar.Collapse>
+                </Navbar>
                 <div className="App">
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
+                        <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
+                    </Alert>
                     <Switch>
-                        <Route exact path="/" render={() => <Visitor isVisitor={true}/>} />
+                        <Route exact path="/" component={Home}/>} />
+                        {/*<Route exact path="/" render={() => <Visitor isVisitor={true}/>} />*/}
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
-                        <Route path="/registered" component={Registered} />
+                        {/*<Route path="/registered" component={Registered} />*/}
                         <Route path="/search/" component={SearchResult} />
                         <Route path="/createStore" component={CreateStore}/>
                         <Route path="/purchaseHistory" component={PurchaseHistory}/>
@@ -78,7 +158,6 @@ class App extends React.Component{
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
-                        <Route path="/ADD_DISCOUNTS" component={AddDiscount}/>
                         {/*<Route path="/DELETE_DISCOUNTS" component={DeleteDiscount}/>*/}
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>
                         <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>
