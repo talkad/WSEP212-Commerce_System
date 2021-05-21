@@ -158,7 +158,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+    public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
         return null;
     }
 

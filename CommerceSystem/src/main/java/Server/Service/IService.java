@@ -12,7 +12,6 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -125,9 +124,7 @@ public interface IService {
 
     Response<Double> getTotalStoreRevenue(String username, int storeID);
 
-    Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply);
-
-
+    Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply);
 
 
     /**

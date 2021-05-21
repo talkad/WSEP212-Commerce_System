@@ -24,17 +24,29 @@ import WorkerDetails from "./ReportsPages/WorkerDetails";
 import StorePurchaseHistory from "./ReportsPages/StorePurchaseHistory";
 import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
-import {Alert, Container, Form, FormControl, Image, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
-import {Button} from "bootstrap";
+import {
+    Alert,
+    Button,
+    Container,
+    Form,
+    FormControl,
+    Image,
+    InputGroup,
+    Nav,
+    Navbar,
+    NavDropdown,
+    NavItem, Spinner
+} from "react-bootstrap";
 import Home from "./Pages/Home";
 import * as Icon from 'react-bootstrap-icons';
 import StaticUserInfo from "./API/StaticUserInfo";
 import {ReactComponent as OurLogo} from "./image2vector.svg";
+import {A} from "react-select/dist/index-4bd03571.esm";
+
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
 Connection.setConnection(client);
-
 
 class App extends React.Component{
 
@@ -48,11 +60,39 @@ class App extends React.Component{
             showAlert: false,
             alertVariant: '',
             alertInfo: '',
+            showPurchaseButton: false,
+            offerUserName: '',
+            offerUserProductName: '',
+            offerUserProductID: '',
+            offerUserStoreID: '',
+            offerUserPriceOffer: '',
+
+
+
+            showUserAlert: false,
+            offerUserAlertVariant: '',
+            alertUserInfo: '',
+
+            showManagerAlert: false,
+            offerManagerAlertVariant: 'primary',
+            offerManagerName: '',
+            offerManagerProductName: '',
+            offerManagerProductID: '',
+            offerManagerStoreID: '',
+            offerManagerPriceOffer: '',
+            counterOffer: '',
         }
 
         this.handleLogout = this.handleLogout.bind(this)
         this.handleLogoutResponse = this.handleLogoutResponse.bind(this);
         this.handleStoreOwnedResponse = this.handleStoreOwnedResponse.bind(this);
+        this.handleOfferNotification = this.handleOfferNotification.bind(this);
+        this.handleManagerOfferAccept = this.handleManagerOfferAccept.bind(this);
+        this.handleManagerOfferReject = this.handleManagerOfferReject.bind(this);
+        this.handleManagerReplyResponse = this.handleManagerReplyResponse.bind(this);
+        this.onChangeCounterOffer = this.onChangeCounterOffer.bind(this);
+        this.handleAcceptOffer = this.handleAcceptOffer.bind(this);
+        this.handleManagerReply = this.handleManagerReply.bind(this);
     }
 
     componentDidMount() {
@@ -72,7 +112,92 @@ class App extends React.Component{
         if(window.sessionStorage.getItem('username') !== null) {
             Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
         }
+
+        Connection.getOfferNotification().then(this.handleOfferNotification, Connection.handleReject);
     }
+
+
+    handleOfferNotification(result){
+        if(result.action === "bidOffer"){
+            let parsed = JSON.parse(result.message);
+            this.setState({showManagerAlert: true, offerManagerName: parsed.name,
+                offerManagerProductName: parsed.productName, offerManagerProductID: parsed.productID,
+                offerManagerStoreID: parsed.storeID, offerManagerPriceOffer: parsed.priceOffer});
+        }
+        else if(result.action === "changeOfferStatusAccepted"){
+            let parsed = JSON.parse(result.message);
+            this.setState({showUserAlert: true, offerUserAlertVariant: 'primary',
+                alertUserInfo: `Your offer for ${parsed.productName} from ${parsed.name} got accepted.`,
+                showPurchaseButton: true, offerUserName: parsed.name, offerUserProductName: parsed.productName,
+                offerUserProductID: parsed.productID, offerUserStoreID: parsed.storeID, offerUserPriceOffer: parsed.priceOffer});
+        }
+        else if(result.action === "changeOfferStatusDeclined"){
+            this.setState({showUserAlert: true, offerUserAlertVariant: 'danger', alertUserInfo: result.message,
+                showPurchaseButton: false});
+        }
+        else if(result.action === "changeOfferStatus"){
+            let parsed = JSON.parse(result.message);
+            this.setState({showUserAlert: true, offerUserAlertVariant: 'primary',
+                alertUserInfo: `You got a counter offer for ${parsed.productName} from ${parsed.name}. They offered ${parsed.priceOffer}`,
+                showPurchaseButton: true, offerUserName: parsed.name, offerUserProductName: parsed.productName,
+                offerUserProductID: parsed.productID, offerUserStoreID: parsed.storeID, offerUserPriceOffer: parsed.priceOffer});
+        }
+
+        Connection.getOfferNotification().then(this.handleOfferNotification, Connection.handleReject);
+    }
+
+    //-----------------------------------MANAGER OFFER START--------------------------------------------------------
+    handleManagerReplyResponse(result){
+        if(!result.isFailure){
+            alert("reply sent");
+            this.setState({showManagerAlert: false, offerManagerName: '', offerManagerProductName: '',
+                offerManagerProductID: '', offerManagerStoreID: '', offerManagerPriceOffer: ''})
+        }
+        else{
+            alert(result.errMsg);
+        }
+    }
+
+    handleManagerOfferAccept(){
+        Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
+            this.state.offerManagerStoreID, "-1").then(this.handleManagerReplyResponse, Connection.handleReject);
+    }
+
+    handleManagerOfferReject(){
+        Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
+            this.state.offerManagerStoreID, "-2").then(this.handleManagerReplyResponse, Connection.handleReject);
+    }
+
+    onChangeCounterOffer(event){
+        this.setState({counterOffer: event.target.value})
+    }
+
+    handleManagerReply(){
+        let value = parseInt(this.state.counterOffer);
+
+        if(value >= 0) {
+            Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
+                this.state.offerManagerStoreID, this.state.counterOffer).then(this.handleManagerReplyResponse, Connection.handleReject);
+        }
+        else{
+            alert("counter offer must be a natural number");
+        }
+    }
+
+    //-----------------------------------MANAGER OFFER END----------------------------------------------------------
+
+    //-----------------------------------USER OFFER START-----------------------------------------------------------
+
+    handleDismissOffer(){
+        this.setState({showUserAlert: false, offerUserAlertVariant: '', alertUserInfo: '',
+            showPurchaseButton: false});
+    }
+
+    handleAcceptOffer(){
+        window.location.href = `http://localhost:3000/checkout/?storeName=${this.state.offerUserName}&productName=${this.state.offerUserProductName}&productID=${this.state.offerUserProductID}&storeID=${this.state.offerUserStoreID}`
+    }
+
+    //-----------------------------------USER OFFER END-------------------------------------------------------------
 
     handleStoreOwnedResponse(result){
         if(!result.isFailue){
@@ -138,6 +263,42 @@ class App extends React.Component{
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
+
+                <Alert dismissible show={this.state.showUserAlert} variant={this.state.offerUserAlertVariant} onClose={() => this.setState({showUserAlert: false})}>
+                    <Alert.Heading>{this.state.alertUserInfo}</Alert.Heading>
+                    {this.state.showPurchaseButton && <div>
+                        <hr/>
+                        <Button onClick={this.handleAcceptOffer} variant='success'>Purchase</Button>
+                        <Button onClick={this.handleDismissOffer} variant='danger'>Dismiss</Button>
+                    </div>}
+                </Alert>
+
+                <Alert show={this.state.showManagerAlert} variant={this.state.offerManagerAlertVariant} onClose={() => this.setState({showManagerAlert: false})}>
+                    <Alert.Heading>{this.state.offerManagerName} sent a price offer!</Alert.Heading>
+                    <p>
+                        He/She/It/Attack Heli offered to buy {this.state.offerManagerProductName} for {this.state.offerManagerPriceOffer}
+                    </p>
+                    <hr/>
+                    <Button variant="success" onClick={this.handleManagerOfferAccept}>
+                        Accept offer
+                    </Button>
+                    <Button variant="danger" onClick={this.handleManagerOfferReject}>
+                        Decline offer
+                    </Button>
+                    <InputGroup className="mb-3">
+                        <FormControl
+                            onChange={this.onChangeCounterOffer}
+                            name='free-text'
+                            placeholder="Counter offer"
+                            aria-label="Free search"
+                            aria-describedby="basic-addon2"
+                        />
+                        <InputGroup.Append>
+                            <Button onClick={this.handleManagerReply} variant="primary">Offer</Button>
+                        </InputGroup.Append>
+                    </InputGroup>
+                </Alert>
+
                 <div className="App">
                     <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
@@ -173,106 +334,6 @@ class App extends React.Component{
             </Router>
         )
     }
-
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         identifier: '',
-    //         username: '',
-    //         password: '',
-    //         flag: false,
-    //     };
-    //
-    //     this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    //     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    //     this.handleLogin = this.handleLogin.bind(this);
-    //     this.handleRegister = this.handleRegister.bind(this);
-    // }
-    //
-    // componentDidMount() {
-    //     client.onopen = () => {
-    //         console.log('WebSocket Client Connected');
-    //     };
-    //     client.onmessage = (message) => {
-    //         console.log(message);
-    //         const dataFromServer = JSON.parse(message.data);
-    //         if(dataFromServer.type === "identification"){
-    //             this.setState({identifier: dataFromServer.identifier});
-    //         }
-    //
-    //         if(dataFromServer.response === "login"){
-    //             if(dataFromServer.isFailure === true){
-    //                 alert(`registration failed. Error: ${dataFromServer.err}` )
-    //             }
-    //             else{
-    //                 this.setState({identifier: dataFromServer.result})
-    //                 alert("registered successfully");
-    //             }
-    //         }
-    //
-    //         if(dataFromServer.response === "register"){
-    //             if(dataFromServer.isFailure === true){
-    //                 alert(`login failed. Error: ${dataFromServer.err}` )
-    //             }
-    //             else{
-    //                 this.setState({identifier: dataFromServer.result});
-    //                 alert('logged in');
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // handleUsernameChange(event) {
-    //     this.setState({username: event.target.value});
-    // }
-    //
-    // handlePasswordChange(event) {
-    //     this.setState({password: event.target.value});
-    // }
-    //
-    // handleLogin(){
-    //     console.log(this.state.username);
-    //     console.log(this.state.password);
-    //     client.send(JSON.stringify({
-    //                 "action": "login",
-    //                 "identifier": this.state.identifier,
-    //                 "username": this.state.username,
-    //                 "password": this.state.password
-    //             }))
-    //     this.setState({username: '', password: ''})
-    // }
-    //
-    // handleRegister(){
-    //     console.log(this.state.username);
-    //     console.log(this.state.password);
-    //     client.send(JSON.stringify({
-    //         "action": "register",
-    //         "identifier": this.state.identifier,
-    //         "username": this.state.username,
-    //         "password": this.state.password
-    //     }))
-    //     this.setState({username: '', password: ''})
-    // }
-
-    // render() {
-    //     const thisPage = <div className="App">
-    //         <header className="App-header">
-    //             <form>
-    //                 <input type="text" name="username" placeholder="Username" value={this.state.username}
-    //                        onChange={this.handleUsernameChange}/>
-    //                 <input type="password" name="password" placeholder="Password" value={this.state.password}
-    //                        onChange={this.handlePasswordChange}/>
-    //             </form>
-    //             <form>
-    //                 <button type="button" onClick={this.handleLogin}>login</button>
-    //                 <button type="button" onClick={this.handleRegister}>register</button>
-    //             </form>
-    //         </header>
-    //     </div>;
-    //     return (thisPage);
-    // }
-
-
 }
 
 export default App;

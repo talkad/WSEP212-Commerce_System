@@ -19,6 +19,7 @@ class ProductEntry extends React.Component{
         this.closePriceOfferModal = this.closePriceOfferModal.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleOfferPriceResponse = this.handleOfferPriceResponse.bind(this);
     }
 
     handleAddToCartResponse(result) {
@@ -36,7 +37,7 @@ class ProductEntry extends React.Component{
     handleOfferPriceResponse(result) {
         if (!result.isFailure) {
             alert("price offer sent!");
-            this.setState({priceOfferModalShow: false, priceOffer: ''});
+            this.setState({priceOfferModalShow: false, priceOffer: '', submitted: false});
         } else {
             alert(result.errMsg);
         }

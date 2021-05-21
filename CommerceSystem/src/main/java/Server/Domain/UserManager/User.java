@@ -730,7 +730,7 @@ public class User {
 
     public Response<Boolean> bidOffer(int productID, int storeID, double priceOffer) {
         Store store = StoreController.getInstance().getStoreById(storeID);
-        if (store != null)
+        if (store == null)
             return new Response<>(false, true, "The given store doesn't exists");
 
         Offer offer = new Offer(productID, storeID, priceOffer);
@@ -739,7 +739,8 @@ public class User {
         this.offers.put(productID, offer);
 
         Gson gson = new Gson();
-        Publisher.getInstance().notify(storeID, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(this.name, productID, priceOffer)), "bidOffer"));
+        Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
+        Publisher.getInstance().notify(storeID, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(this.name, product.getName(), productID, storeID, priceOffer)), "bidOffer"));
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
@@ -755,16 +756,20 @@ public class User {
     }
 
     public Response<Boolean> changeOfferStatus(String offeringUsername, int productID, int storeID, double bidReply) {
+        Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
+        Store store = StoreController.getInstance().getStoreById(storeID);
 
         if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
-            if (bidReply == -1) {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("notification", "The offer was declined.", "changeOfferStatus"));
+            if (bidReply == -2) {
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
                 return UserDAO.getInstance().removeOffer(offeringUsername, productID);
-            } else if (bidReply == 0) {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("notification", "The offer was accepted.", "changeOfferStatus"));
+            } else if (bidReply == -1) {
+                Gson gson = new Gson();
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatusAccepted"));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             } else {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("notification", "The store presented a counter offer - " + bidReply, "changeOfferStatus"));
+                Gson gson = new Gson();
+                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatus"));
                 return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
             }
         }

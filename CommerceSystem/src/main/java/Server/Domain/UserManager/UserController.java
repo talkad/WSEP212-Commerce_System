@@ -651,7 +651,7 @@ public class UserController {
         return new Response<>(-1.0, true, "User not connected");
     }
 
-    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+    public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {//todo add to if connected as well
             User user = connectedUsers.get(username);

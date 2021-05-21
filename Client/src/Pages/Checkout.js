@@ -27,6 +27,12 @@ class Checkout extends React.Component{
             showAlert: false,
             alertVariant: '',
             alertInfo: '',
+
+            singleProduct: false,
+            storeName: '',
+            productName: '',
+            productID: '',
+            storeID: '',
         }
 
         this.handlePurchase = this.handlePurchase.bind(this);
@@ -34,11 +40,18 @@ class Checkout extends React.Component{
         this.handleChange = this.handleChange.bind(this);
     }
 
-    // componentDidMount() {
-    //     if(this.props.storeID === undefined){
-    //         console.log("what the heck is that???");
-    //     }
-    // }
+    componentDidMount() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const storeName = urlParams.get('storeName');
+        const productName = urlParams.get("productName");
+        const productID = urlParams.get("productID");
+        const storeID = urlParams.get("storeID");
+
+        if(storeName !== undefined){
+            this.setState({storeName: storeName, productName: productName, productID: productID,
+                storeID: storeID, singleProduct: true});
+        }
+    }
 
     handleChange(event) {
         this.setState({[event.target.id]: event.target.value})
@@ -62,8 +75,14 @@ class Checkout extends React.Component{
         const paymentDetails = new PaymentDetails(this.state.card_number, this.state.expiration, this.state.ccv,
             this.state.holder, this.state.id);
 
-        Connection.sendDirectPurchase(paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
-        this.setState({submitted: true});
+        if(this.state.singleProduct){
+            Connection.sendBuyOffer(this.state.productID, this.state.storeID, paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
+            this.setState({submitted: true});
+        }
+        else{
+            Connection.sendDirectPurchase(paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
+            this.setState({submitted: true});
+        }
     }
 
     render() {
@@ -84,7 +103,8 @@ class Checkout extends React.Component{
                     <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
                     </Alert>
-                    <h1>Checkout</h1>
+                    {!this.state.singleProduct && <h1>Checkout</h1>}
+                    {this.state.singleProduct && <h1>Buying {this.state.productName} from {this.state.storeName}</h1>}
                     <Form noValidate validated={this.state.validated} className="form" onSubmit={handleSubmit}>
                         <h2>Delivery info</h2>
                         <Form.Row>
