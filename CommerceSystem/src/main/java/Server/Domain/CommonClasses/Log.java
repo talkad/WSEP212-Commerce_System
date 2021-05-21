@@ -15,7 +15,8 @@ public class Log {
     public Log(String file_name) {
         try {
             File f = new File(file_name);
-            if(!f.exists())f.createNewFile();
+            if(!f.exists())
+                f.createNewFile();
 
             fh = new FileHandler(file_name, true);
             logger = java.util.logging.Logger.getLogger("test");
@@ -23,7 +24,12 @@ public class Log {
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
         }
-        catch (IOException e1){}
+        catch (IOException e1){
+            fh.close();
+        }
+        finally {
+            fh.close();
+        }
 
     }
 }

@@ -212,7 +212,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> addStoreOwned(String name, int storeId){
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 1");
         ownersWriteLock.lock();
         if(userExists(name)){
             this.testOwners.get(name).add(storeId);
@@ -223,7 +223,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> addStoreManaged(String name, int storeId) {
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result;
         managersWriteLock.lock();
         if(userExists(name)){
             List<PermissionsEnum> permissions = new Vector<>();
@@ -231,6 +231,10 @@ public class UserDAO {
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
+        else{
+            result = new Response<>(false, true, "user doesn't exist 2");
+        }
+
         managersWriteLock.unlock();
         return result;
     }
@@ -242,7 +246,7 @@ public class UserDAO {
             result = this.appointments.get(appointeeName).getAppointees(storeID);
         }
         else {
-            result = new Response<>(new Vector<>(), true, "User doesn't exist");
+            result = new Response<>(new Vector<>(), true, "User doesn't exist 3");
         }
         appointmentsReadLock.unlock();
         return result;
@@ -317,7 +321,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> addOffer(String name, int productID, int storeID, double priceOffer, OfferState state){
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 4");
         offersWriteLock.lock();
         if(userExists(name)){
             this.offers.get(name).put(productID, new Offer(productID, storeID, priceOffer, state));
@@ -339,7 +343,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> changeStatus(String offeringUsername, int productID, double bidReply, OfferState state){
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 5");
         offersWriteLock.lock();
         if(userExists(offeringUsername)){
             if(bidReply > 0){

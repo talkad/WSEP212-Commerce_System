@@ -15,6 +15,7 @@ import Server.Service.IService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -41,7 +42,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-//        initState();
+        initState();
     }
 
     @Override
@@ -277,7 +278,7 @@ public class CommerceSystem implements IService {
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
             fis.close();
-            String str = new String(data, "UTF-8");
+            String str = new String(data, StandardCharsets.UTF_8);
             //System.out.println(str);
             String[] funcs = str.split(";");
             String[] attributes;
@@ -285,42 +286,51 @@ public class CommerceSystem implements IService {
             String currUser = addGuest().getResult();
             //int currStoreId;
 
-            for (int i = 0; i < funcs.length; i++){
-                if(funcs[i].startsWith("register")){
-                    attributes = funcs[i].substring(9).split(", ");
+            for (String func : funcs) {
+                System.out.println(currUser);
 
-                    System.out.println(attributes[1].substring(0, attributes[1].length() - 1));
+                if (func.startsWith("register")) {
+                    attributes = func.substring(9).split(", ");
                     register(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
-                }
-                else if(funcs[i].startsWith("login")){
-                    attributes = funcs[i].substring(6).split(", ");
+                } else if (func.startsWith("login")) {
+                    attributes = func.substring(6).split(", ");
                     currUser = login(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1)).getResult();
 
-                }
-                else if(funcs[i].startsWith("openStore")){
-                    attributes = funcs[i].substring(10).split(", ");
-                    //currStoreId =
+                } else if (func.startsWith("openStore")) {
+                    attributes = func.substring(10).split(", ");
                     openStore(currUser, attributes[0].substring(0, attributes[0].length() - 1));
 
-                }
-                else if(funcs[i].startsWith("appointStoreManager")){
-                    attributes = funcs[i].substring(20).split(", ");
+                } else if (func.startsWith("appointStoreManager")) {
+                    attributes = func.substring(20).split(", ");
                     appointStoreManager(currUser, attributes[0], Integer.parseInt(attributes[1].substring(0, attributes[1].length() - 1)));
 
-                }
-                else if(funcs[i].startsWith("logout")){
-                    attributes = funcs[i].substring(7).split(", ");
+                } else if (func.startsWith("logout")) {
+                    attributes = func.substring(7).split(", ");
                     currUser = logout(attributes[0].substring(0, attributes[0].length() - 1)).getResult();
-                }
-                else if(funcs[i].startsWith("addProductsToStore")){
-                    attributes = funcs[i].substring(19).split(", ");
-//                    addProductsToStore(currUser, new ProductClientDTO((attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), new vector<>(attributes), ""))
+                } else if (func.startsWith("addProductsToStore")) {
+                    attributes = func.substring(19).split(", ");
+                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), stringToList(attributes, 3), stringToList(attributes, 4)), Integer.parseInt(attributes[5].substring(0, attributes[5].length() - 1)));
+                } else if (func.startsWith("addPermission")) {
+                    attributes = func.substring(14).split(", ");
+                    addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
             }
-
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private List<String> stringToList(String[] str, int index){
+        List<String> lst = new Vector<>();
+        str[index] = str[index].substring(1);
+        for(int i = index; i < str.length; i++){
+            if(str[i].endsWith("]")){
+                lst.add(str[i]);
+                break;
+            }
+        }
+        return lst;
+    }
+
 }

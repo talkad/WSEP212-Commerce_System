@@ -17,7 +17,7 @@ public class ShoppingBasketTest {
         Product product1 = Product.createProduct(new ProductClientDTO("TV", 10, 1299.9, null, null));
         Product product3 = Product.createProduct(new ProductClientDTO("TV", 10, 1299.9, null, null));
 
-        Map<ProductClientDTO, Integer> products;
+        Map<Product, Integer> products;
         int pNum = 0;
 
         basket.addProduct(product1.getProductDTO());
@@ -38,7 +38,7 @@ public class ShoppingBasketTest {
         ShoppingBasket basket = new ShoppingBasket(10);
         Product product2 = Product.createProduct(new ProductClientDTO("AirPods", 9, 1299.9, null, null));
 
-        Map<ProductClientDTO, Integer> products;
+        Map<Product, Integer> products;
         Response<Boolean> res;
 
         res = basket.addProduct(product2.getProductDTO()); // wrong storeID
@@ -52,7 +52,7 @@ public class ShoppingBasketTest {
         ShoppingBasket basket = new ShoppingBasket(10);
         Product product1 = Product.createProduct(new ProductClientDTO("TV", 10, 1299.9, null, null));
 
-        Map<ProductClientDTO, Integer> products;
+        Map<Product, Integer> products;
         Response<Boolean> res;
 
         basket.addProduct(product1.getProductDTO());
@@ -70,7 +70,7 @@ public class ShoppingBasketTest {
         Product product1 = Product.createProduct(new ProductClientDTO("TV", 10, 1299.9, null, null));
         Product product2 = Product.createProduct(new ProductClientDTO("AirPods", 9, 1299.9, null, null));
 
-        Map<ProductClientDTO, Integer> products;
+        Map<Product, Integer> products;
         Response<Boolean> res;
 
         basket.addProduct(product1.getProductDTO());

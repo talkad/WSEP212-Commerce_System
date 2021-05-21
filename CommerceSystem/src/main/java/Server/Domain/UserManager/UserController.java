@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.*;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -21,8 +22,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class UserController {
     private AtomicInteger availableId;
-    private Map<String, User> connectedUsers;
     private PurchaseController purchaseController;
+    private Map<String, User> connectedUsers;
     private Security security;
     private ReadWriteLock lock;
     private Lock writeLock;
@@ -30,11 +31,11 @@ public class UserController {
 
     private UserController() {
         this.availableId = new AtomicInteger(1);
-        this.connectedUsers = new ConcurrentHashMap<>();
+//        this.availableId = new AtomicInteger(DALService.getInstance().getNextAvailableUserID());
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
+        this.connectedUsers = new ConcurrentHashMap<>();
 
-        //todo check if successfully connected
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
@@ -43,9 +44,11 @@ public class UserController {
     public Response<String> removeGuest(String name) {
 
         String logoutGuest = name;
-        if(UserDAO.getInstance().userExists(name)){
-            logoutGuest = logout(name).getResult();
-        }
+        // TODO may need to readd
+//        if(UserDAO.getInstance().userExists(name)){
+//            logoutGuest = logout(name).getResult();
+//        }
+
         connectedUsers.remove(logoutGuest);
 
         return new Response<>(name, false, "disconnected user successfully");
@@ -134,8 +137,10 @@ public class UserController {
                 Response<Boolean> result = user.register();
                 if (!result.isFailure()) {
                     writeLock.lock();  // TODO check if needed (prevents multiple registration)
-                    if (!UserDAO.getInstance().userExists(name)) {
-                        UserDAO.getInstance().registerUser(name, security.sha256(password));
+                    if (DALService.getInstance().getAccount(name) != null) {
+                        //UserDAO.getInstance().registerUser(name, security.sha256(password));
+                        DALService.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
+
                         writeLock.unlock();
                         result = new Response<>(true, false, "Registration occurred");
                     } else {
@@ -158,10 +163,13 @@ public class UserController {
 
         if (connectedUsers.containsKey(prevName)) {
             if (prevName.startsWith("Guest")){
-                if (UserDAO.getInstance().validUser(name, security.sha256(password))) {
+                if (this.isValidUser(name, security.sha256(password))) {
                     writeLock.lock();
                     connectedUsers.remove(prevName);
-                    user = new User(UserDAO.getInstance().getUser(name));
+                    UserDTO userDTO = DALService.getInstance().getUser(name);
+                    if(userDTO == null)
+                        userDTO = new User(name).toDTO();
+                    user = new User(userDTO);
                     connectedUsers.put(name, user);
                     writeLock.unlock();
 
@@ -180,6 +188,11 @@ public class UserController {
         else {
             return new Response<>(null, true, "User not connected");
         }
+    }
+
+    public boolean isValidUser(String username, String password){
+        AccountDTO accountDTO = DALService.getInstance().getAccount(username);
+        return (accountDTO != null) && username.equals(accountDTO.getUsername()) && password.equals(accountDTO.getPassword());
     }
 
     public Response<Boolean> addToCart(String userName, int storeID, int productID){
@@ -221,6 +234,7 @@ public class UserController {
         writeLock.lock();
         if(connectedUsers.containsKey(name)) {
             if (!connectedUsers.get(name).logout().isFailure()) {
+                DALService.getInstance().insertUser(connectedUsers.get(name).toDTO());
                 connectedUsers.remove(name);
                 response = addGuest();
             } else {
@@ -310,30 +324,48 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            User appointer = new User(UserDAO.getInstance().getUser(appointerName));
+            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
             if (!response.isFailure()) {
-                User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                User appointee = new User(appointeeDTO);
                 if (appointee.isOwner(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
                         this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
+                        appointer = this.connectedUsers.get(appointerName);
+                        appointerDTO = appointer.toDTO();
+                    }
+                    else{
+                        appointer.removeAppointment(appointeeName, storeID);
+                        appointerDTO = appointer.toDTO();
                     }
                     if (this.connectedUsers.containsKey(appointeeName)) {
                         this.connectedUsers.get(appointeeName).removeRole(storeID);
+                        appointee = this.connectedUsers.get(appointeeName);
+                        appointeeDTO = appointee.toDTO();
                     }
-                    Response<List<String>> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID);
-                    UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
-                    UserDAO.getInstance().removeRole(appointeeName, storeID);
+                    else{
+                        appointee.removeRole(storeID);
+                        appointeeDTO = appointee.toDTO();
+                    }
+
+                    List<UserDTO> userDTOS = new Vector<>();
+                    userDTOS.add(appointerDTO);
+                    userDTOS.add(appointeeDTO);
+                    DALService.getInstance().saveUsers(userDTOS);
+
+                    Appointment appointments = new Appointment(appointeeDTO.getAppointments());
 
                     //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
 
-                    List<String> names = new Vector<>(appointments.getResult());
+                    List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
 
                     //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
-                    response = new Response<>(true, false, appointments.getErrMsg());
+                    response = new Response<>(true, false, "Removed appointment successfully");
                 } else {
                     response = new Response<>(false, true, "Attempted to remove not a store owner");
                 }
@@ -350,26 +382,48 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            User appointer = new User(UserDAO.getInstance().getUser(appointerName));
+            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
             if (!response.isFailure()) {
-                User appointee = new User(UserDAO.getInstance().getUser(appointeeName));
+                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                User appointee = new User(appointeeDTO);
                 if (appointee.isManager(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
                         this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
+                        appointer = this.connectedUsers.get(appointerName);
+                        appointerDTO = appointer.toDTO();
+                    }
+                    else{
+                        appointer.removeAppointment(appointeeName, storeID);
+                        appointerDTO = appointer.toDTO();
                     }
                     if (this.connectedUsers.containsKey(appointeeName)) {
                         this.connectedUsers.get(appointeeName).removeRole(storeID);
+                        appointee = this.connectedUsers.get(appointeeName);
+                        appointeeDTO = appointee.toDTO();
                     }
-                    Response<List<String>> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID);
-                    UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);
-                    UserDAO.getInstance().removeRole(appointeeName, storeID);
+                    else{
+                        appointee.removeRole(storeID);
+                        appointeeDTO = appointee.toDTO();
+                    }
 
-                    List<String> names = new Vector<>(appointments.getResult());
+                    List<UserDTO> userDTOS = new Vector<>();
+                    userDTOS.add(appointerDTO);
+                    userDTOS.add(appointeeDTO);
+                    DALService.getInstance().saveUsers(userDTOS);
+
+                    Appointment appointments = new Appointment(appointeeDTO.getAppointments());
+
+                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
+
+                    List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
                     for (String name : names) {
                         removeAppointmentRec(appointeeName, name, storeID);
                     }
-                    response = new Response<>(true, false, appointments.getErrMsg());
+
+                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
+                    response = new Response<>(true, false, "Removed appointment successfully");
                 } else {
                     response = new Response<>(false, true, "Attempted to remove not a store manager");
                 }
@@ -382,17 +436,28 @@ public class UserController {
     }
 
     private void removeAppointmentRec(String appointerName, String appointeeName, int storeID) {
+        UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+        UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+        User appointer = new User(appointerDTO);
+        User appointee = new User(appointeeDTO);
         if(this.connectedUsers.containsKey(appointerName)) {                                    // if the user is connected:
-            this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);   // remove his appointee from his appointment list
+            appointer = this.connectedUsers.get(appointerName);   // remove his appointee from his appointment list
         }
         if(this.connectedUsers.containsKey(appointeeName)){
-            this.connectedUsers.get(appointeeName).removeRole(storeID);                         // remove his appointee's role from the appointee's list
+            appointee = this.connectedUsers.get(appointeeName);                         // remove his appointee's role from the appointee's list
         }
-        List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
-        UserDAO.getInstance().removeAppointment(appointerName, appointeeName, storeID);         // remove appointee from the appointers list
-        UserDAO.getInstance().removeRole(appointeeName, storeID);                               // remove appointee's role from his list
+        //List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
+        appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
+        appointee.removeRole(storeID);                               // remove appointee's role from his list
 
-        List<String> names = new Vector<>(appointments);
+        List<UserDTO> userDTOS = new Vector<>();
+        userDTOS.add(appointerDTO);
+        userDTOS.add(appointeeDTO);
+        DALService.getInstance().saveUsers(userDTOS);
+
+        Appointment appointments = new Appointment(appointeeDTO.getAppointments());
+
+        List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
         for(String name : names){
             removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
         }
@@ -405,11 +470,12 @@ public class UserController {
             readLock.unlock();
             writeLock.lock();
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
-//            if (!response.isFailure()) {
-//                if (connectedUsers.containsKey(permitted)) {
-//                    connectedUsers.get(permitted).addSelfPermission(storeId, permission);
-//                }
-//            }
+            // todo why was this commented out?
+            if (!response.isFailure()) {
+                if (connectedUsers.containsKey(permitted)) {
+                    connectedUsers.get(permitted).addSelfPermission(storeId, permission);
+                }
+            }
             writeLock.unlock();
             return response;
         }
@@ -460,10 +526,18 @@ public class UserController {
     }
 
     public void adminBoot() {
-        String admin = "shaked";
-        UserDAO.getInstance().registerUser(admin, security.sha256("jacob"));
-        UserDTOTemp userDTO = UserDAO.getInstance().getUser(admin);
-        connectedUsers.put(admin, new User(userDTO));
+        // TODO uncomment to reset database on bootup
+        //DALService.getInstance().resetDatabase();
+
+        String username = "shaked";
+        String password = "jacob";
+
+        DALService.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
+        DALService.getInstance().addAdmin(new AdminAccountDTO(username));
+        User user = new User(username);
+        user.setState(new Admin());
+        DALService.getInstance().insertUser(user.toDTO());
+        connectedUsers.put(username, user);
     }
 
 
@@ -707,13 +781,15 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
+    // get all stores that the user is managing and owning
     public Response<List<Integer>> getStoreOwned(String username){
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
-            return user.getStoreOwned();
+            return user.getStoresOwnedAndManaged();
         }
+
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }

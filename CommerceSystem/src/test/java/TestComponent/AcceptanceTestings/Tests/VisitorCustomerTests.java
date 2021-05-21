@@ -434,16 +434,39 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         // a guest is adding a product to his cart
         String guestName = bridge.addGuest().getResult();
+        bridge.register(guestName, "aaa", "aaa");
+        bridge.login(guestName, "aaa", "aaa");
 
         // adding to cart a product which is in stock
         Response<List<ProductClientDTO>> searchResult = bridge.searchByProductName("kchichat perot");
         ProductClientDTO product = searchResult.getResult().get(0);
+        int productID = product.getProductID();
+        int storeID = product.getStoreID();
         Response<Boolean> addResult = bridge.addToCart(guestName, product.getStoreID(), product.getProductID());
         Assert.assertTrue(addResult.getResult());
 
         // the user buying them
         Response<Boolean> purchaseResult = bridge.directPurchase(guestName, paymentDetails, supplyDetails);
         Assert.assertTrue(purchaseResult.getResult());
+
+        // checking the cart is empty
+        Response<List<BasketClientDTO>> cartResponse = bridge.getCartDetails("aaa");
+        Assert.assertTrue(cartResponse.getResult().isEmpty());
+
+        // checking that the history was updated
+        Response<List<PurchaseClientDTO>> historyResponse = bridge.getPurchaseHistory("aaa");
+        boolean exists = false;
+
+        for(PurchaseClientDTO purchaseClientDTO: historyResponse.getResult()){
+            for(ProductClientDTO productClientDTO: purchaseClientDTO.getBasket().getProductsDTO()){
+                if(productClientDTO.getStoreID() == storeID && productClientDTO.getProductID() == productID){
+                    exists = true;
+                    break;
+                }
+            }
+        }
+
+        Assert.assertTrue(exists);
     }
 
     @Test

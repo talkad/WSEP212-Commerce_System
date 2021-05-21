@@ -1,9 +1,10 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.DALService;
+import Server.DAL.StoreDTO;
 import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,11 +28,12 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> searchByProductName(String productName) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
         System.out.println("search by name " + productName);
         List<ProductClientDTO> productList = new LinkedList<>();
         if (productName != null) {
-            for (Store store : stores) {
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 System.out.println("search in store " + store.getName());
                 for (Product product : store.getInventory().getProducts()) {
                     System.out.println("product " + product.getName());
@@ -45,71 +47,81 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> searchByCategory(String category) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (category != null) {
-            for (Store store : stores)
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 for (Product product : store.getInventory().getProducts())
                     if (product.containsCategory(category))
                         productList.add(product.getProductDTO());
+            }
         }
 
         return new Response<>(productList, false, "products by category");
     }
 
     public Response<List<ProductClientDTO>> searchByKeyWord(String keyword) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (keyword != null) {
-            for (Store store : stores)
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 for (Product product : store.getInventory().getProducts())
                     if (product.containsKeyword(keyword))
                         productList.add(product.getProductDTO());
+            }
         }
         return new Response<>(productList, false, "products by keyword");
     }
 
+
     public Response<List<ProductClientDTO>> filterByPriceRange(double lowPart, double highPart) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (!(lowPart < 0 || highPart < 0 || lowPart > highPart)) {
-            for (Store store : stores)
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 for (Product product : store.getInventory().getProducts())
                     if (product.getPrice() >= lowPart && product.getPrice() <= highPart)
                         productList.add(product.getProductDTO());
+            }
         }
         return new Response<>(productList, false, "products filtered by price");
     }
 
     public Response<List<ProductClientDTO>> filterByRating(double rating) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
-
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
         List<ProductClientDTO> productList = new LinkedList<>();
         if (rating <= RatingEnum.VERY_HIGH.rate) {
-            for (Store store : stores)
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 for (Product product : store.getInventory().getProducts())
                     if (product.getRating() >= rating)
                         productList.add(product.getProductDTO());
+            }
         }
-
         return new Response<>(productList, false, "products filtered by rating");
     }
 
     public Response<List<ProductClientDTO>> filterByStoreRating(double rating) {
-        Collection<Store> stores = StoreController.getInstance().getStores();
+        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (rating <= RatingEnum.VERY_HIGH.rate) {
-            for (Store store : stores)
+            for (StoreDTO storeDTO : stores) {
+                Store store = new Store(storeDTO);
                 if (store.getRating() >= rating)
-                    for(Product product: store.getInventory().getProducts())
+                    for (Product product : store.getInventory().getProducts())
                         productList.add(product.getProductDTO());
+            }
         }
         return new Response<>(productList, false, "products filtered by store rating");
     }
+
 }
 
 

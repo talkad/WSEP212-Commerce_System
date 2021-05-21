@@ -56,6 +56,8 @@ public class PurchaseController {
                         return new Response<>(null, true, "Delivery failed" + " | created external connection");
                 }
 
+
+
                 return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
         }
 
