@@ -34,6 +34,12 @@ class Checkout extends React.Component{
         this.handleChange = this.handleChange.bind(this);
     }
 
+    // componentDidMount() {
+    //     if(this.props.storeID === undefined){
+    //         console.log("what the heck is that???");
+    //     }
+    // }
+
     handleChange(event) {
         this.setState({[event.target.id]: event.target.value})
     }

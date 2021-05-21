@@ -201,6 +201,18 @@ class Connection{
         return Connection.getResponse("addToCart");
     }
 
+    static sendOfferPrice(productID, storeID, priceOffer){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "bidOffer",
+            username: window.sessionStorage.getItem('username'),
+            productID: productID,
+            storeID: storeID,
+            priceOffer: priceOffer,
+        }));
+
+        return Connection.getResponse("addToCart");
+    }
+
     static sendRemoveFromCart(storeID, productID){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "removeFromCart",
