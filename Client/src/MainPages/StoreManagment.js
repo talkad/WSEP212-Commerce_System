@@ -61,11 +61,11 @@ class StoreManagment extends React.Component {
             perm === 'REMOVE_PRODUCT_FROM_STORE' ? ReactDOM.render(<React.StrictMode><DeleteProduct /></React.StrictMode>, document.getElementById('root')) :
                 perm === 'UPDATE_PRODUCT_PRICE' ? ReactDOM.render(<React.StrictMode><EditProduct /></React.StrictMode>, document.getElementById('root')) :
                     perm === 'ADD_DISCOUNT_RULE' ? ReactDOM.render(<React.StrictMode><MainDiscountPolicyPage /></React.StrictMode>, document.getElementById('root')) :
-                        perm === ' DELETE_DISCOUNT_RULE' ? ReactDOM.render(<React.StrictMode><DeleteDiscountRule /></React.StrictMode>, document.getElementById('root')) :
+                        perm === ' REMOVE_DISCOUNT_RULE' ? ReactDOM.render(<React.StrictMode><DeleteDiscountRule /></React.StrictMode>, document.getElementById('root')) :
                             perm === 'APPOINT_OWNER' ? ReactDOM.render(<React.StrictMode><AppointOwner /></React.StrictMode>, document.getElementById('root')) :
                                 perm === 'REMOVE_OWNER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveOwner /></React.StrictMode>, document.getElementById('root')) :
                                     perm === 'ADD_PERMISSION' ? ReactDOM.render(<React.StrictMode><AddPermission /></React.StrictMode>, document.getElementById('root')) :
-                                        perm === 'DELETE_PERMISSION' ? ReactDOM.render(<React.StrictMode><DeletePermission /></React.StrictMode>, document.getElementById('root')) :
+                                        perm === 'REMOVE_PERMISSION' ? ReactDOM.render(<React.StrictMode><DeletePermission /></React.StrictMode>, document.getElementById('root')) :
                                             perm === 'APPOINT_MANAGER' ? ReactDOM.render(<React.StrictMode><AppointManager /></React.StrictMode>, document.getElementById('root')) :
                                                 perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
                                     //perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :

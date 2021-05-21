@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 
 class ConditionalStoreDiscountRule extends React.Component {
@@ -27,6 +28,16 @@ class ConditionalStoreDiscountRule extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
+        Connection.sendCondStoreDiscountRule(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.discount, this.state.minUnits, this.state.maxUnits, this.state.minPrice).then(this.handleAddCategoryDiscountResponse, Connection.handleReject)
+    }
+
+    handleAddCategoryDiscountResponse(result){
+        if(!result.isFailure){
+            alert("adding discount success");
+        }
+        else{
+            alert(result.errMsg);
+        }
     }
 
     render() {
