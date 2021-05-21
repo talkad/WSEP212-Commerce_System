@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public class XorCompositionDiscountRule extends CompoundDiscountRule {
-    private String category;
     private XorResolveType xorResolveType;
 
-    public XorCompositionDiscountRule(String category, double discount, List<DiscountRule> policyRules, XorResolveType xorResolveType) {
+    public XorCompositionDiscountRule(double discount, List<DiscountRule> policyRules, XorResolveType xorResolveType) {
         super(discount, policyRules);
-        this.category = category;
         this.xorResolveType = xorResolveType;
     }
 

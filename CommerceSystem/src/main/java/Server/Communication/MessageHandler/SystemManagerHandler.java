@@ -2,10 +2,8 @@ package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountRules.*;
-import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
-import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
-import Server.Domain.ShoppingManager.Predicates.StorePredicate;
-import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.ShoppingManager.Predicates.*;
+import Server.Domain.ShoppingManager.PurchaseRules.*;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
@@ -74,15 +72,90 @@ public class SystemManagerHandler extends  Handler{
     private PurchaseRule parsePurchaseRule(String purchaseRuleStr) {
         Gson gson = new Gson();
         Properties data = gson.fromJson(purchaseRuleStr, Properties.class);
-
         String type = data.getProperty("type");
 
-        if(type.equals("rule1")){
-            "a,b,c".split(",");
+        PurchaseRule rule = null;
 
+        switch (type){
+            case "BasketPurchaseRule" -> {
+                String basketPredicate = data.getProperty("basketPredicate");
 
+                rule = new BasketPurchaseRule(parseBasketPredicate(basketPredicate));
+            }
+            case "CategoryPurchaseRule" -> {
+                String categoryPredicate = data.getProperty("categoryPredicate");
+
+                rule = new CategoryPurchaseRule(parseCategoryPredicate(categoryPredicate));
+            }
+            case "ProductPurchaseRule" -> {
+                String productPredicate = data.getProperty("productPredicate");
+
+                rule = new ProductPurchaseRule(parseProductPredicate(productPredicate));
+            }
+            case "AndCompositionPurchaseRule" -> {
+                String policyRules = data.getProperty("policyRules");
+
+                String[] ruleList = parseList(policyRules);
+                List<PurchaseRule> rules = new LinkedList<>();
+
+                for(String purchaseRule: ruleList)
+                    rules.add(parsePurchaseRule(purchaseRule));
+                rule = new AndCompositionPurchaseRule(rules);
+            }
+
+            case "OrCompositionPurchaseRule" -> {
+                String policyRules = data.getProperty("policyRules");
+
+                String[] ruleList = parseList(policyRules);
+                List<PurchaseRule> rules = new LinkedList<>();
+
+                for(String purchaseRule: ruleList)
+                    rules.add(parsePurchaseRule(purchaseRule));
+                rule = new OrCompositionPurchaseRule(rules);
+            }
+
+            case "ConditioningCompositionPurchaseRule" -> {
+                String conditions = data.getProperty("predicates");
+                String impliedConditions = data.getProperty("impliedPredicates");
+
+                String[] condStrList = parseList(conditions);
+                String[] impliedCondStrList = parseList(impliedConditions);
+
+                List<Predicate> condList = new LinkedList<>();
+                List<Predicate> impliedCondList = new LinkedList<>();
+
+                for(String s : condStrList){
+                    if(s.contains("basketPredicate")){
+                        condList.add(parseBasketPredicate(s));
+                    }
+                    else if(s.contains("categoryPredicate")){
+                        condList.add(parseCategoryPredicate(s));
+                    }
+                    else if(s.contains("productPredicate")){
+                        condList.add(parseProductPredicate(s));
+                    }
+                    else
+                        throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
+                }
+
+                for(String s : impliedCondStrList){
+                    if(s.contains("basketPredicate")){
+                        impliedCondList.add(parseBasketPredicate(s));
+                    }
+                    else if(s.contains("categoryPredicate")){
+                        impliedCondList.add(parseCategoryPredicate(s));
+                    }
+                    else if(s.contains("productPredicate")){
+                        impliedCondList.add(parseProductPredicate(s));
+                    }
+                    else
+                        throw new IllegalArgumentException("Invalid predicate type provided to purchase rule");
+                }
+
+                rule = new ConditioningCompositionPurchaseRule(condList, impliedCondList);
+            }
         }
-        return null;
+        return rule;
     }
 
     private DiscountRule parseDiscountRule(String discountRuleStr) {
@@ -178,11 +251,30 @@ public class SystemManagerHandler extends  Handler{
 
                 rule = new MaximumCompositionDiscountRule(rules);
             }
-//            case "TermsCompositionDiscountRule" -> {
-//                //todo - implement that
-//            }
-            case "XorCompositionDiscountRule" -> {
+            case "TermsCompositionDiscountRule" -> {
                 String category = data.getProperty("category");
+                String discount = data.getProperty("discount");
+                String predicates = data.getProperty("predicates");
+                String[] predStrList = parseList(predicates);
+                List<Predicate> predList = new LinkedList<>();
+                for(String s : predStrList){
+                    if(s.contains("storePredicate")){
+                        predList.add(parseStorePredicate(s));
+                    }
+                    else if(s.contains("categoryPredicate")){
+                        predList.add(parseCategoryPredicate(s));
+                    }
+                    else if(s.contains("productPredicate")){
+                        predList.add(parseProductPredicate(s));
+                    }
+                    else
+                        throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
+                }
+
+                rule = new TermsCompositionDiscountRule(Double.parseDouble(discount), category,  predList);
+
+            }
+            case "XorCompositionDiscountRule" -> {
                 String discount = data.getProperty("discount");
                 String policyRules = data.getProperty("policyRules");
                 String xorResolveType = data.getProperty("xorResolveType");
@@ -193,7 +285,7 @@ public class SystemManagerHandler extends  Handler{
                 for(String discountRule: ruleList)
                     rules.add(parseDiscountRule(discountRule));
 
-                rule = new XorCompositionDiscountRule(category, Double.parseDouble(discount), rules, XorResolveType.valueOf(xorResolveType));
+                rule = new XorCompositionDiscountRule(Double.parseDouble(discount), rules, XorResolveType.valueOf(xorResolveType));
             }
         }
 
@@ -228,6 +320,16 @@ public class SystemManagerHandler extends  Handler{
         String productID = data.getProperty("productID");
 
         return new ProductPredicate(Integer.parseInt(productID), Integer.parseInt(minUnits), Integer.parseInt(maxUnits));
+    }
+
+    private BasketPredicate parseBasketPredicate(String basketPredicate){
+        Gson gson = new Gson();
+        Properties data = gson.fromJson(basketPredicate, Properties.class);
+        String minUnits = data.getProperty("minUnits");
+        String maxUnits = data.getProperty("maxUnits");
+        String minPrice = data.getProperty("minPrice");
+
+        return new BasketPredicate(Integer.parseInt(minUnits), Integer.parseInt(maxUnits), Double.parseDouble(minPrice));
     }
 
     private String[] parseList(String listStr){
