@@ -27,7 +27,7 @@ class AddPermission extends React.Component {
     }
 
     handleResponse(result) {
-        alert(result.response.result);
+        alert(result.result);
     }
 
     render() {
