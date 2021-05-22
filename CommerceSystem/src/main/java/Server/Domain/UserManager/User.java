@@ -1,7 +1,6 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.OfferDTO;
-import Server.DAL.UserDTO;
+import Server.DAL.*;
 import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -17,6 +16,7 @@ import com.google.gson.Gson;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,6 +25,11 @@ public class User {
 
     private UserState state;
     private List<Integer> storesOwned;
+
+    public Appointment getAppointments() {
+        return appointments;
+    }
+
     private Map<Integer, List<PermissionsEnum>> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
@@ -55,14 +60,36 @@ public class User {
 
         pendingMessages = new PendingMessages();
 
-        this.storesOwned = null;
-        this.storesManaged = null;
+        this.storesOwned = new Vector<>();
+        this.storesManaged = new ConcurrentHashMap<>();
         this.shoppingCart = new ShoppingCart();
-        this.purchaseHistory = null;
-        this.appointments = null;
+        this.purchaseHistory = new PurchaseHistory();
+        this.appointments = new Appointment();
+        this.offers = new ConcurrentHashMap<>();
     }
 
-    //TODO Old UserDTO
+    public User(String username) {
+        this.state = new Registered();
+        this.name = username;
+
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
+
+        pendingMessages = new PendingMessages();
+
+        this.storesOwned = new Vector<>();
+        this.storesManaged = new ConcurrentHashMap<>();
+        this.shoppingCart = new ShoppingCart();
+        this.purchaseHistory = new PurchaseHistory();
+        this.appointments = new Appointment();
+        this.offers = new ConcurrentHashMap<>();
+    }
+
     public User(UserDTOTemp userDTO) {
         ownedLock = new ReentrantReadWriteLock();
         ownedWriteLock = ownedLock.writeLock();
@@ -168,6 +195,7 @@ public class User {
         ownedWriteLock.lock();
         this.storesOwned.add(storeId);
         ownedWriteLock.unlock();
+        DALService.getInstance().insertUser(this.toDTO());
 
         // subscribe to get notifications
 //        Publisher.getInstance().subscribe(storeId, this.name);
@@ -182,6 +210,7 @@ public class User {
         managedWriteLock.lock();
         this.storesManaged.put(storeId, permission);
         managedWriteLock.unlock();
+        DALService.getInstance().insertUser(this.toDTO());
     }
 
     public String getName() {
@@ -209,18 +238,27 @@ public class User {
 
 
     public Response<Boolean> addToCart(int storeID, int productID) {
-        return this.shoppingCart.addProduct(storeID, productID);
+        Response<Boolean> response = this.shoppingCart.addProduct(storeID, productID);
+        if(!response.isFailure() && this.state.getStateEnum() != UserStateEnum.GUEST){
+            DALService.getInstance().insertUser(this.toDTO());
+        }
+        return response;
     }
 
     public Response<List<BasketClientDTO>> getShoppingCartContents() {
         List<BasketClientDTO> basketsDTO = new LinkedList<>();
-        Map<Integer, Map<ProductClientDTO, Integer>> baskets = shoppingCart.getBaskets();
+        Map<Integer, Map<Product, Integer>> baskets = shoppingCart.getBaskets();
 
         for(Integer storeID: baskets.keySet()){
             Store store = StoreController.getInstance().getStoreById(storeID);
-
+            Set<ProductClientDTO> productClientDTOS = new ConcurrentSkipListSet<>();
             if(store != null){
-                basketsDTO.add(new BasketClientDTO(storeID, store.getName(), baskets.get(storeID).keySet(), baskets.get(storeID).values()));
+
+                for(Product product: baskets.get(storeID).keySet()){
+                    productClientDTOS.add(product.getProductDTO());
+                }
+
+                basketsDTO.add(new BasketClientDTO(storeID, store.getName(), productClientDTOS, baskets.get(storeID).values()));
             }
         }
 
@@ -228,7 +266,11 @@ public class User {
     }
 
     public Response<Boolean> removeProduct(int storeID, int productID) {
-        return this.shoppingCart.removeProduct(storeID, productID);
+        Response<Boolean> response = this.shoppingCart.removeProduct(storeID, productID);
+        if(!response.isFailure()){
+            DALService.getInstance().insertUser(this.toDTO());
+        }
+        return response;
     }
 
     public Response<Boolean> logout() {
@@ -248,7 +290,7 @@ public class User {
             ownedWriteLock.lock();
             this.storesOwned.add(result.getResult());
             ownedWriteLock.unlock();
-
+            DALService.getInstance().saveUserAndStore(this.toDTO(), new StoreDTO(result.getResult(), storeName, this.name, new InventoryDTO(), true, new DiscountPolicyDTO(), new PurchasePolicyDTO(), 0, 0, new PurchaseHistoryDTO()));
             // subscribe to get notifications
             Publisher.getInstance().subscribe(result.getResult(), this.name);
         }
@@ -263,7 +305,11 @@ public class User {
     }
 
     public Response<Boolean> updateProductQuantity(int storeID, int productID, int amount) {
-        return this.shoppingCart.updateProductQuantity(storeID, productID, amount);
+        Response<Boolean> response = this.shoppingCart.updateProductQuantity(storeID, productID, amount);
+        if(!response.isFailure()){
+            DALService.getInstance().insertUser(this.toDTO());
+        }
+        return response;
     }
 
     public Response<Boolean> addProductReview(int storeID, int productID, String reviewStr) {
@@ -289,8 +335,13 @@ public class User {
 
                 Publisher.getInstance().notify(storeID, new ReplyMessage("notification", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr, "addProductReview"));
 
+                Response<Boolean> response = store.addProductReview(productID, reviewRes.getResult());
 
-                return store.addProductReview(productID, reviewRes.getResult());
+                if(!response.isFailure()){
+                    DALService.getInstance().saveUserStoreAndProduct(this.toDTO(), store.toDTO(), product.getResult().toDTO());
+                }
+
+                return response;
             }
 
             return new Response<>(false, true, "The given product wasn't purchased before");
@@ -310,7 +361,13 @@ public class User {
                 return new Response<>(false, true, "This store doesn't exists");
             }
 
-            return store.addProduct(productDTO, amount);
+            Response<Boolean> response = store.addProduct(productDTO, amount);
+
+            if(!response.isFailure()){
+                DALService.getInstance().saveStoreAndProduct(store.toDTO(), store.getProduct(productDTO.getProductID()).getResult().toDTO());
+            }
+
+            return response;
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }
@@ -324,15 +381,27 @@ public class User {
             if(store == null){
                 return new Response<>(false, true, "This store doesn't exists");
             }
+            Response<Product> productResponse = store.getProduct(productID);
+            Response<Boolean> response = store.removeProduct(productID, amount);
 
-            return store.removeProduct(productID, amount);
+            if(!response.isFailure()){
+                DALService.getInstance().saveStoreRemoveProduct(store.toDTO(), productResponse.getResult().toDTO());
+            }
+
+            return response;
         }
         return new Response<>(false, true, "The user is not allowed to remove products from the store");
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
         if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_PRICE, this, storeID)) {
-            return StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
+            Response<Boolean> response = StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
+            if(!response.isFailure()){
+                Store store = StoreController.getInstance().getStoreById(storeID);
+                Product product = store.getProduct(productID).getResult();
+                DALService.getInstance().saveStoreAndProduct(store.toDTO(), product.toDTO());
+            }
+            return response;
         }
         return new Response<>(false, true, "The user is not allowed to edit products information in the store");
     }
@@ -353,12 +422,25 @@ public class User {
     public Response<Boolean> appointOwner(String newOwner, int storeId) {
         Response<Boolean> res;
         if (this.state.allowed(PermissionsEnum.APPOINT_OWNER, this, storeId)) {
-            if (UserDAO.getInstance().userExists(newOwner)) {
-                if (!UserDAO.getInstance().ownedOrManaged(storeId, newOwner)) {
+            UserDTO userDTO = DALService.getInstance().getUser(newOwner);
+            if (userDTO != null) {
+                boolean managed = false;
+                List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
+                for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+                    if(pair.getFirst() == storeId)
+                        managed = true;
+                }
+                if (!userDTO.getStoresOwned().contains(storeId) && !managed) {
                     this.appointments.addAppointment(storeId, newOwner);
-                    UserDAO.getInstance().addAppointment(this.name, storeId, newOwner);
+                    // TODO thread safe?
+                    List<Integer> ownedList = userDTO.getStoresOwned();
+                    ownedList.add(storeId);
+                    userDTO.setStoresOwned(ownedList);
+                    List<UserDTO> userDTOS = new Vector<>();
+                    userDTOS.add(this.toDTO());
+                    userDTOS.add(userDTO);
 
-                    res = UserDAO.getInstance().addStoreOwned(newOwner, storeId);
+                    res = new Response<>(true, !DALService.getInstance().saveUsers(userDTOS), "saved updated users");
 
                     if(!res.isFailure())
                         Publisher.getInstance().subscribe(storeId, newOwner);
@@ -375,11 +457,26 @@ public class User {
 
     public Response<Boolean> appointManager(String newManager, int storeId) {
         if (this.state.allowed(PermissionsEnum.APPOINT_MANAGER, this, storeId)) {
-            if (UserDAO.getInstance().userExists(newManager)) {
-                if (!UserDAO.getInstance().ownedOrManaged(storeId, newManager)) {
+            UserDTO userDTO = DALService.getInstance().getUser(newManager);
+            if (userDTO != null) {
+                boolean managed = false;
+                List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
+                for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+                    if(pair.getFirst() == storeId)
+                        managed = true;
+                }
+                if (!userDTO.getStoresOwned().contains(storeId) && !managed) {
                     this.appointments.addAppointment(storeId, newManager);
-                    UserDAO.getInstance().addAppointment(this.name, storeId, newManager);
-                    return UserDAO.getInstance().addStoreManaged(newManager, storeId);
+                    // todo maybe thread safe
+                    List<PermissionsEnum> permissions = new Vector<>();
+                    permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
+                    managedList.add(new Pair<>(storeId, permissions));
+                    userDTO.setStoresManaged(managedList);
+                    List<UserDTO> userDTOS = new Vector<>();
+                    userDTOS.add(this.toDTO());
+                    userDTOS.add(userDTO);
+
+                    return new Response<>(true, !DALService.getInstance().saveUsers(userDTOS), "saved updated users");
                 }
                 return new Response<>(false, true, "User was already appointed in this store");
             } else {
@@ -444,8 +541,9 @@ public class User {
 
     public Response<Boolean> addPermission(int storeId, String permitted, PermissionsEnum permission) {     // req 4.6
         if (this.state.allowed(PermissionsEnum.ADD_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
-            if(!UserDAO.getInstance().getUser(permitted).getStoresManaged().containsKey(storeId) || !UserDAO.getInstance().getUser(permitted).getStoresManaged().get(storeId).contains(permission)) {
-                UserDAO.getInstance().addPermission(storeId, permitted, permission);
+            User permittedUser = new User(DALService.getInstance().getUser(permitted));
+            if(!permittedUser.getStoresManaged().containsKey(storeId) || !permittedUser.getStoresManaged().get(storeId).contains(permission)) {
+                permittedUser.addSelfPermission(storeId, permission);
                 return new Response<>(true, false, "Added permission");
             }
             else return new Response<>(false, true, "The user already has the permission");
@@ -456,7 +554,8 @@ public class User {
 
     public Response<Boolean> removePermission(int storeId, String permitted, PermissionsEnum permission) {     // req 4.6
         if (this.state.allowed(PermissionsEnum.REMOVE_PERMISSION, this, storeId) && this.appointments.contains(storeId, permitted)) {
-            UserDAO.getInstance().removePermission(storeId, permitted, permission);
+            User permittedUser = new User(DALService.getInstance().getUser(permitted));
+            permittedUser.removeSelfPermission(storeId, permission);
             return new Response<>(true, false, "Removed permission");
         } else {
             return new Response<>(false, true, "User not allowed to remove permissions from this user");
@@ -467,23 +566,26 @@ public class User {
         managedWriteLock.lock();
         this.storesManaged.get(storeId).add(permission);
         managedWriteLock.unlock();
+        DALService.getInstance().insertUser(this.toDTO());
     }
 
     public void removeSelfPermission(int storeId, PermissionsEnum permission) {
         managedWriteLock.lock();
         this.storesManaged.get(storeId).remove(permission);
         managedWriteLock.unlock();
+        DALService.getInstance().insertUser(this.toDTO());
     }
 
     public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String username) {       // req 6.4
         if (this.state.allowed(PermissionsEnum.RECEIVE_GENERAL_HISTORY, this)) {
-            if (UserDAO.getInstance().userExists(username)) {
-                return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
+            UserDTO userDTO = DALService.getInstance().getUser(username);
+            if (userDTO != null) {
+                return new Response<>(new User(userDTO).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
             } else {
-                return new Response<>(new Vector<>(), true, "User does not exist");//todo empty list or null
+                return new Response<>(new Vector<>(), true, "User does not exist");
             }
         } else {
-            return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+            return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");
         }
     }
 
@@ -555,10 +657,10 @@ public class User {
     public Response<Boolean> purchase(List<PurchaseClientDTO> purchase) {
         StringBuilder msg;
 
-        // notify to subscribers about purchase
+        // notify to subscribers about purchase and update DB
         for(Integer storeID : getShoppingCart().getBaskets().keySet()){
             msg = new StringBuilder("Purchase occurred:\n");
-            for(ProductClientDTO productDTO: getShoppingCart().getBasket(storeID).keySet()){
+            for(Product productDTO: getShoppingCart().getBasket(storeID).keySet()){
                 msg.append("product name: ").append(productDTO.getName()).append(", amount: ").append(shoppingCart.getBasket(storeID).get(productDTO)).append("\n");
             }
 
@@ -567,6 +669,15 @@ public class User {
 
         addToPurchaseHistory(purchase);
         emptyCart();
+
+        List<StoreDTO> storeDTOS = new Vector<>();
+        for(PurchaseClientDTO purchaseClientDTO : purchase){
+            int storeID = purchaseClientDTO.getBasket().getStoreID();
+            Store store = StoreController.getInstance().getStoreById(storeID);
+            storeDTOS.add(store.toDTO());
+        }
+
+        DALService.getInstance().savePurchase(this.toDTO(), storeDTOS);
 
         return new Response<>(true, false, "The purchase occurred");
     }
@@ -609,7 +720,11 @@ public class User {
         if(this.state.allowed(PermissionsEnum.ADD_DISCOUNT_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
-                return store.addDiscountRule(discountRule);
+                Response<Boolean> response = store.addDiscountRule(discountRule);
+                if(!response.isFailure()){
+                    DALService.getInstance().insertStore(store.toDTO());
+                }
+                return response;
             }
             else {
                 return new Response<>(false, true, "The given store doesn't exists");
@@ -625,7 +740,11 @@ public class User {
         if(this.state.allowed(PermissionsEnum.ADD_PURCHASE_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
-                return store.addPurchaseRule(purchaseRule);
+                Response<Boolean> response = store.addPurchaseRule(purchaseRule);
+                if(!response.isFailure()){
+                    DALService.getInstance().insertStore(store.toDTO());
+                }
+                return response;
             }
             else {
                 return new Response<>(false, true, "The given store doesn't exists");
@@ -642,7 +761,11 @@ public class User {
         if(this.state.allowed(PermissionsEnum.REMOVE_DISCOUNT_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
-                return store.removeDiscountRule(discountRuleID);
+                Response<Boolean> response = store.removeDiscountRule(discountRuleID);
+                if(!response.isFailure()){
+                    DALService.getInstance().insertStore(store.toDTO());
+                }
+                return response;
             }
             else {
                 return new Response<>(false, true, "The given store doesn't exists");
@@ -658,7 +781,11 @@ public class User {
         if(this.state.allowed(PermissionsEnum.REMOVE_PURCHASE_RULE, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
             if (store != null) {
-                return store.removePurchaseRule(purchaseRuleID);
+                Response<Boolean> response = store.removePurchaseRule(purchaseRuleID);
+                if(!response.isFailure()){
+                    DALService.getInstance().insertStore(store.toDTO());
+                }
+                return response;
             }
             else {
                 return new Response<>(false, true, "The given store doesn't exists");
@@ -734,9 +861,9 @@ public class User {
             return new Response<>(false, true, "The given store doesn't exists");
 
         Offer offer = new Offer(productID, storeID, priceOffer);
-        UserDAO.getInstance().addOffer(this.name, productID ,storeID, priceOffer, OfferState.PENDING);
 
         this.offers.put(productID, offer);
+        DALService.getInstance().insertUser(this.toDTO());
 
         Gson gson = new Gson();
         Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
@@ -747,7 +874,7 @@ public class User {
     public Response<Boolean> removeOffer(int productId){
         if(this.offers.containsKey(productId)){
             offers.remove(productId);
-            UserDAO.getInstance().removeOffer(this.name, productId);
+            DALService.getInstance().insertUser(this.toDTO());
             return new Response<>(true, false, "successfully removed offer");
         }
         else{
@@ -762,15 +889,26 @@ public class User {
         if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -2) {
                 Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
-                return UserDAO.getInstance().removeOffer(offeringUsername, productID);
+                this.offers.remove(productID);
+                DALService.getInstance().insertUser(this.toDTO());
+                return new Response<>(true, false, "The offer was declined.");
+
             } else if (bidReply == -1) {
                 Gson gson = new Gson();
                 Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatusAccepted"));
-                return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
+                this.offers.get(productID).setState(OfferState.APPROVED);
+                this.offers.get(productID).setOfferReply(bidReply);
+                DALService.getInstance().insertUser(this.toDTO());
+                return new Response<>(true, false, "The offer was accepted.");
+
             } else {
                 Gson gson = new Gson();
                 Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatus"));
-                return UserDAO.getInstance().changeStatus(offeringUsername, productID, bidReply, OfferState.APPROVED);
+                this.offers.get(productID).setState(OfferState.APPROVED);
+                this.offers.get(productID).setOfferReply(bidReply);
+                DALService.getInstance().insertUser(this.toDTO());
+                return new Response<>(true, false, "The store presented a counter offer");
+
             }
         }
         else{
@@ -794,12 +932,27 @@ public class User {
             return new Response<>(false, true, "The purchase failed");
 
         Publisher.getInstance().notify(storeID, new ReplyMessage("notification", "Product " + product.getName() + " purchased successfully", "bidUserReply"));
+
+        Store store = StoreController.getInstance().getStoreById(storeID);
+        DALService.getInstance().saveUserAndStore(this.toDTO(), store.toDTO());
+
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 
-    public Response<List<Integer>> getStoreOwned() {
-        if(getStoresOwned() == null)
-            return new Response<>(new LinkedList<>(), false, "Get store owned Successfully");
-        return new Response<>(this.getStoresOwned(), false, "Get store owned Successfully");
+    public Response<List<Integer>> getStoresOwnedAndManaged() {
+        List<Integer> storeIDs = new LinkedList<>();
+
+        storeIDs.addAll(this.storesOwned);
+        storeIDs.addAll(this.storesManaged.keySet());
+
+        return new Response<>(storeIDs, false, "Get store owned Successfully");
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
     }
 }

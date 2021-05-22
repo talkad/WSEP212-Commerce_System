@@ -38,7 +38,7 @@ public abstract class CompoundDiscountRuleDTO implements DiscountRuleDTO {
     }
 
     public List<DiscountRuleDTO> getDiscountRules() {
-        return discountRules;
+        return discountRules == null ? new Vector<>() : discountRules;
     }
 
     public void setDiscountRules(List<DiscountRuleDTO> discountRules) {
@@ -55,7 +55,7 @@ public abstract class CompoundDiscountRuleDTO implements DiscountRuleDTO {
 
     public List<DiscountRule> getConcreteDiscountRules(){
         List<DiscountRule> concreteDiscountRules = new Vector<>();
-        for(DiscountRuleDTO discountRuleDTO : this.discountRules){
+        for(DiscountRuleDTO discountRuleDTO : this.getDiscountRules()){
             concreteDiscountRules.add(discountRuleDTO.toConcreteDiscountRule());
         }
         return concreteDiscountRules;

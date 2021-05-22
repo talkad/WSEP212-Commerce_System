@@ -34,7 +34,7 @@ public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO{
     }
 
     public List<PurchaseRuleDTO> getPurchaseRules() {
-        return purchaseRules;
+        return purchaseRules == null ? new Vector<>() : purchaseRules;
     }
 
     public void setPurchaseRules(List<PurchaseRuleDTO> purchaseRules) {

@@ -15,6 +15,7 @@ import Server.Service.IService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -23,7 +24,7 @@ public class CommerceSystem implements IService {
     private UserController userController;
     private StoreController storeController;
     public static Log log = new Log("Logs.txt");
-//    public static Log logCrit = new Log("CriticalLogs.txt"); // todo - add this line
+//    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
@@ -277,7 +278,7 @@ public class CommerceSystem implements IService {
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
             fis.close();
-            String str = new String(data, "UTF-8");
+            String str = new String(data, StandardCharsets.UTF_8);
             String[] funcs = str.split(";");
             String[] attributes;
             //int guestNum = 1;

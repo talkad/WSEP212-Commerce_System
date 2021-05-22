@@ -4,6 +4,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class PendingMessagesDTO {
@@ -20,7 +21,7 @@ public class PendingMessagesDTO {
     }
 
     public List<ReplyMessageDTO> getPendingMessages() {
-        return pendingMessages;
+        return pendingMessages == null ? new Vector<>() : pendingMessages;
     }
 
     public void setPendingMessages(List<ReplyMessageDTO> pendingMessages) {

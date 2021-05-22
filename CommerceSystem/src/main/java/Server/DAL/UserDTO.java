@@ -1,6 +1,7 @@
 package Server.DAL;
 
 import Server.Domain.CommonClasses.Pair;
+import Server.Domain.UserManager.Appointment;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.UserStateEnum;
 import dev.morphia.annotations.Entity;
@@ -8,6 +9,7 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Entity(value = "users")
 public class UserDTO {
@@ -66,7 +68,7 @@ public class UserDTO {
     }
 
     public List<Integer> getStoresOwned() {
-        return storesOwned;
+        return storesOwned == null ? new Vector<>() : storesOwned;
     }
 
     public void setStoresOwned(List<Integer> storesOwned) {
@@ -74,7 +76,7 @@ public class UserDTO {
     }
 
     public List<Pair<Integer, List<PermissionsEnum>>> getStoresManaged() {
-        return storesManaged;
+        return storesManaged == null ? new Vector<>() : storesManaged;
     }
 
     public void setStoresManaged(List<Pair<Integer, List<PermissionsEnum>>> storesManaged) {
@@ -90,7 +92,7 @@ public class UserDTO {
     }
 
     public ShoppingCartDTO getShoppingCart() {
-        return shoppingCart;
+        return shoppingCart == null ? new ShoppingCartDTO() : shoppingCart;
     }
 
     public void setShoppingCart(ShoppingCartDTO shoppingCart) {
@@ -98,7 +100,7 @@ public class UserDTO {
     }
 
     public PurchaseHistoryDTO getPurchaseHistory() {
-        return purchaseHistory;
+        return purchaseHistory == null ? new PurchaseHistoryDTO() : purchaseHistory;
     }
 
     public void setPurchaseHistory(PurchaseHistoryDTO purchaseHistory) {
@@ -106,7 +108,7 @@ public class UserDTO {
     }
 
     public AppointmentDTO getAppointments() {
-        return appointments;
+        return appointments == null ? new AppointmentDTO() : appointments;
     }
 
     public void setAppointments(AppointmentDTO appointments) {
@@ -114,7 +116,7 @@ public class UserDTO {
     }
 
     public List<OfferDTO> getOffers() {
-        return offers;
+        return offers == null ? new Vector<>() : offers;
     }
 
     public void setOffers(List<OfferDTO> offers) {
@@ -122,7 +124,7 @@ public class UserDTO {
     }
 
     public PendingMessagesDTO getPendingMessages() {
-        return pendingMessages;
+        return pendingMessages == null ? new PendingMessagesDTO() : pendingMessages;
     }
 
     public void setPendingMessages(PendingMessagesDTO pendingMessages) {

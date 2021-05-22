@@ -37,8 +37,6 @@ public interface IService {
 
     Response<String> login(String identifier, String username, String pwd); // 2.4
 
-//    Response<Collection<Store>>  getContent(); // 2.5 - a
-
     Response<List<StoreClientDTO>> searchByStoreName(String storeName); // 2.5 - b
 
     Response<List<ProductClientDTO>> searchByProductName(String productName); // 2.6 - a

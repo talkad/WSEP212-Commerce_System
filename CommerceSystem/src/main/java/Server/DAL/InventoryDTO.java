@@ -24,7 +24,7 @@ public class InventoryDTO {
     }
 
     public List<Pair<ProductDTO, Integer>> getProducts() {
-        return products;
+        return products == null ? new Vector<>() : products;
     }
 
     public void setProducts(List<Pair<ProductDTO, Integer>> products) {

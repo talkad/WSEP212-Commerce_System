@@ -113,12 +113,12 @@ public class ShoppingBasket {
         return res;
     }
 
-    public Map<ProductClientDTO, Integer> getProducts() {
-        Map<ProductClientDTO, Integer> basketProducts = new HashMap<>();
+    public Map<Product, Integer> getProducts() {
+        Map<Product, Integer> basketProducts = new HashMap<>();
 
         lock.readLock().lock();
         for(Product product: products.values()){
-            basketProducts.put(product.getProductDTO(), pAmount.get(product.getProductID()));
+            basketProducts.put(product, pAmount.get(product.getProductID()));
         }
         lock.readLock().unlock();
 
@@ -171,10 +171,10 @@ public class ShoppingBasket {
 
     @Override
     public String toString() {
-        Map<ProductClientDTO, Integer> products = getProducts();
+        Map<Product, Integer> products = getProducts();
         StringBuilder result = new StringBuilder("ShoppingBasket id " + storeID + ":\n");
 
-        for(ProductClientDTO product: products.keySet()){
+        for(Product product: products.keySet()){
             result.append(product.toString()).append("Amount :").append(products.get(product)).append("\n");
         }
 

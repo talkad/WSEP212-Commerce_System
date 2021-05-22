@@ -5,6 +5,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class PurchasePolicyDTO {
@@ -25,7 +26,7 @@ public class PurchasePolicyDTO {
     }
 
     public List<PurchaseRuleDTO> getPurchaseRules() {
-        return purchaseRules;
+        return purchaseRules == null ? new Vector<>() : purchaseRules;
     }
 
     public void setPurchaseRules(List<PurchaseRuleDTO> purchaseRules) {

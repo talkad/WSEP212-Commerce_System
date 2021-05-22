@@ -7,6 +7,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class TermsCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
@@ -37,7 +38,7 @@ public class TermsCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
     }
 
     public List<PredicateDTO> getPredicates() {
-        return predicates;
+        return predicates == null ? new Vector<>() : predicates;
     }
 
     public void setPredicates(List<PredicateDTO> predicates) {

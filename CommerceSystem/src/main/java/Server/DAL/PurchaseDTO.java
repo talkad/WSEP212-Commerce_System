@@ -5,6 +5,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class PurchaseDTO {
@@ -33,7 +34,7 @@ public class PurchaseDTO {
     }
 
     public List<Pair<ProductDTO, Integer>> getBasket() {
-        return basket;
+        return basket == null ? new Vector<>() : basket;
     }
 
     public void setBasket(List<Pair<ProductDTO, Integer>> basket) {

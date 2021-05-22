@@ -23,7 +23,7 @@ public class ConditionalProductDiscountRuleDTO extends ProductDiscountRuleDTO{
     }
 
     public ProductPredicateDTO getProductPredicate() {
-        return productPredicate;
+        return productPredicate == null ? new ProductPredicateDTO() : productPredicate;
     }
 
     public void setProductPredicate(ProductPredicateDTO productPredicate) {

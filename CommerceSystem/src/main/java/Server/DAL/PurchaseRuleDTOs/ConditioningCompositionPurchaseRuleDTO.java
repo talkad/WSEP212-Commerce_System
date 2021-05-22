@@ -9,6 +9,7 @@ import dev.morphia.annotations.Property;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 @Embedded
 public class ConditioningCompositionPurchaseRuleDTO extends CompoundPurchaseRuleDTO{
@@ -27,7 +28,7 @@ public class ConditioningCompositionPurchaseRuleDTO extends CompoundPurchaseRule
     }
 
     public List<Pair<PredicateDTO, PredicateDTO>> getConditionsMap() {
-        return conditionsMap;
+        return conditionsMap == null ? new Vector<>() : conditionsMap;
     }
 
     public void setConditionsMap(List<Pair<PredicateDTO, PredicateDTO>> conditionsMap) {

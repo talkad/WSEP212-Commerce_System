@@ -23,7 +23,7 @@ public class ConditionalCategoryDiscountRuleDTO extends CategoryDiscountRuleDTO{
     }
 
     public CategoryPredicateDTO getCategoryPredicate() {
-        return categoryPredicate;
+        return categoryPredicate == null ? new CategoryPredicateDTO() : categoryPredicate;
     }
 
     public void setCategoryPredicate(CategoryPredicateDTO categoryPredicate) {

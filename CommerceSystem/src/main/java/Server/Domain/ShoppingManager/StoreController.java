@@ -1,5 +1,7 @@
 package Server.Domain.ShoppingManager;
 
+import Server.DAL.DALService;
+import Server.DAL.StoreDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
@@ -9,7 +11,6 @@ import org.xeustechnologies.googleapi.spelling.SpellChecker;
 import org.xeustechnologies.googleapi.spelling.SpellCorrection;
 import org.xeustechnologies.googleapi.spelling.SpellRequest;
 import org.xeustechnologies.googleapi.spelling.SpellResponse;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,10 +25,9 @@ public class StoreController {
     private SpellRequest spellRequest;
     private SpellResponse spellRes;
 
-
     private StoreController(){
         stores = new ConcurrentHashMap<>();
-        indexer = new AtomicInteger(0);
+        indexer = new AtomicInteger(DALService.getInstance().getNextAvailableStoreID());
         spellChecker = new SpellChecker();
         spellRequest = new SpellRequest();
     }
@@ -82,7 +82,14 @@ public class StoreController {
     }
 
     public Store getStoreById(int storeId) {
-        return stores.get(storeId);
+        if(stores.containsKey(storeId)) {
+            return stores.get(storeId);
+        }
+        else {
+            Store store = new Store(DALService.getInstance().getStore(storeId));
+            stores.put(storeId, store);
+            return store;
+        }
     }
 
     /**
@@ -95,14 +102,14 @@ public class StoreController {
 
     // activated when purchase aborted and all products need to be added to their inventories
     public void addProductsToInventories(ShoppingCart shoppingCart) {
-        Map<ProductClientDTO, Integer> basket;
+        Map<Product, Integer> basket;
 
         for(Integer storeID : shoppingCart.getBaskets().keySet()){
 
             basket = shoppingCart.getBasket(storeID);
 
-            for(ProductClientDTO productDTO : basket.keySet()){
-                stores.get(storeID).addProduct(productDTO, basket.get(productDTO));
+            for(Product product : basket.keySet()){
+                stores.get(storeID).addProduct(product.getProductDTO(), basket.get(product));
             }
         }
     }
@@ -117,13 +124,13 @@ public class StoreController {
         Map<Integer, Map<ProductClientDTO, Integer>> prods = new ConcurrentHashMap<>();
         Map<Integer, PurchaseClientDTO> purchases = new HashMap<>();
         Response<PurchaseClientDTO> resPurchase;
-        Map<Integer, Map<ProductClientDTO, Integer>> baskets = shoppingCart.getBaskets();
+        Map<Integer, Map<Product, Integer>> baskets = shoppingCart.getBaskets();
 
         if(baskets.isEmpty())
             return new Response<>(null, true, "You cannot purchase an empty cart");
 
-        for (Map.Entry<Integer, Map<ProductClientDTO, Integer>> entry : baskets.entrySet()) {
-            resPurchase = purchaseFromStore(entry.getKey(), entry.getValue());
+        for (Map.Entry<Integer, Map<Product, Integer>> entry : baskets.entrySet()) {
+            resPurchase = purchaseFromStore(entry.getKey(), parseProductsMap(entry.getValue()));
 
             if (resPurchase.isFailure()) {
                 for (Map.Entry<Integer, Map<ProductClientDTO, Integer>> refundEntries : prods.entrySet()) {
@@ -135,7 +142,7 @@ public class StoreController {
             }
 
             purchases.put(entry.getKey(), resPurchase.getResult());
-            prods.put(entry.getKey(), entry.getValue());
+            prods.put(entry.getKey(), parseProductsMap(entry.getValue()));
         }
 
         for(Integer storeID: purchases.keySet()){
@@ -143,6 +150,16 @@ public class StoreController {
         }
 
         return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
+    }
+
+    private Map<ProductClientDTO, Integer> parseProductsMap(Map<Product, Integer> value) {
+        Map<ProductClientDTO, Integer> products = new ConcurrentHashMap<>();
+
+        for(Map.Entry<Product, Integer> entry : value.entrySet()){
+            products.put(entry.getKey().getProductDTO(), entry.getValue());
+        }
+
+        return products;
     }
 
     public Response<PurchaseClientDTO> purchase(Product product) {
@@ -167,11 +184,11 @@ public class StoreController {
         Response<PurchaseClientDTO> result;
         Store store;
 
-       if(!stores.containsKey(storeID)) {
+        if(!stores.containsKey(storeID)) {
             result = new Response<>(null, true, "This store does not exists");
         }
         else{
-            store = stores.get(storeID);
+            store = this.getStoreById(storeID);
             result = store.purchase(shoppingBasket);
         }
 
@@ -183,7 +200,7 @@ public class StoreController {
     }
 
     public String getStoreOwnerName(int storeID){
-        return stores.get(storeID).getOwnerName();
+        return this.getStoreById(storeID).getOwnerName();
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName){
@@ -202,7 +219,7 @@ public class StoreController {
     }
 
     public Response<Product> getProduct(int storeID, int productID) {
-        Store store = stores.get(storeID);
+        Store store = this.getStoreById(storeID);
 
         if(store == null){
             return new Response<>(null, true, "store doesn't exists");
@@ -214,10 +231,12 @@ public class StoreController {
 
     public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         List<StoreClientDTO> storeList = new LinkedList<>();
+        Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
 
-        for(Store store: stores.values()){
+        for(StoreDTO store: storeDTOS){
+            Store domainStore = new Store(store);
             if(store.getName().equals(storeName))
-                storeList.add(new StoreClientDTO(store.getStoreID(), store.getName(), store.getInventory().getProductsDTO()));
+                storeList.add(new StoreClientDTO(store.getStoreID(), store.getName(), domainStore.getInventory().getProductsDTO()));
         }
 
         return new Response<>(storeList, false, "all stores with name " + storeName);
@@ -226,14 +245,17 @@ public class StoreController {
     public double getTotalSystemRevenue() {
         double totalRevenue = 0;
 
-        for(Store store: stores.values())
+        Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
+        for(StoreDTO storeDTO: storeDTOS) {
+            Store store = new Store(storeDTO);
             totalRevenue += store.getTotalRevenue();
+        }
 
         return totalRevenue;
     }
 
     public Response<StoreClientDTO> getStore(int storeID){
-        Store store = stores.get(storeID);
+        Store store = this.getStoreById(storeID);
 
         if(store == null)
             return new Response<>(null, true, "The store doesn't exists");
