@@ -1,6 +1,7 @@
 package Server.DAL.PurchaseRuleDTOs;
 
 import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.DAL.PredicateDTOs.ProductPredicateDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -31,7 +32,7 @@ public abstract class LeafPurchaseRuleDTO implements PurchaseRuleDTO {
     }
 
     public PredicateDTO getPredicate() {
-        return predicate;
+        return predicate == null ? new ProductPredicateDTO() : predicate;
     }
 
     public void setPredicate(PredicateDTO predicate) {

@@ -5,6 +5,7 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Entity(value = "products")
 public class ProductDTO {
@@ -86,7 +87,7 @@ public class ProductDTO {
     }
 
     public List<String> getCategories() {
-        return categories;
+        return categories == null ? new Vector<>() : categories;
     }
 
     public void setCategories(List<String> categories) {
@@ -94,7 +95,7 @@ public class ProductDTO {
     }
 
     public List<String> getKeywords() {
-        return keywords;
+        return keywords == null ? new Vector<>() : keywords;
     }
 
     public void setKeywords(List<String> keywords) {
@@ -118,7 +119,7 @@ public class ProductDTO {
     }
 
     public List<ReviewDTO> getReviews() {
-        return reviews;
+        return reviews == null ? new Vector<>() : reviews;
     }
 
     public void setReviews(List<ReviewDTO> reviews) {

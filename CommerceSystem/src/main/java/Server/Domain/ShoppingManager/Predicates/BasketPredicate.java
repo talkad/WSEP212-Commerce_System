@@ -19,7 +19,7 @@ public class BasketPredicate implements Predicate {
         this.minUnits = minUnits;
         this.maxUnits = maxUnits;
         this.minPrice = minPrice;
-        this.basketPredicates = null;
+        this.basketPredicates = new Vector<>();
     }
 
     public BasketPredicate(int minUnits, int maxUnits, double minPrice, List<Predicate> basketPredicates){

@@ -59,7 +59,7 @@ public class BasketPredicateDTO implements PredicateDTO{
     }
 
     public List<PredicateDTO> getBasketPredicates() {
-        return basketPredicates;
+        return basketPredicates == null ? new Vector<>() : basketPredicates;
     }
 
     public void setBasketPredicates(List<PredicateDTO> basketPredicates) {

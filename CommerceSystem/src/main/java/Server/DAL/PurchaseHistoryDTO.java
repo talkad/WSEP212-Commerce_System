@@ -4,6 +4,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class PurchaseHistoryDTO {
@@ -20,7 +21,7 @@ public class PurchaseHistoryDTO {
     }
 
     public List<PurchaseDTO> getPurchases() {
-        return purchases;
+        return purchases == null ? new Vector<>() : purchases;
     }
 
     public void setPurchases(List<PurchaseDTO> purchases) {

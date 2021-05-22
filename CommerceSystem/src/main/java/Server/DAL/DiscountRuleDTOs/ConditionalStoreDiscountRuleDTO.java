@@ -35,7 +35,7 @@ public class ConditionalStoreDiscountRuleDTO extends StoreDiscountRuleDTO{
     }
 
     public StorePredicateDTO getStorePredicate() {
-        return storePredicate;
+        return storePredicate == null ? new StorePredicateDTO() : storePredicate;
     }
 
     public void setStorePredicate(StorePredicateDTO storePredicate) {

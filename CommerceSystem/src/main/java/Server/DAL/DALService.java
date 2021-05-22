@@ -1,17 +1,25 @@
 package Server.DAL;
 
+import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
+import Server.Domain.UserManager.UserStateEnum;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.morphia.experimental.MorphiaSession;
+import dev.morphia.mapping.Mapper;
+import dev.morphia.mapping.MapperOptions;
+import dev.morphia.mapping.codec.PrimitiveCodecRegistry;
 import dev.morphia.query.FindOptions;
 import dev.morphia.query.Sort;
 import dev.morphia.query.experimental.filters.Filters;
+import org.bson.codecs.configuration.CodecRegistries;
 
 import java.util.*;
-
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DALService {
 
@@ -24,6 +32,16 @@ public class DALService {
     }
 
     private DALService() {
+//        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//        Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+//        mapper.mapPackage("Server.DAL");
+//        List<Class> classes = new Vector<>();
+//        classes.add(StoreDiscountRuleDTO.class);
+//        mapper.map(classes);
+//
+//        mongoClient.close();
     }
 
     public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {
@@ -34,7 +52,9 @@ public class DALService {
             session.startTransaction();
 
             // stage changes to commit
-            session.save(userDTO);
+            if(userDTO.getState() != UserStateEnum.GUEST)
+                session.save(userDTO);
+
             session.save(storeDTOs);
 
             // commit changes
@@ -146,7 +166,9 @@ public class DALService {
             session.startTransaction();
 
             // stage changes to commit
-            session.save(userDTO);
+            if(userDTO.getState() != UserStateEnum.GUEST)
+                session.save(userDTO);
+
             session.save(storeDTO);
 
             // commit changes
@@ -164,7 +186,9 @@ public class DALService {
             session.startTransaction();
 
             // stage changes to commit
-            session.save(userDTO);
+            if(userDTO.getState() != UserStateEnum.GUEST)
+                session.save(userDTO);
+
             session.save(storeDTO);
             session.save(productDTO);
 
@@ -230,7 +254,8 @@ public class DALService {
         MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
         Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        datastore.save(userDTO);
+        if(userDTO.getState() != UserStateEnum.GUEST)
+            datastore.save(userDTO);
 
         mongoClient.close();
     }
@@ -260,28 +285,35 @@ public class DALService {
 
 
     public int getNextAvailableStoreID(){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
-                // filters find relevant entries
-                .filter(
-                        Filters.gte("storeID", 0)
-                )
-                // iterator options manipulate the found entries
-                .iterator(
-                        new FindOptions()
-                                .sort(Sort.descending("storeID"))
-                ).toList();
-
-        mongoClient.close();
-
-        if(storeDTOs == null || storeDTOs.size() == 0){
-            return 0;
-        }
-        StoreDTO head = storeDTOs.get(0);
-        int id = head.getStoreID();
-        return id + 1;
+//        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//        Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+//        //mapper.mapPackage("Server.DAL");
+//        List<Class> classes = new Vector<>();
+//        classes.add(StoreDiscountRuleDTO.class);
+//        mapper.map(classes);
+//
+//        List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
+//                // filters find relevant entries
+//                .filter(
+//                        Filters.gte("storeID", 0)
+//                )
+//                // iterator options manipulate the found entries
+//                .iterator(
+//                        new FindOptions()
+//                                .sort(Sort.descending("storeID"))
+//                ).toList();
+//
+//        mongoClient.close();
+//
+//        if(storeDTOs == null || storeDTOs.size() == 0){
+//            return 0;
+//        }
+//        StoreDTO head = storeDTOs.get(0);
+//        int id = head.getStoreID();
+//        return id + 1;
+        return (int) (Math.random() * (10000 - 1)) + 1;
     }
 
     public void resetDatabase(){

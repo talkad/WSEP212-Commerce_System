@@ -65,6 +65,7 @@ public class User {
         this.shoppingCart = new ShoppingCart();
         this.purchaseHistory = new PurchaseHistory();
         this.appointments = new Appointment();
+        this.offers = new ConcurrentHashMap<>();
     }
 
     public User(String username) {
@@ -86,32 +87,32 @@ public class User {
         this.shoppingCart = new ShoppingCart();
         this.purchaseHistory = new PurchaseHistory();
         this.appointments = new Appointment();
+        this.offers = new ConcurrentHashMap<>();
     }
 
-//    //TODO Old UserDTO
-//    public User(UserDTOTemp userDTO) {
-//        ownedLock = new ReentrantReadWriteLock();
-//        ownedWriteLock = ownedLock.writeLock();
-//        ownedReadLock = ownedLock.readLock();
-//
-//        managedLock = new ReentrantReadWriteLock();
-//        managedWriteLock = managedLock.writeLock();
-//        managedReadLock = managedLock.readLock();
-//
-//        if (UserDAO.getInstance().isAdmin(userDTO.getName())) {
-//            this.state = new Admin();
-//        } else {
-//            this.state = new Registered();
-//        }
-//        this.storesOwned = userDTO.getStoresOwned();
-//        this.storesManaged = userDTO.getStoresManaged();
-//        this.name = userDTO.getName();
-//        this.shoppingCart = userDTO.getShoppingCart();
-//        this.purchaseHistory = userDTO.getPurchaseHistory();
-//        this.appointments = userDTO.getAppointments();
-//        this.offers = userDTO.getOffers();
-//        this.pendingMessages = userDTO.getPendingMessages();
-//    }
+    public User(UserDTOTemp userDTO) {
+        ownedLock = new ReentrantReadWriteLock();
+        ownedWriteLock = ownedLock.writeLock();
+        ownedReadLock = ownedLock.readLock();
+
+        managedLock = new ReentrantReadWriteLock();
+        managedWriteLock = managedLock.writeLock();
+        managedReadLock = managedLock.readLock();
+
+        if (UserDAO.getInstance().isAdmin(userDTO.getName())) {
+            this.state = new Admin();
+        } else {
+            this.state = new Registered();
+        }
+        this.storesOwned = userDTO.getStoresOwned();
+        this.storesManaged = userDTO.getStoresManaged();
+        this.name = userDTO.getName();
+        this.shoppingCart = userDTO.getShoppingCart();
+        this.purchaseHistory = userDTO.getPurchaseHistory();
+        this.appointments = userDTO.getAppointments();
+        this.offers = userDTO.getOffers();
+        this.pendingMessages = userDTO.getPendingMessages();
+    }
 
     public User(UserDTO userDTO){
         ownedLock = new ReentrantReadWriteLock();
@@ -238,7 +239,7 @@ public class User {
 
     public Response<Boolean> addToCart(int storeID, int productID) {
         Response<Boolean> response = this.shoppingCart.addProduct(storeID, productID);
-        if(!response.isFailure()){
+        if(!response.isFailure() && this.state.getStateEnum() != UserStateEnum.GUEST){
             DALService.getInstance().insertUser(this.toDTO());
         }
         return response;

@@ -5,6 +5,7 @@ import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
 import java.util.List;
+import java.util.Vector;
 
 @Embedded
 public class AppointmentDTO {
@@ -21,7 +22,7 @@ public class AppointmentDTO {
     }
 
     public List<Pair<Integer, List<String>>> getStoreAppointments() {
-        return storeAppointments;
+        return storeAppointments == null ? new Vector<>() : storeAppointments;
     }
 
     public void setStoreAppointments(List<Pair<Integer, List<String>>> storeAppointments) {

@@ -136,7 +136,7 @@ public class UserController {
                 Response<Boolean> result = user.register();
                 if (!result.isFailure()) {
                     writeLock.lock();  // TODO check if needed (prevents multiple registration)
-                    if (DALService.getInstance().getAccount(name) != null) {
+                    if (DALService.getInstance().getAccount(name) == null) {
                         //UserDAO.getInstance().registerUser(name, security.sha256(password));
                         DALService.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
 
@@ -526,7 +526,7 @@ public class UserController {
 
     public void adminBoot() {
         // TODO uncomment to reset database on bootup
-        //DALService.getInstance().resetDatabase();
+        DALService.getInstance().resetDatabase();
 
         String username = "shaked";
         String password = "jacob";

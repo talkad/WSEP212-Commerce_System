@@ -34,7 +34,7 @@ public class AndCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
     @Override
     public DiscountRule toConcreteDiscountRule() {
-        AndCompositionDiscountRule rule = new AndCompositionDiscountRule(this.category, this.discount, this.getConcreteDiscountRules());
+        AndCompositionDiscountRule rule = new AndCompositionDiscountRule(this.getCategory(), this.getDiscount(), this.getConcreteDiscountRules());
         rule.setID(this.id);
         return rule;
     }

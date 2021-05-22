@@ -42,7 +42,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-        initState();
+//        initState();
     }
 
     @Override

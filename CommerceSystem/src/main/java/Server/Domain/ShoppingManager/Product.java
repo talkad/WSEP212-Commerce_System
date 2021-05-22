@@ -29,8 +29,8 @@ public class Product {
         this.storeID = productDTO.getStoreID();
         this.name = new AtomicReference<>(productDTO.getName());
         this.price = new AtomicReference<>(productDTO.getPrice());
-        this.categories = productDTO.getCategories();
-        this.keywords = productDTO.getKeywords();
+        this.categories = productDTO.getCategories() == null ? new Vector<>() : productDTO.getCategories();
+        this.keywords = productDTO.getKeywords() == null ? new Vector<>() : productDTO.getKeywords();
 
         this.rating = new AtomicReference<>(productDTO.getRating());
         this.numRatings = new AtomicInteger(productDTO.getNumRatings());

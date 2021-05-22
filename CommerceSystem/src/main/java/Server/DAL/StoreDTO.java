@@ -80,7 +80,7 @@ public class StoreDTO {
     }
 
     public InventoryDTO getInventory() {
-        return inventory;
+        return inventory == null ? new InventoryDTO() : inventory;
     }
 
     public void setInventory(InventoryDTO inventory) {
@@ -96,7 +96,7 @@ public class StoreDTO {
     }
 
     public DiscountPolicyDTO getDiscountPolicy() {
-        return discountPolicy;
+        return discountPolicy == null ? new DiscountPolicyDTO() : discountPolicy;
     }
 
     public void setDiscountPolicy(DiscountPolicyDTO discountPolicy) {
@@ -104,7 +104,7 @@ public class StoreDTO {
     }
 
     public PurchasePolicyDTO getPurchasePolicy() {
-        return purchasePolicy;
+        return purchasePolicy == null ? new PurchasePolicyDTO() : purchasePolicy;
     }
 
     public void setPurchasePolicy(PurchasePolicyDTO purchasePolicy) {
@@ -128,7 +128,7 @@ public class StoreDTO {
     }
 
     public PurchaseHistoryDTO getPurchaseHistory() {
-        return purchaseHistory;
+        return purchaseHistory == null ? new PurchaseHistoryDTO() : purchaseHistory;
     }
 
     public void setPurchaseHistory(PurchaseHistoryDTO purchaseHistory) {
