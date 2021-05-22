@@ -1,16 +1,17 @@
 import React from 'react';
 import Select from 'react-select';
-import StaticUserInfo from "../MainPages/StaticUserInfo";
+import StaticUserInfo from "../API/StaticUserInfo";
+import Connection from "../API/Connection";
 
 
-class AddCategoryDiscountRule extends React.Component {
+class CategoryDiscountRule extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             functionName: 'addDiscountRule',
-            username: '1',
-            storeId: '2',
-            type: 'AddCategoryDiscountRule',
+            username: StaticUserInfo.getUsername(),
+            storeId: StaticUserInfo.getStoreId(),
+            type: 'CategoryDiscountRule',
             category: '',
             discount: '',
         };
@@ -25,6 +26,16 @@ class AddCategoryDiscountRule extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
+        Connection.sendCategoryDiscountRule(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount).then(this.handleAddCategoryDiscountResponse, Connection.handleReject)
+    }
+
+    handleAddCategoryDiscountResponse(result){
+        if(!result.isFailure){
+            alert("adding discount success");
+        }
+        else{
+            alert(result.errMsg);
+        }
     }
 
     render() {
@@ -42,4 +53,4 @@ class AddCategoryDiscountRule extends React.Component {
 }
 
 
-export default AddCategoryDiscountRule;
+export default CategoryDiscountRule;

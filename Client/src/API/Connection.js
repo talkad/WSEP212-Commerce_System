@@ -316,13 +316,6 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
-    //ADD TO SERVICE FIRST!
-    // static sendDiscount (){
-    //     this.connection.send(JSON.stringify({
-    //         action: functionName,
-    //     }))
-    // }
-
     /*
     Holds for 2 Permission Pages
      */
@@ -412,6 +405,95 @@ class Connection{
             storeID: storeId,
         }))
 
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCategoryDiscountRule (functionName, username, storeId, type, category, discount){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendProductDiscountRule (functionName, username, storeId, type, productId, discount){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                productId: productId,
+                discount: discount,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendStoreDiscountRule (functionName, username, storeId, type, discount){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                discount: discount,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCondCategoryDiscountRule (functionName, username, storeId, type, category, discount, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+                minUnits: minUnits,
+                maxUnits: maxUnits
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCondProductDiscountRule (functionName, username, storeId, type, productId, discount, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                productId: productId,
+                discount: discount,
+                minUnits: minUnits,
+                maxUnits: maxUnits
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCondStoreDiscountRule (functionName, username, storeId, type, discount, minUnits, maxUnits, minPrice){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                discount: discount,
+                minUnits: minUnits,
+                maxUnits: maxUnits,
+                minPrice: minPrice,
+            }),
+        }))
         return Connection.getResponse(functionName);
     }
 
