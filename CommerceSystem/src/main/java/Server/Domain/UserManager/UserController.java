@@ -336,6 +336,7 @@ public class UserController {
                     if (this.connectedUsers.containsKey(appointerName)) {
                         this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
                         appointer = this.connectedUsers.get(appointerName);
+                        appointer.removeAppointment(appointeeName, storeID);
                         appointerDTO = appointer.toDTO();
                     }
                     else{
@@ -345,6 +346,7 @@ public class UserController {
                     if (this.connectedUsers.containsKey(appointeeName)) {
                         this.connectedUsers.get(appointeeName).removeRole(storeID);
                         appointee = this.connectedUsers.get(appointeeName);
+                        appointee.removeRole(storeID);
                         appointeeDTO = appointee.toDTO();
                     }
                     else{
@@ -394,6 +396,7 @@ public class UserController {
                     if (this.connectedUsers.containsKey(appointerName)) {
                         this.connectedUsers.get(appointerName).removeAppointment(appointeeName, storeID);
                         appointer = this.connectedUsers.get(appointerName);
+                        appointer.removeAppointment(appointeeName, storeID);
                         appointerDTO = appointer.toDTO();
                     }
                     else{
@@ -403,6 +406,7 @@ public class UserController {
                     if (this.connectedUsers.containsKey(appointeeName)) {
                         this.connectedUsers.get(appointeeName).removeRole(storeID);
                         appointee = this.connectedUsers.get(appointeeName);
+                        appointee.removeRole(storeID);
                         appointeeDTO = appointee.toDTO();
                     }
                     else{
@@ -451,6 +455,8 @@ public class UserController {
         //List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
         appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
         appointee.removeRole(storeID);                               // remove appointee's role from his list
+        appointerDTO = appointer.toDTO();
+        appointeeDTO = appointee.toDTO();
 
         List<UserDTO> userDTOS = new Vector<>();
         userDTOS.add(appointerDTO);

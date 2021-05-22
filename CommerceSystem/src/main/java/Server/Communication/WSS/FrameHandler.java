@@ -35,7 +35,7 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         Gson gson = new Gson();
-
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "+ msg.text());
         Properties data = gson.fromJson(msg.text(), Properties.class);
         String action = data.getProperty("action");
 

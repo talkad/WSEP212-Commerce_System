@@ -8,20 +8,22 @@ import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.morphia.experimental.MorphiaSession;
-import dev.morphia.mapping.Mapper;
-import dev.morphia.mapping.MapperOptions;
-import dev.morphia.mapping.codec.PrimitiveCodecRegistry;
-import dev.morphia.query.FindOptions;
-import dev.morphia.query.Sort;
 import dev.morphia.query.experimental.filters.Filters;
-import org.bson.codecs.configuration.CodecRegistries;
-
 import java.util.*;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 public class DALService {
+
+    private Map<Integer, StoreDTO> stores;
+    private Map<String, UserDTO> users;
+    private Map<String, AccountDTO> accounts;
+    private Map<String, AdminAccountDTO> admins;
+    private Map<Integer, ProductDTO> products;
+    private Map<Integer, PublisherDTO> publisher;
+
+    private boolean useLocal = true;
 
     private static class CreateSafeThreadSingleton {
         private static final DALService INSTANCE = new DALService();
@@ -32,6 +34,15 @@ public class DALService {
     }
 
     private DALService() {
+        if(useLocal){
+            this.stores = new ConcurrentHashMap<>();
+            this.users = new ConcurrentHashMap<>();
+            this.accounts = new ConcurrentHashMap<>();
+            this.admins = new ConcurrentHashMap<>();
+            this.products = new ConcurrentHashMap<>();
+            this.publisher = new ConcurrentHashMap<>();
+        }
+
 //        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
 //        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 //
@@ -45,247 +56,357 @@ public class DALService {
     }
 
     public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            if(userDTO.getState() != UserStateEnum.GUEST) {
+                this.users.put(userDTO.getName(), userDTO);
+            }
 
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            if(userDTO.getState() != UserStateEnum.GUEST)
-                session.save(userDTO);
-
-            session.save(storeDTOs);
-
-            // commit changes
-            session.commitTransaction();
+            for(StoreDTO storeDTO : storeDTOs){
+                this.stores.put(storeDTO.getStoreID(), storeDTO);
+            }
         }
+        //else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        mongoClient.close();
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                if (userDTO.getState() != UserStateEnum.GUEST)
+                    session.save(userDTO);
+
+                session.save(storeDTOs);
+
+                // commit changes
+                session.commitTransaction();
+            }
+
+            mongoClient.close();
+        //}
     }
 
     public PublisherDTO getPublisher() {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            PublisherDTO publisherDTO = this.publisher.get(0);
+            return publisherDTO == null ? new PublisherDTO() : publisherDTO;
+        }
+        else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        PublisherDTO publisherDTO = datastore.find(PublisherDTO.class).first();
+            PublisherDTO publisherDTO = datastore.find(PublisherDTO.class).first();
 
-        mongoClient.close();
+            mongoClient.close();
 
-        return publisherDTO;
+            return publisherDTO;
+        }
     }
 
     public void savePublisher(PublisherDTO publisherDTO) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            this.publisher.put(0, publisherDTO);
+        }
+        //else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        datastore.save(publisherDTO);
+            datastore.save(publisherDTO);
 
-        mongoClient.close();
+            mongoClient.close();
+        //}
     }
 
     public void addAccount(AccountDTO accountDTO) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            this.accounts.put(accountDTO.getUsername(), accountDTO);
+        }
+        //else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        datastore.save(accountDTO);
+            datastore.save(accountDTO);
 
-        mongoClient.close();
+            mongoClient.close();
+        //}
     }
 
     public AccountDTO getAccount(String username){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            return this.accounts.get(username);
+        }
+        else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        AccountDTO accountDTO = datastore.find(AccountDTO.class)
-                // filters find relevant entries
-                .filter(
-                        Filters.eq("username", username)
-                ).first();
+            AccountDTO accountDTO = datastore.find(AccountDTO.class)
+                    // filters find relevant entries
+                    .filter(
+                            Filters.eq("username", username)
+                    ).first();
 
-        mongoClient.close();
+            mongoClient.close();
 
-        return accountDTO;
+            return accountDTO;
+        }
     }
 
     public void addAdmin(AdminAccountDTO adminAccountDTO) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            this.admins.put(adminAccountDTO.getUsername(), adminAccountDTO);
+        }
+        //else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        datastore.save(adminAccountDTO);
+            datastore.save(adminAccountDTO);
 
-        mongoClient.close();
+            mongoClient.close();
+        //}
     }
 
     public void insertStore(StoreDTO storeDTO) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            stores.put(storeDTO.getStoreID(), storeDTO);
+        }
+        //else {
 
-        datastore.save(storeDTO);
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        mongoClient.close();
+            datastore.save(storeDTO);
+
+            mongoClient.close();
+        //}
     }
 
     public StoreDTO getStore(int storeId) {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            return this.stores.get(storeId);
+        }
+        else {
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        StoreDTO storeDTO = datastore.find(StoreDTO.class)
-                // filters find relevant entries
-                .filter(
-                        Filters.eq("storeID", storeId)
-                ).first();
+            StoreDTO storeDTO = datastore.find(StoreDTO.class)
+                    // filters find relevant entries
+                    .filter(
+                            Filters.eq("storeID", storeId)
+                    ).first();
 
-        mongoClient.close();
+            mongoClient.close();
 
-        return storeDTO;
+            return storeDTO;
+        }
     }
 
     public Collection<StoreDTO> getAllStores() {
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            return stores.values();
+        }
+        else {
 
-        List<StoreDTO> storeDTOList= datastore.find(StoreDTO.class)
-                .filter(
-                        Filters.gte("storeID", 0)
-                )
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            List<StoreDTO> storeDTOList = datastore.find(StoreDTO.class)
+                    .filter(
+                            Filters.gte("storeID", 0)
+                    )
 //                .iterator(new FindOptions())
 //                        .sort(Sort.ascending("storeID")))
-                .iterator()
-        .toList();
+                    .iterator()
+                    .toList();
 
-        mongoClient.close();
+            mongoClient.close();
 
-        return storeDTOList;
+            return storeDTOList;
+        }
     }
 
     public void saveUserAndStore(UserDTO userDTO, StoreDTO storeDTO){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            if(userDTO.getState() != UserStateEnum.GUEST)
-                session.save(userDTO);
-
-            session.save(storeDTO);
-
-            // commit changes
-            session.commitTransaction();
+        if(useLocal){
+            if (userDTO.getState() != UserStateEnum.GUEST)
+                this.users.put(userDTO.getName(), userDTO);
+            this.stores.put(storeDTO.getStoreID(), storeDTO);
         }
+        //else {
 
-        mongoClient.close();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                if (userDTO.getState() != UserStateEnum.GUEST)
+                    session.save(userDTO);
+
+                session.save(storeDTO);
+
+                // commit changes
+                session.commitTransaction();
+            }
+
+            mongoClient.close();
+        //}
     }
 
     public void saveUserStoreAndProduct(UserDTO userDTO, StoreDTO storeDTO, ProductDTO productDTO){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            if(userDTO.getState() != UserStateEnum.GUEST)
-                session.save(userDTO);
-
-            session.save(storeDTO);
-            session.save(productDTO);
-
-            // commit changes
-            session.commitTransaction();
+        if(useLocal){
+            if (userDTO.getState() != UserStateEnum.GUEST)
+                users.put(userDTO.getName(), userDTO);
+            stores.put(storeDTO.getStoreID(), storeDTO);
+            products.put(productDTO.getProductID(), productDTO);
         }
+        //else {
 
-        mongoClient.close();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                if (userDTO.getState() != UserStateEnum.GUEST)
+                    session.save(userDTO);
+
+                session.save(storeDTO);
+                session.save(productDTO);
+
+                // commit changes
+                session.commitTransaction();
+            }
+
+            mongoClient.close();
+        //}
     }
 
     public void saveStoreAndProduct(StoreDTO storeDTO, ProductDTO productDTO){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            session.save(storeDTO);
-            session.save(productDTO);
-
-            // commit changes
-            session.commitTransaction();
+        if(useLocal){
+            stores.put(storeDTO.getStoreID(), storeDTO);
+            products.put(productDTO.getProductID(), productDTO);
         }
+        //else {
 
-        mongoClient.close();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                session.save(storeDTO);
+                session.save(productDTO);
+
+                // commit changes
+                session.commitTransaction();
+            }
+
+            mongoClient.close();
+        //}
     }
 
     public void saveStoreRemoveProduct(StoreDTO storeDTO, ProductDTO productDTO){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            session.save(storeDTO);
-            session.delete(productDTO);
-
-            // commit changes
-            session.commitTransaction();
+        if(useLocal){
+            stores.put(storeDTO.getStoreID(), storeDTO);
+            products.remove(productDTO.getProductID());
         }
+        // else {
 
-        mongoClient.close();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                session.save(storeDTO);
+                session.delete(productDTO);
+
+                // commit changes
+                session.commitTransaction();
+            }
+
+            mongoClient.close();
+//        }
     }
 
     public UserDTO getUser(String username){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal){
+            return this.users.get(username);
+        }
+        else {
 
-        UserDTO userDTO = datastore.find(UserDTO.class)
-                // filters find relevant entries
-                .filter(
-                        Filters.eq("name", username)
-                ).first();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        mongoClient.close();
+            UserDTO userDTO = datastore.find(UserDTO.class)
+                    // filters find relevant entries
+                    .filter(
+                            Filters.eq("name", username)
+                    ).first();
 
-        return userDTO;
+            mongoClient.close();
+
+            return userDTO;
+        }
     }
 
     public void insertUser(UserDTO userDTO){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        if(useLocal) {
+            if (userDTO.getState() != UserStateEnum.GUEST)
+                users.put(userDTO.getName(), userDTO);
+        }
+//        else {
 
-        if(userDTO.getState() != UserStateEnum.GUEST)
-            datastore.save(userDTO);
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 
-        mongoClient.close();
+            if (userDTO.getState() != UserStateEnum.GUEST)
+                datastore.save(userDTO);
+
+            mongoClient.close();
+        //}
     }
 
     public boolean saveUsers(List<UserDTO> userDTOList){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-        boolean success = true;
-
-        try(MorphiaSession session = datastore.startSession()){
-            session.startTransaction();
-
-            // stage changes to commit
-            session.save(userDTOList);
-
-            // commit changes
-            session.commitTransaction();
+        if(useLocal){
+            for(UserDTO userDTO: userDTOList){
+                if (userDTO.getState() != UserStateEnum.GUEST)
+                    users.put(userDTO.getName(), userDTO);
+            }
+//            return true;
         }
-        catch(Exception e){
-            success = false;
-        }
+//        else {
 
-        mongoClient.close();
-        return success;
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+            boolean success = true;
+
+            try (MorphiaSession session = datastore.startSession()) {
+                session.startTransaction();
+
+                // stage changes to commit
+                session.save(userDTOList);
+
+                // commit changes
+                session.commitTransaction();
+            } catch (Exception e) {
+                success = false;
+            }
+
+            mongoClient.close();
+            return success;
+//        }
     }
 
 
     public int getNextAvailableStoreID(){
+        if(useLocal){
+            return this.stores.size();
+        }
 //        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
 //        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 //
@@ -314,7 +435,9 @@ public class DALService {
 //        StoreDTO head = storeDTOs.get(0);
 //        int id = head.getStoreID();
 //        return id + 1;
-        return (int) (Math.random() * (10000 - 1)) + 1;
+        else {
+            return (int) (Math.random() * (10000 - 1)) + 1;
+        }
     }
 
     public void resetDatabase(){

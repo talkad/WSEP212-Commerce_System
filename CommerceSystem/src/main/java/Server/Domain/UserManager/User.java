@@ -251,7 +251,7 @@ public class User {
 
         for(Integer storeID: baskets.keySet()){
             Store store = StoreController.getInstance().getStoreById(storeID);
-            Set<ProductClientDTO> productClientDTOS = new ConcurrentSkipListSet<>();
+            Set<ProductClientDTO> productClientDTOS = new HashSet<>();
             if(store != null){
 
                 for(Product product: baskets.get(storeID).keySet()){
@@ -468,6 +468,7 @@ public class User {
                 if (!userDTO.getStoresOwned().contains(storeId) && !managed) {
                     this.appointments.addAppointment(storeId, newManager);
                     // todo maybe thread safe
+
                     List<PermissionsEnum> permissions = new Vector<>();
                     permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
                     managedList.add(new Pair<>(storeId, permissions));
@@ -475,6 +476,8 @@ public class User {
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(this.toDTO());
                     userDTOS.add(userDTO);
+
+                    Publisher.getInstance().subscribe(storeId, this.name);
 
                     return new Response<>(true, !DALService.getInstance().saveUsers(userDTOS), "saved updated users");
                 }
