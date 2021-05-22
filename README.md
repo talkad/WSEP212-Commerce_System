@@ -2,9 +2,9 @@
 Workshop for software engineering 3rd year project
 
 
-###Initialization files info:
+### Initialization files info:
 
-####Configuration file: configfile.json
+#### Configuration file: configfile.json
 - Provided in JSON format as a JSON object that contains all relevant information for system init.
   
     - Contains distant DataBase location & credentials to access it.
@@ -21,7 +21,7 @@ Workshop for software engineering 3rd year project
       init process is complete and system is up and running and system terminates with appropriate
       error as output otherwise.
     
-####State init file: initfile.txt
+#### State init file: initfile.txt
 - Provided in txt format as commands separated by a ';' character, the following commands
 are supported in the file:
   
