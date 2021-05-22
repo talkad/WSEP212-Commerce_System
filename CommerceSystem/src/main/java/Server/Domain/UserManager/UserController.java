@@ -139,7 +139,10 @@ public class UserController {
                     if (DALService.getInstance().getAccount(name) == null) {
                         //UserDAO.getInstance().registerUser(name, security.sha256(password));
                         DALService.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
-
+                        UserDTO userDTO = new UserDTO();
+                        userDTO.setName(name);
+                        userDTO.setState(UserStateEnum.REGISTERED);
+                        DALService.getInstance().insertUser(userDTO);
                         writeLock.unlock();
                         result = new Response<>(true, false, "Registration occurred");
                     } else {
@@ -355,12 +358,12 @@ public class UserController {
                     DALService.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
-
-                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
-
-                    List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
-                    for (String name : names) {
-                        removeAppointmentRec(appointeeName, name, storeID);
+                    Response<List<String>> apptsList = appointments.getAppointees(storeID);
+                    if(!apptsList.isFailure()) {
+                        List<String> names = new Vector<>(apptsList.getResult());
+                        for (String name : names) {
+                            removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
+                        }
                     }
 
                     //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
@@ -413,12 +416,12 @@ public class UserController {
                     DALService.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
-
-                    //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ storeID);
-
-                    List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
-                    for (String name : names) {
-                        removeAppointmentRec(appointeeName, name, storeID);
+                    Response<List<String>> apptsList = appointments.getAppointees(storeID);
+                    if(!apptsList.isFailure()) {
+                        List<String> names = new Vector<>(apptsList.getResult());
+                        for (String name : names) {
+                            removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
+                        }
                     }
 
                     //Publisher.getInstance().notify(appointeeName, "Your ownership canceled at store "+ appointeeName);
@@ -455,10 +458,12 @@ public class UserController {
         DALService.getInstance().saveUsers(userDTOS);
 
         Appointment appointments = new Appointment(appointeeDTO.getAppointments());
-
-        List<String> names = new Vector<>(appointments.getAppointees(storeID).getResult());
-        for(String name : names){
-            removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
+        Response<List<String>> apptsList = appointments.getAppointees(storeID);
+        if(!apptsList.isFailure()) {
+            List<String> names = new Vector<>(apptsList.getResult());
+            for (String name : names) {
+                removeAppointmentRec(appointeeName, name, storeID);                                 // recursive call
+            }
         }
     }
 
