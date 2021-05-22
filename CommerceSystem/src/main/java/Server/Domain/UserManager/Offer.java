@@ -42,7 +42,7 @@ public class Offer {
     }
 
     public double getOfferReply(){
-        return this.productId;
+        return this.offerReply;
     }
 
     public void setOfferReply(double offerReply) {

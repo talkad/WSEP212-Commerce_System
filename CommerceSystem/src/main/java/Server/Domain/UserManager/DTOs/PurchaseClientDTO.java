@@ -72,4 +72,8 @@ public class PurchaseClientDTO {
                 ", purchaseDate=" + purchaseDate +
                 '}';
     }
+
+    public void setPrice(double newPrice) {
+       this.totalPrice = newPrice;
+    }
 }

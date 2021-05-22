@@ -161,4 +161,8 @@ public class Product {
     public ProductClientDTO getProductDTO(){
         return new ProductClientDTO(name.get(), productID, storeID, price.get(), categories, keywords, reviews, rating.get(), numRatings.get());
     }
+
+    public void setPrice(double newPrice) {
+        this.price = new AtomicReference<>(newPrice);
+    }
 }
