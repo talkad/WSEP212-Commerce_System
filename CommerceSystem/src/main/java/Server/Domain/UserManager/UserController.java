@@ -687,15 +687,15 @@ public class UserController {
             if(offer == null)
                 return new Response<>(false, true, "The given product doesn't exists in offers");
 
-            if(offer.getState() == OfferState.DECLINED){
-                user.removeOffer(productID);
-                return new Response<>(false, true, "Your offer declined");
-            }
+//            if(offer.getState() == OfferState.DECLINED){
+//                user.removeOffer(productID);
+//                return new Response<>(false, true, "Your offer was declined");
+//            }
 
             if(offer.getState() != OfferState.APPROVED)
                 return new Response<>(false, true, "Your offer is not yet approved");
 
-            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
+            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails, offer.getOfferReply());
 
             if(purchase.isFailure())
                 return new Response<>(false, true, purchase.getErrMsg());

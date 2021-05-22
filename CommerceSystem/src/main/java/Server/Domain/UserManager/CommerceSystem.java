@@ -41,7 +41,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-//        initState();
+        initState();
     }
 
     @Override
@@ -270,15 +270,14 @@ public class CommerceSystem implements IService {
     }
 
     public void initState() {
+
         try {
-//            URL url = getClass().getResource("C:\\Users\\tal74\\IntelliJ Workspace\\WSEP212-Commerce_System\\CommerceSystem\\src\\main\\java\\Server\\Domain\\UserManager\\initfile.txt");
-            File file = new File("C:\\Users\\tal74\\IntelliJ Workspace\\WSEP212-Commerce_System\\CommerceSystem\\src\\main\\java\\Server\\Domain\\UserManager\\initfile.txt");
+            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
             fis.close();
             String str = new String(data, "UTF-8");
-            //System.out.println(str);
             String[] funcs = str.split(";");
             String[] attributes;
             //int guestNum = 1;
