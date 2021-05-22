@@ -27,7 +27,7 @@ public class StoreController {
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
-        indexer = new AtomicInteger(0);
+        indexer = new AtomicInteger(DALService.getInstance().getNextAvailableStoreID());
         spellChecker = new SpellChecker();
         spellRequest = new SpellRequest();
     }
@@ -82,7 +82,14 @@ public class StoreController {
     }
 
     public Store getStoreById(int storeId) {
-        return stores.get(storeId);
+        if(stores.containsKey(storeId)) {
+            return stores.get(storeId);
+        }
+        else {
+            Store store = new Store(DALService.getInstance().getStore(storeId));
+            stores.put(storeId, store);
+            return store;
+        }
     }
 
     /**

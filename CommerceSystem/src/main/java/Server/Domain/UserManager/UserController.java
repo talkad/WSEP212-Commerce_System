@@ -31,7 +31,6 @@ public class UserController {
 
     private UserController() {
         this.availableId = new AtomicInteger(1);
-//        this.availableId = new AtomicInteger(DALService.getInstance().getNextAvailableUserID());
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
         this.connectedUsers = new ConcurrentHashMap<>();
@@ -556,14 +555,14 @@ public class UserController {
         if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
             String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
             List<User> result = new Vector<>();
-            result.add(new User(UserDAO.getInstance().getUser(ownerName)));
-            List<String> appointees = UserDAO.getInstance().getAppointments(username, storeID).getResult();
+            result.add(new User(DALService.getInstance().getUser(ownerName)));
+            List<String> appointees = connectedUsers.get(username).getAppointments().getAppointees(storeID).getResult();
             List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             for(String name : appointees){
-                result.add(new User(UserDAO.getInstance().getUser(name)));
+                result.add(new User(DALService.getInstance().getUser(name)));
             }
             return new Response<>(result, false, "Workers found");
         }
@@ -571,7 +570,7 @@ public class UserController {
     }
 
     private List<String> getAppointeesNamesRec(String workerName, int storeID) {
-        List<String> appointees = UserDAO.getInstance().getAppointments(workerName, storeID).getResult();
+        List<String> appointees = new User(DALService.getInstance().getUser(workerName)).getAppointments().getAppointees(storeID).getResult();
 
         if(appointees != null && !appointees.isEmpty()){
             List<String> names = new Vector<>(appointees);
@@ -609,7 +608,7 @@ public class UserController {
     }
 
     public User getUserByName(String username){
-        return new User(UserDAO.getInstance().getUser(username));
+        return new User(DALService.getInstance().getUser(username));
     }
 
     public boolean isConnected(String username){

@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.DALService;
 import Server.DAL.PublisherDTO;
 import Server.Domain.CommonClasses.Pair;
 import Server.Service.DataObjects.ReplyMessage;
@@ -19,9 +20,14 @@ public class Publisher{
 
     private Publisher()
     {
-        storeSubscribers = new ConcurrentHashMap<>();
+        this.storeSubscribers = new ConcurrentHashMap<>();
         userController = UserController.getInstance();
         notifier = Notifier.getInstance();
+
+        PublisherDTO publisherDTO = DALService.getInstance().getPublisher();
+        if(publisherDTO != null){
+            this.loadFromDTO(publisherDTO);
+        }
     }
 
     private static class CreateSafeThreadSingleton {
@@ -73,11 +79,14 @@ public class Publisher{
     public void subscribe(Integer storeID, String username) {
         storeSubscribers.putIfAbsent(storeID, new Vector<>());
         storeSubscribers.get(storeID).add(username);
+        DALService.getInstance().savePublisher(this.toDTO());
     }
 
     public void unsubscribe(Integer storeID, String username) {
-        if(storeSubscribers.containsKey(storeID))
+        if(storeSubscribers.containsKey(storeID)) {
             storeSubscribers.get(storeID).remove(username);
+            DALService.getInstance().savePublisher(this.toDTO());
+        }
     }
 
     // inject the mock notifier for testing - no one should use this function!

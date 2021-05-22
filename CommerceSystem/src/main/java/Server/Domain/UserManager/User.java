@@ -25,6 +25,11 @@ public class User {
 
     private UserState state;
     private List<Integer> storesOwned;
+
+    public Appointment getAppointments() {
+        return appointments;
+    }
+
     private Map<Integer, List<PermissionsEnum>> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
@@ -83,30 +88,30 @@ public class User {
         this.appointments = new Appointment();
     }
 
-    //TODO Old UserDTO
-    public User(UserDTOTemp userDTO) {
-        ownedLock = new ReentrantReadWriteLock();
-        ownedWriteLock = ownedLock.writeLock();
-        ownedReadLock = ownedLock.readLock();
-
-        managedLock = new ReentrantReadWriteLock();
-        managedWriteLock = managedLock.writeLock();
-        managedReadLock = managedLock.readLock();
-
-        if (UserDAO.getInstance().isAdmin(userDTO.getName())) {
-            this.state = new Admin();
-        } else {
-            this.state = new Registered();
-        }
-        this.storesOwned = userDTO.getStoresOwned();
-        this.storesManaged = userDTO.getStoresManaged();
-        this.name = userDTO.getName();
-        this.shoppingCart = userDTO.getShoppingCart();
-        this.purchaseHistory = userDTO.getPurchaseHistory();
-        this.appointments = userDTO.getAppointments();
-        this.offers = userDTO.getOffers();
-        this.pendingMessages = userDTO.getPendingMessages();
-    }
+//    //TODO Old UserDTO
+//    public User(UserDTOTemp userDTO) {
+//        ownedLock = new ReentrantReadWriteLock();
+//        ownedWriteLock = ownedLock.writeLock();
+//        ownedReadLock = ownedLock.readLock();
+//
+//        managedLock = new ReentrantReadWriteLock();
+//        managedWriteLock = managedLock.writeLock();
+//        managedReadLock = managedLock.readLock();
+//
+//        if (UserDAO.getInstance().isAdmin(userDTO.getName())) {
+//            this.state = new Admin();
+//        } else {
+//            this.state = new Registered();
+//        }
+//        this.storesOwned = userDTO.getStoresOwned();
+//        this.storesManaged = userDTO.getStoresManaged();
+//        this.name = userDTO.getName();
+//        this.shoppingCart = userDTO.getShoppingCart();
+//        this.purchaseHistory = userDTO.getPurchaseHistory();
+//        this.appointments = userDTO.getAppointments();
+//        this.offers = userDTO.getOffers();
+//        this.pendingMessages = userDTO.getPendingMessages();
+//    }
 
     public User(UserDTO userDTO){
         ownedLock = new ReentrantReadWriteLock();
@@ -572,13 +577,14 @@ public class User {
 
     public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String username) {       // req 6.4
         if (this.state.allowed(PermissionsEnum.RECEIVE_GENERAL_HISTORY, this)) {
-            if (UserDAO.getInstance().userExists(username)) {
-                return new Response<>(UserDAO.getInstance().getUser(username).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
+            UserDTO userDTO = DALService.getInstance().getUser(username);
+            if (userDTO != null) {
+                return new Response<>(new User(userDTO).getPurchaseHistory().getPurchases(), false, "no error");//todo combine dto pull
             } else {
-                return new Response<>(new Vector<>(), true, "User does not exist");//todo empty list or null
+                return new Response<>(new Vector<>(), true, "User does not exist");
             }
         } else {
-            return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");//todo empty list or null
+            return new Response<>(new Vector<>(), true, "User not allowed to view user's purchase");
         }
     }
 
@@ -854,7 +860,6 @@ public class User {
             return new Response<>(false, true, "The given store doesn't exists");
 
         Offer offer = new Offer(productID, storeID, priceOffer);
-        UserDAO.getInstance().addOffer(this.name, productID ,storeID, priceOffer, OfferState.PENDING);
 
         this.offers.put(productID, offer);
         DALService.getInstance().insertUser(this.toDTO());
