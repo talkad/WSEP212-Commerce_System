@@ -289,14 +289,15 @@ public class PurchaseTests {
     public void purchaseOrPurchasePolicyTestFailure(){
         Response<Boolean> response;
         String guestName = UserController.getInstance().addGuest().getResult();
-        int productID = 65482, productID2 = 65784;
+        int productID = 65482, productID2 = 65784, productID3 = 65466;
         int storeID = StoreController.getInstance().openStore("Supermarket", "Rami Levi").getResult();
         ProductClientDTO productDTO = new ProductClientDTO("tomato",  productID, storeID, 10, null, null, null, 0, 0);
-        ProductClientDTO productDTO2 = new ProductClientDTO("corn", productID, storeID, 5, null, null, null, 0, 0);
+        ProductClientDTO productDTO2 = new ProductClientDTO("corn", productID2, storeID, 5, null, null, null, 0, 0);
+
         Store store = StoreController.getInstance().getStoreById(storeID);
 
         List<PurchaseRule> policyRules = new LinkedList<>();
-        policyRules.add(new ProductPurchaseRule(new ProductPredicate(productID, 0, 5)));
+        policyRules.add(new ProductPurchaseRule(new ProductPredicate(productID, 0, 4)));
         policyRules.add(new ProductPurchaseRule(new ProductPredicate(productID2, 7, 10)));
 
         store.addPurchaseRule(new OrCompositionPurchaseRule(policyRules));
@@ -304,7 +305,6 @@ public class PurchaseTests {
 
         store.addProduct(productDTO, 5);
         store.addProduct(productDTO2, 5);
-
 
         for(int i =0; i<5; ++i) {
             UserController.getInstance().addToCart(guestName, storeID, productID);
@@ -373,7 +373,7 @@ public class PurchaseTests {
         ProductClientDTO productDTO2 = new ProductClientDTO("Croissant", productID2, storeID, 5, List.of("pastry"), null, null, 0, 0);
 
         List<DiscountRule> policyRules = new LinkedList<>();
-        policyRules.add(new CategoryDiscountRule("diary", COMPOSITION_USE_ONLY));
+        policyRules.add(new CategoryDiscountRule("dairy", COMPOSITION_USE_ONLY));
         policyRules.add(new CategoryDiscountRule("pastry", COMPOSITION_USE_ONLY));
 
         Store store = StoreController.getInstance().getStoreById(storeID);
@@ -477,7 +477,7 @@ public class PurchaseTests {
 
         Store store = StoreController.getInstance().getStoreById(storeID);
         store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 20, 0)));
-        store.addDiscountRule(new AndCompositionDiscountRule("pastry", 10, policyRules));
+        store.addDiscountRule(new OrCompositionDiscountRule("dairy", 10, policyRules));
 
         store.addProduct(productDTO, 5);
         store.addProduct(productDTO2, 5);
@@ -510,7 +510,7 @@ public class PurchaseTests {
 
         Store store = StoreController.getInstance().getStoreById(storeID);
         store.addPurchaseRule(new BasketPurchaseRule(new BasketPredicate(2, 20, 0)));
-        store.addDiscountRule(new AndCompositionDiscountRule("pastry", 10, policyRules));
+        store.addDiscountRule(new MaximumCompositionDiscountRule(policyRules));
 
         store.addProduct(productDTO, 5);
         store.addProduct(productDTO2, 5);

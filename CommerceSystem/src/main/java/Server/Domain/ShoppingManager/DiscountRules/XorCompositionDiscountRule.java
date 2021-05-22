@@ -32,18 +32,19 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
 
         switch (xorResolveType) {
             case FIRST:
-                for (DiscountRule discountRule : discountRules)
+                for (DiscountRule discountRule : discountRules) {
                     if (discountRule.calcDiscount(shoppingBasket) < 0) {
                         discountRule.setDiscount(discount);
                         totalPriceToDiscount = discountRule.calcDiscount(shoppingBasket);
                         discountRule.setDiscount(COMPOSITION_USE_ONLY);
                         break;
                     }
+                }
                 break;
 
             case LOWEST:
                 totalPriceToDiscount = Double.POSITIVE_INFINITY;
-                for (DiscountRule discountRule : discountRules)
+                for (DiscountRule discountRule : discountRules) {
                     if (discountRule.calcDiscount(shoppingBasket) < 0) {
                         discountRule.setDiscount(discount);
                         discountRes = discountRule.calcDiscount(shoppingBasket);
@@ -51,11 +52,12 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
                         if (discountRes < totalPriceToDiscount)
                             totalPriceToDiscount = discountRes;
                     }
+                }
                 break;
 
             case HIGHEST:
                 totalPriceToDiscount = 0.0;
-                for (DiscountRule discountRule : discountRules)
+                for (DiscountRule discountRule : discountRules) {
                     if (discountRule.calcDiscount(shoppingBasket) < 0) {
                         discountRule.setDiscount(discount);
                         discountRes = discountRule.calcDiscount(shoppingBasket);
@@ -63,10 +65,11 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
                         if (discountRes > totalPriceToDiscount)
                             totalPriceToDiscount = discountRes;
                     }
+                }
                 break;
         }
 
-        return totalPriceToDiscount * (discount / 100);
+        return totalPriceToDiscount;
     }
 
     @Override
