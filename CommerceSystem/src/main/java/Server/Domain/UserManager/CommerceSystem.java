@@ -313,7 +313,10 @@ public class CommerceSystem implements IService {
                 }
                 else if(funcs[i].startsWith("addProductsToStore")){
                     attributes = funcs[i].substring(19).split(", ");
-                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), stringToList(attributes, 3),stringToList(attributes, 4)), Integer.parseInt(attributes[5].substring(0, attributes[5].length() - 1)));
+                    List<String> categories = stringToList(attributes, 3);
+                    List<String> keywords = stringToList(attributes, 3 + categories.size());
+                    int offset = 3 + categories.size() + keywords.size();
+                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), categories, keywords), Integer.parseInt(attributes[offset].substring(0, attributes[offset].length() - 1)));
                 }
                 else if(funcs[i].startsWith("addPermission")){
                     attributes = funcs[i].substring(14).split(", ");
@@ -331,9 +334,10 @@ public class CommerceSystem implements IService {
         str[index] = str[index].substring(1);
         for(int i = index; i < str.length; i++){
             if(str[i].endsWith("]")){
-                lst.add(str[i]);
+                lst.add(str[i].substring(0, str[i].length() - 1));
                 break;
             }
+            lst.add(str[i]);
         }
         return lst;
     }
