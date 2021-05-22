@@ -47,7 +47,7 @@ class Checkout extends React.Component{
         const productID = urlParams.get("productID");
         const storeID = urlParams.get("storeID");
 
-        if(storeName !== undefined){
+        if(storeName !== null){
             this.setState({storeName: storeName, productName: productName, productID: productID,
                 storeID: storeID, singleProduct: true});
         }
