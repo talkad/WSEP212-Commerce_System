@@ -1,4 +1,6 @@
 
+
+
 class ProductDTO{
     constructor(name, storeID, price, categories, keywords) {
         this.name = name;
@@ -7,6 +9,8 @@ class ProductDTO{
         this.categories = categories;
         this.keywords = keywords;
     }
+
+
 }
 
 export default ProductDTO;

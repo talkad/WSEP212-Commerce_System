@@ -1,6 +1,7 @@
 import Search from "../Components/Search";
 import React from "react";
-import {Container, Image} from "react-bootstrap";
+import {Button, Container, Image} from "react-bootstrap";
+import Modal from 'react-modal'
 
 
 class Home extends React.Component{

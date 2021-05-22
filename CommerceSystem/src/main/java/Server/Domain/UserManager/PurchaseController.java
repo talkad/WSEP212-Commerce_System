@@ -59,27 +59,29 @@ public class PurchaseController {
                 return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
         }
 
-        public Response<PurchaseClientDTO> purchaseProduct(int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        public Response<PurchaseClientDTO> purchaseProduct(int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails, double newPrice) {
 
                 Response<Integer> cancelRes;
                 Response<Integer> supplyRes;
                 Response<Integer> paymentRes;
 
                 Response<Product> product = storeController.getProduct(storeID, productID);
-                Response<PurchaseClientDTO> res = storeController.purchase(product.getResult());
+                Product product1 = Product.createProduct(product.getResult().getProductDTO());
+                product1.setPrice(newPrice);
+                Response<PurchaseClientDTO> res = storeController.purchase(product1);
 
                 if (res.isFailure())
                         return new Response<>(null, true, res.getErrMsg() + " | doesn't created external connection");
 
                 paymentRes = paymentSystemAdapter.pay(paymentDetails);
                 if(paymentRes.isFailure()) {
-                        storeController.addProductsToInventories(product.getResult(), storeID);
+                        storeController.addProductsToInventories(product1, storeID);
                         return new Response<>(null, true, "Payment failed" + " | created external connection");
                 }
 
                 supplyRes = supplySystemAdapter.supply(supplyDetails);
                 if(supplyRes.isFailure()) {
-                        storeController.addProductsToInventories(product.getResult(), storeID);
+                        storeController.addProductsToInventories(product1, storeID);
 
                         cancelRes = paymentSystemAdapter.cancelPay(paymentRes.getResult() + "");
                         if(cancelRes.isFailure())

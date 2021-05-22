@@ -1,0 +1,1 @@
+register(u2, u2);register(u3, u3);login(shaked, jacob);openStore(shaked, s1);addProductsToStore(Bamba, 0, 30, [snacks], [peanuts], 20);appointStoreManager(u2, 0);addPermission(0, u2, ADD_PRODUCT_TO_STORE);addPermission(0, u2, REMOVE_PRODUCT_FROM_STORE);addPermission(0, u2, UPDATE_PRODUCT_PRICE);logout(shaked);

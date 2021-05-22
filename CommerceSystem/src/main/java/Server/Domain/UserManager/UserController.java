@@ -651,7 +651,7 @@ public class UserController {
         return new Response<>(-1.0, true, "User not connected");
     }
 
-    public Response<Boolean> bidMangerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+    public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {//todo add to if connected as well
             User user = connectedUsers.get(username);
@@ -687,15 +687,15 @@ public class UserController {
             if(offer == null)
                 return new Response<>(false, true, "The given product doesn't exists in offers");
 
-            if(offer.getState() == OfferState.DECLINED){
-                user.removeOffer(productID);
-                return new Response<>(false, true, "Your offer declined");
-            }
+//            if(offer.getState() == OfferState.DECLINED){
+//                user.removeOffer(productID);
+//                return new Response<>(false, true, "Your offer was declined");
+//            }
 
             if(offer.getState() != OfferState.APPROVED)
                 return new Response<>(false, true, "Your offer is not yet approved");
 
-            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails);
+            Response<PurchaseClientDTO> purchase = PurchaseController.getInstance().purchaseProduct(productID, storeID, paymentDetails, supplyDetails, offer.getOfferReply());
 
             if(purchase.isFailure())
                 return new Response<>(false, true, purchase.getErrMsg());

@@ -6,6 +6,7 @@ import Cookies from 'js-cookie'
 class Connection{
     static connection;
     static dataFromServer = [];
+    static offerNotifications = [];
 
     static setConnection(connection) {
         this.connection = connection;
@@ -31,6 +32,7 @@ class Connection{
         this.connection.onerror = (err) =>{
             console.log(err);
         }
+
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
             console.log(receivedData);
@@ -46,7 +48,9 @@ class Connection{
                 alert(receivedData.message);
             }
             else if(receivedData.type === "reactiveNotification"){
-                
+
+                Connection.offerNotifications.push(receivedData);
+
             }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
@@ -84,6 +88,26 @@ class Connection{
         }
     }
 
+    static catchOfferNotification() {
+
+        function sleep(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        return new Promise(async (resolve, reject) => {
+            while(true){
+                if(Connection.offerNotifications.length !== 0){
+
+                    resolve(Connection.offerNotifications.shift());
+                }
+                await sleep(5000);
+            }
+        });
+    }
+
+    static async getOfferNotification(){
+        return await Connection.catchOfferNotification();
+    }
 
 
     static searchAndReturn(action){
@@ -199,6 +223,44 @@ class Connection{
         }));
 
         return Connection.getResponse("addToCart");
+    }
+
+    static sendOfferPrice(productID, storeID, priceOffer){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "bidOffer",
+            username: window.sessionStorage.getItem('username'),
+            productID: productID,
+            storeID: storeID,
+            priceOffer: priceOffer,
+        }));
+
+        return Connection.getResponse("bidOffer");
+    }
+
+    static sendManagerOfferReply(offeringUsername, productID, storeID, bidReply){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "bidManagerReply",
+            username: window.sessionStorage.getItem('username'),
+            offeringUsername: offeringUsername,
+            productID: productID,
+            storeID: storeID,
+            bidReply: bidReply,
+        }));
+
+        return Connection.getResponse("bidManagerReply");
+    }
+
+    static sendBuyOffer(productID, storeID, paymentDetails, supplyDetails){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "bidUserReply",
+            username: window.sessionStorage.getItem('username'),
+            productID: productID,
+            storeID: storeID,
+            paymentDetails: JSON.stringify(paymentDetails),
+            supplyDetails: JSON.stringify(supplyDetails),
+        }));
+
+        return Connection.getResponse("bidUserReply");
     }
 
     static sendRemoveFromCart(storeID, productID){

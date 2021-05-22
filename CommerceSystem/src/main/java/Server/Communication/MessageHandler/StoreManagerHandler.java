@@ -139,7 +139,12 @@ public class StoreManagerHandler extends Handler{
                 String storeID = data.getProperty("storeID");
                 String bidReply = data.getProperty("bidReply");
 
-                response = service.bidMangerReply(username, offeringUsername, Integer.parseInt(productID), Integer.parseInt(storeID), Double.parseDouble(bidReply));
+                System.out.println(offeringUsername);
+                System.out.println(storeID);
+                System.out.println(bidReply);
+                System.out.println(Double.parseDouble(bidReply));
+
+                response = service.bidManagerReply(username, offeringUsername, Integer.parseInt(productID), Integer.parseInt(storeID), Double.parseDouble(bidReply));
             }
             default -> response = super.handle(input);
         }

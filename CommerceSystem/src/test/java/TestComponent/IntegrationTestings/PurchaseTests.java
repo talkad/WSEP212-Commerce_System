@@ -12,11 +12,16 @@ import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
+import Server.Domain.UserManager.OfferState;
+import Server.Domain.UserManager.Publisher;
 import Server.Domain.UserManager.UserController;
+import Server.Service.CommerceService;
+import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -572,5 +577,184 @@ public class PurchaseTests {
 
         response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
         Assert.assertFalse(response.getErrMsg().contains("doesn't created external connection"));
+    }
+
+    @Test
+    public void bidNotificationTest(){
+        int productId = 200;
+        ProductClientDTO productDTO;
+        CommerceSystem commerceSystem = CommerceSystem.getInstance();
+        commerceSystem.init();
+        UserController userController = UserController.getInstance();
+        String storeOwnerName = commerceSystem.addGuest().getResult();
+        String costumerName = UserController.getInstance().addGuest().getResult();
+
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("user1", null);
+        mock.addConnection("user2", null);
+        Publisher.getInstance().setNotifier(mock);
+
+        userController.register(storeOwnerName, "user1", "user1");
+        userController.register(costumerName, "user2", "user2");
+
+        userController.login(storeOwnerName, "user1", "user1");
+        userController.login(costumerName, "user2", "user2");
+
+        Response<Integer> storeRes = userController.openStore("user1", "eggStore");
+        Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
+        productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
+        store.addProduct(productDTO, 100);
+
+        commerceSystem.logout("user1");
+        commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
+
+        Assert.assertEquals(1, userController.getUserByName("user1").getPendingMessages().size());
+
+    }
+
+    @Test
+    public void bidManagerReplyTest(){
+        int productId = 200;
+        ProductClientDTO productDTO;
+        CommerceSystem commerceSystem = CommerceSystem.getInstance();
+        commerceSystem.init();
+        UserController userController = UserController.getInstance();
+        String storeOwnerName = commerceSystem.addGuest().getResult();
+        String costumerName = UserController.getInstance().addGuest().getResult();
+
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("user1", null);
+        mock.addConnection("user2", null);
+        Publisher.getInstance().setNotifier(mock);
+
+        userController.register(storeOwnerName, "user1", "user1");
+        userController.register(costumerName, "user2", "user2");
+
+        userController.login(storeOwnerName, "user1", "user1");
+        userController.login(costumerName, "user2", "user2");
+
+        Response<Integer> storeRes = userController.openStore("user1", "eggStore");
+        Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
+        productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
+        store.addProduct(productDTO, 100);
+
+        commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
+        //commerceSystem.logout("user2");
+
+        commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), -1);
+
+        //Assert.assertEquals(1, userController.getUserByName("user2").getPendingMessages().size());
+        Assert.assertEquals(OfferState.APPROVED, userController.getUserByName("user2").getOffers().get(200).getState());
+    }
+
+    @Test
+    public void bidUserReplySuccessfulTest(){
+        int productId = 200;
+        ProductClientDTO productDTO;
+        CommerceSystem commerceSystem = CommerceSystem.getInstance();
+        commerceSystem.init();
+        UserController userController = UserController.getInstance();
+        String storeOwnerName = commerceSystem.addGuest().getResult();
+        String costumerName = UserController.getInstance().addGuest().getResult();
+
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("user1", null);
+        mock.addConnection("user2", null);
+        Publisher.getInstance().setNotifier(mock);
+
+        userController.register(storeOwnerName, "user1", "user1");
+        userController.register(costumerName, "user2", "user2");
+
+        userController.login(storeOwnerName, "user1", "user1");
+        userController.login(costumerName, "user2", "user2");
+
+        Response<Integer> storeRes = userController.openStore("user1", "eggStore");
+        Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
+        productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
+        store.addProduct(productDTO, 100);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
+        commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), -1);
+        boolean isPurchaseFailure = commerceSystem.bidUserReply("user2", 200, storeRes.getResult(), paymentDetails, supplyDetails).isFailure();
+
+        Assert.assertEquals(false, isPurchaseFailure);
+    }
+
+    @Test
+    public void bidUserReplyDeclinedTest(){
+        int productId = 200;
+        ProductClientDTO productDTO;
+        CommerceSystem commerceSystem = CommerceSystem.getInstance();
+        commerceSystem.init();
+        UserController userController = UserController.getInstance();
+        String storeOwnerName = commerceSystem.addGuest().getResult();
+        String costumerName = UserController.getInstance().addGuest().getResult();
+
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("user1", null);
+        mock.addConnection("user2", null);
+        Publisher.getInstance().setNotifier(mock);
+
+        userController.register(storeOwnerName, "user1", "user1");
+        userController.register(costumerName, "user2", "user2");
+
+        userController.login(storeOwnerName, "user1", "user1");
+        userController.login(costumerName, "user2", "user2");
+
+        Response<Integer> storeRes = userController.openStore("user1", "eggStore");
+        Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
+        productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
+        store.addProduct(productDTO, 100);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
+        commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), -2);
+        Response<Boolean> purchaseRes = commerceSystem.bidUserReply("user2", 200, storeRes.getResult(), paymentDetails, supplyDetails);
+
+        Assert.assertTrue(purchaseRes.isFailure());
+        //Assert.assertEquals("Your offer was declined", purchaseRes.getErrMsg());
+
+    }
+
+    @Test
+    public void bidUserReplyWithCounterPriceTest(){
+        int productId = 200;
+        ProductClientDTO productDTO;
+        CommerceSystem commerceSystem = CommerceSystem.getInstance();
+        commerceSystem.init();
+        UserController userController = UserController.getInstance();
+        String storeOwnerName = commerceSystem.addGuest().getResult();
+        String costumerName = UserController.getInstance().addGuest().getResult();
+
+        MockNotifier mock = new MockNotifier();
+        mock.addConnection("user1", null);
+        mock.addConnection("user2", null);
+        Publisher.getInstance().setNotifier(mock);
+
+        userController.register(storeOwnerName, "user1", "user1");
+        userController.register(costumerName, "user2", "user2");
+
+        userController.login(storeOwnerName, "user1", "user1");
+        userController.login(costumerName, "user2", "user2");
+
+        Response<Integer> storeRes = userController.openStore("user1", "eggStore");
+        Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
+        productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
+        store.addProduct(productDTO, 100);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
+        commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
+        commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), 20);
+        Response<Boolean> purchaseRes = commerceSystem.bidUserReply("user2", 200, storeRes.getResult(), paymentDetails, supplyDetails);
+
+        Assert.assertFalse(purchaseRes.isFailure());
+        Assert.assertEquals(20.0, userController.getUserByName("user2").getPurchaseHistory().getPurchases().get(0).getTotalPrice(), 0);
     }
 }
