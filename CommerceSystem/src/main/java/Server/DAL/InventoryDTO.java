@@ -3,6 +3,7 @@ package Server.DAL;
 import Server.Domain.CommonClasses.Pair;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import dev.morphia.annotations.Reference;
 
 import java.util.List;
 import java.util.Vector;

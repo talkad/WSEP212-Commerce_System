@@ -149,9 +149,10 @@ public class DALService {
                 .filter(
                         Filters.gte("storeID", 0)
                 )
-                .iterator(new FindOptions()
-                        .sort(Sort.ascending("storeID"))
-        ).toList();
+//                .iterator(new FindOptions())
+//                        .sort(Sort.ascending("storeID")))
+                .iterator()
+        .toList();
 
         mongoClient.close();
 

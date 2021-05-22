@@ -75,21 +75,21 @@ public class Store {
                             this.purchaseHistory.toDTO());
     }
 
-    public Response<Boolean> addProduct(ProductClientDTO productDTO, int amount){
+    public Response<Integer> addProduct(ProductClientDTO productDTO, int amount){
         if(amount <= 0){
-            return new Response<>(false, true, "The product amount cannot be negative or zero");
+            return new Response<>(-1, true, "The product amount cannot be negative or zero");
         }
 
         if(productDTO == null){
-            return new Response<>(false, true, "Cannot add NULL product");
+            return new Response<>(-1, true, "Cannot add NULL product");
         }
 
         if(productDTO.getPrice() <= 0){
-            return new Response<>(false, true, "Price cannot be negative");
+            return new Response<>(-1, true, "Price cannot be negative");
         }
 
-        inventory.addProducts(productDTO, amount);
-        return new Response<>(true, false, "The product added successfully to store");
+        int id = inventory.addProducts(productDTO, amount);
+        return new Response<>(id, false, "The product added successfully to store");
     }
 
     public Response<Boolean> removeProduct(int productID, int amount){

@@ -54,7 +54,7 @@ public class Inventory {
         return new InventoryDTO(productsList);
     }
 
-    public void addProducts(ProductClientDTO productDTO, int amount){
+    public int addProducts(ProductClientDTO productDTO, int amount){
         int productID;
         Integer result;
         Product product = Product.createProduct(productDTO);
@@ -70,6 +70,8 @@ public class Inventory {
             products.put(productID, product);
         }
         lock.writeLock().unlock();
+
+        return product.getProductID();
     }
 
     public Response<Boolean> removeProducts(int productID, int amount){

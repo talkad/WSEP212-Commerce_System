@@ -361,13 +361,13 @@ public class User {
                 return new Response<>(false, true, "This store doesn't exists");
             }
 
-            Response<Boolean> response = store.addProduct(productDTO, amount);
+            Response<Integer> response = store.addProduct(productDTO, amount);
 
             if(!response.isFailure()){
-                DALService.getInstance().saveStoreAndProduct(store.toDTO(), store.getProduct(productDTO.getProductID()).getResult().toDTO());
+                DALService.getInstance().saveStoreAndProduct(store.toDTO(), store.getProduct(response.getResult()).getResult().toDTO());
             }
 
-            return response;
+            return new Response<>(false, response.isFailure(), response.getErrMsg());
         }
         return new Response<>(false, true, "The user is not allowed to add products to the store");
     }

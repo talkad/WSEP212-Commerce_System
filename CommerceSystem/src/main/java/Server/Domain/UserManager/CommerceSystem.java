@@ -42,7 +42,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-        initState();
+//        initState();
     }
 
     @Override
@@ -289,7 +289,6 @@ public class CommerceSystem implements IService {
                 if(funcs[i].startsWith("register")){
                     attributes = funcs[i].substring(9).split(", ");
 
-                    System.out.println(attributes[1].substring(0, attributes[1].length() - 1));
                     register(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
                 }
                 else if(funcs[i].startsWith("login")){
