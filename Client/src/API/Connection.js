@@ -387,7 +387,7 @@ class Connection{
             permitting: permitting,
             storeID: storeId,
             permitted: permitted,
-            permission: permissions,
+            permissions: permissions,
         }))
 
         return Connection.getResponse(functionName);

@@ -335,7 +335,7 @@ class App extends React.Component{
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>
                         <Route path="/REMOVE_OWNER_APPOINTMENT" component={RemoveOwner}/>
                         <Route path="/ADD_PERMISSION" component={AddPermission}/>
-                        <Route path="/DELETE_PERMISSION" component={DeletePermission}/>
+                        <Route path="/REMOVE_PERMISSION" component={DeletePermission}/>
                         <Route path="/APPOINT_MANAGER" component={AppointManager}/>
                         <Route path="/REMOVE_MANAGER_APPOINTMENT" component={RemoveManager}/>
                         <Route path="/RECEIVE_STORE_WORKER_INFO" component={WorkerDetails}/>
