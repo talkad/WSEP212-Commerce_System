@@ -477,7 +477,7 @@ public class User {
                     userDTOS.add(this.toDTO());
                     userDTOS.add(userDTO);
 
-                    Publisher.getInstance().subscribe(storeId, this.name);
+                    Publisher.getInstance().subscribe(storeId, newManager);
 
                     return new Response<>(true, !DALService.getInstance().saveUsers(userDTOS), "saved updated users");
                 }
@@ -504,14 +504,17 @@ public class User {
     }
 
     public Response<String> removeAppointment(String appointeeName, int storeID) {
+
         if (this.storesOwned.contains(storeID)) {
             Response<String> res = this.appointments.removeAppointment(storeID, appointeeName);
             if(!res.isFailure()){
                 Publisher.getInstance().notify(appointeeName, new ReplyMessage("notification", "Your ownership canceled at store "+ storeID, "removeAppointment"));
                 Publisher.getInstance().unsubscribe(storeID, appointeeName);
             }
+
             return res;
         } else if (this.storesManaged.containsKey(storeID)) {
+            System.out.println("ddddd");
             return this.appointments.removeAppointment(storeID, appointeeName);
         }
         return new Response<>("problem", true, "user not appointed by this appointer");
@@ -957,5 +960,14 @@ public class User {
 
     public void setState(UserState state) {
         this.state = state;
+    }
+
+    public void setAppointments(Appointment appointment) {
+        this.appointments = appointment;
+    }
+
+    public void notifyManagementCancellation(int storeID) {
+        Publisher.getInstance().notify(this.name, new ReplyMessage("notification", "Your ownership canceled at store "+ storeID, "removeAppointment"));
+        Publisher.getInstance().unsubscribe(storeID, this.name);
     }
 }

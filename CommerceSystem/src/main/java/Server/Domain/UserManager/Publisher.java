@@ -60,6 +60,10 @@ public class Publisher{
         if(users == null)
             return;
 
+        System.out.println("notify to store " + storeID);
+        for(String name: users)
+            System.out.println(name);
+
         for(String username: users){
 
             if(userController.isConnected(username))
@@ -80,12 +84,14 @@ public class Publisher{
     public void subscribe(Integer storeID, String username) {
         storeSubscribers.putIfAbsent(storeID, new Vector<>());
         storeSubscribers.get(storeID).add(username);
+        System.out.println(username + " subscribed to store " + storeID);
         DALService.getInstance().savePublisher(this.toDTO());
     }
 
     public void unsubscribe(Integer storeID, String username) {
         if(storeSubscribers.containsKey(storeID)) {
             storeSubscribers.get(storeID).remove(username);
+            System.out.println(username + " unsubscribed to store " + storeID);
             DALService.getInstance().savePublisher(this.toDTO());
         }
     }

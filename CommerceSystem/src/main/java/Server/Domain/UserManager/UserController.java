@@ -377,6 +377,7 @@ public class UserController {
             writeLock.unlock();
             return response;
         }
+
         writeLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
@@ -453,7 +454,13 @@ public class UserController {
             appointee = this.connectedUsers.get(appointeeName);                         // remove his appointee's role from the appointee's list
         }
         //List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
-        appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
+//        appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
+        Appointment appointment = appointer.getAppointments();
+        appointment.removeAppointment(storeID, appointerName);
+        appointer.setAppointments(appointment);
+
+        appointee.notifyManagementCancellation(storeID);
+
         appointee.removeRole(storeID);                               // remove appointee's role from his list
         appointerDTO = appointer.toDTO();
         appointeeDTO = appointee.toDTO();
