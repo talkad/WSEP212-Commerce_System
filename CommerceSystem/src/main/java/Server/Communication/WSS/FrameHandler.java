@@ -55,6 +55,12 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
         }
         else {
             String content = msg.text();
+
+            if (action.equals("login")) {
+                System.out.println(data.getProperty("username"));
+                Notifier.getInstance().addConnection(data.getProperty("username"), ctx);
+            }
+
             Response<?> result = CommerceHandler.getInstance().handle(content);
 
             System.out.println("received " + content);
@@ -62,10 +68,9 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
             String response = gson.toJson(new ReplyMessage("response", gson.toJson(result), action));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
 
-            System.out.println("answered " + response);
+            System.out.println("answered " + response + " to " + ctx);
 
-            if (action.equals("login") && !result.isFailure())
-                Notifier.getInstance().addConnection((String) result.getResult(), ctx);
+
         }
     }
 

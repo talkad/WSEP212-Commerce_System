@@ -175,7 +175,6 @@ public class UserController {
                     connectedUsers.put(name, user);
                     writeLock.unlock();
 
-                    System.out.println("login");
 //                    Notifier.getInstance().replaceIdentifier(prevName, name);
                     user.sendPendingNotifications();
 

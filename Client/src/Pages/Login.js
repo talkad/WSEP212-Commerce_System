@@ -39,7 +39,7 @@ class Login extends React.Component{
             window.sessionStorage.setItem('username', result.result);
             this.setState({submitted: false,
                 showAlert: true, alertVariant: 'success', alertInfo: 'Logged in!'});
-            // document.location.href = "/";
+            document.location.href = "/";
         }
         else{
             this.setState({username: '', password: '', submitted: false,
