@@ -35,6 +35,7 @@ class Connection{
 
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
+            console.log(message);
             console.log(receivedData);
 
             if(receivedData.type === "startup"){

@@ -18,12 +18,21 @@ public class ReplyMessage {
         return message;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
     public ReplyMessage(ReplyMessageDTO replyMessageDTO){
         this.type = replyMessageDTO.getType();
         this.message = replyMessageDTO.getMessage();
+        this.action = replyMessageDTO.getAction();
     }
 
     public ReplyMessageDTO toDTO(){
-        return new ReplyMessageDTO(this.type, this.message);
+        return new ReplyMessageDTO(this.type, this.message, this.action);
     }
 }

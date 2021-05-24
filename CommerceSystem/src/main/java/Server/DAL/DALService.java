@@ -66,41 +66,41 @@ public class DALService {
             }
         }
         //else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                if (userDTO.getState() != UserStateEnum.GUEST)
-                    session.save(userDTO);
-
-                session.save(storeDTOs);
-
-                // commit changes
-                session.commitTransaction();
-            }
-
-            mongoClient.close();
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                if (userDTO.getState() != UserStateEnum.GUEST)
+//                    session.save(userDTO);
+//
+//                session.save(storeDTOs);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            }
+//
+//            mongoClient.close();
         //}
     }
 
     public PublisherDTO getPublisher() {
-        if(useLocal){
+//        if(useLocal){
             PublisherDTO publisherDTO = this.publisher.get(0);
             return publisherDTO == null ? new PublisherDTO() : publisherDTO;
-        }
-        else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            PublisherDTO publisherDTO = datastore.find(PublisherDTO.class).first();
-
-            mongoClient.close();
-
-            return publisherDTO;
-        }
+//        }
+//        else {
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            PublisherDTO publisherDTO = datastore.find(PublisherDTO.class).first();
+//
+//            mongoClient.close();
+//
+//            return publisherDTO;
+//        }
     }
 
     public void savePublisher(PublisherDTO publisherDTO) {
@@ -108,12 +108,12 @@ public class DALService {
             this.publisher.put(0, publisherDTO);
         }
         //else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            datastore.save(publisherDTO);
-
-            mongoClient.close();
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            datastore.save(publisherDTO);
+//
+//            mongoClient.close();
         //}
     }
 
@@ -122,46 +122,46 @@ public class DALService {
             this.accounts.put(accountDTO.getUsername(), accountDTO);
         }
         //else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            datastore.save(accountDTO);
-
-            mongoClient.close();
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            datastore.save(accountDTO);
+//
+//            mongoClient.close();
         //}
     }
 
     public AccountDTO getAccount(String username){
-        if(useLocal){
+//        if(useLocal){
             return this.accounts.get(username);
-        }
-        else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            AccountDTO accountDTO = datastore.find(AccountDTO.class)
-                    // filters find relevant entries
-                    .filter(
-                            Filters.eq("username", username)
-                    ).first();
-
-            mongoClient.close();
-
-            return accountDTO;
-        }
+//        }
+//        else {
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            AccountDTO accountDTO = datastore.find(AccountDTO.class)
+//                    // filters find relevant entries
+//                    .filter(
+//                            Filters.eq("username", username)
+//                    ).first();
+//
+//            mongoClient.close();
+//
+//            return accountDTO;
+//        }
     }
 
     public void addAdmin(AdminAccountDTO adminAccountDTO) {
         if(useLocal){
             this.admins.put(adminAccountDTO.getUsername(), adminAccountDTO);
         }
-        //else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            datastore.save(adminAccountDTO);
-
-            mongoClient.close();
+//        //else {
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            datastore.save(adminAccountDTO);
+//
+//            mongoClient.close();
         //}
     }
 
@@ -170,85 +170,85 @@ public class DALService {
             stores.put(storeDTO.getStoreID(), storeDTO);
         }
         //else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            datastore.save(storeDTO);
-
-            mongoClient.close();
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            datastore.save(storeDTO);
+//
+//            mongoClient.close();
         //}
     }
 
     public StoreDTO getStore(int storeId) {
-        if(useLocal){
+//        if(useLocal){
             return this.stores.get(storeId);
-        }
-        else {
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            StoreDTO storeDTO = datastore.find(StoreDTO.class)
-                    // filters find relevant entries
-                    .filter(
-                            Filters.eq("storeID", storeId)
-                    ).first();
-
-            mongoClient.close();
-
-            return storeDTO;
-        }
+//        }
+//        else {
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            StoreDTO storeDTO = datastore.find(StoreDTO.class)
+//                    // filters find relevant entries
+//                    .filter(
+//                            Filters.eq("storeID", storeId)
+//                    ).first();
+//
+//            mongoClient.close();
+//
+//            return storeDTO;
+//        }
     }
 
     public Collection<StoreDTO> getAllStores() {
-        if(useLocal){
+//        if(useLocal){
             return stores.values();
-        }
-        else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            List<StoreDTO> storeDTOList = datastore.find(StoreDTO.class)
-                    .filter(
-                            Filters.gte("storeID", 0)
-                    )
-//                .iterator(new FindOptions())
-//                        .sort(Sort.ascending("storeID")))
-                    .iterator()
-                    .toList();
-
-            mongoClient.close();
-
-            return storeDTOList;
-        }
+//        }
+//        else {
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            List<StoreDTO> storeDTOList = datastore.find(StoreDTO.class)
+//                    .filter(
+//                            Filters.gte("storeID", 0)
+//                    )
+////                .iterator(new FindOptions())
+////                        .sort(Sort.ascending("storeID")))
+//                    .iterator()
+//                    .toList();
+//
+//            mongoClient.close();
+//
+//            return storeDTOList;
+//        }
     }
 
     public void saveUserAndStore(UserDTO userDTO, StoreDTO storeDTO){
-        if(useLocal){
+//        if(useLocal){
             if (userDTO.getState() != UserStateEnum.GUEST)
                 this.users.put(userDTO.getName(), userDTO);
             this.stores.put(storeDTO.getStoreID(), storeDTO);
-        }
+//        }
         //else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                if (userDTO.getState() != UserStateEnum.GUEST)
-                    session.save(userDTO);
-
-                session.save(storeDTO);
-
-                // commit changes
-                session.commitTransaction();
-            }
-
-            mongoClient.close();
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                if (userDTO.getState() != UserStateEnum.GUEST)
+//                    session.save(userDTO);
+//
+//                session.save(storeDTO);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            }
+//
+//            mongoClient.close();
         //}
     }
 
@@ -259,26 +259,26 @@ public class DALService {
             stores.put(storeDTO.getStoreID(), storeDTO);
             products.put(productDTO.getProductID(), productDTO);
         }
-        //else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                if (userDTO.getState() != UserStateEnum.GUEST)
-                    session.save(userDTO);
-
-                session.save(storeDTO);
-                session.save(productDTO);
-
-                // commit changes
-                session.commitTransaction();
-            }
-
-            mongoClient.close();
+//        //else {
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                if (userDTO.getState() != UserStateEnum.GUEST)
+//                    session.save(userDTO);
+//
+//                session.save(storeDTO);
+//                session.save(productDTO);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            }
+//
+//            mongoClient.close();
         //}
     }
 
@@ -289,21 +289,21 @@ public class DALService {
         }
         //else {
 
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                session.save(storeDTO);
-                session.save(productDTO);
-
-                // commit changes
-                session.commitTransaction();
-            }
-
-            mongoClient.close();
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                session.save(storeDTO);
+//                session.save(productDTO);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            }
+//
+//            mongoClient.close();
         //}
     }
 
@@ -313,44 +313,44 @@ public class DALService {
             products.remove(productDTO.getProductID());
         }
         // else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                session.save(storeDTO);
-                session.delete(productDTO);
-
-                // commit changes
-                session.commitTransaction();
-            }
-
-            mongoClient.close();
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                session.save(storeDTO);
+//                session.delete(productDTO);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            }
+//
+//            mongoClient.close();
 //        }
     }
 
     public UserDTO getUser(String username){
-        if(useLocal){
+//        if(useLocal){
             return this.users.get(username);
-        }
-        else {
-
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            UserDTO userDTO = datastore.find(UserDTO.class)
-                    // filters find relevant entries
-                    .filter(
-                            Filters.eq("name", username)
-                    ).first();
-
-            mongoClient.close();
-
-            return userDTO;
-        }
+//        }
+//        else {
+//
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            UserDTO userDTO = datastore.find(UserDTO.class)
+//                    // filters find relevant entries
+//                    .filter(
+//                            Filters.eq("name", username)
+//                    ).first();
+//
+//            mongoClient.close();
+//
+//            return userDTO;
+//        }
     }
 
     public void insertUser(UserDTO userDTO){
@@ -360,13 +360,13 @@ public class DALService {
         }
 //        else {
 
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            if (userDTO.getState() != UserStateEnum.GUEST)
-                datastore.save(userDTO);
-
-            mongoClient.close();
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            if (userDTO.getState() != UserStateEnum.GUEST)
+//                datastore.save(userDTO);
+//
+//            mongoClient.close();
         //}
     }
 
@@ -376,37 +376,38 @@ public class DALService {
                 if (userDTO.getState() != UserStateEnum.GUEST)
                     users.put(userDTO.getName(), userDTO);
             }
-//            return true;
+
         }
+        return true;
 //        else {
 
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-
-            boolean success = true;
-
-            try (MorphiaSession session = datastore.startSession()) {
-                session.startTransaction();
-
-                // stage changes to commit
-                session.save(userDTOList);
-
-                // commit changes
-                session.commitTransaction();
-            } catch (Exception e) {
-                success = false;
-            }
-
-            mongoClient.close();
-            return success;
-//        }
+//            MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//            Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+//
+//            boolean success = true;
+//
+//            try (MorphiaSession session = datastore.startSession()) {
+//                session.startTransaction();
+//
+//                // stage changes to commit
+//                session.save(userDTOList);
+//
+//                // commit changes
+//                session.commitTransaction();
+//            } catch (Exception e) {
+//                success = false;
+//            }
+//
+//            mongoClient.close();
+//            return success;
+////        }
     }
 
 
     public int getNextAvailableStoreID(){
-        if(useLocal){
+        //if(useLocal){
             return this.stores.size();
-        }
+        //}
 //        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
 //        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
 //
@@ -435,20 +436,20 @@ public class DALService {
 //        StoreDTO head = storeDTOs.get(0);
 //        int id = head.getStoreID();
 //        return id + 1;
-        else {
-            return (int) (Math.random() * (10000 - 1)) + 1;
-        }
+//        else {
+//            return (int) (Math.random() * (10000 - 1)) + 1;
+//        }
     }
 
     public void resetDatabase(){
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        mongoClient.getDatabase("commerceDatabase").getCollection("users").drop();
-        mongoClient.getDatabase("commerceDatabase").getCollection("stores").drop();
-        mongoClient.getDatabase("commerceDatabase").getCollection("publishers").drop();
-        mongoClient.getDatabase("commerceDatabase").getCollection("products").drop();
-        mongoClient.getDatabase("commerceDatabase").getCollection("accounts").drop();
-        mongoClient.getDatabase("commerceDatabase").getCollection("adminAccounts").drop();
-        mongoClient.close();
+//        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+//        mongoClient.getDatabase("commerceDatabase").getCollection("users").drop();
+//        mongoClient.getDatabase("commerceDatabase").getCollection("stores").drop();
+//        mongoClient.getDatabase("commerceDatabase").getCollection("publishers").drop();
+//        mongoClient.getDatabase("commerceDatabase").getCollection("products").drop();
+//        mongoClient.getDatabase("commerceDatabase").getCollection("accounts").drop();
+//        mongoClient.getDatabase("commerceDatabase").getCollection("adminAccounts").drop();
+//        mongoClient.close();
     }
 
 

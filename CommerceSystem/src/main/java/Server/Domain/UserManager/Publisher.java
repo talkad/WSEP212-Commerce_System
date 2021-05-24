@@ -44,7 +44,7 @@ public class Publisher{
      * @param msg - the message that will be sent
      */
     public void notify(String name, ReplyMessage msg) {
-        System.out.println("server notifies to " + name + " the message " + msg.getMessage());
+        System.out.println("server notifies to " + name + " the message " + msg.getMessage() + " with type " + msg.getType() + " action " + msg.getAction());
         notifier.notify(name, msg);
     }
 

@@ -12,13 +12,17 @@ public class ReplyMessageDTO {
     @Property(value = "message")
     String message;
 
+    @Property(value = "action")
+    String action;
+
     public ReplyMessageDTO(){
         // For Morphia
     }
 
-    public ReplyMessageDTO(String type, String message) {
+    public ReplyMessageDTO(String type, String message, String action) {
         this.type = type;
         this.message = message;
+        this.action = action;
     }
 
     public String getType() {
@@ -35,5 +39,9 @@ public class ReplyMessageDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getAction() {
+        return this.action;
     }
 }
