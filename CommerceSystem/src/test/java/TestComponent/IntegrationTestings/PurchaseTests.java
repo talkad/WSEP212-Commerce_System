@@ -680,7 +680,6 @@ public class PurchaseTests {
         commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
         commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), -1);
         boolean isPurchaseFailure = commerceSystem.bidUserReply("user2", 200, storeRes.getResult(), paymentDetails, supplyDetails).isFailure();
-
         Assert.assertEquals(false, isPurchaseFailure);
     }
 

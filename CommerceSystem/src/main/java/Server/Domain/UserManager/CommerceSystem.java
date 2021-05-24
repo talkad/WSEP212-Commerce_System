@@ -322,6 +322,9 @@ public class CommerceSystem implements IService {
                     attributes = funcs[i].substring(14).split(", ");
                     addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
+                else{
+                    //todo send to 404 page
+                }
             }
         }
         catch (Exception e) {

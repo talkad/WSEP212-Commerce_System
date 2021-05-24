@@ -507,10 +507,8 @@ public class UserController {
             readLock.unlock();
             writeLock.lock();
             Response<Boolean> response = user.removePermission(storeId, permitted, permission);
-            if (!response.isFailure()) {
-                if (connectedUsers.containsKey(permitted)) {
-                    connectedUsers.get(permitted).removeSelfPermission(storeId, permission);
-                }
+            if (!response.isFailure() && connectedUsers.containsKey(permitted)) {
+                connectedUsers.get(permitted).removeSelfPermission(storeId, permission);
             }
             writeLock.unlock();
             return response;
@@ -744,10 +742,15 @@ public class UserController {
 
     public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
         readLock.lock();
+        Response<Boolean> res;
         if(connectedUsers.containsKey(username)) {//todo add to if connected as well
             User user = connectedUsers.get(username);
             readLock.unlock();
-            return user.changeOfferStatus(offeringUsername, productID, storeID, bidReply);
+            res = user.changeOfferStatus(getUserByName(offeringUsername), productID, storeID, bidReply);
+            if(!res.isFailure() && connectedUsers.containsKey(offeringUsername)){
+                connectedUsers.get(offeringUsername).changeSelfOffer(productID, bidReply);
+            }
+            return res;
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
@@ -778,11 +781,6 @@ public class UserController {
             if(offer == null)
                 return new Response<>(false, true, "The given product doesn't exists in offers");
 
-//            if(offer.getState() == OfferState.DECLINED){
-//                user.removeOffer(productID);
-//                return new Response<>(false, true, "Your offer was declined");
-//            }
-
             if(offer.getState() != OfferState.APPROVED)
                 return new Response<>(false, true, "Your offer is not yet approved");
 
@@ -806,7 +804,6 @@ public class UserController {
             readLock.unlock();
             return user.getStoresOwnedAndManaged();
         }
-
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
