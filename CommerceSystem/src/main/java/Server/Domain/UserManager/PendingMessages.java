@@ -1,20 +1,46 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.PendingMessagesDTO;
+import Server.DAL.ReplyMessageDTO;
+import Server.Service.DataObjects.ReplyMessage;
+
 import java.util.List;
 import java.util.Vector;
 
 public class PendingMessages {
-    private List<String> pendingMessages;
+    private List<ReplyMessage> pendingMessages;
 
     public PendingMessages() {
         this.pendingMessages = new Vector<>();
     }
 
-    public List<String> getPendingMessages() {
+    public PendingMessages(PendingMessagesDTO pendingMessagesDTO){
+        this.pendingMessages = new Vector<>();
+
+        List<ReplyMessageDTO> messages = pendingMessagesDTO.getPendingMessages();
+        if(messages != null){
+            for(ReplyMessageDTO replyMessageDTO : messages){
+                this.pendingMessages.add(new ReplyMessage(replyMessageDTO));
+            }
+        }
+    }
+
+    public PendingMessagesDTO toDTO(){
+        // TODO maybe make thread-safe
+        List<ReplyMessageDTO> messages = new Vector<>();
+
+        for(ReplyMessage replyMessage : pendingMessages){
+            messages.add(replyMessage.toDTO());
+        }
+
+        return new PendingMessagesDTO(messages);
+    }
+
+    public List<ReplyMessage> getPendingMessages() {
         return pendingMessages;
     }
 
-    public void addMessage(String msg){
+    public void addMessage(ReplyMessage msg){
         pendingMessages.add(msg);
     }
 

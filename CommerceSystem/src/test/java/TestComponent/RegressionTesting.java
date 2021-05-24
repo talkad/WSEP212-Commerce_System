@@ -53,4 +53,5 @@ class RegressionTesting {
             resultReport(result);
         }
     }
+
 }

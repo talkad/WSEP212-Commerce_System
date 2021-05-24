@@ -1,9 +1,11 @@
 package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Publisher;
 import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
@@ -16,7 +18,7 @@ public class PublisherTest {
     @Test
     public void pendingNotificationPurchaseTest(){
         int productID = 4562781;
-        ProductDTO productDTO;
+        ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
         commerceService.init();
         UserController userController = UserController.getInstance();
@@ -35,15 +37,18 @@ public class PublisherTest {
         // opening the store
         Response<Integer> storeRes = userController.openStore("yoni", "eggStore");
         Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
-        productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
+        productDTO = new ProductClientDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
         // logout
         userController.logout("yoni");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase(costumerName, paymentDetails, supplyDetails);
 
         Assert.assertEquals(1, userController.getUserByName("yoni").getPendingMessages().size());
     }
@@ -51,7 +56,7 @@ public class PublisherTest {
     @Test
     public void pendingNotificationReviewTest(){
         int productID = 2345682;
-        ProductDTO productDTO;
+        ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
         commerceService.init();
         UserController userController = UserController.getInstance();
@@ -72,16 +77,19 @@ public class PublisherTest {
         // opening the store
         Response<Integer> storeRes = userController.openStore("yoni2", "eggStore");
         Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
-        productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
+        productDTO = new ProductClientDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
         // costumer login
         userController.register(costumerName, "tal", "pis");
         userController.login(costumerName, "tal", "pis");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart("tal", storeRes.getResult(), productID);
-        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase("tal", paymentDetails, supplyDetails);
 
         // logout
         userController.logout("yoni2");
@@ -95,7 +103,7 @@ public class PublisherTest {
     @Test
     public void notifyPurchaseTest(){
         int productID = 514523;
-        ProductDTO productDTO;
+        ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
         commerceService.init();
         UserController userController = UserController.getInstance();
@@ -116,12 +124,15 @@ public class PublisherTest {
         // opening the store
         Response<Integer> storeRes = userController.openStore("yoni3", "eggStore");
         Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
-        productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
+        productDTO = new ProductClientDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
+
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         // costumer purchase its cart
         userController.addToCart(costumerName, storeRes.getResult(), productID);
-        userController.purchase(costumerName, "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase(costumerName, paymentDetails, supplyDetails);
 
         Assert.assertEquals(0, userController.getUserByName("yoni3").getPendingMessages().size());
         Assert.assertEquals(1, mock.getMessages("yoni3").size());
@@ -130,7 +141,7 @@ public class PublisherTest {
     @Test
     public void notifyReviewTest(){
         int productID = 5687589;
-        ProductDTO productDTO;
+        ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
         commerceService.init();
         UserController userController = UserController.getInstance();
@@ -151,16 +162,19 @@ public class PublisherTest {
         // opening the store
         Response<Integer> storeRes = userController.openStore("yoni4", "eggStore");
         Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
-        productDTO = new ProductDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
+        productDTO = new ProductClientDTO("Eggs", productID,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
         // costumer login
         userController.register(costumerName, "tal", "pis");
         userController.login(costumerName, "tal", "pis");
 
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // costumer purchase its cart
         userController.addToCart("tal", storeRes.getResult(), productID);
-        userController.purchase("tal", "4580-1111-1111-1111", "Israel, Jaljulia");
+        userController.purchase("tal", paymentDetails, supplyDetails);
 
         // add review
         userController.addProductReview("tal", store.getStoreID(), productID, "The best eggs");

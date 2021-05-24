@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.Domain.CommonClasses.Response;
-
+import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -13,11 +13,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class UserDAO {
 
     private Map<String, String> registeredUsers;
-    private Map<String, Map<Integer, List<Permissions>>> testManagers;
+    private Map<String, Map<Integer, List<PermissionsEnum>>> testManagers;
     private Map<String, List<Integer>> testOwners;
     private Map<String, ShoppingCart> shoppingCarts;
     private Map<String, PurchaseHistory> purchaseHistories;
     private Map<String, Appointment> appointments;
+    private Map<String, Map<Integer, Offer>> offers;
     private Map<String, PendingMessages> pendingMessages;
     private List<String> admins;
 
@@ -45,6 +46,10 @@ public class UserDAO {
     private Lock appointmentsWriteLock;
     private Lock appointmentsReadLock;
 
+    private ReadWriteLock offersLock;
+    private Lock offersWriteLock;
+    private Lock offersReadLock;
+
     private ReadWriteLock pendingLock;
     private Lock pendingWriteLock;
     private Lock pendingReadLock;
@@ -62,6 +67,7 @@ public class UserDAO {
         this.purchaseHistories = new ConcurrentHashMap<>();
         this.pendingMessages = new ConcurrentHashMap<>();
         this.appointments = new ConcurrentHashMap<>();
+        this.offers = new ConcurrentHashMap<>();
         this.admins = new Vector<>();
         this.admins.add("shaked");
 
@@ -93,25 +99,30 @@ public class UserDAO {
         adminsWriteLock = adminsLock.writeLock();
         adminsReadLock = adminsLock.readLock();
 
+        offersLock = new ReentrantReadWriteLock();
+        offersWriteLock = offersLock.writeLock();
+        offersReadLock = offersLock.readLock();
+
         pendingLock = new ReentrantReadWriteLock();
         pendingWriteLock = pendingLock.writeLock();
         pendingReadLock = pendingLock.readLock();
     }
 
-    public UserDTO getUser(String name){
-        UserDTO user = null;
+    public UserDTOTemp getUser(String name){
+        UserDTOTemp user = null;
         registeredReadLock.lock();
         ownersReadLock.lock();
         managersReadLock.lock();
         cartsReadLock.lock();
         historiesReadLock.lock();
         appointmentsReadLock.lock();
+        offersReadLock.lock();
         pendingReadLock.lock();
         if(registeredUsers.containsKey(name)) {
             List<Integer> storesOwned = testOwners.get(name);
             if (storesOwned == null)
                 storesOwned = new Vector<>();
-            Map<Integer, List<Permissions>> storesManaged = testManagers.get(name);
+            Map<Integer, List<PermissionsEnum>> storesManaged = testManagers.get(name);
             if (storesManaged == null)
                 storesManaged = new ConcurrentHashMap<>();
             ShoppingCart shoppingCart = shoppingCarts.get(name);
@@ -130,9 +141,14 @@ public class UserDAO {
             if (appointment == null) {
                 appointment = new Appointment();
             }
-            user = new UserDTO(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, pendindMSG);
+            Map<Integer, Offer> offer = offers.get(name);
+            if (offer == null) {
+                offer = new ConcurrentHashMap<>();
+            }
+            user = new UserDTOTemp(name, storesManaged, storesOwned, shoppingCart, purchaseHistory, appointment, offer, pendindMSG);
         }
         pendingReadLock.unlock();
+        offersReadLock.unlock();
         appointmentsReadLock.unlock();
         historiesReadLock.unlock();
         cartsReadLock.unlock();
@@ -172,6 +188,10 @@ public class UserDAO {
         this.purchaseHistories.put(name, new PurchaseHistory());
         historiesWriteLock.unlock();
 
+        offersWriteLock.lock();
+        this.offers.put(name, new ConcurrentHashMap<>());
+        offersWriteLock.unlock();
+
         pendingWriteLock.lock();
         this.pendingMessages.put(name, new PendingMessages());
         pendingWriteLock.unlock();
@@ -192,7 +212,7 @@ public class UserDAO {
     }
 
     public Response<Boolean> addStoreOwned(String name, int storeId){
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 1");
         ownersWriteLock.lock();
         if(userExists(name)){
             this.testOwners.get(name).add(storeId);
@@ -203,14 +223,18 @@ public class UserDAO {
     }
 
     public Response<Boolean> addStoreManaged(String name, int storeId) {
-        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        Response<Boolean> result;
         managersWriteLock.lock();
         if(userExists(name)){
-            List<Permissions> permissions = new Vector<>();
-            permissions.add(Permissions.RECEIVE_STORE_WORKER_INFO);
+            List<PermissionsEnum> permissions = new Vector<>();
+            permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
             this.testManagers.get(name).put(storeId, permissions);
             result = new Response<>(true, false, "Store added to manager's list");
         }
+        else{
+            result = new Response<>(false, true, "user doesn't exist 2");
+        }
+
         managersWriteLock.unlock();
         return result;
     }
@@ -222,7 +246,7 @@ public class UserDAO {
             result = this.appointments.get(appointeeName).getAppointees(storeID);
         }
         else {
-            result = new Response<>(new Vector<>(), true, "User doesn't exist");
+            result = new Response<>(new Vector<>(), true, "User doesn't exist 3");
         }
         appointmentsReadLock.unlock();
         return result;
@@ -261,7 +285,7 @@ public class UserDAO {
         }
     }
 
-    public void addPermission(int storeId, String permitted, Permissions permission) {
+    public void addPermission(int storeId, String permitted, PermissionsEnum permission) {
         managersWriteLock.lock();
         if(this.testManagers.containsKey(permitted)) {
             this.testManagers.get(permitted).get(storeId).add(permission);
@@ -269,7 +293,7 @@ public class UserDAO {
         managersWriteLock.unlock();
     }
 
-    public void removePermission(int storeId, String permitted, Permissions permission) {
+    public void removePermission(int storeId, String permitted, PermissionsEnum permission) {
         managersWriteLock.lock();
         if(this.testManagers.containsKey(permitted)) {
             this.testManagers.get(permitted).get(storeId).remove(permission);
@@ -293,6 +317,42 @@ public class UserDAO {
             result = this.testOwners.get(newOwnerOrManager).contains(storeId);
         }
         ownersReadLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> addOffer(String name, int productID, int storeID, double priceOffer, OfferState state){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 4");
+        offersWriteLock.lock();
+        if(userExists(name)){
+            this.offers.get(name).put(productID, new Offer(productID, storeID, priceOffer, state));
+            result = new Response<>(true, false, "Offer added to the user's list");
+        }
+        offersWriteLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> removeOffer(String name, int productID){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist");
+        offersWriteLock.lock();
+        if(userExists(name)){
+            this.offers.get(name).remove(productID);
+            result = new Response<>(true, false, "Offer removed from the user's list");
+        }
+        offersWriteLock.unlock();
+        return result;
+    }
+
+    public Response<Boolean> changeStatus(String offeringUsername, int productID, double bidReply, OfferState state){
+        Response<Boolean> result = new Response<>(false, true, "user doesn't exist 5");
+        offersWriteLock.lock();
+        if(userExists(offeringUsername)){
+            if(bidReply > 0){
+                this.offers.get(offeringUsername).get(productID).setOfferReply(bidReply);
+            }
+            this.offers.get(offeringUsername).get(productID).setState(state);
+            result = new Response<>(true, false, "Successfully updated offer status.");
+        }
+        offersWriteLock.unlock();
         return result;
     }
 

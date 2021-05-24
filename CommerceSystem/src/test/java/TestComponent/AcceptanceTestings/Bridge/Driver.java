@@ -1,6 +1,5 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
-import Server.Communication.WSS.Notify;
 import Server.Domain.UserManager.Publisher;
 import Server.Service.CommerceService;
 import Server.Service.IService;

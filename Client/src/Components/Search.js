@@ -1,5 +1,6 @@
 import React from "react";
 import Connection from "../API/Connection";
+import {Container, Form, FormControl, InputGroup, Button} from "react-bootstrap";
 
 class Search extends React.Component{
 
@@ -7,7 +8,7 @@ class Search extends React.Component{
         super(props);
 
         this.state = {
-            searchOption: "Product",
+            searchOption: "product",
             searchProductBy: '',
             freeText: '',
         }
@@ -29,13 +30,13 @@ class Search extends React.Component{
 
     // returns a JSX of a radio for choosing a type of search for products if search for product is selected
     searchProductType(){
-        if(this.state.searchOption === "Product"){
+        if(this.state.searchOption === "product"){
             return <div>
                 <div onChange={this.searchProductByChangeHandler}>
                     <label>Search product by:</label>
-                    <input type="radio" value="Name" name="searchProductBy" defaultChecked /> By Name
-                    <input type="radio" value="Category" name="searchProductBy" /> By Category
-                    <input type="radio" value="Keyword" name="searchProductBy" /> By Keyword
+                    <input type="radio" value="name" name="searchProductBy" defaultChecked /> By Name
+                    <input type="radio" value="category" name="searchProductBy" /> By Category
+                    <input type="radio" value="keyword" name="searchProductBy" /> By Keyword
                 </div>
             </div>;
         }
@@ -57,17 +58,25 @@ class Search extends React.Component{
     render() {
         return (
             <div className="Search">
-                    <form autoComplete="on" action="/search/" method="get">
-                        <div onChange={this.searchOptionChangeHandler}>
-                            <label>Search for:</label>
-                            <input type="radio" value="Product" name="searchOption" defaultChecked /> Product
-                            <input type="radio" value="Store" name="searchOption" /> Store
-                        </div>
-                        {this.searchProductType()}
-                        <input type="text" name="searchText" placeholder="Search for anything" value={this.state.freeText}
-                               onChange={this.handleFreeTextChange}/>
-                        <button onClick={this.handleSearch}>Search</button>
-                    </form>
+                <form autoComplete="on" action="/search/" method="get" className="form-search">
+                    <div onChange={this.searchOptionChangeHandler}>
+                        <label>Search for:</label>
+                        <input className='search-radio' type="radio" value="product" name="searchOption" defaultChecked /> Product
+                        <input className='search-radio' type="radio" value="store" name="searchOption" /> Store
+                    </div>
+                    {this.searchProductType()}
+                    <InputGroup className="mb-3">
+                        <FormControl
+                            name='free-text'
+                            placeholder="Search for anything..."
+                            aria-label="Free search"
+                            aria-describedby="basic-addon2"
+                        />
+                        <InputGroup.Append>
+                            <Button type='submit' variant="outline-secondary">Search</Button>
+                        </InputGroup.Append>
+                    </InputGroup>
+                </form>
             </div>
         );
     }

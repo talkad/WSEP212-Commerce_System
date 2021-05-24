@@ -1,18 +1,31 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.Domain.ShoppingManager.ProductDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.SumCompositionDiscountRuleDTO;
+
 
 import java.util.List;
 import java.util.Map;
 
 public class SumCompositionDiscountRule extends CompoundDiscountRule {
 
-    public SumCompositionDiscountRule(int ruleID, List<DiscountRule> policyRules){
-        super(ruleID, 0, policyRules);
+    public SumCompositionDiscountRule(List<DiscountRule> policyRules){
+        super(0, policyRules);
+    }
+
+    public SumCompositionDiscountRule(SumCompositionDiscountRuleDTO ruleDTO){
+        super(ruleDTO.getDiscount(), ruleDTO.getConcreteDiscountRules());
+        this.setID(ruleDTO.getId());
     }
 
     @Override
-    public double calcDiscount(Map<ProductDTO, Integer> shoppingBasket) {
+    public DiscountRuleDTO toDTO(){
+        return new SumCompositionDiscountRuleDTO(this.id, this.getDiscountRulesDTO(), this.discount);
+    }
+
+    @Override
+    public double calcDiscount(Map<ProductClientDTO, Integer> shoppingBasket) {
         double discount = 0.0;
 
         for(DiscountRule policyRule : discountRules)

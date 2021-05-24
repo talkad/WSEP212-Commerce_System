@@ -1,9 +1,11 @@
 package TestComponent.AcceptanceTestings.Tests;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.ShoppingManager.ProductDTO;
-import Server.Domain.UserManager.Permissions;
-import Server.Domain.UserManager.PurchaseDTO;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
+import Server.Domain.UserManager.PermissionsEnum;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,14 +31,14 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             this.storeID = bridge.openStore("korra", "the legend of korra").getResult();
 
             // adding a product which is last in stock
-            ProductDTO product = new ProductDTO("air bending", storeID, 10,
+            ProductClientDTO product = new ProductClientDTO("air bending", storeID, 10,
                     new LinkedList<String>(Arrays.asList("air", "bending")),
                     new LinkedList<String>(Arrays.asList("bending")));
 
             bridge.addProductsToStore("korra", product, 1);
 
             // a product which the owner will try to remove while someone buys
-            product = new ProductDTO("earth bending", storeID, 50,
+            product = new ProductClientDTO("earth bending", storeID, 50,
                     new LinkedList<String>(Arrays.asList("earth", "bending")),
                     new LinkedList<String>(Arrays.asList("bending")));
 
@@ -61,7 +63,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             bridge.register(guestName, "jinora", "123456");
             bridge.login(bridge.addGuest().getResult(), "jinora", "123456");
             bridge.appointStoreManager("korra", "jinora", storeID);
-            bridge.addPermission("korra", storeID, "jinora", Permissions.RECEIVE_STORE_HISTORY);
+            bridge.addPermission("korra", storeID, "jinora", PermissionsEnum.RECEIVE_STORE_HISTORY);
 
             initialized = true;
         }
@@ -70,18 +72,21 @@ public class ParallelismTests extends ProjectAcceptanceTests{
     @Test
     public void parallelPurchaseTest() throws InterruptedException {
         // creating two threads which will compete over a product but not starting them yet
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
 
         final int[] buyer1Result = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread buyer1 = new Thread(){
             public void run(){
-                Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
+                Response<List<ProductClientDTO>> searchResponse = bridge.searchByProductName("air bending");
                 if(!searchResponse.getResult().isEmpty()) {
-                    ProductDTO productToAdd = searchResponse.getResult().get(0);
+                    ProductClientDTO productToAdd = searchResponse.getResult().get(0);
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
                         Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
-                                "4580-1234-5678-9010", "Israel");
+                                paymentDetails, supplyDetails);
                         if(!purchaseResult.isFailure()){
                             buyer1Result[0] = 1;
                         }
@@ -90,45 +95,17 @@ public class ParallelismTests extends ProjectAcceptanceTests{
             }
         };
 
-//        Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
-//        if(!searchResponse.getResult().isEmpty()) {
-//            ProductDTO productToAdd = searchResponse.getResult().get(0);
-//            Response<Boolean> cartResponse = bridge.addToCart("bolin",
-//                    productToAdd.getStoreID(), productToAdd.getProductID());
-//            if(!cartResponse.isFailure()) {
-//                Response<Boolean> purchaseResult =bridge.directPurchase("bolin",
-//                        "4580-1234-5678-9010", "republic city");
-//                if(!purchaseResult.isFailure()){
-//                    System.out.println("hey");
-//                    buyer1Result[0] = 1;
-//                }
-//            }
-//        }
-
-//        Response<List<PurchaseDTO>> historyResult = this.bridge.getPurchaseHistory("bolin");
-//
-//        boolean exists = false;
-//        for(PurchaseDTO purchase: historyResult.getResult()){
-//            for(ProductDTO product: purchase.getBasket().keySet()){
-//                if(product.getName().equals("air bending")){
-//                    exists = true;
-//                }
-//            }
-//        }
-//
-//        System.out.println(exists);
-
         final int[] buyer2Result = new int[1]; // 0 - didn't get to buy. 1 - bought the product
+
         Thread buyer2 = new Thread(){
           public void run(){
-              Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("air bending");
+              Response<List<ProductClientDTO>> searchResponse = bridge.searchByProductName("air bending");
               if(!searchResponse.getResult().isEmpty()) {
-                  ProductDTO productToAdd = searchResponse.getResult().get(0);
+                  ProductClientDTO productToAdd = searchResponse.getResult().get(0);
                   Response<Boolean> cartResponse = bridge.addToCart("tenzin",
                           productToAdd.getStoreID(), productToAdd.getProductID());
                   if(!cartResponse.isFailure()) {
-                      Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
-                              "4580-1234-5678-9010", "Israel");
+                      Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",paymentDetails, supplyDetails);
                       if(!purchaseResult.isFailure()){
                           buyer2Result[0] = 1;
                       }
@@ -136,36 +113,6 @@ public class ParallelismTests extends ProjectAcceptanceTests{
               }
           }
         };
-
-//        searchResponse = bridge.searchByProductName("air bending");
-//        if(!searchResponse.getResult().isEmpty()) {
-//            System.out.println("heyoooooo");
-//            ProductDTO productToAdd = searchResponse.getResult().get(0);
-//            Response<Boolean> cartResponse = bridge.addToCart("tenzin",
-//                    productToAdd.getStoreID(), productToAdd.getProductID());
-//            if(!cartResponse.isFailure()) {
-//                Response<Boolean> purchaseResult =bridge.directPurchase("tenzin",
-//                        "4580-1234-5678-9010", "republic city");
-//                if(!purchaseResult.isFailure()){
-//                    buyer2Result[0] = 1;
-//                }
-//            }
-//        }
-
-
-//        historyResult = this.bridge.getPurchaseHistory("tenzin");
-//
-//        exists = false;
-//        for(PurchaseDTO purchase: historyResult.getResult()){
-//            for(ProductDTO product: purchase.getBasket().keySet()){
-//                if(product.getName().equals("air bending")){
-//                    exists = true;
-//                }
-//            }
-//        }
-//
-//        System.out.println(exists);
-
 
         // now that we have our threads ready we'll start them in random manner
         Random random = new Random(System.currentTimeMillis());
@@ -192,18 +139,20 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
     @Test
     public void parallelBuyAndRemoveTest() throws InterruptedException {
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
+
         // creating two threads where one tries to buy a product while the other tries to remove it
         final int[] buyerResult = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread buyer = new Thread(){
             public void run(){
-                Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("earth bending");
+                Response<List<ProductClientDTO>> searchResponse = bridge.searchByProductName("earth bending");
                 if(!searchResponse.isFailure()) {
-                    ProductDTO productToAdd = searchResponse.getResult().get(0);
+                    ProductClientDTO productToAdd = searchResponse.getResult().get(0);
                     Response<Boolean> cartResponse = bridge.addToCart("bolin",
                             productToAdd.getStoreID(), productToAdd.getProductID());
                     if(!cartResponse.isFailure()) {
-                        Response<Boolean> purchaseResult = bridge.directPurchase("bolin",
-                                "4580-1234-5678-9010", "republic city");
+                        Response<Boolean> purchaseResult = bridge.directPurchase("bolin", paymentDetails, supplyDetails);
                         if(!purchaseResult.isFailure()){
                             buyerResult[0] = 1;
                         }
@@ -215,9 +164,9 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         final int[] removerResult = new int[1]; // 0 - couldn't remove. 1 - removed.
         Thread remover = new Thread(){
             public void run(){
-                Response<List<ProductDTO>> searchResponse = bridge.searchByProductName("earth bending");
+                Response<List<ProductClientDTO>> searchResponse = bridge.searchByProductName("earth bending");
                 if(!searchResponse.isFailure()) {
-                    ProductDTO productToRemove = searchResponse.getResult().get(0);
+                    ProductClientDTO productToRemove = searchResponse.getResult().get(0);
                     Response<Boolean> removeResult = bridge.removeProductsFromStore("korra",
                             productToRemove.getStoreID(), productToRemove.getProductID(), 42);
                     if(!removeResult.isFailure()){
@@ -299,7 +248,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         final int[] actorResult = new int[1]; // 0 - didn't get to buy. 1 - bought the product
         Thread actor = new Thread(){
             public void run(){
-                Response<Collection<PurchaseDTO>> historyResult = bridge.getPurchaseDetails("jinora", storeID);
+                Response<Collection<PurchaseClientDTO>> historyResult = bridge.getPurchaseDetails("jinora", storeID);
                 if(!historyResult.isFailure()){
                     actorResult[0] = 1;
                 }
@@ -310,7 +259,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
         Thread remover = new Thread(){
             public void run(){
                 Response<Boolean> removeResponse = bridge.removePermission("korra", storeID, "jinora",
-                        Permissions.RECEIVE_STORE_HISTORY);
+                        PermissionsEnum.RECEIVE_STORE_HISTORY);
                 if(!removeResponse.isFailure()) {
                     removerResult[0] = 1;
                 }

@@ -19,7 +19,8 @@ public abstract class Handler {
                 response = nextHandler.handle(input);
                 return response;
             }catch(Exception e){
-                new Response<>(false, true, "Handler found but an error occured");
+                e.printStackTrace();
+                new Response<>(false, true, "Handler found but an error occurred");
             }
         }
 

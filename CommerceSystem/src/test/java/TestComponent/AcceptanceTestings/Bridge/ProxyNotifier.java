@@ -1,6 +1,7 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
-import Server.Communication.WSS.Notify;
+import Server.Service.DataObjects.ReplyMessage;
+import Server.Service.Notify;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class ProxyNotifier implements Notify {
 
-    private Map<String, List<String>> messages;
+    private Map<String, List<ReplyMessage>> messages;
     private Map<ChannelHandlerContext, String> connections;
 
     public ProxyNotifier(){
@@ -31,8 +32,8 @@ public class ProxyNotifier implements Notify {
     }
 
     @Override
-    public void notify(String identifier, String msg) {
-        List<String> msgs = messages.get(identifier);
+    public void notify(String identifier, ReplyMessage msg) {
+        List<ReplyMessage> msgs = messages.get(identifier);
 
         if(msgs != null)
             messages.get(identifier).add(msg);
@@ -40,7 +41,7 @@ public class ProxyNotifier implements Notify {
             System.out.println("user "+ identifier +  " doesn't exists");
     }
 
-    public List<String> getMessages(String username){
+    public List<ReplyMessage> getMessages(String username){
         return messages.get(username);
     }
 }

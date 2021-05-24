@@ -1,6 +1,6 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
@@ -329,7 +329,7 @@ public class UserTests {
         for (int i = 0; i < numberOfThreads; i++) {
             service.execute(() -> {
                 int currentId = id.getAndIncrement();
-                yaakov.addSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                yaakov.addSelfPermission(currentId, PermissionsEnum.ADD_PRODUCT_TO_STORE);
                 latch.countDown();
             });
         }
@@ -337,7 +337,7 @@ public class UserTests {
         latch.await();
         // Check that every permission was added
         for(int storeId = 2000; storeId < 2100; storeId++){
-            Assert.assertTrue(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+            Assert.assertTrue(yaakov.getStoresManaged().get(storeId).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
         }
         service.shutdownNow();
     }
@@ -357,14 +357,14 @@ public class UserTests {
 
         for(int storeId = 4000; storeId < 4100; storeId++){
             yaakov.addStoresManaged(storeId, new Vector<>());
-            yaakov.addSelfPermission(storeId, Permissions.ADD_PRODUCT_TO_STORE);
+            yaakov.addSelfPermission(storeId, PermissionsEnum.ADD_PRODUCT_TO_STORE);
         }
 
         ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         for (int i = 0; i < numberOfThreads; i++) {
             service.execute(() -> {
                 int currentId = id.getAndIncrement();
-                yaakov.removeSelfPermission(currentId, Permissions.ADD_PRODUCT_TO_STORE);
+                yaakov.removeSelfPermission(currentId, PermissionsEnum.ADD_PRODUCT_TO_STORE);
                 latch.countDown();
             });
         }
@@ -372,7 +372,7 @@ public class UserTests {
         latch.await();
         // Check that every permission was removed
         for(int storeId = 4000; storeId < 4100; storeId++){
-            Assert.assertFalse(yaakov.getStoresManaged().get(storeId).contains(Permissions.ADD_PRODUCT_TO_STORE));
+            Assert.assertFalse(yaakov.getStoresManaged().get(storeId).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
         }
         service.shutdownNow();
     }

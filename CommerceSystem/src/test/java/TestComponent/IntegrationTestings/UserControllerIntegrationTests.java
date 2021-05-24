@@ -1,7 +1,7 @@
 package TestComponent.IntegrationTestings;
 
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.Permissions;
+import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
@@ -516,7 +516,7 @@ public class UserControllerIntegrationTests {
 
         userController.appointOwner(yoniUserName, "tal7", storeID);
         userController.appointManager(talUserName, "jacob7", storeID);
-        userController.addPermission(talUserName, storeID, "jacob7", Permissions.APPOINT_MANAGER);
+        userController.addPermission(talUserName, storeID, "jacob7", PermissionsEnum.APPOINT_MANAGER);
         userController.appointOwner(talUserName, "aviad7", storeID);
         userController.appointOwner(talUserName, "almog7", storeID);
         userController.appointManager(jacobUserName, "shaked67", storeID);
@@ -577,7 +577,7 @@ public class UserControllerIntegrationTests {
 
         userController.appointOwner(yoniUserName, "tal7", storeID);
         userController.appointManager(talUserName, "jacob7", storeID);
-        userController.addPermission(talUserName, storeID, "jacob7", Permissions.APPOINT_MANAGER);
+        userController.addPermission(talUserName, storeID, "jacob7", PermissionsEnum.APPOINT_MANAGER);
         userController.appointOwner(talUserName, "aviad7", storeID);
         userController.appointOwner(talUserName, "almog7", storeID);
         userController.appointManager(jacobUserName, "shaked67", storeID);
@@ -623,11 +623,11 @@ public class UserControllerIntegrationTests {
 
         userController.appointManager(yoniUserName, "tal6", storeID);
 
-        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
 
-        userController.addPermission(yoniUserName, storeID, "tal6", Permissions.ADD_PRODUCT_TO_STORE);
+        userController.addPermission(yoniUserName, storeID, "tal6", PermissionsEnum.ADD_PRODUCT_TO_STORE);
 
-        Assert.assertTrue(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
 
     }
 
@@ -652,7 +652,7 @@ public class UserControllerIntegrationTests {
 
         Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().containsKey(storeID));
         // attempted adding permission to someone not a manager
-        Assert.assertTrue(userController.addPermission(yoniUserName, storeID, "tal6", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertTrue(userController.addPermission(yoniUserName, storeID, "tal6", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
 
         Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().containsKey(storeID));
 
@@ -684,11 +684,11 @@ public class UserControllerIntegrationTests {
         userController.appointOwner(yoniUserName, bruhUserName, storeID);
         userController.appointManager(yoniUserName, "tal6", storeID);
 
-        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
         // attempting to add permission to manager without permission
-        Assert.assertTrue(userController.addPermission(bruhUserName, storeID, "tal6", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertTrue(userController.addPermission(bruhUserName, storeID, "tal6", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
 
-        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal6").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
 
     }
 
@@ -712,13 +712,13 @@ public class UserControllerIntegrationTests {
         int storeID = storeRes.getResult();
 
         userController.appointManager(yoniUserName, "tal5", storeID);
-        userController.addPermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE);
+        userController.addPermission(yoniUserName, storeID, "tal5", PermissionsEnum.ADD_PRODUCT_TO_STORE);
 
-        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
 
-        userController.removePermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE);
+        userController.removePermission(yoniUserName, storeID, "tal5", PermissionsEnum.ADD_PRODUCT_TO_STORE);
 
-        Assert.assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
     }
 
     @Test
@@ -742,7 +742,7 @@ public class UserControllerIntegrationTests {
 
         Assert.assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().containsKey(storeID));
 
-        Assert.assertTrue(userController.removePermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertTrue(userController.removePermission(yoniUserName, storeID, "tal5", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
 
         Assert.assertFalse(userController.getConnectedUsers().get("tal5").getStoresManaged().containsKey(storeID));
     }
@@ -772,13 +772,13 @@ public class UserControllerIntegrationTests {
 
         userController.appointOwner(yoniUserName, bruhUserName, storeID);
         userController.appointManager(yoniUserName, "tal5", storeID);
-        userController.addPermission(yoniUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE);
+        userController.addPermission(yoniUserName, storeID, "tal5", PermissionsEnum.ADD_PRODUCT_TO_STORE);
 
-        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
         // attempted to remove permission when not allowed
-        Assert.assertTrue(userController.removePermission(bruhUserName, storeID, "tal5", Permissions.ADD_PRODUCT_TO_STORE).isFailure());
+        Assert.assertTrue(userController.removePermission(bruhUserName, storeID, "tal5", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
 
-        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(Permissions.ADD_PRODUCT_TO_STORE));
+        Assert.assertTrue(userController.getConnectedUsers().get("tal5").getStoresManaged().get(storeID).contains(PermissionsEnum.ADD_PRODUCT_TO_STORE));
     }
 
     @Test
@@ -816,7 +816,7 @@ public class UserControllerIntegrationTests {
 
         userController.appointOwner(yoniUserName, "tal4", storeID);
         userController.appointManager(talUserName, "jacob4", storeID);
-        userController.addPermission(talUserName, storeID, "jacob4", Permissions.APPOINT_MANAGER);
+        userController.addPermission(talUserName, storeID, "jacob4", PermissionsEnum.APPOINT_MANAGER);
         userController.appointOwner(talUserName, "aviad4", storeID);
         userController.appointOwner(talUserName, "almog4", storeID);
         userController.appointManager(jacobUserName, "shaked64", storeID);
@@ -878,7 +878,7 @@ public class UserControllerIntegrationTests {
 
         userController.appointOwner(yoniUserName, "tal4", storeID);
         userController.appointManager(talUserName, "jacob4", storeID);
-        userController.addPermission(talUserName, storeID, "jacob4", Permissions.APPOINT_MANAGER);
+        userController.addPermission(talUserName, storeID, "jacob4", PermissionsEnum.APPOINT_MANAGER);
         userController.appointOwner(talUserName, "aviad4", storeID);
         userController.appointOwner(talUserName, "almog4", storeID);
         userController.appointManager(jacobUserName, "shaked64", storeID);

@@ -23,15 +23,15 @@ class AddProduct extends React.Component {
     handleClick(e) {
          e.preventDefault();
          Connection.sendAddProduct(this.state.functionName, this.state.username, this.state.name, this.state.storeId, this.state.price,
-             this.state.categories, this.state.keywords, this.state.amount).then(this.handleAddProductResponse, Connection.handleReject())
+             this.state.categories, this.state.keywords, this.state.amount).then(this.handleAddProductResponse, Connection.handleReject)
     }
 
     handleAddProductResponse(result){
-        if(!result.response.isFailure){
+        if(!result.isFailure){
             alert("adding product success");
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 

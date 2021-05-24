@@ -1,6 +1,7 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
@@ -48,9 +49,9 @@ public class UserControllerTest {
         String initialUserName = commerceService.addGuest().getResult();
 
 
-        Assert.assertFalse(userDAO.userExists("Jacob2"));
+        Assert.assertNull(DALService.getInstance().getAccount("Jacob2"));
         Assert.assertFalse(userController.register(initialUserName, "Jacob2", "12345").isFailure());
-        Assert.assertTrue(userDAO.userExists("Jacob2"));
+        Assert.assertNotNull(DALService.getInstance().getAccount("Jacob2"));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class UserControllerTest {
         String initialUserName = commerceService.addGuest().getResult();
 
         Assert.assertFalse(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
-        Assert.assertTrue(userDAO.userExists("JacobLine54"));
+        Assert.assertNotNull(DALService.getInstance().getAccount("JacobLine54"));
         Assert.assertTrue(userController.register(initialUserName, "JacobLine54", "12345").isFailure());
     }
 

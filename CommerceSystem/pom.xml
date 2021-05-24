@@ -79,6 +79,27 @@
             <artifactId>httpclient</artifactId>
             <version>4.4.1</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.12.8</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/dev.morphia.morphia/morphia-core -->
+        <dependency>
+            <groupId>dev.morphia.morphia</groupId>
+            <artifactId>morphia-core</artifactId>
+            <version>2.0.2</version>
+<!--            <version>2.1.6</version>-->
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-simple</artifactId>-->
+<!--            <version>1.6.4</version>-->
+<!--        </dependency>-->
     </dependencies>
 
 

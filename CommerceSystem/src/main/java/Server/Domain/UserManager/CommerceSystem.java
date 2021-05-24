@@ -3,39 +3,46 @@ package Server.Domain.UserManager;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
+import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
+import Server.Domain.UserManager.DTOs.BasketClientDTO;
+import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 
 public class CommerceSystem implements IService {
 
     private UserController userController;
     private StoreController storeController;
-    public static Log log = new Log("logs.txt");
+    public static Log log = new Log("Logs.txt");
+//    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
         this.storeController = StoreController.getInstance();
     }
 
-    private static class CreateSafeThreadSingleton
-    {
+    private static class CreateSafeThreadSingleton {
         private static final CommerceSystem INSTANCE = new CommerceSystem();
     }
 
-    public static CommerceSystem getInstance()
-    {
+    public static CommerceSystem getInstance() {
         return CommerceSystem.CreateSafeThreadSingleton.INSTANCE;
     }
 
     @Override
     public void init() {
         userController.adminBoot();
+//        initState();
     }
 
     @Override
@@ -58,28 +65,23 @@ public class CommerceSystem implements IService {
         return userController.login(prevName, username, pwd);
     }
 
-//    @Override
-//    public Response<Collection<Store>> getContent() {
-//        return storeController.getContent();
-//    }
-
     @Override
-    public Response<List<StoreDTO>> searchByStoreName(String storeName) {
+    public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         return storeController.searchByStoreName(storeName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductName(String productName) {
+    public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         return storeController.searchByProductName(productName);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductCategory(String category) {
+    public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
         return storeController.searchByCategory(category);
     }
 
     @Override
-    public Response<List<ProductDTO>> searchByProductKeyword(String keyword) {
+    public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
         return storeController.searchByKeyWord(keyword);
     }
 
@@ -89,23 +91,48 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> removeFromCart(String username,  int storeID, int productID) {
+    public Response<Boolean> removeFromCart(String username, int storeID, int productID) {
         return userController.removeProduct(username, storeID, productID);
     }
 
     @Override
-    public Response<Map<Integer, Map<ProductDTO, Integer>>> getCartDetails(String username) {
+    public Response<List<BasketClientDTO>> getCartDetails(String username) {
         return userController.getShoppingCartContents(username);
     }
 
     @Override
-    public Response<Boolean> updateProductQuantity(String username,  int storeID, int productID, int amount) {
+    public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
         return userController.updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
-    public Response<Boolean> directPurchase(String username, String bankAccount, String location) {
-        return userController.purchase(username, bankAccount, location);
+    public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return userController.purchase(username, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
+        return userController.bidOffer(username, productID, storeID, priceOffer);
+    }
+
+    @Override
+    public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
+        return userController.bidManagerReply(username, offeringUsername, productID, storeID, bidReply);
+    }
+
+    @Override
+    public Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
+        return userController.bidUserReply(username, productID, storeID, paymentDetails, supplyDetails);
+    }
+
+    @Override
+    public Response<List<Integer>> getStoreOwned(String username) {
+        return userController.getStoreOwned(username);
+    }
+
+    @Override
+    public Response<StoreClientDTO> getStore(int storeID) {
+        return storeController.getStore(storeID);
     }
 
     @Override
@@ -114,8 +141,8 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<String> logout(String userName) {
-        return userController.logout(userName);
+    public Response<String> logout(String username) {
+        return userController.logout(username);
     }
 
     @Override
@@ -129,12 +156,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getPurchaseHistory(String username) {
+    public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
         return userController.getPurchaseHistoryContents(username);
     }
 
     @Override
-    public Response<Boolean> addProductsToStore(String username, ProductDTO productDTO, int amount) {
+    public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
         return userController.addProductsToStore(username, productDTO, amount);
     }
 
@@ -159,7 +186,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule){
+    public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule) {
         return userController.addDiscountRule(username, storeID, discountRule);
     }
 
@@ -169,14 +196,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID)
-    {
+    public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID) {
         return userController.removeDiscountRule(username, storeID, discountRuleID);
     }
 
     @Override
-    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID)
-    {
+    public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID) {
         return userController.removePurchaseRule(username, storeID, purchaseRuleID);
     }
 
@@ -191,8 +216,18 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<Permissions>> getUserPermissions(String username, int storeID) {
+    public Response<List<String>> getUserPermissions(String username, int storeID) {
         return userController.getUserPermissions(username, storeID);
+    }
+
+    @Override
+    public Response<Double> getTotalSystemRevenue(String username) {
+        return userController.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<Double> getTotalStoreRevenue(String username, int storeID) {
+        return userController.getTotalStoreRevenue(username, storeID);
     }
 
     @Override
@@ -201,12 +236,12 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
-    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, Permissions permission) {
+    public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
         return userController.removePermission(permitting, storeId, permitted, permission);
     }
 
@@ -221,18 +256,92 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getPurchaseDetails(String username, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
         return userController.getPurchaseDetails(username, storeID);
     }
 
     @Override
-    public Response<List<PurchaseDTO>> getUserPurchaseHistory(String adminName, String username) {
+    public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         return userController.getUserPurchaseHistory(adminName, username);
     }
 
     @Override
-    public Response<Collection<PurchaseDTO>> getStorePurchaseHistory(String adminName, int storeID) {
+    public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
+    public void initState() {
+
+        try {
+            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            fis.read(data);
+            fis.close();
+            String str = new String(data, StandardCharsets.UTF_8);
+            String[] funcs = str.split(";");
+            String[] attributes;
+            //int guestNum = 1;
+            String currUser = addGuest().getResult();
+            //int currStoreId;
+
+            for (int i = 0; i < funcs.length; i++){
+                if(funcs[i].startsWith("register")){
+                    attributes = funcs[i].substring(9).split(", ");
+
+                    register(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
+                }
+                else if(funcs[i].startsWith("login")){
+                    attributes = funcs[i].substring(6).split(", ");
+                    currUser = login(currUser, attributes[0], attributes[1].substring(0, attributes[1].length() - 1)).getResult();
+
+                }
+                else if(funcs[i].startsWith("openStore")){
+                    attributes = funcs[i].substring(10).split(", ");
+                    //currStoreId =
+                    openStore(currUser, attributes[0].substring(0, attributes[0].length() - 1));
+
+                }
+                else if(funcs[i].startsWith("appointStoreManager")){
+                    attributes = funcs[i].substring(20).split(", ");
+                    appointStoreManager(currUser, attributes[0], Integer.parseInt(attributes[1].substring(0, attributes[1].length() - 1)));
+
+                }
+                else if(funcs[i].startsWith("logout")){
+                    attributes = funcs[i].substring(7).split(", ");
+                    currUser = logout(attributes[0].substring(0, attributes[0].length() - 1)).getResult();
+                }
+                else if(funcs[i].startsWith("addProductsToStore")){
+                    attributes = funcs[i].substring(19).split(", ");
+                    List<String> categories = stringToList(attributes, 3);
+                    List<String> keywords = stringToList(attributes, 3 + categories.size());
+                    int offset = 3 + categories.size() + keywords.size();
+                    addProductsToStore(currUser, new ProductClientDTO(attributes[0], Integer.parseInt(attributes[1]), Double.parseDouble(attributes[2]), categories, keywords), Integer.parseInt(attributes[offset].substring(0, attributes[offset].length() - 1)));
+                }
+                else if(funcs[i].startsWith("addPermission")){
+                    attributes = funcs[i].substring(14).split(", ");
+                    addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
+                }
+                else{
+                    //todo send to 404 page
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> stringToList(String[] str, int index){
+        List<String> lst = new Vector<>();
+        str[index] = str[index].substring(1);
+        for(int i = index; i < str.length; i++){
+            if(str[i].endsWith("]")){
+                lst.add(str[i].substring(0, str[i].length() - 1));
+                break;
+            }
+            lst.add(str[i]);
+        }
+        return lst;
+    }
 }

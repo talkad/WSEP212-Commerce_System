@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import Connection from "../API/Connection";
 import StaticUserInfo from "../API/StaticUserInfo";
-
+import {Form, Button, Container, Spinner, InputGroup, Alert} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import {Link} from "react-router-dom";
 
 class Login extends React.Component{
 
@@ -11,6 +13,12 @@ class Login extends React.Component{
         this.state = {
             username: '',
             password: '',
+            submitted: false,
+            validated: false,
+
+            showAlert: false,
+            alertVariant: '',
+            alertInfo: '',
         }
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -27,35 +35,85 @@ class Login extends React.Component{
     }
 
     handleResponse(result) {
-        if(!result.response.isFailure){
-            StaticUserInfo.setUsername(result.response.result);
-            this.props.history.push('/registered');
+        if(!result.isFailure){
+            window.sessionStorage.setItem('username', result.result);
+            this.setState({submitted: false,
+                showAlert: true, alertVariant: 'success', alertInfo: 'Logged in!'});
+            document.location.href = "/";
         }
         else{
-            alert(result.response.errMsg);
-            this.setState({username: '', password: ''});
+            this.setState({username: '', password: '', submitted: false,
+            showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
 
     handleSignIn(){
-        Connection.sendLogin(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
+        if(this.state.username !== '' && this.state.password !== ''){
+            this.setState({submitted: true});
+            Connection.sendLogin(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
+        }
     }
 
     render(){
+        const handleSubmit = (event) => {
+            const form = event.currentTarget;
+            event.preventDefault();
+            if (form.checkValidity() === false) {
+                event.stopPropagation();
+            }
+
+            this.setState({validated: true})
+            this.handleSignIn();
+        };
+
         return (
             <div className="Login">
-                <h1>Hello there</h1>
-                <form>
-                    <input type="text" name="username" placeholder="Username" value={this.state.username}
-                           onChange={this.handleUsernameChange}/>
-                </form>
-                <form>
-                    <input type="password" name="password" placeholder="Password" value={this.state.password}
-                           onChange={this.handlePasswordChange}/>
-                </form>
-                <div>
-                    <button  onClick={this.handleSignIn}>Sign in</button>
-                </div>
+                <Container className="Page">
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
+                        <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
+                    </Alert>
+                    <h1>Login</h1>
+                    <Form noValidate validated={this.state.validated} className="form" onSubmit={handleSubmit}>
+                        <div className="textStyle">
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>Username:</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control type="text" placeholder="Enter username" value={this.state.username}
+                                                  onChange={this.handleUsernameChange} required/>
+                                    <Form.Control.Feedback type="invalid">
+                                        Please provide a username.
+                                    </Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
+                         </div>
+                        <div className="textStyle">
+                            <Form.Group controlId="formBasicPassword">
+                                <Form.Label>Password:</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control type="password" placeholder="Enter password" value={this.state.password}
+                                                  onChange={this.handlePasswordChange} required/>
+                                    <Form.Control.Feedback type="invalid">
+                                        Please provide a password.
+                                    </Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
+                        </div>
+                        <div className="buttonStyle">
+                            {!this.state.submitted &&
+                            <Button variant="primary" type="submit">
+                                Log in
+                            </Button>}
+
+                            {this.state.submitted &&
+                            <Button variant="primary" disabled>
+                                <Spinner animation="border" size="sm"/>
+                            </Button>}
+                        </div>
+                    </Form>
+                    <div className="divStyle">
+                        <p>not a member yet? <Link to="/register">register</Link></p>
+                    </div>
+                </Container>
             </div>
         );
     }

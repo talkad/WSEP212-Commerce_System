@@ -1,6 +1,8 @@
 package Server.Communication.MessageHandler;
 
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
@@ -27,10 +29,10 @@ public class GuestHandler extends Handler{
             case "startup" -> {
                 response = service.addGuest();
             }
-            case "removeGuest" -> {
-                String name = data.getProperty("name");
+            case "logout" -> {
+                String username = data.getProperty("username");
 
-                response = service.logout(name);
+                response = service.logout(username);
             }
             case "register" ->{
                 String identifier = data.getProperty("identifier");
@@ -96,10 +98,37 @@ public class GuestHandler extends Handler{
             }
             case "directPurchase" ->{
                 String username = data.getProperty("username");
-                String bankAccount = data.getProperty("bankAccount");
-                String location = data.getProperty("location");
+                String paymentDetails = data.getProperty("paymentDetails");
+                String supplyDetails = data.getProperty("supplyDetails");
 
-                response = service.directPurchase(username, bankAccount, location);
+                response = service.directPurchase(username, gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
+            }
+            case "bidOffer" ->{
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String productID = data.getProperty("productID");
+                String priceOffer = data.getProperty("priceOffer");
+
+                response = service.bidOffer(username, Integer.parseInt(storeID), Integer.parseInt(productID), Double.parseDouble(priceOffer));
+           }
+            case "bidUserReply" ->{
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String productID = data.getProperty("productID");
+                String paymentDetails = data.getProperty("paymentDetails");
+                String supplyDetails = data.getProperty("supplyDetails");
+
+                response = service.bidUserReply(username, Integer.parseInt(productID), Integer.parseInt(storeID), gson.fromJson(paymentDetails, PaymentDetails.class), gson.fromJson(supplyDetails, SupplyDetails.class));
+            }
+            case "getStore" ->{
+                String storeID = data.getProperty("storeID");
+
+                response = service.getStore( Integer.parseInt(storeID));
+            }
+            case "getStoreOwned" ->{
+                String username = data.getProperty("username");
+
+                response = service.getStoreOwned(username);
             }
             default -> response = super.handle(input);
         }
