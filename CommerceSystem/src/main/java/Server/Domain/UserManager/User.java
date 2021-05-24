@@ -645,13 +645,17 @@ public class User {
 
     public void clearPendingMessages(){
         pendingMessages.clear();
+        DALService.getInstance().insertUser(this.toDTO());
     }
 
     public void addPendingMessage(ReplyMessage msg){
         pendingMessages.addMessage(msg);
+        System.out.println("add to pending " + pendingMessages.getPendingMessages().size());
+        DALService.getInstance().insertUser(this.toDTO());
     }
 
     public void sendPendingNotifications() {
+        System.out.println("get pending " + getPendingMessages().size());
         // send pending notifications to the user
         for(ReplyMessage msg: getPendingMessages()){
             Publisher.getInstance().notify(name, msg);
@@ -925,6 +929,7 @@ public class User {
 
         if (this.purchaseHistory != null){
             purchaseHistory.addPurchase(purchases);
+            // todo - DALService.getInstance().insertUser(this.toDTO());
         }
 
         ProductClientDTO product = null;
@@ -937,8 +942,10 @@ public class User {
         Publisher.getInstance().notify(storeID, new ReplyMessage("notification", "Product " + product.getName() + " purchased successfully", "bidUserReply"));
 
         Store store = StoreController.getInstance().getStoreById(storeID);
+
         DALService.getInstance().saveUserAndStore(this.toDTO(), store.toDTO());
         removeOffer(product.getProductID());
+
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 
