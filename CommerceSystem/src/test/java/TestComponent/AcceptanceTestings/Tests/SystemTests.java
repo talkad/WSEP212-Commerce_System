@@ -20,4 +20,14 @@ public class SystemTests extends ProjectAcceptanceTests {
         Response<String> loginResponse = this.bridge.login(guestName, "shaked", "jacob");
         Assert.assertFalse(loginResponse.isFailure());
     }
+
+    @Test
+    public void initfileSuccess(){
+
+    }
+
+    @Test
+    public void initfileFailure(){
+
+    }
 }

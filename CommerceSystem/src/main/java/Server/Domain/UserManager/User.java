@@ -514,7 +514,6 @@ public class User {
 
             return res;
         } else if (this.storesManaged.containsKey(storeID)) {
-            System.out.println("ddddd");
             return this.appointments.removeAppointment(storeID, appointeeName);
         }
         return new Response<>("problem", true, "user not appointed by this appointer");
@@ -888,31 +887,29 @@ public class User {
         }
     }
 
-    public Response<Boolean> changeOfferStatus(String offeringUsername, int productID, int storeID, double bidReply) {
+    public Response<Boolean> changeOfferStatus(User offeringUser, int productID, int storeID, double bidReply) {
         Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
         Store store = StoreController.getInstance().getStoreById(storeID);
-
         if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -2) {
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
-                this.offers.remove(productID);
-                DALService.getInstance().insertUser(this.toDTO());
+                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
+                offeringUser.getOffers().remove(productID);
+                DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was declined.");
 
             } else if (bidReply == -1) {
                 Gson gson = new Gson();
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatusAccepted"));
-                this.offers.get(productID).setState(OfferState.APPROVED);
-                this.offers.get(productID).setOfferReply(bidReply);
-                DALService.getInstance().insertUser(this.toDTO());
+                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, offeringUser.getOffers().get(productID).getOfferReply())), "changeOfferStatusAccepted"));
+                offeringUser.getOffers().get(productID).setState(OfferState.APPROVED);
+                DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was accepted.");
 
             } else {
                 Gson gson = new Gson();
-                Publisher.getInstance().notify(offeringUsername, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatus"));
-                this.offers.get(productID).setState(OfferState.APPROVED);
-                this.offers.get(productID).setOfferReply(bidReply);
-                DALService.getInstance().insertUser(this.toDTO());
+                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatus"));
+                offeringUser.getOffers().get(productID).setState(OfferState.APPROVED);
+                offeringUser.getOffers().get(productID).setOfferReply(bidReply);
+                DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The store presented a counter offer");
 
             }
@@ -941,7 +938,7 @@ public class User {
 
         Store store = StoreController.getInstance().getStoreById(storeID);
         DALService.getInstance().saveUserAndStore(this.toDTO(), store.toDTO());
-
+        removeOffer(product.getProductID());
         return new Response<>(true, false, "The purchase occurred successfully");
     }
 
@@ -969,5 +966,17 @@ public class User {
     public void notifyManagementCancellation(int storeID) {
         Publisher.getInstance().notify(this.name, new ReplyMessage("notification", "Your ownership canceled at store "+ storeID, "removeAppointment"));
         Publisher.getInstance().unsubscribe(storeID, this.name);
+    }
+
+    public void changeSelfOffer(int productID, double bidReply) {
+        if (bidReply == -2) {
+            offers.remove(productID);
+        } else if (bidReply == -1) {
+           offers.get(productID).setState(OfferState.APPROVED);
+           offers.get(productID).setOfferReply(bidReply);
+        } else {
+            offers.get(productID).setState(OfferState.APPROVED);
+            offers.get(productID).setOfferReply(bidReply);
+        }
     }
 }
