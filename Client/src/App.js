@@ -40,7 +40,7 @@ import {
 import Home from "./Pages/Home";
 import * as Icon from 'react-bootstrap-icons';
 import StaticUserInfo from "./API/StaticUserInfo";
-import {ReactComponent as OurLogo} from "./image2vector.svg";
+import {ReactComponent as OurLogo} from "./Images/logo.svg";
 import CategoryDiscountRule from "./DiscountPurchasePolicyPages/CategoryDiscountRule";
 //import AndCompositionDiscountRule from "./DiscountPurchasePolicyPages/NoNeedForNow/AndCompositionDiscountRule";
 import CompositionPoliciesPage from "./DiscountPurchasePolicyPages/CompositionPoliciesPage";
@@ -53,7 +53,7 @@ import MainDiscountPolicyPage from "./DiscountPurchasePolicyPages/MainDiscountPo
 import ProductDiscountRule from "./DiscountPurchasePolicyPages/ProductDiscountRule";
 import StoreDiscountRule from "./DiscountPurchasePolicyPages/StoreDiscountRule";
 import {A} from "react-select/dist/index-4bd03571.esm";
-import Disconnected from "./Disconnected";
+import Disconnected from "./Pages/Disconnected";
 
 
 let client = new WebSocket("ws://localhost:8080/ws");
@@ -226,7 +226,8 @@ class App extends React.Component{
         if(!result.isFailure){
             window.sessionStorage.removeItem('username');
             this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
-            window.location.reload();
+            window.location.href = '/';
+            //window.location.reload();
         }
         else{
             this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
@@ -245,7 +246,7 @@ class App extends React.Component{
                         <OurLogo height={50} width={150}/>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
+                    {(window.location.href !== 'http://localhost:3000/Disconnected') && <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
 
                             {this.state.registered &&<Navbar.Text style={{color: "black"}}> Hi, {window.sessionStorage.getItem('username')}</Navbar.Text>}
@@ -273,7 +274,8 @@ class App extends React.Component{
                             {this.state.registered &&
                             <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>}
                         </Nav>
-                    </Navbar.Collapse>
+                    </Navbar.Collapse>}
+
                 </Navbar>
 
                 <Alert dismissible show={this.state.showUserAlert} variant={this.state.offerUserAlertVariant} onClose={() => this.setState({showUserAlert: false})}>

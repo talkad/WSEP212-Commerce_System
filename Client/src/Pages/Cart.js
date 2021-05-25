@@ -29,7 +29,7 @@ const products = [
     }
     ]
 
-class Cart extends React.Component {
+class Cart extends React.Component { //TODO check if the cart is empty and show an appropriate image
     constructor(props) {
         super(props);
 

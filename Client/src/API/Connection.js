@@ -12,15 +12,13 @@ class Connection{
         this.connection = connection;
 
         this.connection.onopen = () => {
-            console.log(window.location.href);
             if(window.location.href === 'http://localhost:3000/Disconnected'){ //TODO: maybe remember on what page i was and then get back to it
-                console.log("hi");
                 window.location.href = '/';
             }
 
             console.log("connected to the server");
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
-            if(window.sessionStorage.getItem('username') === null) {
+            if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
                 connection.send(JSON.stringify({
                     action: "startup",
@@ -63,7 +61,9 @@ class Connection{
             }
         }
 
-        this.connection.onclose = () => {
+        this.connection.onclose = (event) => {
+            // console.log(event); // TODO: just in case
+            // alert("a");
             window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
             window.location.href = "/Disconnected";
         }

@@ -64,7 +64,7 @@ class Checkout extends React.Component{
 
     handleResponse(result){
         if(!result.isFailure){
-            this.setState({submitted: false, thankYouModal: true});
+            this.setState({submitted: false, thankYouModal: true, validated: false});
         }
         else{
             this.setState({submitted: false,
