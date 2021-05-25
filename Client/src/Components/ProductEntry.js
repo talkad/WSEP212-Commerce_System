@@ -84,7 +84,7 @@ class ProductEntry extends React.Component{
                      {this.props.reviews.length !== 0 && <Card.Subtitle>Reviews:</Card.Subtitle>}
                      <Card.Text>{this.props.reviews.map(({username, review}) => username + ": " + review + "\n")}</Card.Text>
                      <Button variant="primary" className='card-button' size="sm"
-                             onClick={this.handleAddToCart}><span style={{fontSize: "small"}}>Add to card</span></Button>
+                             onClick={this.handleAddToCart}><span style={{fontSize: "small"}}>Add to cart</span></Button>
                      <br/>
                      <Button variant="primary" className='card-button' size="sm"
                              onClick={this.openPriceOfferModal}><span style={{fontSize: "small"}}>Offer price</span></Button>
