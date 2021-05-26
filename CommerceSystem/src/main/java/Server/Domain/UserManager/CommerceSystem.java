@@ -26,6 +26,7 @@ public class CommerceSystem implements IService {
     public static Log log = new Log("Logs.txt");
 //    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
 
+
     private CommerceSystem() {
         this.userController = UserController.getInstance();
         this.storeController = StoreController.getInstance();
@@ -40,9 +41,18 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public void init() {
-        userController.adminBoot();
-//        initState();
+    public Response<Boolean> init() {
+        Response<Boolean> responseInit;
+        Response<Boolean> responseConfig;
+//        userController.adminBoot(); // todo - joni
+
+        responseInit = initState();
+        responseConfig = configInit();
+
+        if(responseInit.isFailure() || responseConfig.isFailure())
+            return new Response<>(false, true, "initialization failed (CRITICAL)");
+
+        return new Response<>(true, false, "initialization complete");
     }
 
     @Override
@@ -270,7 +280,11 @@ public class CommerceSystem implements IService {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public void initState() {
+    public Response<Boolean> configInit(){
+        return new Response<>(true,false,"");
+    }
+
+    public Response<Boolean> initState() {
 
         try {
             File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
@@ -323,13 +337,15 @@ public class CommerceSystem implements IService {
                     addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
                 else{
-                    //todo send to 404 page
+                    return new Response<>(false, true, "init: not recognized function- " + funcs[i]);
                 }
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            return new Response<>(false, true, "init: unexpected syntax");
         }
+
+        return new Response<>(true, false, "init: complete");
     }
 
     private List<String> stringToList(String[] str, int index){
@@ -344,4 +360,7 @@ public class CommerceSystem implements IService {
         }
         return lst;
     }
+
+
+
 }
