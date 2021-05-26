@@ -251,7 +251,7 @@ public class User {
 
         for(Integer storeID: baskets.keySet()){
             Store store = StoreController.getInstance().getStoreById(storeID);
-            Set<ProductClientDTO> productClientDTOS = new HashSet<>();
+            List<ProductClientDTO> productClientDTOS = new Vector<>();
             if(store != null){
 
                 for(Product product: baskets.get(storeID).keySet()){

@@ -10,7 +10,6 @@ import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
-import org.sonatype.guice.bean.reflect.Streams;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -33,7 +32,7 @@ public class PurchaseClientDTO {
         this.totalPrice = purchaseDTO.getTotalPrice();
         this.purchaseDate = purchaseDTO.getPurchaseDate();
 
-        Set<ProductClientDTO> productsDTO = new ConcurrentSkipListSet<>();
+        List<ProductClientDTO> productsDTO = new Vector<>();
         Collection<Integer> amounts = new Vector<>();
 
         for(Pair<ProductDTO, Integer> pair : purchaseDTO.getBasket()){

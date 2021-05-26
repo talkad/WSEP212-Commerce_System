@@ -247,7 +247,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         // checking if it's added to the cart
         Response<List<BasketClientDTO>> cartResult = bridge.getCartDetails(guestName);
-        Set<ProductClientDTO> products = new HashSet<>();
+        List<ProductClientDTO> products = new Vector<>();
         for(BasketClientDTO basketDTO: cartResult.getResult()){
             if(basketDTO.getStoreID() == product.getStoreID()){
                 products = basketDTO.getProductsDTO();
@@ -289,7 +289,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(addResult.getResult());
 
         Response<List<BasketClientDTO>> cartResult = bridge.getCartDetails(guestName);
-        Set<ProductClientDTO> products = new HashSet<>();
+        List<ProductClientDTO> products = new Vector<>();
         for(BasketClientDTO basketDTO: cartResult.getResult()){
             if(basketDTO.getStoreID() == product.getStoreID()){
                 products = basketDTO.getProductsDTO();
@@ -332,7 +332,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         // checking if the product is not there
         Response<List<BasketClientDTO>> cartResult = bridge.getCartDetails(guestName);
-        Set<ProductClientDTO> products = new HashSet<>();
+        List<ProductClientDTO> products = new Vector<>();
         for(BasketClientDTO basketDTO: cartResult.getResult()){
             if(basketDTO.getStoreID() == product.getStoreID()){
                 products = basketDTO.getProductsDTO();
@@ -380,7 +380,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         // checking if it was updated
         Response<List<BasketClientDTO>> cartResult = bridge.getCartDetails("misheo");
-        Set<ProductClientDTO> products = new HashSet<>();
+        List<ProductClientDTO> products = new Vector<>();
         for(BasketClientDTO basketDTO: cartResult.getResult()){
             if(basketDTO.getStoreID() == product.getStoreID()){
                 products = basketDTO.getProductsDTO();
@@ -413,7 +413,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
 
         // checking if it wasn't updated
         Response<List<BasketClientDTO>> cartResult = bridge.getCartDetails("misheo");
-        Set<ProductClientDTO> products = new HashSet<>();
+        List<ProductClientDTO> products = new Vector<>();
         for(BasketClientDTO basketDTO: cartResult.getResult()){
             if(basketDTO.getStoreID() == product.getStoreID()){
                 products = basketDTO.getProductsDTO();

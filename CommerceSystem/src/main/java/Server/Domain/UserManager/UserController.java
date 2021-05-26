@@ -12,6 +12,8 @@ import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -543,6 +545,8 @@ public class UserController {
     public void adminBoot() {
         // TODO uncomment to reset database on bootup
         DALService.getInstance().resetDatabase();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
 
         String username = "shaked";
         String password = "jacob";

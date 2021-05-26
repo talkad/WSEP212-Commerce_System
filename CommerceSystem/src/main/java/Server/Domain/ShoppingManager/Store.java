@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -144,7 +145,7 @@ public class Store {
             return new Response<>(null, true, "The product is sold out");
         }
 
-        purchaseDTO = new PurchaseClientDTO(new BasketClientDTO(storeID ,name , shoppingBasket.keySet(), shoppingBasket.values()), priceAfterDiscount, LocalDate.now());
+        purchaseDTO = new PurchaseClientDTO(new BasketClientDTO(storeID ,name , new Vector<>(shoppingBasket.keySet()), shoppingBasket.values()), priceAfterDiscount, LocalDate.now());
 
          return new Response<>(purchaseDTO, false, "Store: Purchase occurred");
     }
