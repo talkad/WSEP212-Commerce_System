@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import UpdateQuantity from "../Components/UpdateQuantity";
 import Connection from "../API/Connection";
 import ProductEntryCart from "../Components/ProductEntryCart";
-import {CardGroup, Image, Spinner} from "react-bootstrap";
+import {Button, Card, CardGroup, Image, ListGroup, Spinner} from "react-bootstrap";
 import empty_cart from '../Images/harold_cart_empty.png'
 
 const products = [
@@ -36,9 +36,10 @@ class Cart extends React.Component { //TODO check if the cart is empty and show 
 
         this.state = {
             cart: [],
-            loaded: false
-        }
+            loaded: false,
 
+        }
+        this.totalAmount =  0
         this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this);
         this.handleQuantityChange = this.handleQuantityChange.bind(this);
         this.handleGetCartDetailsResponse = this.handleGetCartDetailsResponse.bind(this);
@@ -75,39 +76,58 @@ class Cart extends React.Component { //TODO check if the cart is empty and show 
         window.location.reload();
     }
 
+    addToTotal(price, amount){
+        let price_value = parseInt(price);
+        let amount_value = parseInt(amount);
+        this.totalAmount = this.totalAmount + price_value * amount_value;
+        // this.setState({totalAmount: this.state.totalAmount + price_value * amount_value})
+        return true;
+    }
+
     render() {
         const zip = (a, b) => a.map((k, i) => [k, b[i]]);
         return (
-            <div>
-                <h1>Cart</h1>
+            <div id="cart_page">
+                <div id="cart_title">
+                    <h1>Shopping cart</h1>
+                </div>
                 {this.state.loaded && (this.state.cart.length === 0) &&
                 <Image src={empty_cart}/>}
-                {this.state.loaded && this.state.cart.length !== 0 && <p><Link to="/checkout">Checkout</Link></p>}
+                {/*{this.state.loaded && this.state.cart.length !== 0 && <p><Link to="/checkout">Checkout</Link></p>}*/}
                 {!this.state.loaded && <Spinner animation="grow"/>}
-                {this.state.loaded && this.state.cart.map(({storeID, storeName, productsDTO, amounts}) => (
-                    <div>
-                        <h2>{storeName}</h2>
-                        <CardGroup>
-                            {zip(productsDTO, amounts).map( entry => (
-                                <ProductEntryCart
-                                    name = {entry[0].name}
-                                    price = {entry[0].price}
-                                    storeID = {storeID}
-                                    amount = {entry[1]}
-                                    productID = {entry[0].productID}
-                                    handler = {() => this.handleQuantityChange()}
-                                    handlerRemove = {() => this.handleRemoveFromCart(storeID, entry[0].productID)}
-                                />
-                            ) ) }
-                        </CardGroup>
+                {this.state.loaded && (this.state.cart.length !== 0) && <div id="card_page_content">
+                    <div id="cart_items">
+                        <ListGroup>
+                        {this.state.cart.map(({storeID, storeName, productsDTO, amounts}) => (
+                            <div>
+                                {zip(productsDTO, amounts).map( entry => (this.addToTotal(entry[0].price, entry[1]) &&
+                                    <ListGroup.Item><ProductEntryCart
+                                        name = {entry[0].name}
+                                        price = {entry[0].price}
+                                        storeID = {storeID}
+                                        amount = {entry[1]}
+                                        seller = {storeName}
+                                        productID = {entry[0].productID}
+                                        handler = {() => this.handleQuantityChange()}
+                                        handlerRemove = {() => this.handleRemoveFromCart(storeID, entry[0].productID)}
+                                    />
+                                    </ListGroup.Item>
+                                ) ) }
+                            </div>
+                        ))}
+                        </ListGroup>
                     </div>
-                    // <div>
-                    //     <h1>{storeID}</h1>
-                    //     <h1>{storeName}</h1>
-                    //     {/*<h1>{productsDTO}</h1>*/}
-                    //     {/*<h1>{amounts}</h1>*/}
-                    // </div>
-                ))}
+                    <div id="cart_checkout">
+                        <Card>
+                            <Card.Title>Total amount</Card.Title>
+                            <Card.Text>Products total: {this.totalAmount}</Card.Text>
+                            <Card.Text>Shipping: free ;)</Card.Text>
+                            <hr/>
+                            <Card.Subtitle>Total amount: {this.totalAmount}</Card.Subtitle>
+                            <Link to="/checkout"><Button style={{marginTop: '10px', marginBottom: '5px'}}>Checkout</Button></Link>
+                        </Card>
+                    </div>
+                </div>}
                 {/*{this.state.loaded && this.state.cart.map(({name, productID, storeID, price,*/}
                 {/*                                               categories, keywords, reviews, rating, numRatings}) =>(*/}
                 {/*    <div>*/}
