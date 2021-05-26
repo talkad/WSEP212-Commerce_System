@@ -3,8 +3,9 @@ import ProductEntry from "../Components/ProductEntry";
 import ReviewProduct from "./ReviewProduct";
 import Connection from "../API/Connection";
 import ProductEntryHistory from "../Components/ProductEntryHistory";
-import {CardGroup, Spinner} from "react-bootstrap";
+import {CardGroup, Image, Spinner} from "react-bootstrap";
 import ProductEntryCart from "../Components/ProductEntryCart";
+import buy_something from "../Images/harold_buy_something.png"
 
 
 const products = [
@@ -61,6 +62,8 @@ class PurchaseHistory extends React.Component {
         return (
             <div>
                 <h1>Purchase History</h1>
+                {this.state.loaded && (this.state.purchaseHistory.length === 0) &&
+                <Image src={buy_something}/>}
                 {!this.state.loaded && <Spinner animation="grow"/>}
                 {this.state.loaded && this.state.purchaseHistory.map(({basket, totalPrice, purchaseDate}) => (
                     <div>

@@ -4,7 +4,8 @@ import {Link} from "react-router-dom";
 import UpdateQuantity from "../Components/UpdateQuantity";
 import Connection from "../API/Connection";
 import ProductEntryCart from "../Components/ProductEntryCart";
-import {CardGroup, Spinner} from "react-bootstrap";
+import {CardGroup, Image, Spinner} from "react-bootstrap";
+import empty_cart from '../Images/harold_cart_empty.png'
 
 const products = [
     {
@@ -79,7 +80,9 @@ class Cart extends React.Component { //TODO check if the cart is empty and show 
         return (
             <div>
                 <h1>Cart</h1>
-                <p><Link to="/checkout">Checkout</Link></p>
+                {this.state.loaded && (this.state.cart.length === 0) &&
+                <Image src={empty_cart}/>}
+                {this.state.loaded && this.state.cart.length !== 0 && <p><Link to="/checkout">Checkout</Link></p>}
                 {!this.state.loaded && <Spinner animation="grow"/>}
                 {this.state.loaded && this.state.cart.map(({storeID, storeName, productsDTO, amounts}) => (
                     <div>

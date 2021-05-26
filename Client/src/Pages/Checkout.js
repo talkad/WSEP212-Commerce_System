@@ -1,10 +1,11 @@
 import React from "react";
 import Connection from "../API/Connection";
-import {Alert, Button, Col, Container, Form, InputGroup, Spinner} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, Image, InputGroup, Spinner} from "react-bootstrap";
 import SupplyDetails from "../JsonClasses/SupplyDetails";
 import PaymentDetails from "../JsonClasses/PaymentDetails";
 import * as Icon from "react-bootstrap-icons";
 import Modal from "react-modal";
+import harold_love from '../Images/harold_love.png'
 
 class Checkout extends React.Component{
     constructor(props) {
@@ -140,6 +141,7 @@ class Checkout extends React.Component{
                     <Icon.XCircle onClick={this.handleContinue}/>
                     <br/>
                     <h1>Thank you for your purchase.</h1>
+                    <Image src={harold_love}/>
                     <br/>
                     <Button onClick={this.handleContinue}>Continue</Button>
                 </Modal>

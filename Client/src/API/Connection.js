@@ -12,7 +12,8 @@ class Connection{
         this.connection = connection;
 
         this.connection.onopen = () => {
-            if(window.location.href === 'http://localhost:3000/Disconnected'){ //TODO: maybe remember on what page i was and then get back to it
+            let split_url = window.location.href.split('/');
+            if(split_url[split_url.length-1] === 'Disconnected'){ //TODO: maybe remember on what page i was and then get back to it
                 window.location.href = '/';
             }
 
@@ -138,6 +139,7 @@ class Connection{
         }
 
         return new Promise(async (resolve, reject) => {
+
             let i = 0
 
             while(i < 5){

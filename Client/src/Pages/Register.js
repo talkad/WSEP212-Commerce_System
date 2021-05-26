@@ -46,8 +46,10 @@ class Register extends React.Component{
     }
 
     handleCreateAccount(){
-        this.setState({submitted: true});
-        Connection.sendRegister(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
+        if(this.state.username !== '' && this.state.password !== '') {
+            Connection.sendRegister(this.state.username, this.state.password).then(this.handleResponse, Connection.handleReject);
+            this.setState({submitted: true});
+        }
     }
 
     render(){
