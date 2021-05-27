@@ -1,5 +1,8 @@
 package TestComponent.AcceptanceTestings.Tests;
 
+import Server.DAL.DALService;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Service.IService;
 import TestComponent.AcceptanceTestings.Bridge.Driver;
 import TestComponent.AcceptanceTestings.Bridge.ProxyNotifier;
@@ -13,5 +16,8 @@ public abstract class ProjectAcceptanceTests {
         bridge = Driver.getBridge();
         bridge.init();
         notifier = Driver.getNotifier();
+        DALService.getInstance().useTestDatabase();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
     }
 }

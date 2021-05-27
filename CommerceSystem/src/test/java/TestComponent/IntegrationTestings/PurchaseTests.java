@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 
@@ -25,6 +26,7 @@ import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -34,6 +36,13 @@ import java.util.stream.Collectors;
 
 
 public class PurchaseTests {
+
+    @Before
+    public void init(){
+        DALService.getInstance().useTestDatabase();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
+    }
 
     @Test
     public void purchaseTest(){

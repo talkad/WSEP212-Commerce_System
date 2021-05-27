@@ -544,9 +544,10 @@ public class UserController {
 
     public void adminBoot() {
         // TODO uncomment to reset database on bootup
-        DALService.getInstance().resetDatabase();
-        PaymentSystemAdapter.getInstance().setMockFlag();
-        ProductSupplyAdapter.getInstance().setMockFlag();
+//        DALService.getInstance().useTestDatabase();
+//        DALService.getInstance().resetDatabase();
+//        PaymentSystemAdapter.getInstance().setMockFlag();
+//        ProductSupplyAdapter.getInstance().setMockFlag();
 
         String username = "shaked";
         String password = "jacob";

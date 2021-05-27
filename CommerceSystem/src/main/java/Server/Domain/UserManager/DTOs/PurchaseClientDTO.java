@@ -2,10 +2,10 @@ package Server.Domain.UserManager.DTOs;
 
 import java.time.LocalDate;
 
+import Server.DAL.PairDTOs.ProductIntPair;
 import Server.DAL.ProductDTO;
 import Server.DAL.ReviewDTO;
 import Server.DAL.PurchaseDTO;
-import Server.Domain.CommonClasses.Pair;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.Review;
@@ -35,7 +35,7 @@ public class PurchaseClientDTO {
         List<ProductClientDTO> productsDTO = new Vector<>();
         Collection<Integer> amounts = new Vector<>();
 
-        for(Pair<ProductDTO, Integer> pair : purchaseDTO.getBasket()){
+        for(ProductIntPair pair : purchaseDTO.getBasket()){
             ProductDTO productDTO = pair.getFirst();
             List<Review> reviews = new Vector<>();
 
@@ -51,13 +51,13 @@ public class PurchaseClientDTO {
 
     public PurchaseDTO toDTO(){
         // TODO sort out product issue then implement
-        List<Pair<ProductDTO, Integer>> basketList = new Vector<>();
+        List<ProductIntPair> basketList = new Vector<>();
 
         List<ProductClientDTO> products = new LinkedList<>(basket.getProductsDTO());
         List<Integer> amounts = new LinkedList<>(basket.getAmounts());
 
         for(int i = 0; i < products.size(); i++){
-            basketList.add(new Pair<>(Product.createProduct(products.get(i)).toDTO(), amounts.get(i)));
+            basketList.add(new ProductIntPair(Product.createProduct(products.get(i)).toDTO(), amounts.get(i)));
         }
 
         return new PurchaseDTO(this.basket.getStoreID(), basketList, this.totalPrice, this.purchaseDate);

@@ -1,7 +1,8 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.AppointmentDTO;
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.IntStringListPair;
+
 import Server.Domain.CommonClasses.Response;
 
 import java.util.List;
@@ -36,9 +37,9 @@ public class Appointment {
         writeLock = lock.writeLock();
         readLock = lock.readLock();
 
-        List<Pair<Integer, List<String>>> appointments = appointmentDTO.getStoreAppointments();
+        List<IntStringListPair> appointments = appointmentDTO.getStoreAppointments();
         if(appointments != null){
-            for(Pair<Integer, List<String>> pair : appointments){
+            for(IntStringListPair pair : appointments){
                 this.storeAppointments.put(pair.getFirst(), pair.getSecond());
             }
         }
@@ -94,9 +95,9 @@ public class Appointment {
 
     public AppointmentDTO toDTO(){
         readLock.lock();
-        List<Pair<Integer, List<String>>> appointments = new Vector<>();
+        List<IntStringListPair> appointments = new Vector<>();
         for(int storeID : this.storeAppointments.keySet()){
-            appointments.add(new Pair<>(storeID, new Vector<>(this.storeAppointments.get(storeID))));
+            appointments.add(new IntStringListPair(storeID, new Vector<>(this.storeAppointments.get(storeID))));
         }
         readLock.unlock();
         return new AppointmentDTO(appointments);
