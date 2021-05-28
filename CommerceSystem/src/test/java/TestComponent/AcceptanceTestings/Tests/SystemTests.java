@@ -29,17 +29,19 @@ public class SystemTests extends ProjectAcceptanceTests {
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
         String guestName = bridge.addGuest().getResult();
-        Response<String> loginResponse = bridge.login(guestName, "shaked", "jacob");
+        Response<String> loginResponse = bridge.login(guestName, "u1", "u1");
         Assert.assertFalse(loginResponse.isFailure());
     }
 
     @Test
     public void initfileSuccess(){
         bridge = Driver.getBridge();
-        bridge.init();
-        notifier = Driver.getNotifier();
         DALService.getInstance().useTestDatabase();
         DALService.getInstance().resetDatabase();
+        //bridge.init();
+        bridge.configInit();
+        notifier = Driver.getNotifier();
+
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
         Response<Boolean> res = bridge.initState("initfile");
@@ -50,7 +52,7 @@ public class SystemTests extends ProjectAcceptanceTests {
     @Test
     public void initfileFailure(){
         bridge = Driver.getBridge();
-        bridge.init();
+        bridge.configInit();
         notifier = Driver.getNotifier();
         DALService.getInstance().useTestDatabase();
         DALService.getInstance().resetDatabase();

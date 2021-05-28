@@ -35,7 +35,7 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         Gson gson = new Gson();
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "+ msg.text());
+
         Properties data = gson.fromJson(msg.text(), Properties.class);
         String action = data.getProperty("action");
 
@@ -57,19 +57,13 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
             String content = msg.text();
 
             if (action.equals("login")) {
-                System.out.println(data.getProperty("username"));
                 Notifier.getInstance().addConnection(data.getProperty("username"), ctx);
             }
 
             Response<?> result = CommerceHandler.getInstance().handle(content);
 
-            System.out.println("received " + content);
-
             String response = gson.toJson(new ReplyMessage("response", gson.toJson(result), action));
             ctx.writeAndFlush(new TextWebSocketFrame(response));
-
-            System.out.println("answered " + response + " to " + ctx);
-
 
         }
     }

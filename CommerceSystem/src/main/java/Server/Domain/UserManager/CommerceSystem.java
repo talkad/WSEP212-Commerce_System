@@ -1,5 +1,6 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -25,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -53,15 +55,15 @@ public class CommerceSystem implements IService {
     @Override
     public Response<Boolean> init() {
         Response<Boolean> responseInit;
-        Response<Boolean> responseConfig;
-        //userController.adminBoot("shaked", "jacob");
-
-        responseConfig = configInit();
+        //Response<Boolean> responseConfig;
+        DALService.getInstance().resetDatabase();
+        //responseConfig = configInit();
+        userController.adminBoot("u1", "u1");
         responseInit = initState(null);
 
 
-        if (responseInit.isFailure() || responseConfig.isFailure())
-            return new Response<>(false, true, "initialization failed (CRITICAL)");
+//        if (responseInit.isFailure() || responseConfig.isFailure())
+//            return new Response<>(false, true, "initialization failed (CRITICAL)");
 
         return new Response<>(true, false, "initialization complete");
     }
@@ -294,11 +296,20 @@ public class CommerceSystem implements IService {
     public Response<Boolean> configInit(){
         Gson gson = new Gson();
         try {
-            byte [] jsonBytes = Files.readAllBytes(Paths.get("configfile.json"));
-            String jsonString = new String(jsonBytes);
-            Properties data = gson.fromJson(jsonString, Properties.class);
+            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json");
+            FileInputStream fis = new FileInputStream(file);
+            byte[] strdata = new byte[(int) file.length()];
+
+            fis.read(strdata);
+            fis.close();
+            String str = new String(strdata, StandardCharsets.UTF_8);
+            System.out.println(str);
+//            byte [] jsonBytes = Files.readAllBytes(new Path(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json"));
+//            String jsonString = new String(jsonBytes);
+            Properties data = gson.fromJson(str, Properties.class);
 
             String admininfo = data.getProperty("admininfo");
+            System.out.println("aaaaaaaaaaa "+ admininfo);
             String dbinfo = data.getProperty("dbinfo");
             String extsysloc = data.getProperty("extsysloc");
 
@@ -327,6 +338,7 @@ public class CommerceSystem implements IService {
             return new Response<>(true,false,"System initialized successfully.");
         }
         catch(Exception e) {
+            e.printStackTrace();
             return new Response<>(false,true,"Error with config file | DB connection failed | External System connection failed.");
         }
     }
@@ -349,9 +361,7 @@ public class CommerceSystem implements IService {
             String str = new String(data, StandardCharsets.UTF_8);
             String[] funcs = str.split(";");
             String[] attributes;
-            //int guestNum = 1;
             String currUser = addGuest().getResult();
-            //int currStoreId;
 
             for (int i = 0; i < funcs.length; i++){
                 if(funcs[i].startsWith("register")){
@@ -391,7 +401,6 @@ public class CommerceSystem implements IService {
                     addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
                 else{
-                    //todo send to 404 page
                     return new Response<>(false, true, "CRITICAL Error: Bad initfile");
                 }
             }

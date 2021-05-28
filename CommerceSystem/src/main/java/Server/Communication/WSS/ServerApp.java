@@ -18,14 +18,15 @@ public class ServerApp {
 
         Response<Boolean> initRes = CommerceService.getInstance().init();
 
-        // Configure the bootstrap
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-
-        // Load the certificates and initiate the SSL context
-//        SSLHandlerProvider.initSSLContext();
-
         if(!initRes.isFailure()){
+
+            // Configure the bootstrap
+            EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+            EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+            // Load the certificates and initiate the SSL context
+            //        SSLHandlerProvider.initSSLContext();
+
             new Response<>(true, false, "Server successfully initiated");
 
             try {

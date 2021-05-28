@@ -53,7 +53,7 @@ public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 
         Response<String> response = CommerceService.getInstance().addGuest();
-        System.out.println(response.getResult());
+
         ByteBuf content = Unpooled.copiedBuffer(response.getResult(), CharsetUtil.UTF_8);
 
         ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content));

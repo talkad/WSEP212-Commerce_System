@@ -94,7 +94,6 @@ public class UserController {
             User user = connectedUsers.get(username);
             readLock.unlock();
 
-            System.out.println("");
             return user.addProductsToStore(productDTO, amount);
         }
         readLock.unlock();

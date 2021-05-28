@@ -28,9 +28,11 @@ public interface IService {
 
     Response<Boolean> initState(String filename);
 
-    /**
-     * Guest requirements - 2
-     */
+    Response<Boolean> configInit();
+
+        /**
+         * Guest requirements - 2
+         */
     Response<String> addGuest(); // 2.1
 
     Response<String> removeGuest(String name); // 2.2

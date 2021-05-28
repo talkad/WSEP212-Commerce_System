@@ -1,7 +1,7 @@
 {
   "admininfo": {
     "username": "u1",
-    "password": "verycoolpassword"
+    "password": "u1"
   },
   "dbinfo": {
     "dbloc": "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/test",

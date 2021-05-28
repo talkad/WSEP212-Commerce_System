@@ -44,7 +44,6 @@ public class Publisher{
      * @param msg - the message that will be sent
      */
     public void notify(String name, ReplyMessage msg) {
-        System.out.println("server notifies to " + name + " the message " + msg.getMessage() + " with type " + msg.getType() + " action " + msg.getAction());
         notifier.notify(name, msg);
     }
 
@@ -60,7 +59,6 @@ public class Publisher{
         if(users == null)
             return;
 
-        System.out.println("notify to store " + storeID);
         for(String name: users)
             System.out.println(name);
 
@@ -73,7 +71,6 @@ public class Publisher{
                 notify(username, msg);
             }
             else {
-                System.out.println("notification added to pending |" + username + ": " + msg.getMessage());
                 user = userController.getUserByName(username);
                 user.addPendingMessage(msg);
             }
@@ -84,14 +81,12 @@ public class Publisher{
     public void subscribe(Integer storeID, String username) {
         storeSubscribers.putIfAbsent(storeID, new Vector<>());
         storeSubscribers.get(storeID).add(username);
-        System.out.println(username + " subscribed to store " + storeID);
         DALService.getInstance().savePublisher(this.toDTO());
     }
 
     public void unsubscribe(Integer storeID, String username) {
         if(storeSubscribers.containsKey(storeID)) {
             storeSubscribers.get(storeID).remove(username);
-            System.out.println(username + " unsubscribed to store " + storeID);
             DALService.getInstance().savePublisher(this.toDTO());
         }
     }

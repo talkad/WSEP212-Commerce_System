@@ -650,12 +650,10 @@ public class User {
 
     public void addPendingMessage(ReplyMessage msg){
         pendingMessages.addMessage(msg);
-        System.out.println("add to pending " + pendingMessages.getPendingMessages().size());
         DALService.getInstance().insertUser(this.toDTO());
     }
 
     public void sendPendingNotifications() {
-        System.out.println("get pending " + getPendingMessages().size());
         // send pending notifications to the user
         for(ReplyMessage msg: getPendingMessages()){
             Publisher.getInstance().notify(name, msg);

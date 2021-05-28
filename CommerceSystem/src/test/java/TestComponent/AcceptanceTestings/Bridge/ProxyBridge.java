@@ -48,6 +48,14 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<Boolean> configInit() {
+        if (real != null){
+            return real.configInit();
+        }
+        return new Response<>(null, true, "not implemented");
+    }
+
+    @Override
     public Response<String> addGuest() {
         if (real != null){
             return real.addGuest();

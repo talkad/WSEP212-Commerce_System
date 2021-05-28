@@ -52,7 +52,7 @@ public class SystemManagerHandler extends  Handler{
                 String discountRuleStr = data.getProperty("discountRule");
 
                 DiscountRule discountRule = parseDiscountRule(discountRuleStr);
-                System.out.println(storeID);
+
                 response = service.addDiscountRule(username, Integer.parseInt(storeID), discountRule);
             }
             case "addPurchaseRule" -> {
