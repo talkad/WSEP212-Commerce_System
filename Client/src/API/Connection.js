@@ -64,10 +64,16 @@ class Connection{
 
         this.connection.onclose = (event) => {
             // console.log(event); // TODO: just in case
-            // alert("a");
-            window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
-            window.location.href = "/Disconnected";
+            if(window.sessionStorage.getItem('username') !== '') {
+                    setTimeout(this.disconnect, 3000);
+            }
         }
+    }
+
+    static disconnect(){
+        alert("disconnected from the server");
+        window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
+        window.location.href = "/Disconnected";
     }
 
     static waitForOpenConnection = (socket) => {
@@ -148,7 +154,7 @@ class Connection{
 
                     if(index !== -1){
                         let message = Connection.dataFromServer[index];
-                        //delete Connection.dataFromServer[index];
+                        delete Connection.dataFromServer[index];
                         resolve(JSON.parse(message.message));
                     }
 

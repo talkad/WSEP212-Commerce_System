@@ -4,6 +4,7 @@ import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
 import Server.Domain.UserManager.UserStateEnum;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoConfigurationException;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
@@ -100,6 +101,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 savePurchase(userDTO, storeDTOs); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                savePurchase(userDTO, storeDTOs); // timeout, try again
+            }
         }
     }
 
@@ -123,6 +128,10 @@ public class DALService {
 
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return getPublisher(); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getPublisher(); // timeout, try again
             }
@@ -151,6 +160,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 savePublisher(publisherDTO); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                savePublisher(publisherDTO); // timeout, try again
+            }
         }
     }
 
@@ -171,6 +184,10 @@ public class DALService {
                 datastore.save(accountDTO);
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                addAccount(accountDTO); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 addAccount(accountDTO); // timeout, try again
             }
@@ -202,6 +219,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 return getAccount(username); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return getAccount(username); // timeout, try again
+            }
 
             return accountDTO;
         }
@@ -228,6 +249,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 addAdmin(adminAccountDTO); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                addAdmin(adminAccountDTO); // timeout, try again
+            }
         }
     }
 
@@ -249,6 +274,10 @@ public class DALService {
                 datastore.save(storeDTO);
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                insertStore(storeDTO); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 insertStore(storeDTO); // timeout, try again
             }
@@ -277,6 +306,10 @@ public class DALService {
                         ).first();
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return getStore(storeId); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getStore(storeId); // timeout, try again
             }
@@ -309,6 +342,10 @@ public class DALService {
                         .toList();
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return getAllStores(); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
@@ -358,6 +395,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 saveUserAndStore(userDTO, storeDTO); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                saveUserAndStore(userDTO, storeDTO); // timeout, try again
+            }
         }
     }
 
@@ -404,6 +445,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 saveUserStoreAndProduct(userDTO, storeDTO, productDTO); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                saveUserStoreAndProduct(userDTO, storeDTO, productDTO); // timeout, try again
+            }
         }
     }
 
@@ -439,6 +484,10 @@ public class DALService {
 
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                saveStoreAndProduct(storeDTO, productDTO); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 saveStoreAndProduct(storeDTO, productDTO); // timeout, try again
             }
@@ -479,6 +528,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 saveStoreRemoveProduct(storeDTO, productDTO); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                saveStoreRemoveProduct(storeDTO, productDTO); // timeout, try again
+            }
         }
     }
 
@@ -504,6 +557,10 @@ public class DALService {
                         ).first();
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return getUser(username); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getUser(username); // timeout, try again
             }
@@ -535,6 +592,10 @@ public class DALService {
 
             }
             catch(MongoConfigurationException e){
+                System.out.println("Exception received: " + e.getMessage());
+                insertUser(userDTO); // timeout, try again
+            }
+            catch(MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 insertUser(userDTO); // timeout, try again
             }
@@ -581,6 +642,10 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 return saveUsers(userDTOList); // timeout, try again
             }
+            catch(MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                return saveUsers(userDTOList); // timeout, try again
+            }
 
             return success;
         }
@@ -591,35 +656,44 @@ public class DALService {
         if(useLocal){
             return this.stores.size();
         }
-        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+        try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
-        Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-        mapper.mapPackage("Server.DAL");
-        mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-        mapper.mapPackage("Server.DAL.PredicateDTOs");
-        mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-        mapper.mapPackage("Server.DAL.PairDTOs");
+            Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+            mapper.mapPackage("Server.DAL");
+            mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
+            mapper.mapPackage("Server.DAL.PredicateDTOs");
+            mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
+            mapper.mapPackage("Server.DAL.PairDTOs");
 
-        List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
-                // filters find relevant entries
-                .filter(
-                        Filters.gte("storeID", 0)
-                )
-                // iterator options manipulate the found entries
-                .iterator(
-                        new FindOptions()
-                                .sort(Sort.descending("storeID"))
-                ).toList();
+            List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
+                    // filters find relevant entries
+                    .filter(
+                            Filters.gte("storeID", 0)
+                    )
+                    // iterator options manipulate the found entries
+                    .iterator(
+                            new FindOptions()
+                                    .sort(Sort.descending("storeID"))
+                    ).toList();
 
-        mongoClient.close();
+            mongoClient.close();
 
-        if(storeDTOs == null || storeDTOs.size() == 0){
-            return 0;
+            if (storeDTOs == null || storeDTOs.size() == 0) {
+                return 0;
+            }
+            StoreDTO head = storeDTOs.get(0);
+            int id = head.getStoreID();
+            return id + 1;
         }
-        StoreDTO head = storeDTOs.get(0);
-        int id = head.getStoreID();
-        return id + 1;
+        catch(MongoConfigurationException e){
+            System.out.println("Exception received: " + e.getMessage());
+            return getNextAvailableStoreID(); // timeout, try again
+        }
+        catch(MongoTimeoutException e){
+            System.out.println("Exception received: " + e.getMessage());
+            return getNextAvailableStoreID(); // timeout, try again
+        }
 //        else {
 //            return (int) (Math.random() * (10000 - 1)) + 1;
 //        }
@@ -635,6 +709,10 @@ public class DALService {
             mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
         }
         catch(MongoConfigurationException e){
+            System.out.println("Exception received: " + e.getMessage());
+            resetDatabase(); // timeout, try again
+        }
+        catch(MongoTimeoutException e){
             System.out.println("Exception received: " + e.getMessage());
             resetDatabase(); // timeout, try again
         }
