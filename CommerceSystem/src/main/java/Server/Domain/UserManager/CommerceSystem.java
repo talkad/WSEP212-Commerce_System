@@ -55,7 +55,7 @@ public class CommerceSystem implements IService {
     @Override
     public Response<Boolean> init() {
         Response<Boolean> responseInit;
-        //Response<Boolean> responseConfig;
+        Response<Boolean> responseConfig;
         DALService.getInstance().resetDatabase();
         //responseConfig = configInit();
         userController.adminBoot("u1", "u1");
@@ -296,44 +296,33 @@ public class CommerceSystem implements IService {
     public Response<Boolean> configInit(){
         Gson gson = new Gson();
         try {
-            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json");
-            FileInputStream fis = new FileInputStream(file);
-            byte[] strdata = new byte[(int) file.length()];
+            Path pathToFile = Paths.get(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json");
+            byte [] jsonBytes = Files.readAllBytes(pathToFile);
+            String jsonString = new String(jsonBytes);
 
-            fis.read(strdata);
-            fis.close();
-            String str = new String(strdata, StandardCharsets.UTF_8);
-            System.out.println(str);
-//            byte [] jsonBytes = Files.readAllBytes(new Path(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json"));
-//            String jsonString = new String(jsonBytes);
-            Properties data = gson.fromJson(str, Properties.class);
+            Properties data = gson.fromJson(jsonString, Properties.class);
 
-            String admininfo = data.getProperty("admininfo");
-            System.out.println("aaaaaaaaaaa "+ admininfo);
-            String dbinfo = data.getProperty("dbinfo");
-            String extsysloc = data.getProperty("extsysloc");
-
-            data = gson.fromJson(admininfo, Properties.class);
-            String adminUsername = data.getProperty("username");
-            String adminPassword = data.getProperty("password");
+            String adminUsername = data.getProperty("adminuser");
+            String adminPassword = data.getProperty("adminpass");
 
             userController.adminBoot(adminUsername, adminPassword);
 
-            data = gson.fromJson(dbinfo, Properties.class);
             String dbloc = data.getProperty("dbloc");
-            String dbUsername = data.getProperty("username");
-            String dbPassword = data.getProperty("password");
+            String dbUsername = data.getProperty("dbuser");
+            String dbPassword = data.getProperty("dbpass");
 
             MongoClient mongoClient = MongoClients.create(dbloc);
             mongoClient.close();
 
-            ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
-            con.setSysLoc(extsysloc);
-            boolean extSysRes = con.createHandshake().getResult();
-           if(extSysRes)
-               con.closeConnection();
-           else
-               throw new Exception("External System connection failed.");
+//            String extsysloc = data.getProperty("extsysloc");
+//
+//            ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
+//            con.setSysLoc(extsysloc);
+//            boolean extSysRes = con.createHandshake().getResult();
+//            if(extSysRes)
+//                con.closeConnection();
+//            else
+//                throw new Exception("External System connection failed.");
 
             return new Response<>(true,false,"System initialized successfully.");
         }
@@ -377,7 +366,7 @@ public class CommerceSystem implements IService {
                 else if(funcs[i].startsWith("openStore")){
                     attributes = funcs[i].substring(10).split(", ");
                     //currStoreId =
-                    openStore(currUser, attributes[0].substring(0, attributes[0].length() - 1));
+                    openStore(attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
 
                 }
                 else if(funcs[i].startsWith("appointStoreManager")){

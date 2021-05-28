@@ -39,6 +39,8 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
         Properties data = gson.fromJson(msg.text(), Properties.class);
         String action = data.getProperty("action");
 
+        System.out.println("aaaaaaaaaaaaa " + msg.text());
+
         if(action.equals("reconnection")) {
             String response = gson.toJson(new ReplyMessage("reconnection", gson.toJson(new Response<>(true, false, "Reconnected successfully")), "reconnection"));
             ctx.writeAndFlush(new TextWebSocketFrame(response));

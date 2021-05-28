@@ -7,6 +7,7 @@ import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
 
+import java.security.Permission;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -52,7 +53,7 @@ public class Publisher{
      * @param storeID - the store id the event occurred
      * @param msg - the message that will be sent
      */
-    public void notify(int storeID, ReplyMessage msg) {
+    public void notify(PermissionsEnum perm, int storeID, ReplyMessage msg) {
         List<String> users = storeSubscribers.get(storeID);
         User user;
 
@@ -64,15 +65,18 @@ public class Publisher{
 
         for(String username: users){
 
-            if(userController.isConnected(username))
-            {
-                System.out.println("notification sent to " + username + ": " + msg.getMessage());
+            user = userController.getUserByName(username);
 
-                notify(username, msg);
-            }
-            else {
-                user = userController.getUserByName(username);
-                user.addPendingMessage(msg);
+            if(perm == null || (user.getStoresOwned().contains(storeID) || user.getStoresManaged().get(storeID).contains(perm))) {
+
+                if (userController.isConnected(username)) {
+                    System.out.println("notification sent to " + username + ": " + msg.getMessage());
+
+                    notify(username, msg);
+                } else {
+                    user.addPendingMessage(msg);
+                }
+
             }
 
         }

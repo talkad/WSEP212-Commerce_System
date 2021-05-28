@@ -109,7 +109,12 @@ public class ExternalSystemsConnection {
     }
 
     public Response<String> send(List<NameValuePair> request){
+
         try {
+
+//            if(!this.isConnected){
+//                return new Response<>("", true, "Sending message failed");
+//            }
 
             HttpEntity postParams = new UrlEncodedFormEntity(request);
             HttpPost httpPost = (sysLoc == null) ? new HttpPost("https://cs-bgu-wsep.herokuapp.com/") :

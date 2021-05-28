@@ -333,7 +333,7 @@ public class User {
                 if(product.isFailure())
                     return new Response<>(false, true, "The product " + product + " doesn't exists in store " + storeID);
 
-                Publisher.getInstance().notify(storeID, new ReplyMessage("notification", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr, "addProductReview"));
+                Publisher.getInstance().notify(null, storeID, new ReplyMessage("notification", "New review to product "+ product.getResult().getName() + " (" +productID + ") : " + reviewStr, "addProductReview"));
 
                 Response<Boolean> response = store.addProductReview(productID, reviewRes.getResult());
 
@@ -671,7 +671,7 @@ public class User {
                 msg.append("product name: ").append(productDTO.getName()).append(", amount: ").append(shoppingCart.getBasket(storeID).get(productDTO)).append("\n");
             }
 
-            Publisher.getInstance().notify(storeID, new ReplyMessage("notification", msg.toString(), "purchase"));
+            Publisher.getInstance().notify(null, storeID, new ReplyMessage("notification", msg.toString(), "purchase"));
         }
 
         addToPurchaseHistory(purchase);
@@ -874,7 +874,7 @@ public class User {
 
         Gson gson = new Gson();
         Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
-        Publisher.getInstance().notify(storeID, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(this.name, product.getName(), productID, storeID, priceOffer)), "bidOffer"));
+        Publisher.getInstance().notify(PermissionsEnum.REPLY_TO_BID, storeID, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(this.name, product.getName(), productID, storeID, priceOffer)), "bidOffer"));
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
@@ -902,6 +902,7 @@ public class User {
             } else if (bidReply == -1) {
                 Gson gson = new Gson();
                 Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, offeringUser.getOffers().get(productID).getOfferReply())), "changeOfferStatusAccepted"));
+                System.out.println("aaaaaaaaaaaaaaaaaaaa " + offeringUser.getOffers().get(productID).getOfferReply());
                 offeringUser.getOffers().get(productID).setState(OfferState.APPROVED);
                 DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was accepted.");
@@ -937,7 +938,7 @@ public class User {
         if(product == null)
             return new Response<>(false, true, "The purchase failed");
 
-        Publisher.getInstance().notify(storeID, new ReplyMessage("notification", "Product " + product.getName() + " purchased successfully", "bidUserReply"));
+        Publisher.getInstance().notify(null, storeID, new ReplyMessage("notification", "Product " + product.getName() + " purchased successfully", "bidUserReply"));
 
         Store store = StoreController.getInstance().getStoreById(storeID);
 

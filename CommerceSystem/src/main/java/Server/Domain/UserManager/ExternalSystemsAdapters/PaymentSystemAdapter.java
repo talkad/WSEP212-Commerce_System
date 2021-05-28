@@ -65,6 +65,7 @@ public class PaymentSystemAdapter
         urlParameters.add(new BasicNameValuePair("id", paymentDetails.getId()));
 
         externalRes = conn.send(urlParameters);
+
         if(externalRes.isFailure()){
             return new Response<>(-1, true, "payment failed due to sending error (CRITICAL)");
         }

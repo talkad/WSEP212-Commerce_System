@@ -36,13 +36,16 @@ class Login extends React.Component{
     }
 
     handleResponse(result) {
+        console.log("hello there");
         if(!result.isFailure){
+            console.log("general kenobi");
             window.sessionStorage.setItem('username', result.result);
             this.setState({submitted: false,
                 showAlert: true, alertVariant: 'success', alertInfo: 'Logged in!'});
             document.location.href = "/";
         }
         else{
+            console.log("you're a bold one");
             this.setState({username: '', password: '', submitted: false,
             showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }

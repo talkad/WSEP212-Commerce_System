@@ -1,5 +1,6 @@
 package Server.Communication.WSS;
 
+import Server.DAL.DALService;
 import Server.Service.CommerceService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -16,6 +17,7 @@ public class ServerApp {
 
     public static void main(String[] args) {
 
+        DALService.getInstance().resetDatabase();
         Response<Boolean> initRes = CommerceService.getInstance().init();
 
         if(!initRes.isFailure()){
