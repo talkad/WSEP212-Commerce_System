@@ -137,7 +137,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public User getUserByName(String username) {
-        return null;
+        return userController.getUserByName(username);
     }
 
     @Override
@@ -337,7 +337,6 @@ public class CommerceSystem implements IService {
         catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(getInstance().userController.getUserByName("u2").getName());
         return new Response<>(true, false, "Successfully initialized the system with the initialization file");
     }
 

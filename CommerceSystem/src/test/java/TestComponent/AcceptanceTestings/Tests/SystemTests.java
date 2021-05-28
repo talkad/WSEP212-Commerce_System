@@ -28,18 +28,20 @@ public class SystemTests extends ProjectAcceptanceTests {
 
     @Test
     public void initfileSuccess(){
-        CommerceSystem commerceSystem = CommerceSystem.getInstance();
-        //commerceSystem.init();
-        Response<Boolean> res = commerceSystem.initState(null);
+        bridge = Driver.getBridge();
+        bridge.init();
+        notifier = Driver.getNotifier();
+        Response<Boolean> res = bridge.initState("initfile");
         Assert.assertFalse(res.isFailure());
-        Assert.assertEquals("u2", commerceSystem.getUserByName("u2").getName());
+        Assert.assertEquals("u2", bridge.getUserByName("u2").getName());
     }
 
     @Test
     public void initfileFailure(){
-        CommerceSystem commerceSystem = CommerceSystem.getInstance();
-        //commerceSystem.init();
-        Response<Boolean> res = commerceSystem.initState("failedinitfile");
+        bridge = Driver.getBridge();
+        bridge.init();
+        notifier = Driver.getNotifier();
+        Response<Boolean> res = bridge.initState("failedinitfile");
         Assert.assertTrue(res.isFailure());
         Assert.assertEquals(res.getErrMsg(), "CRITICAL Error: Bad initfile");
     }

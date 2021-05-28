@@ -22,7 +22,7 @@ public class ParallelismTests extends ProjectAcceptanceTests{
     public void setUp(){
 
         if(!initialized) {
-            super.setUp();
+            super.setUp(true);
 
             String guestName = bridge.addGuest().getResult();
 
