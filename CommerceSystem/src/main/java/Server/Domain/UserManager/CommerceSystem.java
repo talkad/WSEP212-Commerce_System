@@ -9,13 +9,23 @@ import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ExternalSystemsConnection;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
+import com.google.gson.Gson;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.bson.json.JsonReader;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -25,6 +35,7 @@ public class CommerceSystem implements IService {
     private StoreController storeController;
     public static Log log = new Log("Logs.txt");
 //    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
+
 
     private CommerceSystem() {
         this.userController = UserController.getInstance();
@@ -40,9 +51,19 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public void init() {
-        userController.adminBoot();
-//        initState();
+    public Response<Boolean> init() {
+        Response<Boolean> responseInit;
+        Response<Boolean> responseConfig;
+        userController.adminBoot(); // todo - joni
+
+        responseConfig = configInit();
+        responseInit = initState();
+
+
+        if(responseInit.isFailure() || responseConfig.isFailure())
+            return new Response<>(false, true, "initialization failed (CRITICAL)");
+
+        return new Response<>(true, false, "initialization complete");
     }
 
     @Override
@@ -270,7 +291,47 @@ public class CommerceSystem implements IService {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public void initState() {
+    public Response<Boolean> configInit(){
+        Gson gson = new Gson();
+        try {
+            byte [] jsonBytes = Files.readAllBytes(Paths.get("configfile.json"));
+            String jsonString = new String(jsonBytes);
+            Properties data = gson.fromJson(jsonString, Properties.class);
+
+            String admininfo = data.getProperty("admininfo");
+            String dbinfo = data.getProperty("dbinfo");
+            String extsysloc = data.getProperty("extsysloc");
+
+            data = gson.fromJson(admininfo, Properties.class);
+            String adminUsername = data.getProperty("username");
+            String adminPassword = data.getProperty("password");
+
+            // userController.adminBoot(adminUsername, adminPassword);
+
+            data = gson.fromJson(dbinfo, Properties.class);
+            String dbloc = data.getProperty("dbloc");
+            String dbUsername = data.getProperty("username");
+            String dbPassword = data.getProperty("password");
+
+            MongoClient mongoClient = MongoClients.create(dbloc);
+            mongoClient.close();
+
+            ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
+            con.setSysLoc(extsysloc);
+            boolean extSysRes = con.createHandshake().getResult();
+           if(extSysRes)
+               con.closeConnection();
+           else
+               throw new Exception("External System connection failed.");
+
+            return new Response<>(true,false,"System initialized successfully.");
+        }
+        catch(Exception e) {
+            return new Response<>(false,true,"Error with config file | DB connection failed | External System connection failed.");
+        }
+    }
+
+    public Response<Boolean> initState() {
 
         try {
             File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
@@ -323,13 +384,15 @@ public class CommerceSystem implements IService {
                     addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
                 else{
-                    //todo send to 404 page
+                    return new Response<>(false, true, "init: not recognized function- " + funcs[i]);
                 }
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            return new Response<>(false, true, "init: unexpected syntax");
         }
+
+        return new Response<>(true, false, "init: complete");
     }
 
     private List<String> stringToList(String[] str, int index){
@@ -344,4 +407,7 @@ public class CommerceSystem implements IService {
         }
         return lst;
     }
+
+
+
 }

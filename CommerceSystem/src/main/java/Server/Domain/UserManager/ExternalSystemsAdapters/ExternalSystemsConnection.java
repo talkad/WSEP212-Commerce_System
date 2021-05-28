@@ -30,6 +30,7 @@ public class ExternalSystemsConnection {
 
     private CloseableHttpClient client;
     private boolean isConnected;
+    private String sysLoc;
 
     private ExternalSystemsConnection(){
         this.isConnected = false;
@@ -111,7 +112,8 @@ public class ExternalSystemsConnection {
         try {
 
             HttpEntity postParams = new UrlEncodedFormEntity(request);
-            HttpPost httpPost = new HttpPost("https://cs-bgu-wsep.herokuapp.com/");
+            HttpPost httpPost = (sysLoc == null) ? new HttpPost("https://cs-bgu-wsep.herokuapp.com/") :
+                                                                          new HttpPost(sysLoc);
             httpPost.setEntity(postParams);
 
             CloseableHttpResponse httpResponse = client.execute(httpPost);
@@ -141,4 +143,6 @@ public class ExternalSystemsConnection {
     public boolean isConnected() {
         return isConnected;
     }
+
+    public void setSysLoc(String sysLoc) { this.sysLoc = sysLoc; }
 }

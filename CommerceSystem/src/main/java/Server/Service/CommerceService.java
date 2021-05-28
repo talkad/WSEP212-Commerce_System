@@ -42,8 +42,8 @@ public class CommerceService implements IService{
 
 
     @Override
-    public void init() {
-        commerceSystem.init();
+    public Response<Boolean> init() {
+        return commerceSystem.init();
     }
 
     @Override

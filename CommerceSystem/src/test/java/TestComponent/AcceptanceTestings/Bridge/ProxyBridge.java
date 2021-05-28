@@ -31,10 +31,12 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public void init() {
+    public Response<Boolean> init() {
         if (real != null){
-            real.init();
+            return real.init();
         }
+
+        return new Response<>(false, true, "not implemented");
     }
 
     @Override
