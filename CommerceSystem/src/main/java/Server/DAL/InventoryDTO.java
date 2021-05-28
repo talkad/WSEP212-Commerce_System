@@ -1,6 +1,7 @@
 package Server.DAL;
 
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.ProductIntPair;
+
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 import dev.morphia.annotations.Reference;
@@ -14,21 +15,21 @@ public class InventoryDTO {
     @Property(value = "products")
     // map product to the amount of it
     // TODO must be converted to vector in domain layer
-    private List<Pair<ProductDTO, Integer>> products;
+    private List<ProductIntPair> products;
 
     public InventoryDTO(){
         // For Morphia
     }
 
-    public InventoryDTO(List<Pair<ProductDTO, Integer>> products) {
+    public InventoryDTO(List<ProductIntPair> products) {
         this.products = products;
     }
 
-    public List<Pair<ProductDTO, Integer>> getProducts() {
+    public List<ProductIntPair> getProducts() {
         return products == null ? new Vector<>() : products;
     }
 
-    public void setProducts(List<Pair<ProductDTO, Integer>> products) {
+    public void setProducts(List<ProductIntPair> products) {
         this.products = new Vector<>(products);
     }
 }

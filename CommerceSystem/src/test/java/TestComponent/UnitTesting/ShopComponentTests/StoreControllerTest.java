@@ -1,5 +1,6 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
@@ -21,6 +22,9 @@ public class StoreControllerTest {
     @Before
     public void setUp(){
         if(!initialized) {
+            DALService.getInstance().useTestDatabase();
+            DALService.getInstance().resetDatabase();
+
             storeController = StoreController.getInstance();
             product1 = new ProductClientDTO("TV", 0, 1299.9, null, null);
             product2 = new ProductClientDTO("AirPods", 0, 799.9, List.of("Apple", "Headphones"), List.of("#Expensive", "#Swag"));

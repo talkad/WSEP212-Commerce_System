@@ -1,11 +1,19 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
+import Server.DAL.DALService;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class StoreTest {
+
+    @Before
+    public void setUp(){
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+    }
 
     @Test
     public void addProductsTestSuccess(){

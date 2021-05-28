@@ -17,6 +17,8 @@ import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
+import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
+import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.OfferState;
 import Server.Domain.UserManager.Publisher;
@@ -24,6 +26,7 @@ import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -34,8 +37,17 @@ import java.util.stream.Collectors;
 
 public class PurchaseTests {
 
+    @Before
+    public void init(){
+        DALService.getInstance().useTestDatabase();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
+    }
+
     @Test
     public void purchaseTest(){
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
         Response<Boolean> response;
         String guestName = UserController.getInstance().addGuest().getResult();
         int productID = 65482;
@@ -49,7 +61,7 @@ public class PurchaseTests {
         for(int i = 0; i < 5; i++)
             UserController.getInstance().addToCart(guestName, storeID, productID);
 
-        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "204444444");
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
@@ -723,6 +735,8 @@ public class PurchaseTests {
 
     @Test
     public void bidUserReplyWithCounterPriceTest(){
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
         int productId = 200;
         ProductClientDTO productDTO;
         CommerceSystem commerceSystem = CommerceSystem.getInstance();
@@ -747,7 +761,7 @@ public class PurchaseTests {
         productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
 
-        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
+        PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "204444449");
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);

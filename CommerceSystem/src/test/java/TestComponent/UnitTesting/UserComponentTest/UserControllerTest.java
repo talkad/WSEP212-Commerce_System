@@ -7,6 +7,7 @@ import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
 import Server.Service.CommerceService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,6 +20,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class UserControllerTest {
+
+    @Before
+    public void setUp(){
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+    }
 
     @Test
     public void removeGuestTest(){

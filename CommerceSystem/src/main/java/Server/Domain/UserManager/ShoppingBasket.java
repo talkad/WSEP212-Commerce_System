@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
+import Server.DAL.PairDTOs.ProductIntPair;
 import Server.DAL.ShoppingBasketDTO;
-import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
@@ -40,9 +40,9 @@ public class ShoppingBasket {
         this.totalPrice = shoppingBasketDTO.getTotalPrice();
         this.lock = new ReentrantReadWriteLock();
 
-        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = shoppingBasketDTO.getProducts();
+        List<ProductIntPair> productsList = shoppingBasketDTO.getProducts();
         if(productsList != null){
-            for(Pair<Server.DAL.ProductDTO, Integer> pair : productsList){
+            for(ProductIntPair pair : productsList){
                 this.pAmount.put(pair.getFirst().getProductID(), pair.getSecond());
                 this.products.put(pair.getFirst().getProductID(), new Product(pair.getFirst()));
             }
@@ -50,9 +50,9 @@ public class ShoppingBasket {
     }
 
     public ShoppingBasketDTO toDTO(){
-        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = new Vector<>();
+        List<ProductIntPair> productsList = new Vector<>();
         for(int key : this.pAmount.keySet()){
-            productsList.add(new Pair<>(this.products.get(key).toDTO(), this.pAmount.get(key)));
+            productsList.add(new ProductIntPair(this.products.get(key).toDTO(), this.pAmount.get(key)));
         }
 
         return new ShoppingBasketDTO(this.storeID, productsList, this.totalPrice);

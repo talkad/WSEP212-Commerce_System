@@ -19,14 +19,14 @@ public class SupplySystemMock {
     }
 
     public int supply(SupplyDetails supplyDetails){
-        if(supplyDetails.getAddress().length() == 0)
-            return -1;
+//        if(supplyDetails.getAddress().length() == 0)
+//            return -1;
         return 10000;
     }
 
     public int cancelSupply(int transactionID){
-        if(transactionID >= 50000)
-            return -1;
+//        if(transactionID >= 50000)
+//            return -1;
         return 1;
     }
 }

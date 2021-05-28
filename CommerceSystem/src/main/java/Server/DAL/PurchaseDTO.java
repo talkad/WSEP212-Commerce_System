@@ -1,6 +1,6 @@
 package Server.DAL;
 
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.ProductIntPair;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -14,7 +14,7 @@ public class PurchaseDTO {
     private int storeID;
 
     @Property(value = "basket")
-    private List<Pair<ProductDTO, Integer>> basket;
+    private List<ProductIntPair> basket;
 
     @Property(value = "totalPrice")
     private double totalPrice;
@@ -26,18 +26,18 @@ public class PurchaseDTO {
         // For Morphia
     }
 
-    public PurchaseDTO(int storeID, List<Pair<ProductDTO, Integer>> basket, double totalPrice, String purchaseDate) {
+    public PurchaseDTO(int storeID, List<ProductIntPair> basket, double totalPrice, String purchaseDate) {
         this.storeID = storeID;
         this.basket = basket;
         this.totalPrice = totalPrice;
         this.purchaseDate = purchaseDate;
     }
 
-    public List<Pair<ProductDTO, Integer>> getBasket() {
+    public List<ProductIntPair> getBasket() {
         return basket == null ? new Vector<>() : basket;
     }
 
-    public void setBasket(List<Pair<ProductDTO, Integer>> basket) {
+    public void setBasket(List<ProductIntPair> basket) {
         this.basket = basket;
     }
 

@@ -1,6 +1,6 @@
 package Server.DAL;
 
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.IntStringListPair;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
@@ -16,21 +16,21 @@ public class PublisherDTO {
     private int id = 0;
 
     @Property(value = "storeSubscribers")
-    private List<Pair<Integer, List<String>>> storeSubscribers;
+    private List<IntStringListPair> storeSubscribers;
 
     public PublisherDTO(){
         // For Morphia
     }
 
-    public PublisherDTO(List<Pair<Integer, List<String>>> storeSubscribers) {
+    public PublisherDTO(List<IntStringListPair> storeSubscribers) {
         this.storeSubscribers = storeSubscribers;
     }
 
-    public List<Pair<Integer, List<String>>> getStoreSubscribers() {
+    public List<IntStringListPair> getStoreSubscribers() {
         return storeSubscribers == null ? new Vector<>() : storeSubscribers;
     }
 
-    public void setStoreSubscribers(List<Pair<Integer, List<String>>> storeSubscribers) {
+    public void setStoreSubscribers(List<IntStringListPair> storeSubscribers) {
         this.storeSubscribers = storeSubscribers;
     }
 

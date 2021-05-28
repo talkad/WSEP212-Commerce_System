@@ -1,6 +1,6 @@
 package Server.DAL;
 
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.Domain.UserManager.Appointment;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.UserStateEnum;
@@ -21,7 +21,7 @@ public class UserDTO {
     private List<Integer> storesOwned;
 
     @Property(value = "storesManaged")
-    private List<Pair<Integer, List<PermissionsEnum>>> storesManaged;
+    private List<IntPermsListPair> storesManaged;
 
     @Id
     @Property(value = "name")
@@ -47,7 +47,7 @@ public class UserDTO {
         // For Morphia
     }
 
-    public UserDTO(UserStateEnum state, List<Integer> storesOwned, List<Pair<Integer, List<PermissionsEnum>>> storesManaged, String name, ShoppingCartDTO shoppingCart, PurchaseHistoryDTO purchaseHistory, AppointmentDTO appointments, List<OfferDTO> offers, PendingMessagesDTO pendingMessages) {
+    public UserDTO(UserStateEnum state, List<Integer> storesOwned, List<IntPermsListPair> storesManaged, String name, ShoppingCartDTO shoppingCart, PurchaseHistoryDTO purchaseHistory, AppointmentDTO appointments, List<OfferDTO> offers, PendingMessagesDTO pendingMessages) {
         this.state = state;
         this.storesOwned = storesOwned;
         this.storesManaged = storesManaged;
@@ -75,11 +75,11 @@ public class UserDTO {
         this.storesOwned = storesOwned;
     }
 
-    public List<Pair<Integer, List<PermissionsEnum>>> getStoresManaged() {
+    public List<IntPermsListPair> getStoresManaged() {
         return storesManaged == null ? new Vector<>() : storesManaged;
     }
 
-    public void setStoresManaged(List<Pair<Integer, List<PermissionsEnum>>> storesManaged) {
+    public void setStoresManaged(List<IntPermsListPair> storesManaged) {
         this.storesManaged = storesManaged;
     }
 

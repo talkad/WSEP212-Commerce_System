@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.*;
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -140,9 +140,9 @@ public class User {
         this.storesOwned = new Vector<>(userDTO.getStoresOwned());
 
         this.storesManaged = new ConcurrentHashMap<>();
-        List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
+        List<IntPermsListPair> managedList = userDTO.getStoresManaged();
         if(managedList != null){
-            for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+            for(IntPermsListPair pair : managedList){
                 this.storesManaged.put(pair.getFirst(), new Vector<>(pair.getSecond()));
             }
         }
@@ -164,11 +164,11 @@ public class User {
     }
 
     public UserDTO toDTO(){
-        List<Pair<Integer, List<PermissionsEnum>>> managedList = new Vector<>();
+        List<IntPermsListPair> managedList = new Vector<>();
         List<OfferDTO> offersList = new Vector<>();
 
         for(int key : this.getStoresManaged().keySet()){
-            managedList.add(new Pair<>(key, this.getStoresManaged().get(key)));
+            managedList.add(new IntPermsListPair(key, this.getStoresManaged().get(key)));
         }
 
         for(int key : this.getOffers().keySet()){
@@ -251,7 +251,7 @@ public class User {
 
         for(Integer storeID: baskets.keySet()){
             Store store = StoreController.getInstance().getStoreById(storeID);
-            Set<ProductClientDTO> productClientDTOS = new HashSet<>();
+            List<ProductClientDTO> productClientDTOS = new Vector<>();
             if(store != null){
 
                 for(Product product: baskets.get(storeID).keySet()){
@@ -425,8 +425,8 @@ public class User {
             UserDTO userDTO = DALService.getInstance().getUser(newOwner);
             if (userDTO != null) {
                 boolean managed = false;
-                List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
-                for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+                List<IntPermsListPair> managedList = userDTO.getStoresManaged();
+                for(IntPermsListPair pair : managedList){
                     if(pair.getFirst() == storeId)
                         managed = true;
                 }
@@ -460,8 +460,8 @@ public class User {
             UserDTO userDTO = DALService.getInstance().getUser(newManager);
             if (userDTO != null) {
                 boolean managed = false;
-                List<Pair<Integer, List<PermissionsEnum>>> managedList = userDTO.getStoresManaged();
-                for(Pair<Integer, List<PermissionsEnum>> pair : managedList){
+                List<IntPermsListPair> managedList = userDTO.getStoresManaged();
+                for(IntPermsListPair pair : managedList){
                     if(pair.getFirst() == storeId)
                         managed = true;
                 }
@@ -471,7 +471,7 @@ public class User {
 
                     List<PermissionsEnum> permissions = new Vector<>();
                     permissions.add(PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
-                    managedList.add(new Pair<>(storeId, permissions));
+                    managedList.add(new IntPermsListPair(storeId, permissions));
                     userDTO.setStoresManaged(managedList);
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(this.toDTO());

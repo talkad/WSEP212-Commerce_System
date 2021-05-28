@@ -1,8 +1,8 @@
 package Server.Domain.ShoppingManager;
 
 import Server.DAL.InventoryDTO;
+import Server.DAL.PairDTOs.ProductIntPair;
 import Server.DAL.PublisherDTO;
-import Server.Domain.CommonClasses.Pair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -33,9 +33,9 @@ public class Inventory {
         lock = new ReentrantReadWriteLock();
         purchaseLock = new ReentrantReadWriteLock();
 
-        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = inventoryDTO.getProducts();
+        List<ProductIntPair> productsList = inventoryDTO.getProducts();
         if(productsList != null){
-            for(Pair<Server.DAL.ProductDTO, Integer> pair : productsList){
+            for(ProductIntPair pair : productsList){
                 Product product = new Product(pair.getFirst());
                 this.pAmount.put(product.getProductID(), pair.getSecond());
                 this.products.put(product.getProductID(), product);
@@ -44,11 +44,11 @@ public class Inventory {
     }
 
     public InventoryDTO toDTO(){
-        List<Pair<Server.DAL.ProductDTO, Integer>> productsList = new Vector<>();
+        List<ProductIntPair> productsList = new Vector<>();
         lock.readLock().lock();
         for(int productID : this.pAmount.keySet()){
             Server.DAL.ProductDTO productDTO = this.products.get(productID).toDTO();
-            productsList.add(new Pair<>(productDTO, this.pAmount.get(productID)));
+            productsList.add(new ProductIntPair(productDTO, this.pAmount.get(productID)));
         }
         lock.readLock().unlock();
         return new InventoryDTO(productsList);

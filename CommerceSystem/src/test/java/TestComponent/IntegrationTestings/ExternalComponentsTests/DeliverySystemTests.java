@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
@@ -18,6 +19,8 @@ public class DeliverySystemTests {
     @Before
     public void setUp(){
         supplier = ProductSupplyAdapter.getInstance();
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
     }
 
     @Test

@@ -1,8 +1,8 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.DALService;
+import Server.DAL.PairDTOs.IntStringListPair;
 import Server.DAL.PublisherDTO;
-import Server.Domain.CommonClasses.Pair;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
@@ -103,9 +103,9 @@ public class Publisher{
 
     public PublisherDTO toDTO(){
         //TODO may need to make thread-safe
-        List<Pair<Integer, List<String>>> subscribers = new Vector<>();
+        List<IntStringListPair> subscribers = new Vector<>();
         for(int storeID : this.storeSubscribers.keySet()){
-            subscribers.add(new Pair<>(storeID, new Vector<>(this.storeSubscribers.get(storeID))));
+            subscribers.add(new IntStringListPair(storeID, new Vector<>(this.storeSubscribers.get(storeID))));
         }
 
         return new PublisherDTO(subscribers);
@@ -113,9 +113,9 @@ public class Publisher{
 
     public void loadFromDTO(PublisherDTO publisherDTO){
         //TODO may need to make thread-safe
-        List<Pair<Integer, List<String>>> subscribers = publisherDTO.getStoreSubscribers();
+        List<IntStringListPair> subscribers = publisherDTO.getStoreSubscribers();
         if(subscribers != null){
-            for(Pair<Integer, List<String>> pair : subscribers){
+            for(IntStringListPair pair : subscribers){
                 this.storeSubscribers.put(pair.getFirst(), new Vector<>(pair.getSecond()));
             }
         }

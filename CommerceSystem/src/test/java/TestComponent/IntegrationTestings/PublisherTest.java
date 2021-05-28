@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
@@ -11,9 +12,16 @@ import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class PublisherTest {
+
+    @Before
+    public void setUp(){
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+    }
 
     @Test
     public void pendingNotificationPurchaseTest(){

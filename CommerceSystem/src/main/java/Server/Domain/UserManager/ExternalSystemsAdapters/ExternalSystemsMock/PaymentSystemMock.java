@@ -20,14 +20,14 @@ public class PaymentSystemMock {
     }
 
     public int pay(PaymentDetails paymentDetails){
-        if(paymentDetails.getId().length() != 9)
-            return -1;
+//        if(paymentDetails.getId().length() != 9)
+//            return -1;
         return 10000;
     }
 
     public int cancelPay(int transactionID){
-        if(transactionID >= 50000)
-            return -1;
+//        if(transactionID >= 50000)
+//            return -1;
         return 1;
     }
 

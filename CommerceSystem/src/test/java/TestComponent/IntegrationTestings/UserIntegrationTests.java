@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -9,12 +10,19 @@ import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class UserIntegrationTests {
+
+    @Before
+    public void setUp(){
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+    }
 
     @Test
     public void addProductReviewSuccess() {

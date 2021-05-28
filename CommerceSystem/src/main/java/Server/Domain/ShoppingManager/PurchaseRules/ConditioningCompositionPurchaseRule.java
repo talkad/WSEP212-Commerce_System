@@ -1,9 +1,10 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
+import Server.DAL.PairDTOs.PredPair;
 import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.DAL.PurchaseRuleDTOs.ConditioningCompositionPurchaseRuleDTO;
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
-import Server.Domain.CommonClasses.Pair;
+
 import Server.Domain.ShoppingManager.Predicates.Predicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -32,9 +33,9 @@ public class ConditioningCompositionPurchaseRule extends CompoundPurchaseRule{
         this.setID(ruleDTO.getId());
 
         this.conditionsMap = new ConcurrentHashMap<>();
-        List<Pair<PredicateDTO, PredicateDTO>> conditionsList = ruleDTO.getConditionsMap();
+        List<PredPair> conditionsList = ruleDTO.getConditionsMap();
         if(conditionsList != null){
-            for(Pair<PredicateDTO, PredicateDTO> pair : conditionsList){
+            for(PredPair pair : conditionsList){
                 this.conditionsMap.put(pair.getFirst().toConcretePredicate(), pair.getSecond().toConcretePredicate());
             }
         }
@@ -42,9 +43,9 @@ public class ConditioningCompositionPurchaseRule extends CompoundPurchaseRule{
 
     @Override
     public PurchaseRuleDTO toDTO() {
-        List<Pair<PredicateDTO, PredicateDTO>> conditionsList = new Vector<>();
+        List<PredPair> conditionsList = new Vector<>();
         for(Predicate key : this.conditionsMap.keySet()){
-            conditionsList.add(new Pair<>(key.toDTO(), this.conditionsMap.get(key).toDTO()));
+            conditionsList.add(new PredPair(key.toDTO(), this.conditionsMap.get(key).toDTO()));
         }
         return new ConditioningCompositionPurchaseRuleDTO(this.id, this.getPurchaseRulesDTO(), conditionsList);
     }

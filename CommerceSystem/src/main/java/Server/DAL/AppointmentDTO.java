@@ -1,6 +1,7 @@
 package Server.DAL;
 
-import Server.Domain.CommonClasses.Pair;
+import Server.DAL.PairDTOs.IntStringListPair;
+
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
@@ -11,21 +12,21 @@ import java.util.Vector;
 public class AppointmentDTO {
 
     @Property(value = "storeAppointments")
-    private List<Pair<Integer, List<String>>> storeAppointments;
+    private List<IntStringListPair> storeAppointments;
 
     public AppointmentDTO(){
         // For Morphia
     }
 
-    public AppointmentDTO(List<Pair<Integer, List<String>>> storeAppointments) {
+    public AppointmentDTO(List<IntStringListPair> storeAppointments) {
         this.storeAppointments = storeAppointments;
     }
 
-    public List<Pair<Integer, List<String>>> getStoreAppointments() {
+    public List<IntStringListPair> getStoreAppointments() {
         return storeAppointments == null ? new Vector<>() : storeAppointments;
     }
 
-    public void setStoreAppointments(List<Pair<Integer, List<String>>> storeAppointments) {
+    public void setStoreAppointments(List<IntStringListPair> storeAppointments) {
         this.storeAppointments = storeAppointments;
     }
 }

@@ -1,9 +1,11 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -11,6 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ProductTest {
+
+    @Before
+    public void setUp(){
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+    }
 
     @Test
     public void simplePriceUpdateTest(){
