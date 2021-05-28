@@ -42,7 +42,7 @@ public class CommerceSystem implements IService {
     @Override
     public void init() {
         userController.adminBoot();
-//        initState();
+        //initState(null);
     }
 
     @Override
@@ -270,10 +270,16 @@ public class CommerceSystem implements IService {
         return userController.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public void initState() {
+    public Response<Boolean> initState(String filename) {
 
         try {
-            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+            File file;
+            if(filename != null){
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\" + filename);
+            }
+            else {
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+            }
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
@@ -324,12 +330,15 @@ public class CommerceSystem implements IService {
                 }
                 else{
                     //todo send to 404 page
+                    return new Response<>(false, true, "CRITICAL Error: Bad initfile");
                 }
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(getInstance().userController.getUserByName("u2").getName());
+        return new Response<>(true, false, "Successfully initialized the system with the initialization file");
     }
 
     private List<String> stringToList(String[] str, int index){

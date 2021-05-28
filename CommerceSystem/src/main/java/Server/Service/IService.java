@@ -25,6 +25,7 @@ public interface IService {
      * System requirements - 1
      */
     void init(); // 1.1
+    Response<Boolean> initState(String filename);
 
     /**
      * Guest requirements - 2

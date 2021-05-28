@@ -47,6 +47,11 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<Boolean> initState(String filename) {
+        return commerceSystem.initState(filename);
+    }
+
+    @Override
     public Response<String> addGuest() {
         return commerceSystem.addGuest();
     }

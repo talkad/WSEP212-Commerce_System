@@ -9,9 +9,11 @@ public abstract class ProjectAcceptanceTests {
     protected static IService bridge;
     protected static ProxyNotifier notifier;
 
-    public void setUp(){
-        bridge = Driver.getBridge();
-        bridge.init();
-        notifier = Driver.getNotifier();
+    public void setUp(boolean toInit){
+        if(toInit) {
+            bridge = Driver.getBridge();
+            bridge.init();
+            notifier = Driver.getNotifier();
+        }
     }
 }
