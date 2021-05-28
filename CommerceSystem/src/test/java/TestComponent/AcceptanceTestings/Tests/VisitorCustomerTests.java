@@ -29,7 +29,7 @@ public class VisitorCustomerTests extends ProjectAcceptanceTests{
     public void setUp(){
         if(!initialized) {
 
-            super.setUp();
+            super.setUp(true);
             //bridge.init();
 
             // pre-registered user in the system

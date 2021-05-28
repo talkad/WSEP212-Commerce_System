@@ -22,7 +22,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Before
     public void setUp(){
         if(!initialized)
-            super.setUp();
+            super.setUp(true);
 
         // logging in with an admin
         String guestName = bridge.addGuest().getResult();

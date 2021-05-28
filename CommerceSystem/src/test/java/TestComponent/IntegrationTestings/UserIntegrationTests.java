@@ -27,7 +27,7 @@ public class UserIntegrationTests {
     @Test
     public void addProductReviewSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -74,7 +74,7 @@ public class UserIntegrationTests {
     @Test
     public void addProductReviewFailureDidNotPurchaseProduct() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
 
@@ -104,7 +104,7 @@ public class UserIntegrationTests {
     @Test
     public void addProductsToStoreSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
 
@@ -134,7 +134,7 @@ public class UserIntegrationTests {
     @Test
     public void addProductsToStoreFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -175,7 +175,7 @@ public class UserIntegrationTests {
     @Test
     public void removeProductsFromStoreSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
 
@@ -208,7 +208,7 @@ public class UserIntegrationTests {
     @Test
     public void removeProductsFromStoreFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -253,7 +253,7 @@ public class UserIntegrationTests {
     @Test
     public void editProductSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
 
@@ -289,7 +289,7 @@ public class UserIntegrationTests {
     @Test
     public void editProductFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -334,7 +334,7 @@ public class UserIntegrationTests {
     @Test
     public void appointOwnerSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
 
@@ -363,7 +363,7 @@ public class UserIntegrationTests {
     @Test
     public void appointOwnerFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -403,7 +403,7 @@ public class UserIntegrationTests {
     @Test
     public void removeOwnerAppointmentSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -443,7 +443,7 @@ public class UserIntegrationTests {
     @Test
     public void removeOwnerAppointmentFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -484,7 +484,7 @@ public class UserIntegrationTests {
     @Test
     public void appointManagerSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -524,7 +524,7 @@ public class UserIntegrationTests {
     @Test
     public void appointManagerFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -564,7 +564,7 @@ public class UserIntegrationTests {
     @Test
     public void removeManagerAppointmentSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -604,7 +604,7 @@ public class UserIntegrationTests {
     @Test
     public void removeManagerAppointmentFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -645,7 +645,7 @@ public class UserIntegrationTests {
     @Test
     public void editManagerPermissionSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();
@@ -692,7 +692,7 @@ public class UserIntegrationTests {
     @Test
     public void editManagerPermissionFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         String guest2 = userController.addGuest().getResult();
         String guest3 = userController.addGuest().getResult();

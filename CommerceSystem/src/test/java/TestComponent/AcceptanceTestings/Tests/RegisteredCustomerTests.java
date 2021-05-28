@@ -22,7 +22,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     @Before
     public void setUp(){
         if(!initialized) {
-            super.setUp();
+            super.setUp(true);
 
             String guestName = bridge.addGuest().getResult();
             bridge.register(guestName, "aviad", "123456");

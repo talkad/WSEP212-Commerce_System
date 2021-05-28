@@ -54,13 +54,13 @@ public class CommerceSystem implements IService {
     public Response<Boolean> init() {
         Response<Boolean> responseInit;
         Response<Boolean> responseConfig;
-        userController.adminBoot(); // todo - joni
+        //userController.adminBoot("shaked", "jacob");
 
         responseConfig = configInit();
-        responseInit = initState();
+        responseInit = initState(null);
 
 
-        if(responseInit.isFailure() || responseConfig.isFailure())
+        if (responseInit.isFailure() || responseConfig.isFailure())
             return new Response<>(false, true, "initialization failed (CRITICAL)");
 
         return new Response<>(true, false, "initialization complete");
@@ -158,7 +158,7 @@ public class CommerceSystem implements IService {
 
     @Override
     public User getUserByName(String username) {
-        return null;
+        return userController.getUserByName(username);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class CommerceSystem implements IService {
             String adminUsername = data.getProperty("username");
             String adminPassword = data.getProperty("password");
 
-            // userController.adminBoot(adminUsername, adminPassword);
+            userController.adminBoot(adminUsername, adminPassword);
 
             data = gson.fromJson(dbinfo, Properties.class);
             String dbloc = data.getProperty("dbloc");
@@ -331,10 +331,17 @@ public class CommerceSystem implements IService {
         }
     }
 
-    public Response<Boolean> initState() {
+
+    public Response<Boolean> initState(String filename) {
 
         try {
-            File file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+            File file;
+            if(filename != null){
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\" + filename);
+            }
+            else {
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+            }
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
@@ -384,15 +391,15 @@ public class CommerceSystem implements IService {
                     addPermission(currUser, Integer.parseInt(attributes[0]), attributes[1], PermissionsEnum.valueOf(attributes[2].substring(0, attributes[2].length() - 1)));
                 }
                 else{
-                    return new Response<>(false, true, "init: not recognized function- " + funcs[i]);
+                    //todo send to 404 page
+                    return new Response<>(false, true, "CRITICAL Error: Bad initfile");
                 }
             }
         }
         catch (Exception e) {
             return new Response<>(false, true, "init: unexpected syntax");
         }
-
-        return new Response<>(true, false, "init: complete");
+        return new Response<>(true, false, "Successfully initialized the system with the initialization file");
     }
 
     private List<String> stringToList(String[] str, int index){

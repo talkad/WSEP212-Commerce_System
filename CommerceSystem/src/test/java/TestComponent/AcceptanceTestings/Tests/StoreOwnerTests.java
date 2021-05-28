@@ -32,7 +32,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
     @Before
     public void setUp(){
         if(!initialized) {
-            super.setUp();
+            super.setUp(true);
 
             // pre-registered users in the system
             String guestName = bridge.addGuest().getResult();

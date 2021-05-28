@@ -25,7 +25,7 @@ public class UserTests {
     @Test
     public void openStoreAddToStoresOwned() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guest2 = userController.addGuest().getResult();
         userController.register(guest2, "almog", "lol");
         String almogID = userController.login(guest2, "almog", "lol").getResult();
@@ -38,7 +38,7 @@ public class UserTests {
     @Test
     public void registerSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         User guest = userController.getConnectedUsers().get(guestID);
 
@@ -48,7 +48,7 @@ public class UserTests {
     @Test
     public void registerFailureNotAGuest() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         User shaked = userController.getConnectedUsers().get("shaked"); // prebuilt admin
 
         Assert.assertTrue(shaked.register().isFailure());
@@ -57,7 +57,7 @@ public class UserTests {
     @Test
     public void logoutSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -69,7 +69,7 @@ public class UserTests {
     @Test
     public void logoutFailureNotRegistered() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         User guest = userController.getConnectedUsers().get(guestID);
 
@@ -79,7 +79,7 @@ public class UserTests {
     @Test
     public void openStoreSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -91,7 +91,7 @@ public class UserTests {
     @Test
     public void openStoreFailureNotRegistered() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         User guest = userController.getConnectedUsers().get(guestID);
 
@@ -101,7 +101,7 @@ public class UserTests {
     @Test
     public void getPurchaseHistoryContentsSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -113,7 +113,7 @@ public class UserTests {
     @Test
     public void getPurchaseHistoryContentsFailureNotRegistered() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         User guest = userController.getConnectedUsers().get(guestID);
 
@@ -123,7 +123,7 @@ public class UserTests {
     @Test
     public void receiveStorePurchaseHistorySuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         User shaked = userController.getConnectedUsers().get("shaked"); // prebuilt admin
 
         String guest2 = userController.addGuest().getResult();
@@ -137,7 +137,7 @@ public class UserTests {
     @Test
     public void receiveStorePurchaseHistoryFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -154,7 +154,7 @@ public class UserTests {
     @Test
     public void receiveUserPurchaseHistorySuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         User shaked = userController.getConnectedUsers().get("shaked"); // prebuilt admin
 
         Assert.assertFalse(shaked.getUserPurchaseHistory("almog").isFailure());
@@ -163,7 +163,7 @@ public class UserTests {
     @Test
     public void receiveUserPurchaseHistoryFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -175,7 +175,7 @@ public class UserTests {
     @Test
     public void receiveWorkerInfoSuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "almog", "lol");
         String almogID = userController.login(guestID, "almog", "lol").getResult();
@@ -188,7 +188,7 @@ public class UserTests {
     @Test
     public void receiveWorkerInfoFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -205,7 +205,7 @@ public class UserTests {
     @Test
     public void receiveStoreHistorySuccess() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "almog", "lol");
         String almogID = userController.login(guestID, "almog", "lol").getResult();
@@ -218,7 +218,7 @@ public class UserTests {
     @Test
     public void receiveStoreHistoryFailureNotPermitted() {
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -235,7 +235,7 @@ public class UserTests {
     @Test
     public void concurrencyAddAppointmentTest() throws InterruptedException{
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -275,7 +275,7 @@ public class UserTests {
     @Test
     public void concurrencyRemoveAppointmentTest() throws InterruptedException{
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -319,7 +319,7 @@ public class UserTests {
     @Test
     public void concurrencyAddPermissionTest() throws InterruptedException{
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();
@@ -353,7 +353,7 @@ public class UserTests {
     @Test
     public void concurrencyRemovePermissionTest() throws InterruptedException{
         UserController userController = UserController.getInstance();
-        userController.adminBoot();
+        userController.adminBoot("shaked", "jacob");
         String guestID = userController.addGuest().getResult();
         userController.register(guestID, "yaakov", "lol");
         String yaakovID = userController.login(guestID, "yaakov", "lol").getResult();

@@ -542,16 +542,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public void adminBoot() {
-        // TODO uncomment to reset database on bootup
-//        DALService.getInstance().useTestDatabase();
-//        DALService.getInstance().resetDatabase();
-//        PaymentSystemAdapter.getInstance().setMockFlag();
-//        ProductSupplyAdapter.getInstance().setMockFlag();
-
-        String username = "shaked";
-        String password = "jacob";
-
+    public void adminBoot(String username, String password) {
         DALService.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
         DALService.getInstance().addAdmin(new AdminAccountDTO(username));
         User user = new User(username);
