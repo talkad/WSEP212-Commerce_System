@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
@@ -12,6 +13,8 @@ public class PaymentSystemTests {
     @Before
     public void setUp(){
         payment = PaymentSystemAdapter.getInstance();
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
     }
 
     @Test

@@ -28,6 +28,7 @@ public class DALService {
     private Map<String, AdminAccountDTO> admins;
     private Map<Integer, ProductDTO> products;
     private Map<Integer, PublisherDTO> publisher;
+    private Map<String, ShoppingCartDTO> guestCarts;
 
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
@@ -47,17 +48,19 @@ public class DALService {
     }
 
     private DALService() {
-        if(useLocal){
-            this.stores = new ConcurrentHashMap<>();
-            this.users = new ConcurrentHashMap<>();
-            this.accounts = new ConcurrentHashMap<>();
-            this.admins = new ConcurrentHashMap<>();
-            this.products = new ConcurrentHashMap<>();
-            this.publisher = new ConcurrentHashMap<>();
-        }
+        this.stores = new ConcurrentHashMap<>();
+        this.users = new ConcurrentHashMap<>();
+        this.accounts = new ConcurrentHashMap<>();
+        this.admins = new ConcurrentHashMap<>();
+        this.products = new ConcurrentHashMap<>();
+        this.publisher = new ConcurrentHashMap<>();
+        this.guestCarts = new ConcurrentHashMap<>();
     }
 
     public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {
+        if(userDTO.getState() == UserStateEnum.GUEST) {
+            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+        }
         if(useLocal){
             if(userDTO.getState() != UserStateEnum.GUEST) {
                 this.users.put(userDTO.getName(), userDTO);
@@ -296,12 +299,6 @@ public class DALService {
                 mapper.mapPackage("Server.DAL.PredicateDTOs");
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
-//                Collection<MappedClass> maps = mapper.getMappedClasses();
-//                for(MappedClass className : maps){
-//                    System.out.println(className.toString());
-//                }
-//                //System.out.println(mapper.getClass("products"));
-//                System.out.println(mapper.getClass("ProductDTO"));
 
                 storeDTOList = datastore.find(StoreDTO.class)
                         .filter(
@@ -321,6 +318,9 @@ public class DALService {
     }
 
     public void saveUserAndStore(UserDTO userDTO, StoreDTO storeDTO){
+        if(userDTO.getState() == UserStateEnum.GUEST) {
+            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+        }
         if(useLocal){
             if (userDTO.getState() != UserStateEnum.GUEST)
                 this.users.put(userDTO.getName(), userDTO);
@@ -362,6 +362,9 @@ public class DALService {
     }
 
     public void saveUserStoreAndProduct(UserDTO userDTO, StoreDTO storeDTO, ProductDTO productDTO){
+        if(userDTO.getState() == UserStateEnum.GUEST) {
+            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+        }
         if(useLocal){
             if (userDTO.getState() != UserStateEnum.GUEST)
                 users.put(userDTO.getName(), userDTO);
@@ -509,6 +512,9 @@ public class DALService {
     }
 
     public void insertUser(UserDTO userDTO){
+        if(userDTO.getState() == UserStateEnum.GUEST) {
+            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+        }
         if(useLocal) {
             if (userDTO.getState() != UserStateEnum.GUEST)
                 users.put(userDTO.getName(), userDTO);
@@ -536,6 +542,11 @@ public class DALService {
     }
 
     public boolean saveUsers(List<UserDTO> userDTOList){
+        for(UserDTO userDTO : userDTOList) {
+            if (userDTO.getState() == UserStateEnum.GUEST) {
+                this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+            }
+        }
         if(useLocal){
             for(UserDTO userDTO: userDTOList){
                 if (userDTO.getState() != UserStateEnum.GUEST)
@@ -580,43 +591,42 @@ public class DALService {
         if(useLocal){
             return this.stores.size();
         }
-//        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
-//        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
-//
-//        Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-//        mapper.mapPackage("Server.DAL");
-//        mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-//        mapper.mapPackage("Server.DAL.PredicateDTOs");
-//        mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-//        mapper.mapPackage("Server.DAL.PairDTOs");
-//
-//        List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
-//                // filters find relevant entries
-//                .filter(
-//                        Filters.gte("storeID", 0)
-//                )
-//                // iterator options manipulate the found entries
-//                .iterator(
-//                        new FindOptions()
-//                                .sort(Sort.descending("storeID"))
-//                ).toList();
-//
-//        mongoClient.close();
-//
-//        if(storeDTOs == null || storeDTOs.size() == 0){
-//            return 0;
-//        }
-//        StoreDTO head = storeDTOs.get(0);
-//        int id = head.getStoreID();
-//        return id + 1;
-        else {
-            return (int) (Math.random() * (10000 - 1)) + 1;
+        MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
+        Datastore datastore = Morphia.createDatastore(mongoClient, "commerceDatabase");
+
+        Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+        mapper.mapPackage("Server.DAL");
+        mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
+        mapper.mapPackage("Server.DAL.PredicateDTOs");
+        mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
+        mapper.mapPackage("Server.DAL.PairDTOs");
+
+        List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
+                // filters find relevant entries
+                .filter(
+                        Filters.gte("storeID", 0)
+                )
+                // iterator options manipulate the found entries
+                .iterator(
+                        new FindOptions()
+                                .sort(Sort.descending("storeID"))
+                ).toList();
+
+        mongoClient.close();
+
+        if(storeDTOs == null || storeDTOs.size() == 0){
+            return 0;
         }
+        StoreDTO head = storeDTOs.get(0);
+        int id = head.getStoreID();
+        return id + 1;
+//        else {
+//            return (int) (Math.random() * (10000 - 1)) + 1;
+//        }
     }
 
     public void resetDatabase(){
         try (MongoClient mongoClient = MongoClients.create(this.dbURL)){
-            //MongoClient mongoClient = MongoClients.create("mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority");
             mongoClient.getDatabase(this.dbName).getCollection("users").drop();
             mongoClient.getDatabase(this.dbName).getCollection("stores").drop();
             mongoClient.getDatabase(this.dbName).getCollection("publishers").drop();

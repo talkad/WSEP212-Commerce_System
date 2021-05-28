@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings;
 
+import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Review;
@@ -34,6 +35,10 @@ public class SearchTests {
 
     @Before
     public void setUp(){
+
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
+
         userController = UserController.getInstance();
         searchEngine = SearchEngine.getInstance();
         registeredUsers = new ConcurrentHashMap<>();

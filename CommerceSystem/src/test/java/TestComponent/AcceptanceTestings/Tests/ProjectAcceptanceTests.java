@@ -17,6 +17,7 @@ public abstract class ProjectAcceptanceTests {
         bridge.init();
         notifier = Driver.getNotifier();
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
     }
