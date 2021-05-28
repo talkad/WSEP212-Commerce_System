@@ -1,8 +1,11 @@
 import React from "react";
 import Connection from "../API/Connection";
-import {Alert, Button, Col, Container, Form, InputGroup, Spinner} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, Image, InputGroup, Spinner} from "react-bootstrap";
 import SupplyDetails from "../JsonClasses/SupplyDetails";
 import PaymentDetails from "../JsonClasses/PaymentDetails";
+import * as Icon from "react-bootstrap-icons";
+import Modal from "react-modal";
+import harold_love from '../Images/harold_love.png'
 
 class Checkout extends React.Component{
     constructor(props) {
@@ -33,11 +36,14 @@ class Checkout extends React.Component{
             productName: '',
             productID: '',
             storeID: '',
+
+            thankYouModal: false,
         }
 
         this.handlePurchase = this.handlePurchase.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleContinue = this.handleContinue.bind(this);
     }
 
     componentDidMount() {
@@ -59,9 +65,7 @@ class Checkout extends React.Component{
 
     handleResponse(result){
         if(!result.isFailure){
-            this.setState({submitted: false,
-                showAlert: true, alertVariant: 'success', alertInfo: 'Thank you for your purchase'});
-            window.location.href = '/';
+            this.setState({submitted: false, thankYouModal: true, validated: false});
         }
         else{
             this.setState({submitted: false,
@@ -85,6 +89,11 @@ class Checkout extends React.Component{
         }
     }
 
+    handleContinue(){
+        this.setState({thankYouModal: false});
+        window.location.href = '/';
+    }
+
     render() {
         const handleSubmit = (event) => {
             const form = event.currentTarget;
@@ -99,6 +108,43 @@ class Checkout extends React.Component{
 
         return (
             <div className="Login">
+                <Modal
+                    style={{
+                        overlay: {
+
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.75)'
+                        },
+                        // content: {
+                        //     position: 'absolute',
+                        //     top: '40px',
+                        //     left: '40px',
+                        //     right: '40px',
+                        //     bottom: '40px',
+                        //     border: '1px solid #ccc',
+                        //     background: '#fff',
+                        //     overflow: 'auto',
+                        //     WebkitOverflowScrolling: 'touch',
+                        //     borderRadius: '4px',
+                        //     outline: 'none',
+                        //     padding: '20px'
+                        // }
+                    }}
+
+                    isOpen={this.state.thankYouModal}
+                    onRequestClose={this.handleContinue}
+                    contentLabel="Example Modal"
+                >
+                    <Icon.XCircle onClick={this.handleContinue}/>
+                    <br/>
+                    <h1>Thank you for your purchase.</h1>
+                    <Image src={harold_love}/>
+                    <br/>
+                    <Button onClick={this.handleContinue}>Continue</Button>
+                </Modal>
                 <Container className="Page">
                     <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
@@ -186,7 +232,7 @@ class Checkout extends React.Component{
                                 </InputGroup>
                             </Form.Group>
                             <Form.Group as={Col}>
-                                <Form.Label>CCV</Form.Label>
+                                <Form.Label>CVV</Form.Label>
                                 <InputGroup hasValidation>
                                     <Form.Control id="ccv" type="text" placeholder="Enter ccv" onChange={this.handleChange} required/>
                                     <Form.Control.Feedback type="invalid">

@@ -46,8 +46,10 @@ class CreateStore extends React.Component{
     }
 
     handleCreateStore(){
-        Connection.sendOpenStore(this.state.storeName).then(this.handleResponse, Connection.handleReject);
-        this.setState({submitted: true});
+        if(this.state.storeName !== '') {
+            Connection.sendOpenStore(this.state.storeName).then(this.handleResponse, Connection.handleReject);
+            this.setState({submitted: true});
+        }
     }
 
     render() {

@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import Connection from "../API/Connection";
 import StaticUserInfo from "../API/StaticUserInfo";
-import {Form, Button, Container, Spinner, InputGroup, Alert} from 'react-bootstrap'
+import {Form, Button, Container, Spinner, InputGroup, Alert, Image} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Link} from "react-router-dom";
+import hello_there from "../Images/hello_there.gif";
 
 class Login extends React.Component{
 
@@ -73,6 +74,7 @@ class Login extends React.Component{
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
                     </Alert>
                     <h1>Login</h1>
+                    <Image src={hello_there} fluid/>
                     <Form noValidate validated={this.state.validated} className="form" onSubmit={handleSubmit}>
                         <div className="textStyle">
                             <Form.Group controlId="formBasicEmail">

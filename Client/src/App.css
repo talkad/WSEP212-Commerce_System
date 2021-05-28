@@ -102,3 +102,56 @@ input[type="radio"]{
     transform: rotate(360deg);
   }
 }
+
+#cart_card_group_block {
+  text-align:center;
+  align-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+.cart_card_block {
+  text-align:left;
+  margin:10px;
+}
+
+#cart_title {
+  width: 100%;
+}
+
+#card_page_content{
+  /*text-align:center;*/
+  /*align-content: center;*/
+  /*display: flex;*/
+  /*align-items: center;*/
+}
+
+#cart_checkout{
+  width: 25%;
+  height: auto;
+  padding-top: 3%;
+  float: left;
+}
+
+#cart_items{
+  padding-top: 3%;
+  padding-left: 20%;
+  padding-right: 2%;
+  width: 75%;
+  height: auto;
+  float: left;
+}
+
+#cart_card_info{
+  width: 60%;
+  height: auto;
+  float: left;
+}
+
+#cart_card_actions{
+  width: 40%;
+  height: auto;
+  float: left;
+}

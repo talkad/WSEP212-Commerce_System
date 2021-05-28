@@ -1,5 +1,6 @@
 import React from "react";
 import Connection from "../API/Connection";
+import {Form, FormControl} from "react-bootstrap";
 
 
 class UpdateQuantity extends React.Component{
@@ -36,11 +37,11 @@ class UpdateQuantity extends React.Component{
 
     render() {
         return (
-            <div>
-                <form>
-                    <input type="text" name="quantity" placeholder="New quantity" value={this.state.quantity}
+            <div id="update_quantity_block">
+                <Form>
+                    <FormControl style={{width: '80%'}} type="text" name="quantity" placeholder="New quantity" value={this.state.quantity}
                               onChange={this.handleQuantityChange}/>
-                </form>
+                </Form>
                 <button onClick={this.handleQuantityUpdate}>Update quantity</button>
             </div>
         );

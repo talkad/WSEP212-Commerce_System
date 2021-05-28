@@ -71,9 +71,10 @@ class Search extends React.Component{
                             placeholder="Search for anything..."
                             aria-label="Free search"
                             aria-describedby="basic-addon2"
+                            onChange={this.handleFreeTextChange}
                         />
                         <InputGroup.Append>
-                            <Button type='submit' variant="outline-secondary">Search</Button>
+                            <Button onClick={(event) => {if(this.state.freeText === ''){event.preventDefault()}}} type='submit' variant="outline-secondary">Search</Button>
                         </InputGroup.Append>
                     </InputGroup>
                 </form>
