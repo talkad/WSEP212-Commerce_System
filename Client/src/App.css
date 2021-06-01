@@ -103,6 +103,7 @@ input[type="radio"]{
   }
 }
 
+/*CART START*/
 #cart_card_group_block {
   text-align:center;
   align-content: center;
@@ -155,3 +156,20 @@ input[type="radio"]{
   height: auto;
   float: left;
 }
+/*CART END*/
+
+/*PURCHASE HISTORY START*/
+#purchase_history_title{
+  width: 100%;
+}
+
+#purchase_history_contents{
+  display: grid;
+  place-items: center;
+}
+
+#review_modal{
+  display: grid;
+  place-items: center;
+}
+/*PURCHASE HISTORY END*/

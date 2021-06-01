@@ -74,8 +74,13 @@ class Cart extends React.Component { //TODO check if the cart is empty and show 
         Connection.sendRemoveFromCart(storeID, productID).then(this.handleRemoveFromCartResponse, Connection.handleReject);
     }
 
-    handleQuantityChange() {
-        window.location.reload();
+    handleQuantityChange(result) {
+        if(!result.isFailure) {
+            window.location.reload();
+        }
+        else{
+            alert(result.errMsg);
+        }
     }
 
     addToTotal(price, amount, toZero){
@@ -110,16 +115,17 @@ class Cart extends React.Component { //TODO check if the cart is empty and show 
                         {this.addToTotal(0, 0, true) && this.state.cart.map(({storeID, storeName, productsDTO, amounts}) => (
                             <div>
                                 {zip(productsDTO, amounts).map( entry => (this.addToTotal(entry[0].price, entry[1], false) &&
-                                    <ListGroup.Item><ProductEntryCart
+                                    <ListGroup.Item>
+                                        <ProductEntryCart
                                         name = {entry[0].name}
                                         price = {entry[0].price}
                                         storeID = {storeID}
                                         amount = {entry[1]}
                                         seller = {storeName}
                                         productID = {entry[0].productID}
-                                        handlerUpdate = {() => this.handleQuantityChange()}
+                                        handlerUpdate = {this.handleQuantityChange}
                                         handlerRemove = {() => this.handleRemoveFromCart(storeID, entry[0].productID)}
-                                    />
+                                        />
                                     </ListGroup.Item>
                                 ) ) }
                             </div>
