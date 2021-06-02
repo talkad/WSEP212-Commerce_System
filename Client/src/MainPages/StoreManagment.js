@@ -18,6 +18,8 @@ import Connection from "../API/Connection";
 import {Button, Spinner} from "react-bootstrap";
 import MainDiscountPolicyPage from "../DiscountPurchasePolicyPages/MainDiscountPolicyPage";
 import DeleteDiscountRule from "../DiscountPurchasePolicyPages/DeleteDiscountRule";
+import StoreRevenue from "../ReportsPages/StoreRevenue";
+import SystemRevenue from "../ReportsPages/SystemRevenue";
 
 class StoreManagment extends React.Component {
     constructor(props) {
@@ -68,6 +70,10 @@ class StoreManagment extends React.Component {
                                         perm === 'REMOVE_PERMISSION' ? ReactDOM.render(<React.StrictMode><DeletePermission /></React.StrictMode>, document.getElementById('root')) :
                                             perm === 'APPOINT_MANAGER' ? ReactDOM.render(<React.StrictMode><AppointManager /></React.StrictMode>, document.getElementById('root')) :
                                                 perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
+                                                    perm === 'RECEIVE_STORE_REVENUE' ? ReactDOM.render(<React.StrictMode><StoreRevenue /></React.StrictMode>, document.getElementById('root')) :
+                                                        perm === 'RECEIVE_GENERAL_REVENUE' ? ReactDOM.render(<React.StrictMode><SystemRevenue /></React.StrictMode>, document.getElementById('root')) :
+                                                            perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
+                                                                perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
                                     //perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
                                         //perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
                                             //perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :

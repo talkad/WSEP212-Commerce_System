@@ -35,9 +35,9 @@ class MainDiscountPolicyPage extends React.Component {
                 <Link to = '/Category_Discount_Rule'> <button type = "button"> Category Discount </button> </Link>
                 <Link to = '/Store_Discount_Rule'> <button type = "button"> Store Discount </button> </Link>
                 <Link to = '/Product_Discount_Rule'> <button type = "button"> Product Discount </button> </Link>
-                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Category Rule </button> </Link>
-                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Store Rule </button> </Link>
-                <Link to = '/Conditional_Category_Store_Rule'> <button type = "button"> Cond Product Rule </button> </Link>
+                <Link to = '/Conditional_Category_Discount_Rule'> <button type = "button"> Cond Category Rule </button> </Link>
+                <Link to = '/Conditional_Store_Discount_Rule'> <button type = "button"> Cond Store Rule </button> </Link>
+                <Link to = '/Conditional_Product_Discount_Rule'> <button type = "button"> Cond Product Rule </button> </Link>
                 <div><Link to = '/Composition_Policies_Page'> <button type = "button"> Add Policy Rule </button> </Link></div>
             </form>
         )
