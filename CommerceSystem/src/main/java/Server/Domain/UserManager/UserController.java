@@ -758,10 +758,42 @@ public class UserController {
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
-            return user.bidOffer(productID, storeID, priceOffer);
+            List<String> appointees = new Vector<>();
+            return user.bidOffer(productID, storeID, priceOffer, getBidPermiters(StoreController.getInstance().getStoreOwnerName(storeID), storeID));
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
+    }
+
+    private List<String> getBidPermiters(String storeOwnerName, int storeId) {
+        List<String> approvals = new Vector<>();
+        approvals.add(storeOwnerName);
+        List<String> appointees = UserController.getInstance().getUserByName(storeOwnerName).getAppointments().getAppointees(storeId).getResult();
+        for (String appointee: appointees){
+            User u = UserController.getInstance().getUserByName(appointee);
+            if(u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))){
+                approvals.add(appointee);
+                recBidPermiters(appointee, storeId, approvals);
+            }
+        }
+        System.out.println(approvals);
+        return approvals;
+    }
+
+    private void recBidPermiters(String name, int storeId, List<String> approvals){
+        Appointment appointees = UserController.getInstance().getUserByName(name).getAppointments();
+        if(appointees != null){
+             List<String> appointeesList = appointees.getAppointees(storeId).getResult();
+             if(appointeesList != null) {
+                 for (String appointee : appointeesList) {
+                     User u = UserController.getInstance().getUserByName(appointee);
+                     if (u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))) {
+                         approvals.add(appointee);
+                         recBidPermiters(appointee, storeId, approvals);
+                     }
+                 }
+             }
+        }
     }
 
     public Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {

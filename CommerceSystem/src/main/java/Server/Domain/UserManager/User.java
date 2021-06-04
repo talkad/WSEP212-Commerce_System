@@ -25,11 +25,6 @@ public class User {
 
     private UserState state;
     private List<Integer> storesOwned;
-
-    public Appointment getAppointments() {
-        return appointments;
-    }
-
     private Map<Integer, List<PermissionsEnum>> storesManaged;
     private String name;
     private ShoppingCart shoppingCart;
@@ -185,6 +180,10 @@ public class User {
                             offersList,
                             this.pendingMessages.toDTO());
 
+    }
+
+    public Appointment getAppointments() {
+        return appointments;
     }
 
     public List<Integer> getStoresOwned() {
@@ -862,19 +861,21 @@ public class User {
         }
     }
 
-    public Response<Boolean> bidOffer(int productID, int storeID, double priceOffer) {
+    public Response<Boolean> bidOffer(int productID, int storeID, double priceOffer, List<String> approvals) {
         Store store = StoreController.getInstance().getStoreById(storeID);
         if (store == null)
             return new Response<>(false, true, "The given store doesn't exists");
 
-        Offer offer = new Offer(productID, storeID, priceOffer);
+        Offer offer = new Offer(productID, storeID, priceOffer, approvals);
 
         this.offers.put(productID, offer);
         DALService.getInstance().insertUser(this.toDTO());
 
         Gson gson = new Gson();
         Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
+
         Publisher.getInstance().notify(PermissionsEnum.REPLY_TO_BID, storeID, new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(this.name, product.getName(), productID, storeID, priceOffer)), "bidOffer"));
+
         return new Response<>(true, false, "Bid offer sent successfully to store " +storeID+ " owners");
     }
 
@@ -892,6 +893,11 @@ public class User {
     public Response<Boolean> changeOfferStatus(User offeringUser, int productID, int storeID, double bidReply) {
         Product product = StoreController.getInstance().getProduct(storeID, productID).getResult();
         Store store = StoreController.getInstance().getStoreById(storeID);
+
+        Offer offer = offeringUser.getOffers().get(productID);
+        if(offer == null)
+            return new Response<>(false, true, "The offer doesn't exists");
+
         if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -2) {
                 Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
@@ -902,19 +908,17 @@ public class User {
             } else if (bidReply == -1) {
                 Gson gson = new Gson();
                 Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, offeringUser.getOffers().get(productID).getOfferReply())), "changeOfferStatusAccepted"));
-                System.out.println("aaaaaaaaaaaaaaaaaaaa " + offeringUser.getOffers().get(productID).getOfferReply());
-                offeringUser.getOffers().get(productID).setState(OfferState.APPROVED);
+                offer.setState(this.name, OfferState.APPROVED);
                 DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was accepted.");
 
             } else {
                 Gson gson = new Gson();
                 Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, bidReply)), "changeOfferStatus"));
-                offeringUser.getOffers().get(productID).setState(OfferState.APPROVED);
-                offeringUser.getOffers().get(productID).setOfferReply(bidReply);
+                offer.setState(this.name, OfferState.APPROVED);
+                offer.setOfferReply(bidReply);
                 DALService.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The store presented a counter offer");
-
             }
         }
         else{
@@ -978,10 +982,10 @@ public class User {
         if (bidReply == -2) {
             offers.remove(productID);
         } else if (bidReply == -1) {
-           offers.get(productID).setState(OfferState.APPROVED);
+           offers.get(productID).setState(this.name, OfferState.APPROVED);
            offers.get(productID).setOfferReply(bidReply);
         } else {
-            offers.get(productID).setState(OfferState.APPROVED);
+            offers.get(productID).setState(this.name, OfferState.APPROVED);
             offers.get(productID).setOfferReply(bidReply);
         }
     }
