@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-public class DALService {
+public class DALService implements Runnable{
 
     // NOTE: acquisition of locks is in the order they appear in the field list
 
@@ -58,7 +58,7 @@ public class DALService {
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
 
-    private boolean useLocal = true;
+    private boolean useLocal = false;
 
     private static class CreateSafeThreadSingleton {
         private static final DALService INSTANCE = new DALService();
@@ -93,6 +93,15 @@ public class DALService {
         this.guestCartLock = new ReentrantReadWriteLock();
     }
 
+    public void startDB(){
+        if(!useLocal) {
+            System.out.println("Starting DAL thread");
+            Thread thread = new Thread(this);
+            thread.start();
+            System.out.println("DAL thread started");
+        }
+    }
+
     public void run(){
         while(!this.useLocal){
             this.storeLock.writeLock().lock();
@@ -120,19 +129,33 @@ public class DALService {
             List<PublisherDTO> publisherList = new Vector<>(this.publisherSaveCache);
             this.publisherSaveCache = new Vector<>();
 
-            this.storeLock.writeLock().unlock();
-            this.userLock.writeLock().unlock();
-            this.accountLock.writeLock().unlock();
-            this.adminAccountLock.writeLock().unlock();
-            this.productLock.writeLock().unlock();
-            this.publisherLock.writeLock().unlock();
+            boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
 
-            saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList);
-
-            try {
-                wait(5000);
+            if(allEmpty){
+                try {
+                    synchronized(this){
+                        this.storeLock.writeLock().unlock();
+                        this.userLock.writeLock().unlock();
+                        this.accountLock.writeLock().unlock();
+                        this.adminAccountLock.writeLock().unlock();
+                        this.productLock.writeLock().unlock();
+                        this.publisherLock.writeLock().unlock();
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            catch (InterruptedException ignored){}
+            else{
+                this.storeLock.writeLock().unlock();
+                this.userLock.writeLock().unlock();
+                this.accountLock.writeLock().unlock();
+                this.adminAccountLock.writeLock().unlock();
+                this.productLock.writeLock().unlock();
+                this.publisherLock.writeLock().unlock();
+
+                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList);
+            }
         }
     }
 
@@ -140,6 +163,7 @@ public class DALService {
         boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
 
         if(!allEmpty) {
+            System.out.println("Accessing DB for save iteration");
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
@@ -189,6 +213,7 @@ public class DALService {
                 System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList); // timeout, try again
             }
+            System.out.println("Completed save iteration");
         }
     }
 
@@ -219,6 +244,10 @@ public class DALService {
         if(!useLocal) {
             this.userSaveCache.add(userDTO);
             this.storeSaveCache.addAll(storeDTOs);
+
+            synchronized (this){
+                notifyAll();
+            }
         }
 
         this.storeLock.writeLock().unlock();
@@ -271,8 +300,13 @@ public class DALService {
 
         this.publisher.put(0, publisherDTO);
 
-        if(!useLocal)
+        if(!useLocal) {
             this.publisherSaveCache.add(publisherDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
+        }
 
         this.publisherLock.writeLock().unlock();
     }
@@ -282,8 +316,13 @@ public class DALService {
 
         this.accounts.put(accountDTO.getUsername(), accountDTO);
 
-        if(!useLocal)
+        if(!useLocal) {
             this.accountSaveCache.add(accountDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
+        }
 
         this.accountLock.writeLock().unlock();
     }
@@ -330,8 +369,13 @@ public class DALService {
 
         this.admins.put(adminAccountDTO.getUsername(), adminAccountDTO);
 
-        if(!useLocal)
+        if(!useLocal) {
             this.adminAccountSaveCache.add(adminAccountDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
+        }
 
         this.adminAccountLock.writeLock().unlock();
     }
@@ -341,8 +385,13 @@ public class DALService {
 
         this.stores.put(storeDTO.getStoreID(), storeDTO);
 
-        if(!useLocal)
+        if(!useLocal) {
             this.storeSaveCache.add(storeDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
+        }
 
         this.storeLock.writeLock().unlock();
     }
@@ -437,6 +486,10 @@ public class DALService {
         if(!useLocal){
             this.userSaveCache.add(userDTO);
             this.storeSaveCache.add(storeDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
         }
 
         this.storeLock.writeLock().unlock();
@@ -464,6 +517,10 @@ public class DALService {
             this.userSaveCache.add(userDTO);
             this.storeSaveCache.add(storeDTO);
             this.productSaveCache.add(productDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
         }
 
         this.storeLock.writeLock().unlock();
@@ -481,6 +538,10 @@ public class DALService {
         if(!useLocal){
             this.storeSaveCache.add(storeDTO);
             this.productSaveCache.add(productDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
         }
 
         this.storeLock.writeLock().unlock();
@@ -497,6 +558,10 @@ public class DALService {
         if(!useLocal){
             this.storeSaveCache.add(storeDTO);
             this.productSaveCache.add(new DeleteProductDTO(productDTO));
+
+            synchronized (this){
+                notifyAll();
+            }
         }
 
         this.storeLock.writeLock().unlock();
@@ -548,7 +613,13 @@ public class DALService {
         }
         else{
             this.users.put(userDTO.getName(), userDTO);
-            this.userSaveCache.add(userDTO);
+            if(!useLocal) {
+                this.userSaveCache.add(userDTO);
+
+                synchronized (this) {
+                    notifyAll();
+                }
+            }
         }
 
         this.userLock.writeLock().unlock();
@@ -556,6 +627,7 @@ public class DALService {
 
     public boolean saveUsers(List<UserDTO> userDTOList){
         this.userLock.writeLock().lock();
+        boolean addedToCache = false;
 
         for(UserDTO userDTO : userDTOList) {
             if (userDTO.getState() == UserStateEnum.GUEST) {
@@ -563,7 +635,15 @@ public class DALService {
             }
             else{
                 this.users.put(userDTO.getName(), userDTO);
-                this.userSaveCache.add(userDTO);
+                if(!useLocal) {
+                    this.userSaveCache.add(userDTO);
+                    addedToCache = true;
+                }
+            }
+        }
+        if(!useLocal && addedToCache){
+            synchronized (this) {
+                notifyAll();
             }
         }
 

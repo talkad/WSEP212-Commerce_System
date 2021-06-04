@@ -3,6 +3,10 @@ package Server.DAL;
 public class DeleteProductDTO extends ProductDTO{
     private ProductDTO dto;
 
+    public DeleteProductDTO(){
+
+    }
+
     public DeleteProductDTO(ProductDTO dto){
         this.dto = dto;
     }
