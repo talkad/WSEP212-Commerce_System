@@ -21,6 +21,7 @@ class Connection{
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
+                // TODO: when waiting for a response for this message then make the site "load"
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -64,14 +65,13 @@ class Connection{
 
         this.connection.onclose = (event) => {
             // console.log(event); // TODO: just in case
-            if(window.sessionStorage.getItem('username') !== '') {
-                    setTimeout(this.disconnect, 3000);
-            }
+
+            setTimeout(this.disconnect, 3000);
+
         }
     }
 
     static disconnect(){
-        alert("disconnected from the server");
         window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
         window.location.href = "/Disconnected";
     }
