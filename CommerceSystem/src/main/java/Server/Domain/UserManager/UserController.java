@@ -10,11 +10,10 @@ import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
-import Server.Domain.UserManager.DTOs.UserDTOTemp;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
-import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
-import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
+import Server.Domain.UserManager.Purchase.PurchaseController;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
