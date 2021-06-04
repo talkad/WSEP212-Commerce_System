@@ -1,6 +1,7 @@
 package Server.DAL;
 
 import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
+import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserStateEnum;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoConfigurationException;
@@ -19,26 +20,45 @@ import dev.morphia.query.experimental.filters.Filters;
 import java.util.*;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-public class DALService {
+public class DALService implements Runnable{
+
+    // NOTE: acquisition of locks is in the order they appear in the field list
 
     private Map<Integer, StoreDTO> stores;
+    private List<StoreDTO> storeSaveCache;
+    private ReadWriteLock storeLock;
+
     private Map<String, UserDTO> users;
+    private List<UserDTO> userSaveCache;
+    private ReadWriteLock userLock;
+
     private Map<String, AccountDTO> accounts;
+    private List<AccountDTO> accountSaveCache;
+    private ReadWriteLock accountLock;
+
     private Map<String, AdminAccountDTO> admins;
+    private List<AdminAccountDTO> adminAccountSaveCache;
+    private ReadWriteLock adminAccountLock;
+
     private Map<Integer, ProductDTO> products;
+    private List<ProductDTO> productSaveCache;
+    private ReadWriteLock productLock;
+
     private Map<Integer, PublisherDTO> publisher;
+    private List<PublisherDTO> publisherSaveCache;
+    private ReadWriteLock publisherLock;
+
     private Map<String, ShoppingCartDTO> guestCarts;
+    private ReadWriteLock guestCartLock;
 
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
 
     private boolean useLocal = false;
-
-    public void useTestDatabase() {
-        dbName = "testDatabase";
-    }
 
     private static class CreateSafeThreadSingleton {
         private static final DALService INSTANCE = new DALService();
@@ -56,24 +76,97 @@ public class DALService {
         this.products = new ConcurrentHashMap<>();
         this.publisher = new ConcurrentHashMap<>();
         this.guestCarts = new ConcurrentHashMap<>();
+
+        this.storeSaveCache = new Vector<>();
+        this.userSaveCache = new Vector<>();
+        this.accountSaveCache = new Vector<>();
+        this.adminAccountSaveCache = new Vector<>();
+        this.productSaveCache = new Vector<>();
+        this.publisherSaveCache = new Vector<>();
+
+        this.storeLock = new ReentrantReadWriteLock();
+        this.userLock = new ReentrantReadWriteLock();
+        this.accountLock = new ReentrantReadWriteLock();
+        this.adminAccountLock = new ReentrantReadWriteLock();
+        this.productLock = new ReentrantReadWriteLock();
+        this.publisherLock = new ReentrantReadWriteLock();
+        this.guestCartLock = new ReentrantReadWriteLock();
     }
 
-    public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {
-        if(userDTO.getState() == UserStateEnum.GUEST) {
-            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
+    public void startDB(){
+        if(!useLocal) {
+            System.out.println("Starting DAL thread");
+            Thread thread = new Thread(this);
+            thread.start();
+            System.out.println("DAL thread started");
         }
-        if(useLocal){
-            if(userDTO.getState() != UserStateEnum.GUEST) {
-                this.users.put(userDTO.getName(), userDTO);
-            }
+    }
 
-            for(StoreDTO storeDTO : storeDTOs){
-                this.stores.put(storeDTO.getStoreID(), storeDTO);
+    public void run(){
+        while(!this.useLocal){
+            this.storeLock.writeLock().lock();
+            this.userLock.writeLock().lock();
+            this.accountLock.writeLock().lock();
+            this.adminAccountLock.writeLock().lock();
+            this.productLock.writeLock().lock();
+            this.publisherLock.writeLock().lock();
+
+            List<StoreDTO> storeList = new Vector<>(this.storeSaveCache);
+            this.storeSaveCache = new Vector<>();
+
+            List<UserDTO> userList = new Vector<>(this.userSaveCache);
+            this.userSaveCache = new Vector<>();
+
+            List<AccountDTO> accountList = new Vector<>(this.accountSaveCache);
+            this.accountSaveCache = new Vector<>();
+
+            List<AdminAccountDTO> adminAccountList = new Vector<>(this.adminAccountSaveCache);
+            this.adminAccountSaveCache = new Vector<>();
+
+            List<ProductDTO> productList = new Vector<>(this.productSaveCache);
+            this.productSaveCache = new Vector<>();
+
+            List<PublisherDTO> publisherList = new Vector<>(this.publisherSaveCache);
+            this.publisherSaveCache = new Vector<>();
+
+            boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
+
+            if(allEmpty){
+                try {
+                    synchronized(this){
+                        this.storeLock.writeLock().unlock();
+                        this.userLock.writeLock().unlock();
+                        this.accountLock.writeLock().unlock();
+                        this.adminAccountLock.writeLock().unlock();
+                        this.productLock.writeLock().unlock();
+                        this.publisherLock.writeLock().unlock();
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                this.storeLock.writeLock().unlock();
+                this.userLock.writeLock().unlock();
+                this.accountLock.writeLock().unlock();
+                this.adminAccountLock.writeLock().unlock();
+                this.productLock.writeLock().unlock();
+                this.publisherLock.writeLock().unlock();
+
+                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList);
             }
         }
-        else {
+    }
+
+    private void saveToDatabase(List<StoreDTO> storeList, List<UserDTO> userList, List<AccountDTO> accountList, List<AdminAccountDTO> adminAccountList, List<ProductDTO> productList, List<PublisherDTO> publisherList){
+        boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
+
+        if(!allEmpty) {
+            System.out.println("Accessing DB for save iteration");
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
+
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
                 mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
@@ -85,38 +178,97 @@ public class DALService {
                     session.startTransaction();
 
                     // stage changes to commit
-                    if (userDTO.getState() != UserStateEnum.GUEST)
-                        session.save(userDTO);
+                    if(!storeList.isEmpty())
+                        session.save(storeList);
 
-                    session.save(storeDTOs);
+                    if(!userList.isEmpty())
+                        session.save(userList);
+
+                    if(!accountList.isEmpty())
+                        session.save(accountList);
+
+                    if(!adminAccountList.isEmpty())
+                        session.save(adminAccountList);
+
+                    if(!productList.isEmpty()) {
+                        for (ProductDTO productDTO : productList) {
+                            if(productDTO.toDelete()){
+                                session.delete(productDTO.getDTO());
+                            }
+                            else{
+                                session.save(productDTO.getDTO());
+                            }
+                        }
+                    }
+
+                    if(!publisherList.isEmpty())
+                        session.save(publisherList);
 
                     // commit changes
                     session.commitTransaction();
+                } catch (Exception e) {
+                    System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
                 }
-                catch (Exception e){
-                    System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                }
-            }
-            catch(MongoConfigurationException e){
+            } catch (MongoConfigurationException | MongoTimeoutException e) {
                 System.out.println("Exception received: " + e.getMessage());
-                savePurchase(userDTO, storeDTOs); // timeout, try again
+                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList); // timeout, try again
             }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                savePurchase(userDTO, storeDTOs); // timeout, try again
-            }
+            System.out.println("Completed save iteration");
         }
     }
 
-    public PublisherDTO getPublisher() {
-        if(useLocal){
-            PublisherDTO publisherDTO = this.publisher.get(0);
-            return publisherDTO == null ? new PublisherDTO() : publisherDTO;
+    public void useTestDatabase() {
+        dbName = "testDatabase";
+    }
+
+    public void setUseLocal(boolean useLocal){
+        this.useLocal = useLocal;
+    }
+
+    public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {
+        this.storeLock.writeLock().lock();
+        this.userLock.writeLock().lock();
+
+        // TODO need guest lock?
+        if(userDTO.getState() == UserStateEnum.GUEST) {
+            this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
         }
-        else {
-            PublisherDTO publisherDTO = null;
+
+        if(userDTO.getState() != UserStateEnum.GUEST) {
+            this.users.put(userDTO.getName(), userDTO);
+        }
+        for(StoreDTO storeDTO : storeDTOs){
+            this.stores.put(storeDTO.getStoreID(), storeDTO);
+        }
+
+        if(!useLocal) {
+            this.userSaveCache.add(userDTO);
+            this.storeSaveCache.addAll(storeDTOs);
+
+            synchronized (this){
+                notifyAll();
+            }
+        }
+
+        this.storeLock.writeLock().unlock();
+        this.userLock.writeLock().unlock();
+    }
+
+    public PublisherDTO getPublisher() {
+        PublisherDTO publisherDTO;
+        this.publisherLock.writeLock().lock();
+
+        if(this.publisher.containsKey(0)){
+            publisherDTO = this.publisher.get(0);
+        }
+        else if(useLocal){
+            publisherDTO = new PublisherDTO();
+            this.publisher.put(0, publisherDTO);
+        }
+        else{
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
+
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
                 mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
@@ -127,79 +279,62 @@ public class DALService {
                 publisherDTO = datastore.find(PublisherDTO.class).first();
 
             }
-            catch(MongoConfigurationException e){
+            catch(MongoConfigurationException | MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
+                this.publisherLock.writeLock().unlock();
                 return getPublisher(); // timeout, try again
             }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                return getPublisher(); // timeout, try again
-            }
-            return publisherDTO;
+
+            if(publisherDTO == null)
+                publisherDTO = new PublisherDTO();
+
+            this.publisher.put(0, publisherDTO);
         }
+
+        this.publisherLock.writeLock().unlock();
+        return publisherDTO;
     }
 
     public void savePublisher(PublisherDTO publisherDTO) {
-        if(useLocal){
-            this.publisher.put(0, publisherDTO);
-        }
-        else {
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+        this.publisherLock.writeLock().lock();
 
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        this.publisher.put(0, publisherDTO);
 
-                datastore.save(publisherDTO);
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                savePublisher(publisherDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                savePublisher(publisherDTO); // timeout, try again
+        if(!useLocal) {
+            this.publisherSaveCache.add(publisherDTO);
+
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.publisherLock.writeLock().unlock();
     }
 
     public void addAccount(AccountDTO accountDTO) {
-        if(useLocal){
-            this.accounts.put(accountDTO.getUsername(), accountDTO);
-        }
-        else {
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        this.accountLock.writeLock().lock();
 
-                datastore.save(accountDTO);
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                addAccount(accountDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                addAccount(accountDTO); // timeout, try again
+        this.accounts.put(accountDTO.getUsername(), accountDTO);
+
+        if(!useLocal) {
+            this.accountSaveCache.add(accountDTO);
+
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.accountLock.writeLock().unlock();
     }
 
     public AccountDTO getAccount(String username){
-        if(useLocal){
-            return this.accounts.get(username);
+        AccountDTO accountDTO = null;
+        this.accountLock.writeLock().lock();
+
+        if(this.accounts.containsKey(username)){
+            accountDTO = this.accounts.get(username);
         }
-        else {
-            AccountDTO accountDTO = null;
+        else if(!useLocal){
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
@@ -215,81 +350,60 @@ public class DALService {
                                 Filters.eq("username", username)
                         ).first();
             }
-            catch(MongoConfigurationException e){
+            catch(MongoConfigurationException | MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
-                return getAccount(username); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
+                this.accountLock.writeLock().unlock();
                 return getAccount(username); // timeout, try again
             }
 
-            return accountDTO;
+            if(accountDTO != null)
+                this.accounts.put(username, accountDTO);
         }
+
+        this.accountLock.writeLock().unlock();
+        return accountDTO;
     }
 
     public void addAdmin(AdminAccountDTO adminAccountDTO) {
-        if(useLocal){
-            this.admins.put(adminAccountDTO.getUsername(), adminAccountDTO);
-        }
-        else {
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        this.adminAccountLock.writeLock().lock();
 
-                datastore.save(adminAccountDTO);
+        this.admins.put(adminAccountDTO.getUsername(), adminAccountDTO);
 
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                addAdmin(adminAccountDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                addAdmin(adminAccountDTO); // timeout, try again
+        if(!useLocal) {
+            this.adminAccountSaveCache.add(adminAccountDTO);
+
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.adminAccountLock.writeLock().unlock();
     }
 
     public void insertStore(StoreDTO storeDTO) {
-        if(useLocal){
-            stores.put(storeDTO.getStoreID(), storeDTO);
-        }
-        else {
+        this.storeLock.writeLock().lock();
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        this.stores.put(storeDTO.getStoreID(), storeDTO);
 
-                datastore.save(storeDTO);
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                insertStore(storeDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                insertStore(storeDTO); // timeout, try again
+        if(!useLocal) {
+            this.storeSaveCache.add(storeDTO);
+
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.storeLock.writeLock().unlock();
     }
 
     public StoreDTO getStore(int storeId) {
-        if(useLocal){
-            return this.stores.get(storeId);
+        StoreDTO storeDTO = null;
+        this.storeLock.writeLock().lock();
+
+        if(this.stores.containsKey(storeId)){
+            storeDTO = this.stores.get(storeId);
         }
-        else {
-            StoreDTO storeDTO = null;
+        else if(!useLocal){
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
@@ -305,22 +419,27 @@ public class DALService {
                                 Filters.eq("storeID", storeId)
                         ).first();
             }
-            catch(MongoConfigurationException e){
+            catch(MongoConfigurationException | MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
-                return getStore(storeId); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
+                this.storeLock.writeLock().unlock();
                 return getStore(storeId); // timeout, try again
             }
 
-            return storeDTO;
+            if(storeDTO != null)
+                this.stores.put(storeDTO.getStoreID(), storeDTO);
         }
+
+        this.storeLock.writeLock().unlock();
+        return storeDTO;
     }
 
     public Collection<StoreDTO> getAllStores() {
         if(useLocal){
-            return stores.values();
+            this.storeLock.writeLock().lock();
+            Collection<StoreDTO> storeDTOS = stores.values();
+            this.storeLock.writeLock().unlock();
+
+            return storeDTOS;
         }
         else {
             List<StoreDTO> storeDTOList = null;
@@ -341,11 +460,7 @@ public class DALService {
                                 .sort(Sort.ascending("storeID")))
                         .toList();
             }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                return getAllStores(); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
+            catch(MongoConfigurationException | MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
@@ -355,192 +470,112 @@ public class DALService {
     }
 
     public void saveUserAndStore(UserDTO userDTO, StoreDTO storeDTO){
+        this.storeLock.writeLock().lock();
+        this.userLock.writeLock().lock();
+
+        // TODO guest lock?
         if(userDTO.getState() == UserStateEnum.GUEST) {
             this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
         }
-        if(useLocal){
-            if (userDTO.getState() != UserStateEnum.GUEST)
-                this.users.put(userDTO.getName(), userDTO);
-            this.stores.put(storeDTO.getStoreID(), storeDTO);
-        }
-        else {
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        if(userDTO.getState() != UserStateEnum.GUEST)
+            this.users.put(userDTO.getName(), userDTO);
 
-                try (MorphiaSession session = datastore.startSession()) {
-                    session.startTransaction();
+        this.stores.put(storeDTO.getStoreID(), storeDTO);
 
-                    // stage changes to commit
-                    if (userDTO.getState() != UserStateEnum.GUEST)
-                        session.save(userDTO);
+        if(!useLocal){
+            this.userSaveCache.add(userDTO);
+            this.storeSaveCache.add(storeDTO);
 
-                    session.save(storeDTO);
-
-                    // commit changes
-                    session.commitTransaction();
-                }
-                catch (Exception e){
-                    System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                }
-
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveUserAndStore(userDTO, storeDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveUserAndStore(userDTO, storeDTO); // timeout, try again
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.storeLock.writeLock().unlock();
+        this.userLock.writeLock().unlock();
     }
 
     public void saveUserStoreAndProduct(UserDTO userDTO, StoreDTO storeDTO, ProductDTO productDTO){
+        this.storeLock.writeLock().lock();
+        this.userLock.writeLock().lock();
+        this.productLock.writeLock().lock();
+
+        // TODO guest lock?
         if(userDTO.getState() == UserStateEnum.GUEST) {
             this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
         }
-        if(useLocal){
-            if (userDTO.getState() != UserStateEnum.GUEST)
-                users.put(userDTO.getName(), userDTO);
-            stores.put(storeDTO.getStoreID(), storeDTO);
-            products.put(productDTO.getProductID(), productDTO);
-        }
-        else {
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        if(userDTO.getState() != UserStateEnum.GUEST)
+            this.users.put(userDTO.getName(), userDTO);
 
-                try (MorphiaSession session = datastore.startSession()) {
-                    session.startTransaction();
+        this.stores.put(storeDTO.getStoreID(), storeDTO);
 
-                    // stage changes to commit
-                    if (userDTO.getState() != UserStateEnum.GUEST)
-                        session.save(userDTO);
+        this.products.put(productDTO.getProductID(), productDTO);
 
-                    session.save(storeDTO);
-                    session.save(productDTO);
+        if(!useLocal){
+            this.userSaveCache.add(userDTO);
+            this.storeSaveCache.add(storeDTO);
+            this.productSaveCache.add(productDTO);
 
-                    // commit changes
-                    session.commitTransaction();
-                }
-                catch (Exception e){
-                    System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                }
-
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveUserStoreAndProduct(userDTO, storeDTO, productDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveUserStoreAndProduct(userDTO, storeDTO, productDTO); // timeout, try again
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.storeLock.writeLock().unlock();
+        this.userLock.writeLock().unlock();
+        this.productLock.writeLock().unlock();
     }
 
     public void saveStoreAndProduct(StoreDTO storeDTO, ProductDTO productDTO){
-        if(useLocal){
-            stores.put(storeDTO.getStoreID(), storeDTO);
-            products.put(productDTO.getProductID(), productDTO);
-        }
-        else {
+        this.storeLock.writeLock().lock();
+        this.productLock.writeLock().lock();
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        stores.put(storeDTO.getStoreID(), storeDTO);
+        products.put(productDTO.getProductID(), productDTO);
 
-                try (MorphiaSession session = datastore.startSession()) {
-                    session.startTransaction();
+        if(!useLocal){
+            this.storeSaveCache.add(storeDTO);
+            this.productSaveCache.add(productDTO);
 
-                    // stage changes to commit
-                    session.save(storeDTO);
-                    session.save(productDTO);
-
-                    // commit changes
-                    session.commitTransaction();
-                }
-                catch (Exception e){
-                    System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                }
-
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveStoreAndProduct(storeDTO, productDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveStoreAndProduct(storeDTO, productDTO); // timeout, try again
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.storeLock.writeLock().unlock();
+        this.productLock.writeLock().unlock();
     }
 
     public void saveStoreRemoveProduct(StoreDTO storeDTO, ProductDTO productDTO){
-        if(useLocal){
-            stores.put(storeDTO.getStoreID(), storeDTO);
-            products.remove(productDTO.getProductID());
-        }
-         else {
+        this.storeLock.writeLock().lock();
+        this.productLock.writeLock().lock();
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
+        stores.put(storeDTO.getStoreID(), storeDTO);
+        products.remove(productDTO.getProductID());
 
-                try (MorphiaSession session = datastore.startSession()) {
-                    session.startTransaction();
+        if(!useLocal){
+            this.storeSaveCache.add(storeDTO);
+            this.productSaveCache.add(new DeleteProductDTO(productDTO));
 
-                    // stage changes to commit
-                    session.save(storeDTO);
-                    session.delete(productDTO);
-
-                    // commit changes
-                    session.commitTransaction();
-                }
-                catch (Exception e){
-                    System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                }
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveStoreRemoveProduct(storeDTO, productDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                saveStoreRemoveProduct(storeDTO, productDTO); // timeout, try again
+            synchronized (this){
+                notifyAll();
             }
         }
+
+        this.storeLock.writeLock().unlock();
+        this.productLock.writeLock().unlock();
     }
 
     public UserDTO getUser(String username){
-        if(useLocal){
-            return this.users.get(username);
+        UserDTO userDTO = null;
+        this.userLock.writeLock().lock();
+
+        if(this.users.containsKey(username)){
+            userDTO = this.users.get(username);
         }
-        else {
-            UserDTO userDTO = null;
+        else if(!useLocal){
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
@@ -556,165 +591,124 @@ public class DALService {
                                 Filters.eq("name", username)
                         ).first();
             }
-            catch(MongoConfigurationException e){
+            catch(MongoConfigurationException | MongoTimeoutException e){
                 System.out.println("Exception received: " + e.getMessage());
+                this.userLock.writeLock().unlock();
                 return getUser(username); // timeout, try again
             }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                return getUser(username); // timeout, try again
-            }
-            return userDTO;
+
+            if(userDTO != null)
+                this.users.put(username, userDTO);
         }
+
+        this.userLock.writeLock().unlock();
+        return userDTO;
     }
 
     public void insertUser(UserDTO userDTO){
+        this.userLock.writeLock().lock();
+
         if(userDTO.getState() == UserStateEnum.GUEST) {
             this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
         }
-        if(useLocal) {
-            if (userDTO.getState() != UserStateEnum.GUEST)
-                users.put(userDTO.getName(), userDTO);
-        }
-        else {
+        else{
+            this.users.put(userDTO.getName(), userDTO);
+            if(!useLocal) {
+                this.userSaveCache.add(userDTO);
 
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
-
-                if (userDTO.getState() != UserStateEnum.GUEST)
-                    datastore.save(userDTO);
-
-            }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                insertUser(userDTO); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                insertUser(userDTO); // timeout, try again
+                synchronized (this) {
+                    notifyAll();
+                }
             }
         }
+
+        this.userLock.writeLock().unlock();
     }
 
     public boolean saveUsers(List<UserDTO> userDTOList){
+        this.userLock.writeLock().lock();
+        boolean addedToCache = false;
+
         for(UserDTO userDTO : userDTOList) {
             if (userDTO.getState() == UserStateEnum.GUEST) {
                 this.guestCarts.put(userDTO.getName(), userDTO.getShoppingCart());
             }
-        }
-        if(useLocal){
-            for(UserDTO userDTO: userDTOList){
-                if (userDTO.getState() != UserStateEnum.GUEST)
-                    users.put(userDTO.getName(), userDTO);
-            }
-            return true;
-        }
-        else {
-            boolean success = true;
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)){
-                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
-                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-                mapper.mapPackage("Server.DAL");
-                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-                mapper.mapPackage("Server.DAL.PredicateDTOs");
-                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-                mapper.mapPackage("Server.DAL.PairDTOs");
-
-                try (MorphiaSession session = datastore.startSession()) {
-                    session.startTransaction();
-
-                    // stage changes to commit
-                    session.save(userDTOList);
-
-                    // commit changes
-                    session.commitTransaction();
-                } catch (Exception e) {
-                    success = false;
+            else{
+                this.users.put(userDTO.getName(), userDTO);
+                if(!useLocal) {
+                    this.userSaveCache.add(userDTO);
+                    addedToCache = true;
                 }
             }
-            catch(MongoConfigurationException e){
-                System.out.println("Exception received: " + e.getMessage());
-                return saveUsers(userDTOList); // timeout, try again
-            }
-            catch(MongoTimeoutException e){
-                System.out.println("Exception received: " + e.getMessage());
-                return saveUsers(userDTOList); // timeout, try again
-            }
-
-            return success;
         }
+        if(!useLocal && addedToCache){
+            synchronized (this) {
+                notifyAll();
+            }
+        }
+
+        this.userLock.writeLock().unlock();
+        return true;
     }
 
 
     public int getNextAvailableStoreID(){
         if(useLocal){
-            return this.stores.size();
+            this.storeLock.writeLock().lock();
+            int size = this.stores.size();
+            this.storeLock.writeLock().unlock();
+            return size;
         }
-        try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
-            Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
+        else {
+            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
-            Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
-            mapper.mapPackage("Server.DAL");
-            mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
-            mapper.mapPackage("Server.DAL.PredicateDTOs");
-            mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
-            mapper.mapPackage("Server.DAL.PairDTOs");
+                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+                mapper.mapPackage("Server.DAL");
+                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
+                mapper.mapPackage("Server.DAL.PredicateDTOs");
+                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
+                mapper.mapPackage("Server.DAL.PairDTOs");
 
-            List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
-                    // filters find relevant entries
-                    .filter(
-                            Filters.gte("storeID", 0)
-                    )
-                    // iterator options manipulate the found entries
-                    .iterator(
-                            new FindOptions()
-                                    .sort(Sort.descending("storeID"))
-                    ).toList();
+                List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
+                        // filters find relevant entries
+                        .filter(
+                                Filters.gte("storeID", 0)
+                        )
+                        // iterator options manipulate the found entries
+                        .iterator(
+                                new FindOptions()
+                                        .sort(Sort.descending("storeID"))
+                        ).toList();
 
-            mongoClient.close();
+                mongoClient.close();
 
-            if (storeDTOs == null || storeDTOs.size() == 0) {
-                return 0;
+                if (storeDTOs == null || storeDTOs.size() == 0) {
+                    return 0;
+                }
+                StoreDTO head = storeDTOs.get(0);
+                int id = head.getStoreID();
+                return id + 1;
+            } catch (MongoConfigurationException | MongoTimeoutException e) {
+                System.out.println("Exception received: " + e.getMessage());
+                return getNextAvailableStoreID(); // timeout, try again
             }
-            StoreDTO head = storeDTOs.get(0);
-            int id = head.getStoreID();
-            return id + 1;
         }
-        catch(MongoConfigurationException e){
-            System.out.println("Exception received: " + e.getMessage());
-            return getNextAvailableStoreID(); // timeout, try again
-        }
-        catch(MongoTimeoutException e){
-            System.out.println("Exception received: " + e.getMessage());
-            return getNextAvailableStoreID(); // timeout, try again
-        }
-//        else {
-//            return (int) (Math.random() * (10000 - 1)) + 1;
-//        }
     }
 
     public void resetDatabase(){
-        try (MongoClient mongoClient = MongoClients.create(this.dbURL)){
-            mongoClient.getDatabase(this.dbName).getCollection("users").drop();
-            mongoClient.getDatabase(this.dbName).getCollection("stores").drop();
-            mongoClient.getDatabase(this.dbName).getCollection("publishers").drop();
-            mongoClient.getDatabase(this.dbName).getCollection("products").drop();
-            mongoClient.getDatabase(this.dbName).getCollection("accounts").drop();
-            mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
-        }
-        catch(MongoConfigurationException e){
-            System.out.println("Exception received: " + e.getMessage());
-            resetDatabase(); // timeout, try again
-        }
-        catch(MongoTimeoutException e){
-            System.out.println("Exception received: " + e.getMessage());
-            resetDatabase(); // timeout, try again
+        if(!useLocal) {
+            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+                mongoClient.getDatabase(this.dbName).getCollection("users").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("stores").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("publishers").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("products").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("accounts").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
+            } catch (MongoConfigurationException | MongoTimeoutException e) {
+                System.out.println("Exception received: " + e.getMessage());
+                resetDatabase(); // timeout, try again
+            }
         }
     }
 
