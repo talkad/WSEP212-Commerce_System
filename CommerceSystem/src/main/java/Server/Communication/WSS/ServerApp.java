@@ -18,7 +18,7 @@ public class ServerApp {
     public static void main(String[] args) {
 
         DALService.getInstance().resetDatabase();
-        // Start thread in DAL, responsible for saving data in DB
+        // Start threads in DAL, responsible for saving data in DB and cleaning cache
         DALService.getInstance().startDB();
         Response<Boolean> initRes = CommerceService.getInstance().init();
 
