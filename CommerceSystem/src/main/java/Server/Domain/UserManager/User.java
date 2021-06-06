@@ -989,4 +989,16 @@ public class User {
             offers.get(productID).setOfferReply(bidReply);
         }
     }
+
+    public boolean isAdmin(){
+        return this.state.getStateEnum().equals(UserStateEnum.ADMIN);
+    }
+
+    public boolean isOwner(){
+        return this.storesOwned != null && !this.storesOwned.isEmpty();
+    }
+
+    public boolean isManager(){
+        return this.storesManaged != null && !this.storesManaged.isEmpty();
+    }
 }
