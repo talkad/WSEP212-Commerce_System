@@ -6,7 +6,7 @@ import Cookies from 'js-cookie'
 class Connection{
     static connection;
     static dataFromServer = [];
-    static offerNotifications = [];
+    static gotNotification = 0;
 
     static setConnection(connection) {
         this.connection = connection;
@@ -50,13 +50,10 @@ class Connection{
                 console.log("new cookie: " + inner_parse.result);
                 StaticUserInfo.setUsername(inner_parse.result);
             }
-            else if(receivedData.type === "notification"){
-                alert(receivedData.message);
-            }
-            else if(receivedData.type === "reactiveNotification"){
+            else if(receivedData.type === "notification" || receivedData.type === "reactiveNotification"){
+                this.addNotification(receivedData);
 
-                Connection.offerNotifications.push(receivedData);
-
+                // alert(receivedData.message);
             }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
@@ -74,6 +71,23 @@ class Connection{
     static disconnect(){
         window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
         window.location.href = "/Disconnected";
+    }
+
+    static addNotification(notification){
+        let notificationsCookie = window.sessionStorage.getItem('notifications');
+
+        if(notificationsCookie === null){
+            notificationsCookie = [];
+            notificationsCookie.push(notification);
+            window.sessionStorage.setItem('notifications', JSON.stringify(notificationsCookie));
+        }
+        else{
+            let parsed = JSON.parse(notificationsCookie);
+            parsed.push(notification);
+            window.sessionStorage.setItem('notifications', JSON.stringify(parsed));
+        }
+
+        this.gotNotification = 1;
     }
 
     static waitForOpenConnection = (socket) => {
@@ -106,7 +120,7 @@ class Connection{
         }
     }
 
-    static catchOfferNotification() {
+    static catchNotification() {
 
         function sleep(ms){
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -114,17 +128,19 @@ class Connection{
 
         return new Promise(async (resolve, reject) => {
             while(true){
-                if(Connection.offerNotifications.length !== 0){
-
-                    resolve(Connection.offerNotifications.shift());
+                if(this.gotNotification === 1){
+                    console.log("got a notification");
+                    this.gotNotification = 0;
+                    resolve(true);
                 }
                 await sleep(5000);
             }
         });
     }
 
-    static async getOfferNotification(){
-        return await Connection.catchOfferNotification();
+    static async getNotification(){
+        console.log("waiting for a notification");
+        return await Connection.catchNotification();
     }
 
 
@@ -154,7 +170,8 @@ class Connection{
 
                     if(index !== -1){
                         let message = Connection.dataFromServer[index];
-                        delete Connection.dataFromServer[index];
+                        Connection.dataFromServer.splice(index, 1);
+                        // delete Connection.dataFromServer[index];
                         resolve(JSON.parse(message.message));
                     }
 
