@@ -287,4 +287,8 @@ public class CommerceService implements IService{
     public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
+
+    public Response<String> getDailyStatistics(String adminName, String date){
+        return commerceSystem.getDailyStatistics(adminName, date);
+    }
 }

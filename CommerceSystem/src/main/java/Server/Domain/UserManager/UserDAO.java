@@ -342,14 +342,14 @@ public class UserDAO {
         return result;
     }
 
-    public Response<Boolean> changeStatus(String offeringUsername, int productID, double bidReply, OfferState state){
+    public Response<Boolean> changeStatus(String username, String offeringUsername, int productID, double bidReply, OfferState state){
         Response<Boolean> result = new Response<>(false, true, "user doesn't exist 5");
         offersWriteLock.lock();
         if(userExists(offeringUsername)){
             if(bidReply > 0){
                 this.offers.get(offeringUsername).get(productID).setOfferReply(bidReply);
             }
-            this.offers.get(offeringUsername).get(productID).setState(state);
+            this.offers.get(offeringUsername).get(productID).setState(username, state);
             result = new Response<>(true, false, "Successfully updated offer status.");
         }
         offersWriteLock.unlock();

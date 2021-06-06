@@ -403,4 +403,9 @@ public class ProxyBridge implements IService {
     public Response<Double> getTotalSystemRevenue(String username) {
         return null;
     }
+
+    @Override
+    public Response<String> getDailyStatistics(String adminName, String date) {
+        return null;
+    }
 }
