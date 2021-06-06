@@ -58,7 +58,7 @@ public class DALService implements Runnable{
     private Map<String, Pair<ShoppingCartDTO, Long>> guestCarts;
     private ReadWriteLock guestCartLock;
 
-    private Map<String, DailyCountersDTO> counters;
+    private Map<String, Pair<DailyCountersDTO, Long>> counters;
     private List<DailyCountersDTO> countersSaveCache;
     private ReadWriteLock countersLock;
 
@@ -254,6 +254,7 @@ public class DALService implements Runnable{
         this.productLock.writeLock().lock();
         this.publisherLock.writeLock().lock();
         this.guestCartLock.writeLock().lock();
+        this.countersLock.writeLock().lock();
 
         System.out.println("Cleaning cache");
 
@@ -323,6 +324,15 @@ public class DALService implements Runnable{
             }
         }
 
+        List<String> dates = new Vector<>(this.counters.keySet());
+        for(String date : dates){
+            long oldTimeMillis = this.counters.get(date).getSecond();
+            if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
+                this.counters.remove(date);
+                System.out.println("Removed counters for " + date + " from cache");
+            }
+        }
+
         this.storeLock.writeLock().unlock();
         this.userLock.writeLock().unlock();
         this.accountLock.writeLock().unlock();
@@ -330,6 +340,7 @@ public class DALService implements Runnable{
         this.productLock.writeLock().unlock();
         this.publisherLock.writeLock().unlock();
         this.guestCartLock.writeLock().unlock();
+        this.countersLock.writeLock().unlock();
 
         System.out.println("Finished cleaning cache");
     }
@@ -342,16 +353,16 @@ public class DALService implements Runnable{
         this.useLocal = useLocal;
     }
 
-    // TODO update entire counter mechanism for cache cleaner
     public DailyCountersDTO getDailyCounters(LocalDate date){
         DailyCountersDTO dailyCountersDTO;
         this.countersLock.writeLock().lock();
         if(this.counters.containsKey(date.toString())){
-            dailyCountersDTO = this.counters.get(date.toString());
+            dailyCountersDTO = this.counters.get(date.toString()).getFirst();
+            this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
         }
         else if(useLocal){
             dailyCountersDTO = new DailyCountersDTO(date.toString(), 0, 0, 0, 0, 0);
-            this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+            this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
         }
         else{
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
@@ -378,7 +389,7 @@ public class DALService implements Runnable{
             if(dailyCountersDTO == null) {
                 dailyCountersDTO = new DailyCountersDTO(date.toString(), 0, 0, 0, 0, 0);
             }
-            this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+            this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
 
         }
         this.countersLock.writeLock().unlock();
@@ -387,9 +398,13 @@ public class DALService implements Runnable{
 
     public void saveCounters(DailyCountersDTO dailyCountersDTO){
         this.countersLock.writeLock().lock();
-        this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+        this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
         if(!useLocal){
             this.countersSaveCache.add(dailyCountersDTO);
+
+            synchronized (this){
+                notifyAll();
+            }
         }
         this.countersLock.writeLock().unlock();
     }

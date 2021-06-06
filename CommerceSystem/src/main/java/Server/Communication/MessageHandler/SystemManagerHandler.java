@@ -71,6 +71,11 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.getDailyStatistics(adminName, LocalDate.parse(date));
             }
+            case "isAdmin" -> {
+                String username = data.getProperty("username");
+
+                response = service.isAdmin(username);
+            }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
 

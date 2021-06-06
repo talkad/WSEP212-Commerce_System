@@ -30,39 +30,22 @@ public class UserController {
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
+    private Statistics stats;
 
-    private LocalDate currentDate;
-    private ReadWriteLock dateLock;
-    private AtomicInteger dailyGuestCounter;
-    private AtomicInteger dailyRegisteredCounter;
-    private AtomicInteger dailyManagerCounter;
-    private AtomicInteger dailyOwnerCounter;
-    private AtomicInteger dailyAdminCounter;
+
 
     private UserController() {
         this.availableId = new AtomicInteger(1);
-        this.dailyGuestCounter = new AtomicInteger(0);
-        this.dailyRegisteredCounter = new AtomicInteger(0);
-        this.dailyManagerCounter = new AtomicInteger(0);
-        this.dailyOwnerCounter = new AtomicInteger(0);
-        this.dailyAdminCounter = new AtomicInteger(0);
-        this.currentDate = LocalDate.now();
+
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
         this.connectedUsers = new ConcurrentHashMap<>();
 
+        this.stats = Statistics.getInstance();
+
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
-
-        dateLock = new ReentrantReadWriteLock();
-
-        DailyCountersDTO dailyCountersDTO = DALService.getInstance().getDailyCounters(this.currentDate);
-        this.dailyGuestCounter.set(dailyCountersDTO.getGuestCounter());
-        this.dailyRegisteredCounter.set(dailyCountersDTO.getRegisteredCounter());
-        this.dailyManagerCounter.set(dailyCountersDTO.getManagerCounter());
-        this.dailyOwnerCounter.set(dailyCountersDTO.getOwnerCounter());
-        this.dailyAdminCounter.set(dailyCountersDTO.getAdminCounter());
     }
 
     public Response<String> removeGuest(String name) {
@@ -145,46 +128,17 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    // TODO add lock for entire counter update
-    private void checkDateToUpdate(){
-        dateLock.readLock().lock();
-        if(this.currentDate.compareTo(LocalDate.now()) < 0){
-            dateLock.readLock().unlock();
-            dateLock.writeLock().lock();
-            currentDate = LocalDate.now();
-            dateLock.writeLock().unlock();
-            dateLock.readLock().lock();
-            this.dailyGuestCounter.set(0);
-            this.dailyRegisteredCounter.set(0);
-            this.dailyManagerCounter.set(0);
-            this.dailyOwnerCounter.set(0);
-            this.dailyAdminCounter.set(0);
-        }
-        dateLock.readLock().unlock();
-    }
-
-    private void saveCounters(){
-        dateLock.readLock().lock();
-        DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
-                                                                    this.dailyGuestCounter.get(),
-                                                                    this.dailyRegisteredCounter.get(),
-                                                                    this.dailyManagerCounter.get(),
-                                                                    this.dailyOwnerCounter.get(),
-                                                                    this.dailyAdminCounter.get());
-
-        DALService.getInstance().saveCounters(dailyCountersDTO);
-        dateLock.readLock().unlock();
-    }
 
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         User user = new User();
         user.setName(guestName);
         connectedUsers.put(guestName, user);
-        checkDateToUpdate();
-        this.dailyGuestCounter.incrementAndGet();
-        //todo send dto
-        saveCounters();
+        this.dateLock.writeLock().lock();
+        stats.checkDateToUpdate();
+        stats.incDailyGuestCounter();
+        stats.saveCounters();
+        this.dateLock.writeLock().unlock();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -222,21 +176,22 @@ public class UserController {
     }
     
     private void checkCounterToInc(User user){
-        checkDateToUpdate();
+        this.dateLock.writeLock().lock();
+        stats.checkDateToUpdate();
         if(user.isAdmin()){
-            dailyAdminCounter.incrementAndGet();
+            stats.incDailyAdminCounter();
         }
         else if(user.isOwner()){
-            dailyOwnerCounter.incrementAndGet();
+            stats.incDailyOwnerCounter();
         }
         else if(user.isManager()){
-            dailyManagerCounter.incrementAndGet();
+            stats.incDailyManagerCounter();
         }
         else{
-            dailyRegisteredCounter.incrementAndGet();
+            stats.incDailyRegisteredCounter();
         }
-        //todo send to dto
-        saveCounters();
+        stats.saveCounters();
+        this.dateLock.writeLock().unlock();
     }
 
     public Response<String> login(String prevName, String name, String password){
@@ -917,6 +872,7 @@ public class UserController {
     }
 
     public Response<List<Integer>> getDailyStatistics(String username, LocalDate date) {
+
         readLock.lock();
         if (connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -930,7 +886,19 @@ public class UserController {
                 return new Response<>(null, true, "date is in the future");
             }
 
-            return new Response<>(Arrays.asList(dailyGuestCounter.get(), dailyRegisteredCounter.get(), dailyManagerCounter.get(), dailyOwnerCounter.get(), dailyAdminCounter.get()), false, "Daily statistics");
+            return new Response<>(Arrays.asList(stats.getDailyGuestCounter().get(), stats.getDailyRegisteredCounter().get(), stats.getDailyManagerCounter().get(), stats.getDailyOwnerCounter().get(), stats.getDailyAdminCounter().get()), false, "Daily statistics");
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Boolean> isAdmin(String username) {
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return new Response<>(user.isAdmin(), !user.isAdmin(), "get is Admin");
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");

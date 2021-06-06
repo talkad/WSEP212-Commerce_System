@@ -255,6 +255,11 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<Boolean> isAdmin(String username) {
+        return userController.isAdmin(username);
+    }
+
+    @Override
     public Response<Double> getTotalStoreRevenue(String username, int storeID) {
         return userController.getTotalStoreRevenue(username, storeID);
     }

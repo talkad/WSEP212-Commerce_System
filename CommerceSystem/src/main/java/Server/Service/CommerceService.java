@@ -293,4 +293,9 @@ public class CommerceService implements IService{
     public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
     }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return commerceSystem.isAdmin(username);
+    }
 }

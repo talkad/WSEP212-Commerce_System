@@ -409,4 +409,9 @@ public class ProxyBridge implements IService {
     public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date) {
         return null;
     }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return null;
+    }
 }

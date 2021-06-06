@@ -142,5 +142,5 @@ public interface IService {
 
     Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date);
 
-
+    Response<Boolean> isAdmin(String username);
 }
