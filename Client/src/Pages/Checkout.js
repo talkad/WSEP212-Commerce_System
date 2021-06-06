@@ -74,6 +74,7 @@ class Checkout extends React.Component{
     }
 
     handlePurchase(){
+        //tODO: check if a field is not empty
         const supplyDetails = new SupplyDetails(this.state.name, this.state.address, this.state.city,
             this.state.country, this.state.zip);
         const paymentDetails = new PaymentDetails(this.state.card_number, this.state.expiration, this.state.ccv,

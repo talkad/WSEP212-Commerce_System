@@ -26,8 +26,8 @@ import Connection from "./API/Connection";
 import ChooseMyStore from "./MainPages/ChooseMyStore";
 import {
     Alert,
-    Button,
-    Container,
+    Button, Card,
+    Container, Dropdown,
     Form,
     FormControl,
     Image,
@@ -56,13 +56,15 @@ import {A} from "react-select/dist/index-4bd03571.esm";
 import Disconnected from "./Pages/Disconnected";
 import StoreRevenue from "./ReportsPages/StoreRevenue";
 import SystemRevenue from "./ReportsPages/SystemRevenue";
+import {ReactComponent as UnreadNotification} from './Images/bell_notification.svg';
+
 
 
 let client = new WebSocket("ws://localhost:8080/ws");
 
 Connection.setConnection(client);
 
-class App extends React.Component{
+class App extends React.Component {
 
     constructor(props) {
         super(props);
@@ -82,7 +84,6 @@ class App extends React.Component{
             offerUserPriceOffer: '',
 
 
-
             showUserAlert: false,
             offerUserAlertVariant: '',
             alertUserInfo: '',
@@ -95,6 +96,11 @@ class App extends React.Component{
             offerManagerStoreID: '',
             offerManagerPriceOffer: '',
             counterOffer: '',
+
+
+            notifications: window.sessionStorage.getItem('notifications'),
+            unreadNotification: false,
+            bidNotificationIndex: '',
         }
 
         this.handleLogout = this.handleLogout.bind(this)
@@ -107,93 +113,118 @@ class App extends React.Component{
         this.onChangeCounterOffer = this.onChangeCounterOffer.bind(this);
         this.handleAcceptOffer = this.handleAcceptOffer.bind(this);
         this.handleManagerReply = this.handleManagerReply.bind(this);
+        this.getNotifications = this.getNotifications.bind(this);
+        this.handleNotification = this.handleNotification.bind(this);
+        this.removeNotification = this.removeNotification.bind(this);
     }
 
     componentDidMount() {
         let username = window.sessionStorage.getItem('username');
         if (username !== '' && username !== null && username.substr(0, 5) !== "Guest") {
-            if(StaticUserInfo.getUserStores().length === 0){
+            if (StaticUserInfo.getUserStores().length === 0) {
                 this.setState({visitor: false, registered: true, storeOwner: false});
-            }
-            else{
+            } else {
                 this.setState({visitor: false, registered: true, storeOwner: true});
             }
-        }
-        else{
+        } else {
             this.setState({visitor: true, registered: false, storeOwner: false});
         }
 
-        if(window.sessionStorage.getItem('username') !== null) {
+        if (window.sessionStorage.getItem('username') !== null) {
             Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
         }
 
-        Connection.getOfferNotification().then(this.handleOfferNotification, Connection.handleReject);
+
+        Connection.getNotification().then(this.handleNotification, Connection.handleReject);
+
+    }
+
+    handleNotification(result) {
+        this.setState({notifications: window.sessionStorage.getItem('notifications'), unreadNotification: true});
+
+        Connection.getNotification().then(this.handleNotification, Connection.handleReject); // todo: call this only when he is at least registered?
     }
 
 
-    handleOfferNotification(result){
-        if(result.action === "bidOffer"){
+    handleOfferNotification(result, index) {
+        if (result.action === "bidOffer") {
             let parsed = JSON.parse(result.message);
-            this.setState({showManagerAlert: true, offerManagerName: parsed.name,
+            this.setState({
+                showManagerAlert: true, offerManagerName: parsed.name,
                 offerManagerProductName: parsed.productName, offerManagerProductID: parsed.productID,
-                offerManagerStoreID: parsed.storeID, offerManagerPriceOffer: parsed.priceOffer});
-        }
-        else if(result.action === "changeOfferStatusAccepted"){
+                offerManagerStoreID: parsed.storeID, offerManagerPriceOffer: parsed.priceOffer, bidNotificationIndex: index,
+            });
+        } else if (result.action === "changeOfferStatusAccepted") {
             let parsed = JSON.parse(result.message);
-            this.setState({showUserAlert: true, offerUserAlertVariant: 'primary',
+            this.setState({
+                showUserAlert: true,
+                offerUserAlertVariant: 'primary',
                 alertUserInfo: `Your offer for ${parsed.productName} from ${parsed.name} got accepted.`,
-                showPurchaseButton: true, offerUserName: parsed.name, offerUserProductName: parsed.productName,
-                offerUserProductID: parsed.productID, offerUserStoreID: parsed.storeID, offerUserPriceOffer: parsed.priceOffer});
-        }
-        else if(result.action === "changeOfferStatusDeclined"){
-            this.setState({showUserAlert: true, offerUserAlertVariant: 'danger', alertUserInfo: result.message,
-                showPurchaseButton: false});
-        }
-        else if(result.action === "changeOfferStatus"){
+                showPurchaseButton: true,
+                offerUserName: parsed.name,
+                offerUserProductName: parsed.productName,
+                offerUserProductID: parsed.productID,
+                offerUserStoreID: parsed.storeID,
+                offerUserPriceOffer: parsed.priceOffer,
+                bidNotificationIndex: index,
+            });
+        } else if (result.action === "changeOfferStatusDeclined") {
+            this.setState({
+                showUserAlert: true, offerUserAlertVariant: 'danger', alertUserInfo: result.message,
+                showPurchaseButton: false, bidNotificationIndex: index,
+            });
+        } else if (result.action === "changeOfferStatus") {
             let parsed = JSON.parse(result.message);
-            this.setState({showUserAlert: true, offerUserAlertVariant: 'primary',
+            this.setState({
+                showUserAlert: true,
+                offerUserAlertVariant: 'primary',
                 alertUserInfo: `You got a counter offer for ${parsed.productName} from ${parsed.name}. They offered ${parsed.priceOffer}`,
-                showPurchaseButton: true, offerUserName: parsed.name, offerUserProductName: parsed.productName,
-                offerUserProductID: parsed.productID, offerUserStoreID: parsed.storeID, offerUserPriceOffer: parsed.priceOffer});
+                showPurchaseButton: true,
+                offerUserName: parsed.name,
+                offerUserProductName: parsed.productName,
+                offerUserProductID: parsed.productID,
+                offerUserStoreID: parsed.storeID,
+                offerUserPriceOffer: parsed.priceOffer,
+                bidNotificationIndex: index,
+            });
         }
-
-        Connection.getOfferNotification().then(this.handleOfferNotification, Connection.handleReject);
     }
 
     //-----------------------------------MANAGER OFFER START--------------------------------------------------------
-    handleManagerReplyResponse(result){
-        if(!result.isFailure){
+    handleManagerReplyResponse(result) {
+        if (!result.isFailure) {
             alert("reply sent");
-            this.setState({showManagerAlert: false, offerManagerName: '', offerManagerProductName: '',
-                offerManagerProductID: '', offerManagerStoreID: '', offerManagerPriceOffer: ''})
-        }
-        else{
+            this.removeNotification(this.state.bidNotificationIndex);
+            this.setState({
+                showManagerAlert: false, offerManagerName: '', offerManagerProductName: '',
+                offerManagerProductID: '', offerManagerStoreID: '', offerManagerPriceOffer: '', bidNotificationIndex: ''
+            })
+        } else {
             alert(result.errMsg);
         }
     }
 
-    handleManagerOfferAccept(){
+    handleManagerOfferAccept() {
         Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
             this.state.offerManagerStoreID, "-1").then(this.handleManagerReplyResponse, Connection.handleReject);
     }
 
-    handleManagerOfferReject(){
+    handleManagerOfferReject() {
         Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
             this.state.offerManagerStoreID, "-2").then(this.handleManagerReplyResponse, Connection.handleReject);
     }
 
-    onChangeCounterOffer(event){
+    onChangeCounterOffer(event) {
         this.setState({counterOffer: event.target.value})
     }
 
-    handleManagerReply(){
+    handleManagerReply() {
         let value = parseInt(this.state.counterOffer);
 
-        if(value >= 0) {
+        if (value >= 0) {
             Connection.sendManagerOfferReply(this.state.offerManagerName, this.state.offerManagerProductID,
                 this.state.offerManagerStoreID, this.state.counterOffer).then(this.handleManagerReplyResponse, Connection.handleReject);
-        }
-        else{
+        } else {
             alert("counter offer must be a natural number");
         }
     }
@@ -202,36 +233,39 @@ class App extends React.Component{
 
     //-----------------------------------USER OFFER START-----------------------------------------------------------
 
-    handleDismissOffer(){
-        this.setState({showUserAlert: false, offerUserAlertVariant: '', alertUserInfo: '',
-            showPurchaseButton: false});
+    handleDismissOffer() {
+        this.removeNotification(this.state.bidNotificationIndex);
+        this.setState({
+            showUserAlert: false, offerUserAlertVariant: '', alertUserInfo: '',
+            showPurchaseButton: false, bidNotificationIndex: ''
+        });
     }
 
-    handleAcceptOffer(){
+    handleAcceptOffer() {
+        this.removeNotification(this.state.bidNotificationIndex);
         window.location.href = `http://localhost:3000/checkout/?storeName=${this.state.offerUserName}&productName=${this.state.offerUserProductName}&productID=${this.state.offerUserProductID}&storeID=${this.state.offerUserStoreID}`
     }
 
     //-----------------------------------USER OFFER END-------------------------------------------------------------
 
-    handleStoreOwnedResponse(result){
-        if(!result.isFailure){
-            if(result.result.length !== 0){
+    handleStoreOwnedResponse(result) {
+        if (!result.isFailure) {
+            if (result.result.length !== 0) {
                 this.setState({storeOwner: true});
-            }
-            else{
+            } else {
                 this.setState({storeOwner: false});
             }
         }
     }
 
-    handleLogoutResponse(result){
-        if(!result.isFailure){
+    handleLogoutResponse(result) {
+        if (!result.isFailure) {
             window.sessionStorage.removeItem('username');
             this.setState({showAlert: true, alertVariant: 'success', alertInfo: 'Logged out'});
+            window.sessionStorage.removeItem('notifications')
             window.location.href = '/';
             //window.location.reload();
-        }
-        else{
+        } else {
             this.setState({showAlert: true, alertVariant: 'danger', alertInfo: result.errMsg});
         }
     }
@@ -240,18 +274,99 @@ class App extends React.Component{
         Connection.sendLogout().then(this.handleLogoutResponse, Connection.handleReject);
     }
 
+    removeNotification(index){
+        let notificationList = JSON.parse(window.sessionStorage.getItem('notifications'));
+        notificationList.splice(index, 1);
+        if(notificationList.length !== 0){
+            window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
+            this.setState({notifications: window.sessionStorage.getItem('notifications')})
+        }
+        else{
+            window.sessionStorage.removeItem('notifications');
+            this.setState({notifications: window.sessionStorage.getItem('notifications')})
+        }
+    }
+
+
+    getNotifications() {
+
+        let removeNotification = function (event){
+            let index = parseInt(event.target.id);
+            let notificationList = JSON.parse(window.sessionStorage.getItem('notifications'));
+            notificationList.splice(index, 1);
+            if(notificationList.length !== 0){
+                window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
+                this.setState({notifications: window.sessionStorage.getItem('notifications')})
+            }
+            else{
+                window.sessionStorage.removeItem('notifications');
+                this.setState({notifications: window.sessionStorage.getItem('notifications')})
+            }
+        }
+
+        removeNotification = removeNotification.bind(this);
+
+
+        let bidOfferHandler = (message, index) => this.handleOfferNotification(message, index);
+
+        let changeNotificationState = () => this.setState({unreadNotification: false});
+
+        if (this.state.notifications !== null || this.state.notifications === [null]) {
+            let counter = -1;
+            let parsedNotifications = JSON.parse(this.state.notifications);
+
+            return (
+                <NavDropdown onClick={changeNotificationState} id="notification_dropdown" title={this.state.unreadNotification ? <UnreadNotification/> : <Icon.Bell/>}>
+                    {parsedNotifications.map(function (notification) {
+                        counter++;
+                        if (notification.type === 'notification') {
+                            return (
+                                <NavDropdown.Item>
+                                    <Card style={{overflowY: 'auto'}} id="notification_card">
+                                        <Card.Body>{notification.message}</Card.Body>
+                                        <Card.Link id={counter.toString()}
+                                                   onClick={removeNotification}>Dismiss</Card.Link>
+                                    </Card>
+                                </NavDropdown.Item>
+                            );
+                        } else {
+                            return (
+                                <NavDropdown.Item>
+                                    <Card style={{overflowY: 'auto'}} id="notification_card">
+                                        <Card.Header>Bid offer notification</Card.Header>
+                                        <Card.Link id={counter.toString()} onClick={() => bidOfferHandler(notification, counter.toString())}>More
+                                            details</Card.Link>
+                                    </Card>
+                                </NavDropdown.Item>
+                            )
+                        }
+                    })}
+
+                </NavDropdown>
+            );
+        }
+
+        return (
+            <NavDropdown id="notification_dropdown" title={<Icon.Bell/>}>
+                <NavDropdown.ItemText>You don't have any notifications</NavDropdown.ItemText>
+            </NavDropdown>
+        );
+    }
+
     render() {
-        return(
+        return (
             <Router>
                 <Navbar bg="light" expand="lg">
                     <Navbar.Brand href="/">
                         <OurLogo height={50} width={150}/>
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    {(window.location.href !== 'http://localhost:3000/Disconnected') && <Navbar.Collapse id="basic-navbar-nav">
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                    {(window.location.href !== 'http://localhost:3000/Disconnected') &&
+                    <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
 
-                            {this.state.registered &&<Navbar.Text style={{color: "black"}}> Hi, {window.sessionStorage.getItem('username')}</Navbar.Text>}
+                            {this.state.registered && <Navbar.Text
+                                style={{color: "black"}}> Hi, {window.sessionStorage.getItem('username')}</Navbar.Text>}
 
                             <Nav.Link href="/">Home</Nav.Link>
 
@@ -269,6 +384,8 @@ class App extends React.Component{
                             {this.state.storeOwner &&
                             <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
 
+                            {this.state.registered && this.getNotifications()}
+
                         </Nav>
                         <Nav>
                             <Nav.Link href="/cart"><Icon.Cart/></Nav.Link>
@@ -280,7 +397,8 @@ class App extends React.Component{
 
                 </Navbar>
 
-                <Alert dismissible show={this.state.showUserAlert} variant={this.state.offerUserAlertVariant} onClose={() => this.setState({showUserAlert: false})}>
+                <Alert dismissible show={this.state.showUserAlert} variant={this.state.offerUserAlertVariant}
+                       onClose={() => this.setState({showUserAlert: false})}>
                     <Alert.Heading>{this.state.alertUserInfo}</Alert.Heading>
                     {this.state.showPurchaseButton && <div>
                         <hr/>
@@ -289,10 +407,12 @@ class App extends React.Component{
                     </div>}
                 </Alert>
 
-                <Alert show={this.state.showManagerAlert} variant={this.state.offerManagerAlertVariant} onClose={() => this.setState({showManagerAlert: false})}>
+                <Alert show={this.state.showManagerAlert} variant={this.state.offerManagerAlertVariant}
+                       onClose={() => this.setState({showManagerAlert: false})}>
                     <Alert.Heading>{this.state.offerManagerName} sent a price offer!</Alert.Heading>
                     <p>
-                        He/She/It/Attack Heli offered to buy {this.state.offerManagerProductName} for {this.state.offerManagerPriceOffer}
+                        He/She/It/Attack Heli offered to
+                        buy {this.state.offerManagerProductName} for {this.state.offerManagerPriceOffer}
                     </p>
                     <hr/>
                     <Button variant="success" onClick={this.handleManagerOfferAccept}>
@@ -316,16 +436,17 @@ class App extends React.Component{
                 </Alert>
 
                 <div className="App">
-                    <Alert show={this.state.showAlert} variant={this.state.alertVariant} onClose={() => this.setState({showAlert: false})}>
+                    <Alert show={this.state.showAlert} variant={this.state.alertVariant}
+                           onClose={() => this.setState({showAlert: false})}>
                         <Alert.Heading>{this.state.alertInfo}</Alert.Heading>
                     </Alert>
                     <Switch>
                         <Route exact path="/" component={Home}/>} />
                         {/*<Route exact path="/" render={() => <Visitor isVisitor={true}/>} />*/}
-                        <Route path="/login" component={Login} />
-                        <Route path="/register" component={Register} />
+                        <Route path="/login" component={Login}/>
+                        <Route path="/register" component={Register}/>
                         {/*<Route path="/registered" component={Registered} />*/}
-                        <Route path="/search/" component={SearchResult} />
+                        <Route path="/search/" component={SearchResult}/>
                         <Route path="/createStore" component={CreateStore}/>
                         <Route path="/purchaseHistory" component={PurchaseHistory}/>
                         <Route path="/cart" component={Cart}/>
