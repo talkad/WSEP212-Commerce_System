@@ -592,6 +592,7 @@ class Connection{
     // }
 
     static sendCompositionPoliciesAndOr (functionName, username, storeId, type, category, discount, policyRules){
+        let fixedRules = policyRules.join(', ');
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
@@ -600,26 +601,28 @@ class Connection{
             discountRule: JSON.stringify({type: type,
                 category: category,
                 discount: discount,
-                policyRules: policyRules,
+                policyRules: fixedRules,
             }),
         }))
         return Connection.getResponse(functionName);
     }
 
     static sendCompositionPoliciesSumMax (functionName, username, storeId, type, policyRules){
+        let fixedRules = policyRules.join(', ');
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
             storeID: storeId,
 
             discountRule: JSON.stringify({type: type,
-                policyRules: policyRules,
+                policyRules: fixedRules,
             }),
         }))
         return Connection.getResponse(functionName);
     }
 
     static sendCompositionPoliciesXor (functionName, username, storeId, type, discount, policyRules, xorResolveType){
+        let fixedRules = policyRules.join(', ');
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
@@ -627,7 +630,7 @@ class Connection{
 
             discountRule: JSON.stringify({type: type,
                 discount: discount,
-                policyRules: policyRules,
+                policyRules: fixedRules,
                 xorResolveType: xorResolveType,
             }),
         }))
