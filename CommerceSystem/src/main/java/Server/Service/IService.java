@@ -12,6 +12,8 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -138,6 +140,7 @@ public interface IService {
 
     Response<Double> getTotalSystemRevenue(String username);
 
-    Response<String> getDailyStatistics(String adminName, String date);
+    Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date);
+
 
 }

@@ -178,7 +178,9 @@ public class UserController {
 
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
-        connectedUsers.put(guestName, new User());
+        User user = new User();
+        user.setName(guestName);
+        connectedUsers.put(guestName, user);
         checkDateToUpdate();
         this.dailyGuestCounter.incrementAndGet();
         //todo send dto
@@ -914,9 +916,23 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<String> getDailyStatistics(String username, LocalDate date){
+    public Response<List<Integer>> getDailyStatistics(String username, LocalDate date) {
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
 
-        return new Response<String>("", false, "");
+            if(!user.isAdmin()){
+                return new Response<>(null, true, "You are not an admin");
+            }
+
+            if (date.isAfter(LocalDate.now())) {
+                return new Response<>(null, true, "date is in the future");
+            }
+
+            return new Response<>(Arrays.asList(dailyGuestCounter.get(), dailyRegisteredCounter.get(), dailyManagerCounter.get(), dailyOwnerCounter.get(), dailyAdminCounter.get()), false, "Daily statistics");
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
     }
 }
-
