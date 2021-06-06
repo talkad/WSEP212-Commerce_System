@@ -30,39 +30,22 @@ public class UserController {
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
+    private Statistics stats;
 
-    private LocalDate currentDate;
-    private ReadWriteLock dateLock;
-    private AtomicInteger dailyGuestCounter;
-    private AtomicInteger dailyRegisteredCounter;
-    private AtomicInteger dailyManagerCounter;
-    private AtomicInteger dailyOwnerCounter;
-    private AtomicInteger dailyAdminCounter;
+
 
     private UserController() {
         this.availableId = new AtomicInteger(1);
-        this.dailyGuestCounter = new AtomicInteger(0);
-        this.dailyRegisteredCounter = new AtomicInteger(0);
-        this.dailyManagerCounter = new AtomicInteger(0);
-        this.dailyOwnerCounter = new AtomicInteger(0);
-        this.dailyAdminCounter = new AtomicInteger(0);
-        this.currentDate = LocalDate.now();
+
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
         this.connectedUsers = new ConcurrentHashMap<>();
 
+        this.stats = Statistics.getInstance();
+
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
-
-        dateLock = new ReentrantReadWriteLock();
-
-        DailyCountersDTO dailyCountersDTO = DALService.getInstance().getDailyCounters(this.currentDate);
-        this.dailyGuestCounter.set(dailyCountersDTO.getGuestCounter());
-        this.dailyRegisteredCounter.set(dailyCountersDTO.getRegisteredCounter());
-        this.dailyManagerCounter.set(dailyCountersDTO.getManagerCounter());
-        this.dailyOwnerCounter.set(dailyCountersDTO.getOwnerCounter());
-        this.dailyAdminCounter.set(dailyCountersDTO.getAdminCounter());
     }
 
     public Response<String> removeGuest(String name) {
@@ -145,36 +128,13 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    private void checkDateToUpdate(){
-        if(this.currentDate.compareTo(LocalDate.now()) < 0){
-            currentDate = LocalDate.now();
-            this.dailyGuestCounter.set(0);
-            this.dailyRegisteredCounter.set(0);
-            this.dailyManagerCounter.set(0);
-            this.dailyOwnerCounter.set(0);
-            this.dailyAdminCounter.set(0);
-        }
-    }
-
-    private void saveCounters(){
-        DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
-                                                                    this.dailyGuestCounter.get(),
-                                                                    this.dailyRegisteredCounter.get(),
-                                                                    this.dailyManagerCounter.get(),
-                                                                    this.dailyOwnerCounter.get(),
-                                                                    this.dailyAdminCounter.get());
-
-        DALService.getInstance().saveCounters(dailyCountersDTO);
-    }
 
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
-        connectedUsers.put(guestName, new User());
-        this.dateLock.writeLock().lock();
-        checkDateToUpdate();
-        this.dailyGuestCounter.incrementAndGet();
-        saveCounters();
-        this.dateLock.writeLock().unlock();
+        User user = new User();
+        user.setName(guestName);
+        connectedUsers.put(guestName, user);
+        stats.incDailyGuestCounter();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -212,22 +172,18 @@ public class UserController {
     }
     
     private void checkCounterToInc(User user){
-        this.dateLock.writeLock().lock();
-        checkDateToUpdate();
         if(user.isAdmin()){
-            dailyAdminCounter.incrementAndGet();
+            stats.incDailyAdminCounter();
         }
         else if(user.isOwner()){
-            dailyOwnerCounter.incrementAndGet();
+            stats.incDailyOwnerCounter();
         }
         else if(user.isManager()){
-            dailyManagerCounter.incrementAndGet();
+            stats.incDailyManagerCounter();
         }
         else{
-            dailyRegisteredCounter.incrementAndGet();
+            stats.incDailyRegisteredCounter();
         }
-        saveCounters();
-        this.dateLock.writeLock().unlock();
     }
 
     public Response<String> login(String prevName, String name, String password){
@@ -907,9 +863,27 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<String> getDailyStatistics(String username, LocalDate date){
+    public Response<List<Integer>> getDailyStatistics(String username, LocalDate date) {
 
-        return new Response<String>("", false, "");
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getDailyStatistics(date);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<Boolean> isAdmin(String username) {
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return new Response<>(user.isAdmin(), !user.isAdmin(), "get is Admin");
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
     }
 }
-

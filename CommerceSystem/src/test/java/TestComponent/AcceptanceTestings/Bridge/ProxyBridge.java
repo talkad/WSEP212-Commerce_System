@@ -14,6 +14,7 @@ import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -405,7 +406,12 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<String> getDailyStatistics(String adminName, String date) {
+    public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
         return null;
     }
 }

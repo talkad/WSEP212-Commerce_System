@@ -7,6 +7,7 @@ import Server.Domain.ShoppingManager.PurchaseRules.*;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -63,6 +64,17 @@ public class SystemManagerHandler extends  Handler{
                 PurchaseRule purchaseRule = parsePurchaseRule(purchaseRuleStr);
 
                 response = service.addPurchaseRule(username, Integer.parseInt(storeID), purchaseRule);
+            }
+            case "getDailyStatistics" -> {
+                String adminName = data.getProperty("adminName");
+                String date = data.getProperty("date");
+
+                response = service.getDailyStatistics(adminName, LocalDate.parse(date));
+            }
+            case "isAdmin" -> {
+                String username = data.getProperty("username");
+
+                response = service.isAdmin(username);
             }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }

@@ -14,6 +14,8 @@ import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -288,7 +290,12 @@ public class CommerceService implements IService{
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public Response<String> getDailyStatistics(String adminName, String date){
+    public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return commerceSystem.isAdmin(username);
     }
 }

@@ -250,8 +250,13 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<String> getDailyStatistics(String adminName, String date) {
-        return userController.getDailyStatistics(adminName, LocalDate.parse(date));
+    public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date) {
+        return userController.getDailyStatistics(adminName, date);
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return userController.isAdmin(username);
     }
 
     @Override
