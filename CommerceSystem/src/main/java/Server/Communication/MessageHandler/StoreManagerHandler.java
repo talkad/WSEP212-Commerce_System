@@ -89,7 +89,7 @@ public class StoreManagerHandler extends Handler{
                 String permitting = data.getProperty("permitting");
                 String storeID = data.getProperty("storeID");
                 String permitted = data.getProperty("permitted");
-                String permission = data.getProperty("permission");
+                String permission = data.getProperty("permissions");
 
                 response = service.addPermission(permitting, Integer.parseInt(storeID), permitted, PermissionsEnum.valueOf(permission));
             }
@@ -97,7 +97,7 @@ public class StoreManagerHandler extends Handler{
                 String permitting = data.getProperty("permitting");
                 String storeID = data.getProperty("storeID");
                 String permitted = data.getProperty("permitted");
-                String permission = data.getProperty("permission");
+                String permission = data.getProperty("permissions");
 
                 response = service.removePermission(permitting, Integer.parseInt(storeID), permitted, PermissionsEnum.valueOf(permission));
             }

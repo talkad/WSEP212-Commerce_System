@@ -1,18 +1,26 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.OfferDTO;
+import Server.Domain.ShoppingManager.StoreController;
+
+import java.util.List;
+import java.util.Vector;
 
 public class Offer {
     private int productId;
     private int storeId;
     private double offerReply;
     private OfferState state;
+    private List<String> approvals;
 
-    public Offer(int productId, int storeId, double offerReply){
+    // todo - jacob need to update its DTO
+
+    public Offer(int productId, int storeId, double offerReply, List<String> approvals){
         this.productId = productId;
         this.storeId = storeId;
         this.offerReply = offerReply;
         this.state = OfferState.PENDING;
+        this.approvals = approvals;
     }
 
     public Offer(int productId, int storeId, double offerReply, OfferState state){
@@ -53,7 +61,16 @@ public class Offer {
         return state;
     }
 
-    public void setState(OfferState state) {
-        this.state = state;
+    public void setState(String username, OfferState state) {
+        if(state == OfferState.APPROVED){
+            approvals.remove(username);
+
+            if(approvals.size() == 0)
+                this.state = OfferState.APPROVED;
+        }
+    }
+
+    public List<String> getApprovals(){
+        return this.approvals;
     }
 }
