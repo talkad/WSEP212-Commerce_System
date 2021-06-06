@@ -9,10 +9,11 @@ import java.time.LocalDate;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Statistics {
     private LocalDate currentDate;
-    private ReadWriteLock dateLock;
+    private ReadWriteLock lock;
     private AtomicInteger dailyGuestCounter;
     private AtomicInteger dailyRegisteredCounter;
     private AtomicInteger dailyManagerCounter;
@@ -21,6 +22,7 @@ public class Statistics {
 
     private Statistics()
     {
+        this.lock = new ReentrantReadWriteLock();
         initStats();
     }
 
@@ -48,28 +50,44 @@ public class Statistics {
         return currentDate;
     }
 
-    public ReadWriteLock getDateLock() {
-        return dateLock;
-    }
-
     public void incDailyGuestCounter() {
-        dailyGuestCounter.incrementAndGet() ;
+        lock.writeLock().lock();
+        checkDateToUpdate();
+        dailyGuestCounter.incrementAndGet();
+        saveCounters();
+        lock.writeLock().unlock();
     }
 
     public void incDailyRegisteredCounter() {
+        lock.writeLock().lock();
+        checkDateToUpdate();
         dailyRegisteredCounter.incrementAndGet();
+        saveCounters();
+        lock.writeLock().unlock();
     }
 
     public void incDailyManagerCounter() {
-         dailyManagerCounter.incrementAndGet();
+        lock.writeLock().lock();
+        checkDateToUpdate();
+        dailyManagerCounter.incrementAndGet();
+        saveCounters();
+        lock.writeLock().unlock();
     }
 
     public void incDailyOwnerCounter() {
-         dailyOwnerCounter.incrementAndGet();
+        lock.writeLock().lock();
+        checkDateToUpdate();
+        dailyOwnerCounter.incrementAndGet();
+        saveCounters();
+        lock.writeLock().unlock();
     }
 
     public void incDailyAdminCounter() {
-         dailyAdminCounter.incrementAndGet();
+        lock.writeLock().lock();
+        checkDateToUpdate();
+        dailyAdminCounter.incrementAndGet();
+        saveCounters();
+        lock.writeLock().unlock();
     }
 
     public AtomicInteger getDailyGuestCounter() {
@@ -92,7 +110,7 @@ public class Statistics {
         return dailyAdminCounter;
     }
 
-    public void checkDateToUpdate(){
+    private void checkDateToUpdate(){
         if(this.currentDate.compareTo(LocalDate.now()) < 0){
             currentDate = LocalDate.now();
             this.dailyGuestCounter.set(0);
@@ -103,7 +121,7 @@ public class Statistics {
         }
     }
 
-    public void saveCounters(){
+    private void saveCounters(){
         DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
                 this.dailyGuestCounter.get(),
                 this.dailyRegisteredCounter.get(),

@@ -134,11 +134,7 @@ public class UserController {
         User user = new User();
         user.setName(guestName);
         connectedUsers.put(guestName, user);
-        this.dateLock.writeLock().lock();
-        stats.checkDateToUpdate();
         stats.incDailyGuestCounter();
-        stats.saveCounters();
-        this.dateLock.writeLock().unlock();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -176,8 +172,6 @@ public class UserController {
     }
     
     private void checkCounterToInc(User user){
-        this.dateLock.writeLock().lock();
-        stats.checkDateToUpdate();
         if(user.isAdmin()){
             stats.incDailyAdminCounter();
         }
@@ -190,8 +184,6 @@ public class UserController {
         else{
             stats.incDailyRegisteredCounter();
         }
-        stats.saveCounters();
-        this.dateLock.writeLock().unlock();
     }
 
     public Response<String> login(String prevName, String name, String password){
@@ -877,16 +869,7 @@ public class UserController {
         if (connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
-
-            if(!user.isAdmin()){
-                return new Response<>(null, true, "You are not an admin");
-            }
-
-            if (date.isAfter(LocalDate.now())) {
-                return new Response<>(null, true, "date is in the future");
-            }
-
-            return new Response<>(Arrays.asList(stats.getDailyGuestCounter().get(), stats.getDailyRegisteredCounter().get(), stats.getDailyManagerCounter().get(), stats.getDailyOwnerCounter().get(), stats.getDailyAdminCounter().get()), false, "Daily statistics");
+            return user.getDailyStatistics(date);
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");

@@ -14,6 +14,7 @@ import Server.Service.DataObjects.OfferData;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -1002,5 +1003,20 @@ public class User {
 
     public boolean isManager(){
         return this.storesManaged != null && !this.storesManaged.isEmpty();
+    }
+
+    public Response<List<Integer>> getDailyStatistics(LocalDate date) {
+        if(this.state.allowed(PermissionsEnum.DAILY_VISITOR_STATISTICS, this)){
+            if(date.isAfter(LocalDate.now())) {
+                return new Response<>(null, true, "date is in the future");
+            }
+            else{
+                DailyCountersDTO dto = DALService.getInstance().getDailyCounters(date);
+                return new Response<>(Arrays.asList(dto.getGuestCounter(), dto.getRegisteredCounter(), dto.getManagerCounter(), dto.getOwnerCounter(), dto.getAdminCounter()),false, "");
+            }
+        }
+        else{
+            return new Response<>(null, true, "You are not an admin");
+        }
     }
 }
