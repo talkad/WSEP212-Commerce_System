@@ -5,6 +5,7 @@ public class Admin extends Registered {
         super();
         this.allowedFunctions.add(PermissionsEnum.RECEIVE_GENERAL_HISTORY);
         this.allowedFunctions.add(PermissionsEnum.RECEIVE_GENERAL_REVENUE);
+        this.allowedFunctions.add(PermissionsEnum.DAILY_VISITOR_STATISTICS);
     }
 
     @Override

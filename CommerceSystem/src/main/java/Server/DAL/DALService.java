@@ -17,6 +17,8 @@ import dev.morphia.mapping.MapperOptions;
 import dev.morphia.query.FindOptions;
 import dev.morphia.query.Sort;
 import dev.morphia.query.experimental.filters.Filters;
+
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +57,10 @@ public class DALService implements Runnable{
     private Map<String, ShoppingCartDTO> guestCarts;
     private ReadWriteLock guestCartLock;
 
+    private Map<String, DailyCountersDTO> counters;
+    private List<DailyCountersDTO> countersSaveCache;
+    private ReadWriteLock countersLock;
+
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
 
@@ -76,6 +82,7 @@ public class DALService implements Runnable{
         this.products = new ConcurrentHashMap<>();
         this.publisher = new ConcurrentHashMap<>();
         this.guestCarts = new ConcurrentHashMap<>();
+        this.counters = new ConcurrentHashMap<>();
 
         this.storeSaveCache = new Vector<>();
         this.userSaveCache = new Vector<>();
@@ -83,6 +90,7 @@ public class DALService implements Runnable{
         this.adminAccountSaveCache = new Vector<>();
         this.productSaveCache = new Vector<>();
         this.publisherSaveCache = new Vector<>();
+        this.countersSaveCache = new Vector<>();
 
         this.storeLock = new ReentrantReadWriteLock();
         this.userLock = new ReentrantReadWriteLock();
@@ -91,6 +99,7 @@ public class DALService implements Runnable{
         this.productLock = new ReentrantReadWriteLock();
         this.publisherLock = new ReentrantReadWriteLock();
         this.guestCartLock = new ReentrantReadWriteLock();
+        this.countersLock = new ReentrantReadWriteLock();
     }
 
     public void startDB(){
@@ -110,6 +119,7 @@ public class DALService implements Runnable{
             this.adminAccountLock.writeLock().lock();
             this.productLock.writeLock().lock();
             this.publisherLock.writeLock().lock();
+            this.countersLock.writeLock().lock();
 
             List<StoreDTO> storeList = new Vector<>(this.storeSaveCache);
             this.storeSaveCache = new Vector<>();
@@ -129,7 +139,10 @@ public class DALService implements Runnable{
             List<PublisherDTO> publisherList = new Vector<>(this.publisherSaveCache);
             this.publisherSaveCache = new Vector<>();
 
-            boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
+            List<DailyCountersDTO> countersList = new Vector<>(this.countersSaveCache);
+            this.countersSaveCache = new Vector<>();
+
+            boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
             if(allEmpty){
                 try {
@@ -140,6 +153,7 @@ public class DALService implements Runnable{
                         this.adminAccountLock.writeLock().unlock();
                         this.productLock.writeLock().unlock();
                         this.publisherLock.writeLock().unlock();
+                        this.countersLock.writeLock().unlock();
                         wait();
                     }
                 } catch (InterruptedException e) {
@@ -153,14 +167,15 @@ public class DALService implements Runnable{
                 this.adminAccountLock.writeLock().unlock();
                 this.productLock.writeLock().unlock();
                 this.publisherLock.writeLock().unlock();
+                this.countersLock.writeLock().unlock();
 
-                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList);
+                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
             }
         }
     }
 
-    private void saveToDatabase(List<StoreDTO> storeList, List<UserDTO> userList, List<AccountDTO> accountList, List<AdminAccountDTO> adminAccountList, List<ProductDTO> productList, List<PublisherDTO> publisherList){
-        boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty();
+    private void saveToDatabase(List<StoreDTO> storeList, List<UserDTO> userList, List<AccountDTO> accountList, List<AdminAccountDTO> adminAccountList, List<ProductDTO> productList, List<PublisherDTO> publisherList, List<DailyCountersDTO> countersList){
+        boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
         if(!allEmpty) {
             System.out.println("Accessing DB for save iteration");
@@ -204,6 +219,9 @@ public class DALService implements Runnable{
                     if(!publisherList.isEmpty())
                         session.save(publisherList);
 
+                    if(!countersList.isEmpty())
+                        session.save(countersList);
+
                     // commit changes
                     session.commitTransaction();
                 } catch (Exception e) {
@@ -211,7 +229,7 @@ public class DALService implements Runnable{
                 }
             } catch (MongoConfigurationException | MongoTimeoutException e) {
                 System.out.println("Exception received: " + e.getMessage());
-                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList); // timeout, try again
+                saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
             System.out.println("Completed save iteration");
         }
@@ -223,6 +241,58 @@ public class DALService implements Runnable{
 
     public void setUseLocal(boolean useLocal){
         this.useLocal = useLocal;
+    }
+
+    // TODO update entire counter mechanism for cache cleaner
+    public DailyCountersDTO getDailyCounters(LocalDate date){
+        DailyCountersDTO dailyCountersDTO;
+        this.countersLock.writeLock().lock();
+        if(this.counters.containsKey(date.toString())){
+            dailyCountersDTO = this.counters.get(date.toString());
+        }
+        else if(useLocal){
+            dailyCountersDTO = new DailyCountersDTO(date.toString(), 0, 0, 0, 0, 0);
+            this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+        }
+        else{
+            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+                Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
+                Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
+                mapper.mapPackage("Server.DAL");
+                mapper.mapPackage("Server.DAL.DiscountRuleDTOs");
+                mapper.mapPackage("Server.DAL.PredicateDTOs");
+                mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
+                mapper.mapPackage("Server.DAL.PairDTOs");
+
+                dailyCountersDTO = datastore.find(DailyCountersDTO.class)
+                        // filters find relevant entries
+                        .filter(
+                                Filters.eq("currentDate", date.toString())
+                        ).first();
+            }
+            catch(MongoConfigurationException | MongoTimeoutException e){
+                System.out.println("Exception received: " + e.getMessage());
+                this.countersLock.writeLock().unlock();
+                return getDailyCounters(date); // timeout, try again
+            }
+
+            if(dailyCountersDTO == null) {
+                dailyCountersDTO = new DailyCountersDTO(date.toString(), 0, 0, 0, 0, 0);
+            }
+            this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+
+        }
+        this.countersLock.writeLock().unlock();
+        return dailyCountersDTO;
+    }
+
+    public void saveCounters(DailyCountersDTO dailyCountersDTO){
+        this.countersLock.writeLock().lock();
+        this.counters.put(dailyCountersDTO.getCurrentDate(), dailyCountersDTO);
+        if(!useLocal){
+            this.countersSaveCache.add(dailyCountersDTO);
+        }
+        this.countersLock.writeLock().unlock();
     }
 
     public void savePurchase(UserDTO userDTO, List<StoreDTO> storeDTOs) {

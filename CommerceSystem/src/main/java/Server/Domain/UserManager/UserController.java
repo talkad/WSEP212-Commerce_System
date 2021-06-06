@@ -14,6 +14,7 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Purchase.PurchaseController;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,8 +31,22 @@ public class UserController {
     private Lock writeLock;
     private Lock readLock;
 
+    private LocalDate currentDate;
+    private ReadWriteLock dateLock;
+    private AtomicInteger dailyGuestCounter;
+    private AtomicInteger dailyRegisteredCounter;
+    private AtomicInteger dailyManagerCounter;
+    private AtomicInteger dailyOwnerCounter;
+    private AtomicInteger dailyAdminCounter;
+
     private UserController() {
         this.availableId = new AtomicInteger(1);
+        this.dailyGuestCounter = new AtomicInteger(0);
+        this.dailyRegisteredCounter = new AtomicInteger(0);
+        this.dailyManagerCounter = new AtomicInteger(0);
+        this.dailyOwnerCounter = new AtomicInteger(0);
+        this.dailyAdminCounter = new AtomicInteger(0);
+        this.currentDate = LocalDate.now();
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
         this.connectedUsers = new ConcurrentHashMap<>();
@@ -39,6 +54,15 @@ public class UserController {
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
+
+        dateLock = new ReentrantReadWriteLock();
+
+        DailyCountersDTO dailyCountersDTO = DALService.getInstance().getDailyCounters(this.currentDate);
+        this.dailyGuestCounter.set(dailyCountersDTO.getGuestCounter());
+        this.dailyRegisteredCounter.set(dailyCountersDTO.getRegisteredCounter());
+        this.dailyManagerCounter.set(dailyCountersDTO.getManagerCounter());
+        this.dailyOwnerCounter.set(dailyCountersDTO.getOwnerCounter());
+        this.dailyAdminCounter.set(dailyCountersDTO.getAdminCounter());
     }
 
     public Response<String> removeGuest(String name) {
@@ -121,9 +145,44 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
+    // TODO add lock for entire counter update
+    private void checkDateToUpdate(){
+        dateLock.readLock().lock();
+        if(this.currentDate.compareTo(LocalDate.now()) < 0){
+            dateLock.readLock().unlock();
+            dateLock.writeLock().lock();
+            currentDate = LocalDate.now();
+            dateLock.writeLock().unlock();
+            dateLock.readLock().lock();
+            this.dailyGuestCounter.set(0);
+            this.dailyRegisteredCounter.set(0);
+            this.dailyManagerCounter.set(0);
+            this.dailyOwnerCounter.set(0);
+            this.dailyAdminCounter.set(0);
+        }
+        dateLock.readLock().unlock();
+    }
+
+    private void saveCounters(){
+        dateLock.readLock().lock();
+        DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
+                                                                    this.dailyGuestCounter.get(),
+                                                                    this.dailyRegisteredCounter.get(),
+                                                                    this.dailyManagerCounter.get(),
+                                                                    this.dailyOwnerCounter.get(),
+                                                                    this.dailyAdminCounter.get());
+
+        DALService.getInstance().saveCounters(dailyCountersDTO);
+        dateLock.readLock().unlock();
+    }
+
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
+        checkDateToUpdate();
+        this.dailyGuestCounter.incrementAndGet();
+        //todo send dto
+        saveCounters();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -159,6 +218,24 @@ public class UserController {
             return new Response<>(null, true, "User not connected");
         }
     }
+    
+    private void checkCounterToInc(User user){
+        checkDateToUpdate();
+        if(user.isAdmin()){
+            dailyAdminCounter.incrementAndGet();
+        }
+        else if(user.isOwner()){
+            dailyOwnerCounter.incrementAndGet();
+        }
+        else if(user.isManager()){
+            dailyManagerCounter.incrementAndGet();
+        }
+        else{
+            dailyRegisteredCounter.incrementAndGet();
+        }
+        //todo send to dto
+        saveCounters();
+    }
 
     public Response<String> login(String prevName, String name, String password){
         User user;
@@ -172,6 +249,7 @@ public class UserController {
                     if(userDTO == null)
                         userDTO = new User(name).toDTO();
                     user = new User(userDTO);
+                    checkCounterToInc(user);
                     connectedUsers.put(name, user);
                     writeLock.unlock();
 
@@ -485,6 +563,9 @@ public class UserController {
         if(connectedUsers.containsKey(permitting)) {
             User user = connectedUsers.get(permitting);
             readLock.unlock();
+            if(permission == PermissionsEnum.DAILY_VISITOR_STATISTICS || permission == PermissionsEnum.RECEIVE_GENERAL_REVENUE || permission == PermissionsEnum.RECEIVE_GENERAL_HISTORY){
+                return new Response<>(false, true, "User not allowed to add this permission");
+            }
             writeLock.lock();
             Response<Boolean> response = user.addPermission(storeId, permitted, permission);
             // todo why was this commented out?
@@ -516,7 +597,6 @@ public class UserController {
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
     }
-
 
     public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
         readLock.lock();
@@ -800,6 +880,11 @@ public class UserController {
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<String> getDailyStatistics(String username, LocalDate date){
+
+        return new Response<String>("", false, "");
     }
 }
 
