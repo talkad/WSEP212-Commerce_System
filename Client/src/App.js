@@ -54,6 +54,8 @@ import ProductDiscountRule from "./DiscountPurchasePolicyPages/ProductDiscountRu
 import StoreDiscountRule from "./DiscountPurchasePolicyPages/StoreDiscountRule";
 import {A} from "react-select/dist/index-4bd03571.esm";
 import Disconnected from "./Pages/Disconnected";
+import StoreRevenue from "./ReportsPages/StoreRevenue";
+import SystemRevenue from "./ReportsPages/SystemRevenue";
 
 
 let client = new WebSocket("ws://localhost:8080/ws");
@@ -353,6 +355,8 @@ class App extends React.Component{
                         <Route path="/Product_Discount_Rule" component={ProductDiscountRule}/>
                         <Route path="/Store_Discount_Rule" component={StoreDiscountRule}/>
                         <Route path="/Disconnected" component={Disconnected}/>
+                        <Route path="/RECEIVE_STORE_REVENUE" component={StoreRevenue}/>
+                        <Route path="/RECEIVE_GENERAL_REVENUE" component={SystemRevenue}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>

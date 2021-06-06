@@ -125,4 +125,12 @@ public class ProductDTO {
     public void setReviews(List<ReviewDTO> reviews) {
         this.reviews = reviews;
     }
+
+    public boolean toDelete(){
+        return false;
+    }
+
+    public ProductDTO getDTO(){
+        return this;
+    }
 }

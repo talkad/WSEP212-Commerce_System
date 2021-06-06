@@ -45,5 +45,7 @@ public enum PermissionsEnum {
 
     /** System Manager **/
     RECEIVE_GENERAL_HISTORY,    /* Use Case: 6.4 */
-    RECEIVE_GENERAL_REVENUE
+    RECEIVE_GENERAL_REVENUE,
+
+    DAILY_VISITOR_STATISTICS
 }

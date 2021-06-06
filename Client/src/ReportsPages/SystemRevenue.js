@@ -2,13 +2,12 @@ import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
 import Connection from "../API/Connection";
 
-class WorkerDetails extends React.Component{
+class SystemRevenue extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            functionName: 'getStoreWorkersDetails',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            functionName: 'getTotalSystemRevenue',
+            adminName: StaticUserInfo.getUsername(),
             showMessage: false,
             toShow: ''
         };
@@ -18,9 +17,10 @@ class WorkerDetails extends React.Component{
     onButtonClickHandler = (e) => {
         e.preventDefault();
 
-        Connection.sendGetStoreWorkersInfo(this.state.functionName, this.state.username, this.state.storeId).then(this.handleReportResponse, Connection.handleReject)
+        Connection.sendGetSystemRevenue(this.state.functionName, this.state.adminName).then(this.handleReportResponse, Connection.handleReject)
 
         this.setState({showMessage: true});
+        //e.preventDefault();
     };
 
     handleReportResponse(result){
@@ -41,9 +41,8 @@ class WorkerDetails extends React.Component{
     render(){
         return(
             <form>
-                <h1>Show Worker Details Page </h1>
-                <div> <label> UserName : <input readOnly value = {this.state.username} className = "username" type = "text" /> </label> </div>
-                <div> <label> Store Id : <input readOnly value = {this.state.storeId} className = "storeId" type = "text" /> </label> </div>
+                <h1>System Daily Revenue Report </h1>
+                <div> <label> Admin Name : <input readOnly value = {this.state.adminName} className = "adminName" type = "text"/> </label> </div>
                 <div className="toShow"> {this.state.showMessage && <p> {this.state.toShow} </p>}
                     <button type = "button" onClick = {(e) => this.onButtonClickHandler(e)}> Show Report </button>
                 </div>
@@ -52,4 +51,4 @@ class WorkerDetails extends React.Component{
     }
 }
 
-export default WorkerDetails;
+export default SystemRevenue;

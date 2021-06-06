@@ -2,11 +2,33 @@ import React from "react";
 import {Button, Card, Form, FormControl, InputGroup} from "react-bootstrap";
 import UpdateQuantity from "./UpdateQuantity";
 import * as Icon from 'react-bootstrap-icons';
+import Connection from "../API/Connection";
 
 class ProductEntryCart extends React.Component{
     constructor(props) {
         super(props);
 
+        this.state = {
+            original_amount: this.props.amount,
+            amount: this.props.amount,
+            showUpdate: false,
+        }
+
+        this.quantityChange = this.quantityChange.bind(this);
+        this.updateQuantity = this.updateQuantity.bind(this);
+    }
+
+    quantityChange(event){
+        if(parseInt(event.target.value) !== this.state.original_amount){
+            this.setState({amount: event.target.value, showUpdate: true});
+        }
+        else{
+            this.setState({amount: event.target.value, showUpdate: false});
+        }
+    }
+
+    updateQuantity(){
+        Connection.sendUpdateProductQuantity(this.props.storeID, this.props.productID, this.state.amount).then(this.props.handlerUpdate, Connection.handleReject);
     }
 
     render() {
@@ -23,19 +45,16 @@ class ProductEntryCart extends React.Component{
                         </div>
                         <div id="cart_card_actions">
                             <InputGroup style={{width: '50%'}}>
-                                <InputGroup.Prepend>
-                                    <Button variant="outline-secondary">-</Button>
-                                </InputGroup.Prepend>
 
-                                <Form.Control style={{textAlign: 'center'}} type="text" value={this.props.amount} required/>
+                                <Form.Group>
+                                    <Form.Label>Qty</Form.Label>
+                                    <Form.Control onChange={this.quantityChange} style={{textAlign: 'center'}} type="text" value={this.state.amount}/>
+                                    {this.state.showUpdate && <Button onClick={this.updateQuantity} style={{marginTop: "3px"}}>update</Button>}
+                                </Form.Group>
 
-                                <InputGroup.Append>
-                                    <Button variant="outline-secondary">+</Button>
-                                </InputGroup.Append>
                             </InputGroup>
                             <br/>
                             <Icon.Trash onClick={this.props.handlerRemove}/>
-                            {/*<button onClick={this.props.handlerRemove}></button>*/}
                         </div>
                     </Card.Body>
                 </Card>

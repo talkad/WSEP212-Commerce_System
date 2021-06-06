@@ -138,4 +138,6 @@ public interface IService {
 
     Response<Double> getTotalSystemRevenue(String username);
 
+    Response<String> getDailyStatistics(String adminName, String date);
+
 }

@@ -21,6 +21,7 @@ class Connection{
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
+                // TODO: when waiting for a response for this message then make the site "load"
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -64,14 +65,13 @@ class Connection{
 
         this.connection.onclose = (event) => {
             // console.log(event); // TODO: just in case
-            if(window.sessionStorage.getItem('username') !== '') {
-                    setTimeout(this.disconnect, 3000);
-            }
+
+            setTimeout(this.disconnect, 3000);
+
         }
     }
 
     static disconnect(){
-        alert("disconnected from the server");
         window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
         window.location.href = "/Disconnected";
     }
@@ -510,7 +510,7 @@ class Connection{
             storeID: storeId,
 
             discountRule: JSON.stringify({type: type,
-                productId: productId,
+                productID: productId,
                 discount: discount,
             }),
         }))
@@ -539,8 +539,9 @@ class Connection{
             discountRule: JSON.stringify({type: type,
                 category: category,
                 discount: discount,
-                minUnits: minUnits,
-                maxUnits: maxUnits
+                categoryPredicate: JSON.stringify({category: category, minUnits: minUnits,maxUnits: maxUnits})
+                //minUnits: minUnits,
+                //maxUnits: maxUnits
             }),
         }))
         return Connection.getResponse(functionName);
@@ -553,10 +554,11 @@ class Connection{
             storeID: storeId,
 
             discountRule: JSON.stringify({type: type,
-                productId: productId,
+                productID: productId,
                 discount: discount,
-                minUnits: minUnits,
-                maxUnits: maxUnits
+                productPredicate: JSON.stringify({minUnits: minUnits,maxUnits: maxUnits, productID: productId})
+                //minUnits: minUnits,
+                //maxUnits: maxUnits
             }),
         }))
         return Connection.getResponse(functionName);
@@ -570,11 +572,97 @@ class Connection{
 
             discountRule: JSON.stringify({type: type,
                 discount: discount,
-                minUnits: minUnits,
-                maxUnits: maxUnits,
-                minPrice: minPrice,
+                storePredicate: JSON.stringify({ minUnits: minUnits,maxUnits: maxUnits,minPrice: minPrice})
+                //minUnits: minUnits,
+                //maxUnits: maxUnits,
+                //minPrice: minPrice,
             }),
         }))
+        return Connection.getResponse(functionName);
+    }
+
+    // static sendCompositionPolicies (functionName, username, storeId, type, category, discount,
+    //                                 CategoryCategory, CategoryDiscount,
+    //                                 StoreDiscount,
+    //                                 ProductProductId, ProductDiscount,
+    //                                 CondCategoryCategory, CondCategoryDiscount, CondCategoryMinUnits, CondCategoryMaxUnits,
+    //                                 CondStoreDiscount, CondStoreMinUnits, CondStoreMaxUnits, CondStoreMinPrice,
+    //                                 CondProductProductId, CondProductDiscount, CondProductMinUnits, CondProductMaxUnits){
+    //
+    // }
+
+    static sendCompositionPoliciesAndOr (functionName, username, storeId, type, category, discount, policyRules){
+        let fixedRules = policyRules.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+                policyRules: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPoliciesSumMax (functionName, username, storeId, type, policyRules){
+        let fixedRules = policyRules.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                policyRules: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPoliciesXor (functionName, username, storeId, type, discount, policyRules, xorResolveType){
+        let fixedRules = policyRules.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                discount: discount,
+                policyRules: fixedRules,
+                xorResolveType: xorResolveType,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendGetStoreRevenue (functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendGetSystemRevenue (functionName, username){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendGetStoreWorkersInfo (functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
         return Connection.getResponse(functionName);
     }
 

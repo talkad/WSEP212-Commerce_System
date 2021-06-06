@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -246,6 +247,11 @@ public class CommerceSystem implements IService {
     @Override
     public Response<Double> getTotalSystemRevenue(String username) {
         return userController.getTotalSystemRevenue(username);
+    }
+
+    @Override
+    public Response<String> getDailyStatistics(String adminName, String date) {
+        return userController.getDailyStatistics(adminName, LocalDate.parse(date));
     }
 
     @Override

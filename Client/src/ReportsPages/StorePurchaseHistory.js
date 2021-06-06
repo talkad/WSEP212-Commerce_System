@@ -6,29 +6,30 @@ class StorePurchaseHistory extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            functionName: 'getUserPurchaseHistory',
+            functionName: 'getStorePurchaseHistory',
             adminName: StaticUserInfo.getUsername(),
             storeId: StaticUserInfo.getStoreId(),
             showMessage: false,
-            toShow: 'ghi abc' //TODO: this f** newline doesnt workkkkk
+            toShow: ''
         };
+        this.handleReportResponse = this.handleReportResponse.bind(this)
     }
 
     onButtonClickHandler = (e) => {
         e.preventDefault();
 
-        Connection.sendReportRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject())
+        Connection.sendReportRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject)
 
         this.setState({showMessage: true});
         //e.preventDefault();
     };
 
     handleReportResponse(result){
-        if(!result.response.isFailure){
-            this.setState({toShow: result.response.result.toString()})//TODO check
+        if(!result.isFailure){
+            this.setState({toShow: result.result.toString()})
         }
         else{
-            alert(result.response.errMsg);
+            alert(result.errMsg);
         }
     }
 
