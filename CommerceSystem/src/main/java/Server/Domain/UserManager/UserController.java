@@ -145,26 +145,18 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    // TODO add lock for entire counter update
     private void checkDateToUpdate(){
-        dateLock.readLock().lock();
         if(this.currentDate.compareTo(LocalDate.now()) < 0){
-            dateLock.readLock().unlock();
-            dateLock.writeLock().lock();
             currentDate = LocalDate.now();
-            dateLock.writeLock().unlock();
-            dateLock.readLock().lock();
             this.dailyGuestCounter.set(0);
             this.dailyRegisteredCounter.set(0);
             this.dailyManagerCounter.set(0);
             this.dailyOwnerCounter.set(0);
             this.dailyAdminCounter.set(0);
         }
-        dateLock.readLock().unlock();
     }
 
     private void saveCounters(){
-        dateLock.readLock().lock();
         DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
                                                                     this.dailyGuestCounter.get(),
                                                                     this.dailyRegisteredCounter.get(),
@@ -173,16 +165,16 @@ public class UserController {
                                                                     this.dailyAdminCounter.get());
 
         DALService.getInstance().saveCounters(dailyCountersDTO);
-        dateLock.readLock().unlock();
     }
 
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
         connectedUsers.put(guestName, new User());
+        this.dateLock.writeLock().lock();
         checkDateToUpdate();
         this.dailyGuestCounter.incrementAndGet();
-        //todo send dto
         saveCounters();
+        this.dateLock.writeLock().unlock();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -220,6 +212,7 @@ public class UserController {
     }
     
     private void checkCounterToInc(User user){
+        this.dateLock.writeLock().lock();
         checkDateToUpdate();
         if(user.isAdmin()){
             dailyAdminCounter.incrementAndGet();
@@ -233,8 +226,8 @@ public class UserController {
         else{
             dailyRegisteredCounter.incrementAndGet();
         }
-        //todo send to dto
         saveCounters();
+        this.dateLock.writeLock().unlock();
     }
 
     public Response<String> login(String prevName, String name, String password){

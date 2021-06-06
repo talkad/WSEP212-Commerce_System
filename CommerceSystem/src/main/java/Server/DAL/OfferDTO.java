@@ -4,6 +4,9 @@ import Server.Domain.UserManager.OfferState;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
+import java.util.List;
+import java.util.Vector;
+
 @Embedded
 public class OfferDTO {
 
@@ -19,15 +22,19 @@ public class OfferDTO {
     @Property(value = "state")
     private OfferState state;
 
+    @Property(value = "approvals")
+    private List<String> approvals;
+
     public OfferDTO(){
         // For Morphia
     }
 
-    public OfferDTO(int productId, int storeId, double offerReply, OfferState state) {
+    public OfferDTO(int productId, int storeId, double offerReply, OfferState state, List<String> approvals) {
         this.productId = productId;
         this.storeId = storeId;
         this.offerReply = offerReply;
         this.state = state;
+        this.approvals = approvals;
     }
 
     public int getProductId() {
@@ -60,5 +67,13 @@ public class OfferDTO {
 
     public void setState(OfferState state) {
         this.state = state;
+    }
+
+    public List<String> getApprovals() {
+        return approvals == null ? new Vector<>() : approvals;
+    }
+
+    public void setApprovals(List<String> approvals) {
+        this.approvals = approvals;
     }
 }

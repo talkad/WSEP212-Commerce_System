@@ -35,10 +35,11 @@ public class Offer {
         this.storeId = offerDTO.getStoreId();
         this.offerReply = offerDTO.getOfferReply();
         this.state = offerDTO.getState();
+        this.approvals = offerDTO.getApprovals();
     }
 
     public OfferDTO toDTO(){
-        return new OfferDTO(this.getProductId(), this.getStoreId(), this.getOfferReply(), this.getState());
+        return new OfferDTO(this.getProductId(), this.getStoreId(), this.getOfferReply(), this.getState(), this.getApprovals());
     }
 
     public int getProductId() {
