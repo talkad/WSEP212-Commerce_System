@@ -1,9 +1,9 @@
 package Server.DAL;
 
-import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
 import Server.Domain.CommonClasses.Pair;
-import Server.Domain.UserManager.User;
+import Server.Domain.ShoppingManager.Product;
 import Server.Domain.UserManager.UserStateEnum;
+import com.mongodb.DB;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoConfigurationException;
 import com.mongodb.MongoTimeoutException;
@@ -12,7 +12,6 @@ import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.morphia.experimental.MorphiaSession;
-import dev.morphia.mapping.MappedClass;
 import dev.morphia.mapping.Mapper;
 import dev.morphia.mapping.MapperOptions;
 import dev.morphia.query.FindOptions;
@@ -32,34 +31,34 @@ public class DALService implements Runnable{
     // NOTE: acquisition of locks is in the order they appear in the field list
 
     private Map<Integer, Pair<StoreDTO, Long>> stores;
-    private List<StoreDTO> storeSaveCache;
+    private List<Pair<StoreDTO, DBOperation>> storeSaveCache;
     private ReadWriteLock storeLock;
 
     private Map<String, Pair<UserDTO, Long>> users;
-    private List<UserDTO> userSaveCache;
+    private List<Pair<UserDTO, DBOperation>> userSaveCache;
     private ReadWriteLock userLock;
 
     private Map<String, Pair<AccountDTO, Long>> accounts;
-    private List<AccountDTO> accountSaveCache;
+    private List<Pair<AccountDTO, DBOperation>> accountSaveCache;
     private ReadWriteLock accountLock;
 
     private Map<String, Pair<AdminAccountDTO, Long>> admins;
-    private List<AdminAccountDTO> adminAccountSaveCache;
+    private List<Pair<AdminAccountDTO, DBOperation>> adminAccountSaveCache;
     private ReadWriteLock adminAccountLock;
 
     private Map<Integer, Pair<ProductDTO, Long>> products;
-    private List<ProductDTO> productSaveCache;
+    private List<Pair<ProductDTO, DBOperation>> productSaveCache;
     private ReadWriteLock productLock;
 
     private Map<Integer, Pair<PublisherDTO, Long>> publisher;
-    private List<PublisherDTO> publisherSaveCache;
+    private List<Pair<PublisherDTO, DBOperation>> publisherSaveCache;
     private ReadWriteLock publisherLock;
 
     private Map<String, Pair<ShoppingCartDTO, Long>> guestCarts;
     private ReadWriteLock guestCartLock;
 
     private Map<String, Pair<DailyCountersDTO, Long>> counters;
-    private List<DailyCountersDTO> countersSaveCache;
+    private List<Pair<DailyCountersDTO, DBOperation>> countersSaveCache;
     private ReadWriteLock countersLock;
 
     private String dbName = "commerceDatabase";
@@ -132,25 +131,25 @@ public class DALService implements Runnable{
             this.publisherLock.writeLock().lock();
             this.countersLock.writeLock().lock();
 
-            List<StoreDTO> storeList = new Vector<>(this.storeSaveCache);
+            List<Pair<StoreDTO, DBOperation>> storeList = new Vector<>(this.storeSaveCache);
             this.storeSaveCache = new Vector<>();
 
-            List<UserDTO> userList = new Vector<>(this.userSaveCache);
+            List<Pair<UserDTO, DBOperation>> userList = new Vector<>(this.userSaveCache);
             this.userSaveCache = new Vector<>();
 
-            List<AccountDTO> accountList = new Vector<>(this.accountSaveCache);
+            List<Pair<AccountDTO, DBOperation>> accountList = new Vector<>(this.accountSaveCache);
             this.accountSaveCache = new Vector<>();
 
-            List<AdminAccountDTO> adminAccountList = new Vector<>(this.adminAccountSaveCache);
+            List<Pair<AdminAccountDTO, DBOperation>> adminAccountList = new Vector<>(this.adminAccountSaveCache);
             this.adminAccountSaveCache = new Vector<>();
 
-            List<ProductDTO> productList = new Vector<>(this.productSaveCache);
+            List<Pair<ProductDTO, DBOperation>> productList = new Vector<>(this.productSaveCache);
             this.productSaveCache = new Vector<>();
 
-            List<PublisherDTO> publisherList = new Vector<>(this.publisherSaveCache);
+            List<Pair<PublisherDTO, DBOperation>> publisherList = new Vector<>(this.publisherSaveCache);
             this.publisherSaveCache = new Vector<>();
 
-            List<DailyCountersDTO> countersList = new Vector<>(this.countersSaveCache);
+            List<Pair<DailyCountersDTO, DBOperation>> countersList = new Vector<>(this.countersSaveCache);
             this.countersSaveCache = new Vector<>();
 
             boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
@@ -185,7 +184,7 @@ public class DALService implements Runnable{
         }
     }
 
-    private void saveToDatabase(List<StoreDTO> storeList, List<UserDTO> userList, List<AccountDTO> accountList, List<AdminAccountDTO> adminAccountList, List<ProductDTO> productList, List<PublisherDTO> publisherList, List<DailyCountersDTO> countersList){
+    private void saveToDatabase(List<Pair<StoreDTO, DBOperation>> storeList, List<Pair<UserDTO, DBOperation>> userList, List<Pair<AccountDTO, DBOperation>> accountList, List<Pair<AdminAccountDTO, DBOperation>> adminAccountList, List<Pair<ProductDTO, DBOperation>> productList, List<Pair<PublisherDTO, DBOperation>> publisherList, List<Pair<DailyCountersDTO, DBOperation>> countersList){
         boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
         if(!allEmpty) {
@@ -204,34 +203,82 @@ public class DALService implements Runnable{
                     session.startTransaction();
 
                     // stage changes to commit
-                    if(!storeList.isEmpty())
-                        session.save(storeList);
-
-                    if(!userList.isEmpty())
-                        session.save(userList);
-
-                    if(!accountList.isEmpty())
-                        session.save(accountList);
-
-                    if(!adminAccountList.isEmpty())
-                        session.save(adminAccountList);
-
-                    if(!productList.isEmpty()) {
-                        for (ProductDTO productDTO : productList) {
-                            if(productDTO.toDelete()){
-                                session.delete(productDTO.getDTO());
+                    if(!storeList.isEmpty()) {
+                        for(Pair<StoreDTO, DBOperation> pair : storeList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
                             }
                             else{
-                                session.save(productDTO.getDTO());
+                                session.delete(pair.getFirst());
                             }
                         }
                     }
 
-                    if(!publisherList.isEmpty())
-                        session.save(publisherList);
+                    if(!userList.isEmpty()){
+                        for(Pair<UserDTO, DBOperation> pair : userList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
 
-                    if(!countersList.isEmpty())
-                        session.save(countersList);
+                    if(!accountList.isEmpty()){
+                        for(Pair<AccountDTO, DBOperation> pair : accountList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
+
+                    if(!adminAccountList.isEmpty()){
+                        for(Pair<AdminAccountDTO, DBOperation> pair : adminAccountList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
+
+                    if(!productList.isEmpty()) {
+                        for(Pair<ProductDTO, DBOperation> pair : productList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
+
+                    if(!publisherList.isEmpty()){
+                        for(Pair<PublisherDTO, DBOperation> pair : publisherList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
+
+                    if(!countersList.isEmpty()){
+                        for(Pair<DailyCountersDTO, DBOperation> pair : countersList){
+                            if(pair.getSecond().equals(DBOperation.SAVE)){
+                                session.save(pair.getFirst());
+                            }
+                            else{
+                                session.delete(pair.getFirst());
+                            }
+                        }
+                    }
 
                     // commit changes
                     session.commitTransaction();
@@ -400,7 +447,7 @@ public class DALService implements Runnable{
         this.countersLock.writeLock().lock();
         this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
         if(!useLocal){
-            this.countersSaveCache.add(dailyCountersDTO);
+            this.countersSaveCache.add(new Pair<>(dailyCountersDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -427,8 +474,10 @@ public class DALService implements Runnable{
         }
 
         if(!useLocal) {
-            this.userSaveCache.add(userDTO);
-            this.storeSaveCache.addAll(storeDTOs);
+            this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
+            for(StoreDTO storeDTO : storeDTOs){
+                this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
+            }
 
             synchronized (this){
                 notifyAll();
@@ -487,7 +536,7 @@ public class DALService implements Runnable{
         this.publisher.put(0, new Pair<>(publisherDTO, System.currentTimeMillis()));
 
         if(!useLocal) {
-            this.publisherSaveCache.add(publisherDTO);
+            this.publisherSaveCache.add(new Pair<>(publisherDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -503,7 +552,7 @@ public class DALService implements Runnable{
         this.accounts.put(accountDTO.getUsername(), new Pair<>(accountDTO, System.currentTimeMillis()));
 
         if(!useLocal) {
-            this.accountSaveCache.add(accountDTO);
+            this.accountSaveCache.add(new Pair<>(accountDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -557,7 +606,7 @@ public class DALService implements Runnable{
         this.admins.put(adminAccountDTO.getUsername(), new Pair<>(adminAccountDTO, System.currentTimeMillis()));
 
         if(!useLocal) {
-            this.adminAccountSaveCache.add(adminAccountDTO);
+            this.adminAccountSaveCache.add(new Pair<>(adminAccountDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -573,7 +622,7 @@ public class DALService implements Runnable{
         this.stores.put(storeDTO.getStoreID(), new Pair<>(storeDTO, System.currentTimeMillis()));
 
         if(!useLocal) {
-            this.storeSaveCache.add(storeDTO);
+            this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -678,8 +727,8 @@ public class DALService implements Runnable{
         this.stores.put(storeDTO.getStoreID(), new Pair<>(storeDTO, System.currentTimeMillis()));
 
         if(!useLocal){
-            this.userSaveCache.add(userDTO);
-            this.storeSaveCache.add(storeDTO);
+            this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
+            this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -709,9 +758,9 @@ public class DALService implements Runnable{
         this.products.put(productDTO.getProductID(), new Pair<>(productDTO, System.currentTimeMillis()));
 
         if(!useLocal){
-            this.userSaveCache.add(userDTO);
-            this.storeSaveCache.add(storeDTO);
-            this.productSaveCache.add(productDTO);
+            this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
+            this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
+            this.productSaveCache.add(new Pair<>(productDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -731,8 +780,8 @@ public class DALService implements Runnable{
         products.put(productDTO.getProductID(), new Pair<>(productDTO, System.currentTimeMillis()));
 
         if(!useLocal){
-            this.storeSaveCache.add(storeDTO);
-            this.productSaveCache.add(productDTO);
+            this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
+            this.productSaveCache.add(new Pair<>(productDTO, DBOperation.SAVE));
 
             synchronized (this){
                 notifyAll();
@@ -751,8 +800,8 @@ public class DALService implements Runnable{
         products.remove(productDTO.getProductID());
 
         if(!useLocal){
-            this.storeSaveCache.add(storeDTO);
-            this.productSaveCache.add(new DeleteProductDTO(productDTO));
+            this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
+            this.productSaveCache.add(new Pair<>(productDTO, DBOperation.DELETE));
 
             synchronized (this){
                 notifyAll();
@@ -812,7 +861,7 @@ public class DALService implements Runnable{
         else{
             this.users.put(userDTO.getName(), new Pair<>(userDTO, System.currentTimeMillis()));
             if(!useLocal) {
-                this.userSaveCache.add(userDTO);
+                this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
 
                 synchronized (this) {
                     notifyAll();
@@ -836,7 +885,7 @@ public class DALService implements Runnable{
             else{
                 this.users.put(userDTO.getName(), new Pair<>(userDTO, System.currentTimeMillis()));
                 if(!useLocal) {
-                    this.userSaveCache.add(userDTO);
+                    this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
                     addedToCache = true;
                 }
             }
