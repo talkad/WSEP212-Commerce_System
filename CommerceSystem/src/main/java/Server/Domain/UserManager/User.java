@@ -1005,14 +1005,22 @@ public class User {
         return this.storesManaged != null && !this.storesManaged.isEmpty();
     }
 
-    public Response<List<Integer>> getDailyStatistics(LocalDate date) {
+    public Response<Map<String, Integer>> getDailyStatistics(LocalDate date) {
         if(this.state.allowed(PermissionsEnum.DAILY_VISITOR_STATISTICS, this)){
             if(date.isAfter(LocalDate.now())) {
                 return new Response<>(null, true, "date is in the future");
             }
             else{
                 DailyCountersDTO dto = DALService.getInstance().getDailyCounters(date);
-                return new Response<>(Arrays.asList(dto.getGuestCounter(), dto.getRegisteredCounter(), dto.getManagerCounter(), dto.getOwnerCounter(), dto.getAdminCounter()),false, "");
+                Map<String, Integer> counters = new ConcurrentHashMap<>(){{
+                    put("Guest", dto.getGuestCounter());
+                    put("Registered", dto.getRegisteredCounter());
+                    put("Manager", dto.getManagerCounter());
+                    put("Owner", dto.getOwnerCounter());
+                    put("Admin", dto.getAdminCounter());
+                }};
+
+                return new Response<>(counters,false, "");
             }
         }
         else{

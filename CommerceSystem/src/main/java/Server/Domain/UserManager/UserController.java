@@ -864,7 +864,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<List<Integer>> getDailyStatistics(String username, LocalDate date) {
+    public Response<Map<String, Integer>> getDailyStatistics(String username, LocalDate date) {
 
         readLock.lock();
         if (connectedUsers.containsKey(username)) {
