@@ -798,14 +798,15 @@ public class UserController {
         List<String> approvals = new Vector<>();
         approvals.add(storeOwnerName);
         List<String> appointees = UserController.getInstance().getUserByName(storeOwnerName).getAppointments().getAppointees(storeId).getResult();
-        for (String appointee: appointees){
-            User u = UserController.getInstance().getUserByName(appointee);
-            if(u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))){
-                approvals.add(appointee);
-                recBidPermiters(appointee, storeId, approvals);
+        if(appointees != null){
+            for (String appointee: appointees){
+                User u = UserController.getInstance().getUserByName(appointee);
+                if(u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))){
+                    approvals.add(appointee);
+                    recBidPermiters(appointee, storeId, approvals);
+                }
             }
         }
-        System.out.println(approvals);
         return approvals;
     }
 
