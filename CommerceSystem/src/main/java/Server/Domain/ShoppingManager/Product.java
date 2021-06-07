@@ -148,14 +148,21 @@ public class Product {
             return false;
 
         for(String c: categories)
-            if(c.contains(category))
+            if(c.equalsIgnoreCase(category))
                 return true;
 
         return false;
     }
 
     public boolean containsKeyword(String key){
-        return keywords != null && keywords.contains(key);
+        if(keywords == null || key == null || key.length() == 0)
+            return false;
+
+        for(String c: keywords)
+            if(c.equalsIgnoreCase(key))
+                return true;
+
+        return false;
     }
 
     public ProductClientDTO getProductDTO(){

@@ -37,7 +37,7 @@ public class SearchEngine {
                 System.out.println("search in store " + store.getName());
                 for (Product product : store.getInventory().getProducts()) {
                     System.out.println("product " + product.getName());
-                    if (product.getName().equals(productName))
+                    if (product.getName().equalsIgnoreCase(productName))
                         productList.add(product.getProductDTO());
                 }
             }
