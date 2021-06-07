@@ -13,16 +13,13 @@ import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
-import Server.Domain.UserManager.CommerceSystem;
+import Server.Domain.UserManager.*;
 import Server.Domain.UserManager.DTOs.BasketClientDTO;
 
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Domain.UserManager.OfferState;
-import Server.Domain.UserManager.Publisher;
-import Server.Domain.UserManager.UserController;
 import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
@@ -40,6 +37,7 @@ public class PurchaseTests {
     @Before
     public void init(){
         DALService.getInstance().useTestDatabase();
+        //DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
     }
@@ -668,31 +666,49 @@ public class PurchaseTests {
         commerceSystem.init();
         UserController userController = UserController.getInstance();
         String storeOwnerName = commerceSystem.addGuest().getResult();
+        String storeManagerName = UserController.getInstance().addGuest().getResult();
+        String storeManagerName2 = UserController.getInstance().addGuest().getResult();
         String costumerName = UserController.getInstance().addGuest().getResult();
 
         MockNotifier mock = new MockNotifier();
         mock.addConnection("user1", null);
         mock.addConnection("user2", null);
+        mock.addConnection("user3", null);
+        mock.addConnection("user4", null);
         Publisher.getInstance().setNotifier(mock);
 
         userController.register(storeOwnerName, "user1", "user1");
         userController.register(costumerName, "user2", "user2");
+        userController.register(storeManagerName, "user3", "user3");
+        userController.register(storeManagerName2, "user4", "user4");
 
         userController.login(storeOwnerName, "user1", "user1");
         userController.login(costumerName, "user2", "user2");
+        userController.login(storeManagerName, "user3", "user3");
+        userController.login(storeManagerName2, "user4", "user4");
+
 
         Response<Integer> storeRes = userController.openStore("user1", "eggStore");
         Store store = StoreController.getInstance().getStoreById(storeRes.getResult());
         productDTO = new ProductClientDTO("Eggs", productId,storeRes.getResult(),13.5, null, null, null, 0,0);
         store.addProduct(productDTO, 100);
+        userController.appointManager("user1", "user3", storeRes.getResult());
+        userController.addPermission("user1", storeRes.getResult(), "user3", PermissionsEnum.REPLY_TO_BID);
+
+        userController.appointManager("user1", "user4", storeRes.getResult());
+        userController.addPermission("user1", storeRes.getResult(), "user4", PermissionsEnum.REPLY_TO_BID);
 
         PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         commerceSystem.bidOffer("user2", 200, storeRes.getResult(), 10);
         commerceSystem.bidManagerReply("user1", "user2", 200, storeRes.getResult(), -1);
+        commerceSystem.bidManagerReply("user3", "user2", 200, storeRes.getResult(), -1);
+        commerceSystem.bidManagerReply("user4", "user2", 200, storeRes.getResult(), -1);
+
         boolean isPurchaseFailure = commerceSystem.bidUserReply("user2", 200, storeRes.getResult(), paymentDetails, supplyDetails).isFailure();
         Assert.assertEquals(false, isPurchaseFailure);
+        Assert.assertTrue( userController.getUserByName("user2").getPurchaseHistory().getPurchases().size() > 0);
     }
 
     @Test
