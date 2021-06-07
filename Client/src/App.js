@@ -57,6 +57,7 @@ import Disconnected from "./Pages/Disconnected";
 import StoreRevenue from "./ReportsPages/StoreRevenue";
 import SystemRevenue from "./ReportsPages/SystemRevenue";
 import {ReactComponent as UnreadNotification} from './Images/bell_notification.svg';
+import DailyStatistics from "./Pages/DailyStatistics";
 
 
 
@@ -457,6 +458,7 @@ class App extends React.Component {
                         <Route path="/checkout" component={Checkout}/>
                         <Route path="/storeManagement" component={StoreManagment}/>
                         <Route path="/choosemystore" component={ChooseMyStore}/>
+                        <Route path="/dailyStatistics" component={DailyStatistics}/>
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
                         <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>

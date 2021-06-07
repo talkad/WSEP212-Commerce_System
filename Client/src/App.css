@@ -174,5 +174,30 @@ input[type="radio"]{
 }
 /*PURCHASE HISTORY END*/
 
-.notification_card{
+/*DAILY STATISTICS START*/
+
+#daily_statistics_page{
+
 }
+
+#daily_statistics_top{
+  width: 100%;
+}
+
+#daily_statistics_info{
+
+}
+
+#daily_statistics_pie_chart{
+  width: 50%;
+  height: auto;
+  float: left;
+}
+
+#daily_statistics_bar_chart{
+  width: 50%;
+  height: auto;
+  float: left;
+}
+
+/*DAILY STATISTICS END*/
