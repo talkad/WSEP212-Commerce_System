@@ -40,7 +40,7 @@ public class PaymentSystemAdapter
         List<NameValuePair> urlParameters = new LinkedList<>();
         Response<Boolean> connRes;
         Response<String> externalRes;
-        int transactionID;
+        int transactionID = -1;
 
         if(mockFlag){ // mock guard
             int result = PaymentSystemMock.getInstance().pay(paymentDetails);
@@ -70,7 +70,12 @@ public class PaymentSystemAdapter
             return new Response<>(-1, true, "payment failed due to sending error (CRITICAL)");
         }
         else{
-            transactionID = Integer.parseInt(externalRes.getResult());
+
+            try{
+                transactionID = Integer.parseInt(externalRes.getResult());
+            }catch(Exception e){
+                return new Response<>(transactionID, true, "Unexpected response from external payment service");
+            }
 
             if(transactionID < 0)
                 return new Response<>(transactionID, true, "Payment failed error code " + transactionID);
@@ -107,7 +112,12 @@ public class PaymentSystemAdapter
             return new Response<>(-1, true, "payment cancellation failed due to sending error (CRITICAL)");
         }
         else{
-            result = Integer.parseInt(externalRes.getResult());
+
+            try{
+                result = Integer.parseInt(externalRes.getResult());
+            }catch(Exception e){
+                return new Response<>(0, true, "Unexpected response from external payment service");
+            }
 
             if(result < 0)
                 return new Response<>(result, true, "Payment cancellation failed error code " + result);

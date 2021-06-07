@@ -68,7 +68,12 @@ public class ProductSupplyAdapter
             return new Response<>(-1, true, "Supply failed due to sending error (CRITICAL)");
         }
         else{
-            transactionID = Integer.parseInt(externalRes.getResult());
+
+            try{
+                transactionID = Integer.parseInt(externalRes.getResult());
+            }catch(Exception e){
+                return new Response<>(0, true, "Unexpected response from external supply service");
+            }
 
             if(transactionID < 0)
                 return new Response<>(transactionID, true, "Supply failed error code " + transactionID);
@@ -105,7 +110,12 @@ public class ProductSupplyAdapter
             return new Response<>(-1, true, "Supply cancellation failed due to sending error (CRITICAL)");
         }
         else{
-            result = Integer.parseInt(externalRes.getResult());
+
+            try{
+                result = Integer.parseInt(externalRes.getResult());
+            }catch(Exception e){
+                return new Response<>(0, true, "Unexpected response from external supply service");
+            }
 
             if(result < 0)
                 return new Response<>(result, true, "Supply cancellation failed error code " + result);

@@ -37,7 +37,7 @@ public class CommerceSystem implements IService {
     private UserController userController;
     private StoreController storeController;
     public static Log log = new Log("Logs.txt");
-//    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
+    public static Log logCrit = new Log("CriticaldatabaseLogs.txt");
 
 
     private CommerceSystem() {
@@ -60,8 +60,9 @@ public class CommerceSystem implements IService {
         DALService.getInstance().resetDatabase();
         //responseConfig = configInit();
         userController.adminBoot("u1", "u1");
-        responseInit = initState(null);
 
+        // todo if(DALService.getInstance().getStore(0) == null)
+        responseInit = initState(null);
 
 //        if (responseInit.isFailure() || responseConfig.isFailure())
 //            return new Response<>(false, true, "initialization failed (CRITICAL)");

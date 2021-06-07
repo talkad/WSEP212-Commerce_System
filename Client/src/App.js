@@ -274,18 +274,21 @@ class App extends React.Component {
         Connection.sendLogout().then(this.handleLogoutResponse, Connection.handleReject);
     }
 
-    removeNotification(index){
+    removeNotification(index) {
         let notificationList = JSON.parse(window.sessionStorage.getItem('notifications'));
-        notificationList.splice(index, 1);
-        if(notificationList.length !== 0){
-            window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
-            this.setState({notifications: window.sessionStorage.getItem('notifications')})
-        }
-        else{
-            window.sessionStorage.removeItem('notifications');
-            this.setState({notifications: window.sessionStorage.getItem('notifications')})
+
+        if (notificationList !== null) {
+            notificationList.splice(index, 1);
+            if (notificationList.length !== 0) {
+                window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
+                this.setState({notifications: window.sessionStorage.getItem('notifications')})
+            } else {
+                window.sessionStorage.removeItem('notifications');
+                this.setState({notifications: window.sessionStorage.getItem('notifications')})
+            }
         }
     }
+
 
 
     getNotifications() {
@@ -293,14 +296,15 @@ class App extends React.Component {
         let removeNotification = function (event){
             let index = parseInt(event.target.id);
             let notificationList = JSON.parse(window.sessionStorage.getItem('notifications'));
-            notificationList.splice(index, 1);
-            if(notificationList.length !== 0){
-                window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
-                this.setState({notifications: window.sessionStorage.getItem('notifications')})
-            }
-            else{
-                window.sessionStorage.removeItem('notifications');
-                this.setState({notifications: window.sessionStorage.getItem('notifications')})
+            if(notificationList !== null) {
+                notificationList.splice(index, 1);
+                if (notificationList.length !== 0) {
+                    window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
+                    this.setState({notifications: window.sessionStorage.getItem('notifications')})
+                } else {
+                    window.sessionStorage.removeItem('notifications');
+                    this.setState({notifications: window.sessionStorage.getItem('notifications')})
+                }
             }
         }
 

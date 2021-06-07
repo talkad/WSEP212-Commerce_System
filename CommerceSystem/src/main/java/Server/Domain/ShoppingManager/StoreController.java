@@ -43,6 +43,9 @@ public class StoreController {
     }
 
     public Response<Integer> openStore(String StoreName, String ownerName){
+
+        // todo - check store name
+
         int id = indexer.getAndIncrement();
         Store store = new Store(id, StoreName, ownerName);
         stores.put(id, store);
