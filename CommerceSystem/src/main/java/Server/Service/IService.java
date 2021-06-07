@@ -141,7 +141,7 @@ public interface IService {
 
     Response<Double> getTotalSystemRevenue(String username);
 
-    Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date);
+    Response<List<String>> getDailyStatistics(String adminName, LocalDate date);
 
     Response<Boolean> isAdmin(String username);
 }

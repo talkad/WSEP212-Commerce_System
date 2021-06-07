@@ -292,7 +292,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date){
+    public Response<List<String>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
     }
 

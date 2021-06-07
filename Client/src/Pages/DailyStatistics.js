@@ -26,10 +26,25 @@ class DailyStatistics extends React.Component {
     }
 
     handleDailyStatistics(result) {
+        console.log("hello there");
+        console.log(result);
+        console.log("hi there");
         if (!result.isFailure) {
+
+            let processedData = [];
+
+            let preProcessData = function(rawData){
+                let split = rawData.split(':');
+                processedData.push({label: split[0], number: parseInt(split[1])})
+            }
+
+            result.result.map( entry => preProcessData(entry) );
+
+
+
             let labels = [];
             let data = [];
-            let backgroundColor = [];
+            //let backgroundColor = [];
 
             let random_rgba = function() {
                 var o = Math.round, r = Math.random, s = 255;
@@ -39,18 +54,20 @@ class DailyStatistics extends React.Component {
             let processData = function(label, number){
                 labels.push(label);
                 data.push(number);
-                backgroundColor.push(random_rgba());
+                //backgroundColor.push(random_rgba());
             }
 
-
-
-            result.result.map(({label, number}) => processData(label, number));
+            processedData.map(({label, number}) => processData(label, number));
 
             let pieData = {
                 labels: labels,
                 datasets: [
                     {
-                        backgroundColor: backgroundColor,
+                        backgroundColor: ['rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',],
                         data: data
                     }
                 ]
@@ -60,7 +77,11 @@ class DailyStatistics extends React.Component {
                 labels: labels,
                 datasets: [
                     {
-                        backgroundColor: backgroundColor,
+                        backgroundColor: ['rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',],
                         data: data
                     }
                 ]

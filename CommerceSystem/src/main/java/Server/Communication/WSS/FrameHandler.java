@@ -65,6 +65,7 @@ public class FrameHandler  extends SimpleChannelInboundHandler<TextWebSocketFram
             Response<?> result = CommerceHandler.getInstance().handle(content);
 
             String response = gson.toJson(new ReplyMessage("response", gson.toJson(result), action));
+            System.out.println("server says: " + response);
             ctx.writeAndFlush(new TextWebSocketFrame(response));
 
         }
