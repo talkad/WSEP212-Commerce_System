@@ -16,6 +16,7 @@ import Server.Domain.UserManager.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -140,7 +141,7 @@ public interface IService {
 
     Response<Double> getTotalSystemRevenue(String username);
 
-    Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date);
+    Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date);
 
     Response<Boolean> isAdmin(String username);
 }

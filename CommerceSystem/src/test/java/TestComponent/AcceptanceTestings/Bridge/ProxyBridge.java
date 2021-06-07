@@ -17,6 +17,7 @@ import Server.Service.IService;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ProxyBridge implements IService {
     private IService real;
@@ -406,7 +407,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date) {
+    public Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date) {
         return null;
     }
 

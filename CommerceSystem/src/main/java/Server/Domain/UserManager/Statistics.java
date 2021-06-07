@@ -2,10 +2,12 @@ package Server.Domain.UserManager;
 
 import Server.DAL.DALService;
 import Server.DAL.DailyCountersDTO;
-import Server.DAL.PublisherDTO;
-import Server.Service.Notifier;
+import Server.Service.DataObjects.OfferData;
+import Server.Service.DataObjects.ReplyMessage;
+import com.google.gson.Gson;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -56,6 +58,11 @@ public class Statistics {
         dailyGuestCounter.incrementAndGet();
         saveCounters();
         lock.writeLock().unlock();
+
+        if(UserController.getInstance().isConnected("u1")){
+            Gson gson = new Gson();
+            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+        }
     }
 
     public void incDailyRegisteredCounter() {
@@ -64,6 +71,11 @@ public class Statistics {
         dailyRegisteredCounter.incrementAndGet();
         saveCounters();
         lock.writeLock().unlock();
+
+        if(UserController.getInstance().isConnected("u1")){
+            Gson gson = new Gson();
+            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+        }
     }
 
     public void incDailyManagerCounter() {
@@ -72,6 +84,11 @@ public class Statistics {
         dailyManagerCounter.incrementAndGet();
         saveCounters();
         lock.writeLock().unlock();
+
+        if(UserController.getInstance().isConnected("u1")){
+            Gson gson = new Gson();
+            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+        }
     }
 
     public void incDailyOwnerCounter() {
@@ -80,6 +97,11 @@ public class Statistics {
         dailyOwnerCounter.incrementAndGet();
         saveCounters();
         lock.writeLock().unlock();
+
+        if(UserController.getInstance().isConnected("u1")){
+            Gson gson = new Gson();
+            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+        }
     }
 
     public void incDailyAdminCounter() {
@@ -88,6 +110,11 @@ public class Statistics {
         dailyAdminCounter.incrementAndGet();
         saveCounters();
         lock.writeLock().unlock();
+
+        if(UserController.getInstance().isConnected("u1")){
+            Gson gson = new Gson();
+            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+        }
     }
 
     public AtomicInteger getDailyGuestCounter() {
@@ -132,4 +159,14 @@ public class Statistics {
         DALService.getInstance().saveCounters(dailyCountersDTO);
     }
 
+    private Map<String, Integer> getCounters(){
+
+        return new ConcurrentHashMap<>(){{
+            put("Guest", getDailyGuestCounter().get());
+            put("Registered", getDailyRegisteredCounter().get());
+            put("Manager", getDailyManagerCounter().get());
+            put("Owner", getDailyOwnerCounter().get());
+            put("Admin", getDailyAdminCounter().get());
+        }};
+    }
 }

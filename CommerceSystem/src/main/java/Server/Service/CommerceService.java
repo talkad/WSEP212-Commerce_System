@@ -18,6 +18,7 @@ import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -290,7 +291,8 @@ public class CommerceService implements IService{
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public Response<List<Integer>> getDailyStatistics(String adminName, LocalDate date){
+    @Override
+    public Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
     }
 
