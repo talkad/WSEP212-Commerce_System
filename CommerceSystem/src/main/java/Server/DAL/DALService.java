@@ -284,6 +284,7 @@ public class DALService implements Runnable{
                     session.commitTransaction();
                 } catch (Exception e) {
                     System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
+                    saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
                 }
             } catch (MongoConfigurationException | MongoTimeoutException e) {
                 System.out.println("Exception received: " + e.getMessage());
@@ -399,6 +400,10 @@ public class DALService implements Runnable{
     public void setUseLocal(boolean useLocal){
         this.useLocal = useLocal;
     }
+
+    public void setDbName(String dbName){ this.dbName = dbName;}
+
+    public void setDbURL(String dbURL){ this.dbURL = dbURL; }
 
     public DailyCountersDTO getDailyCounters(LocalDate date){
         DailyCountersDTO dailyCountersDTO;
