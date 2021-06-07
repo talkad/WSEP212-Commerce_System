@@ -55,6 +55,9 @@ class Connection{
 
                 // alert(receivedData.message);
             }
+            else if(receivedData.type === "liveUpdate"){
+
+            }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
             }
@@ -389,6 +392,16 @@ class Connection{
         }));
 
         return Connection.getResponse("getPurchaseHistory");
+    }
+
+    static sendGetDailyStatistics(date){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "getDailyStatistics",
+            adminName: window.sessionStorage.getItem('username'),
+            date: date
+        }))
+
+        return Connection.getResponse("getDailyStatistics");
     }
 
     // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
