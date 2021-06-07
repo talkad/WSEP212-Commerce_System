@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 public class StatisticsTests {
     @Before
@@ -30,7 +30,7 @@ public class StatisticsTests {
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         userController.login(initialUserName, "u1", "u1");
-        List<Integer> statistics = userController.getDailyStatistics("u1", LocalDate.now()).getResult();
+        Map<String, Integer> statistics = userController.getDailyStatistics("u1", LocalDate.now()).getResult();
         Assert.assertEquals(3, statistics.get("Guest"), 0);
         Assert.assertEquals(0, statistics.get("Registered"), 0);
         Assert.assertEquals(0, statistics.get("Manager"), 0);
@@ -47,7 +47,7 @@ public class StatisticsTests {
         userController.login(initialUserName, "u1", "u1");
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        Response<List<Integer>> statisticsRes = userController.getDailyStatistics("u1", tomorrow);
+        Response<Map<String, Integer>> statisticsRes = userController.getDailyStatistics("u1", tomorrow);
         Assert.assertTrue(statisticsRes.isFailure());
     }
 }
