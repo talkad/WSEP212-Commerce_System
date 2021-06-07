@@ -954,6 +954,8 @@ public class DALService implements Runnable{
                 mongoClient.getDatabase(this.dbName).getCollection("products").drop();
                 mongoClient.getDatabase(this.dbName).getCollection("accounts").drop();
                 mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
+                mongoClient.getDatabase(this.dbName).getCollection("dailyCounters").drop();
+
             } catch (MongoConfigurationException | MongoTimeoutException e) {
                 System.out.println("Exception received: " + e.getMessage());
                 resetDatabase(); // timeout, try again
