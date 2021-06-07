@@ -704,7 +704,7 @@ public class User {
                     PermissionsEnum.REMOVE_PURCHASE_RULE, PermissionsEnum.APPOINT_OWNER, PermissionsEnum.REMOVE_OWNER_APPOINTMENT,
                     PermissionsEnum.APPOINT_MANAGER, PermissionsEnum.ADD_PERMISSION, PermissionsEnum.REMOVE_PERMISSION,
                     PermissionsEnum.REMOVE_MANAGER_APPOINTMENT, PermissionsEnum.RECEIVE_STORE_WORKER_INFO,
-                    PermissionsEnum.RECEIVE_STORE_HISTORY, PermissionsEnum.RECEIVE_STORE_REVENUE, PermissionsEnum.REPLY_TO_BID
+                    PermissionsEnum.RECEIVE_STORE_HISTORY, PermissionsEnum.RECEIVE_STORE_REVENUE
             );
         }
         ownedReadLock.unlock();
@@ -712,6 +712,7 @@ public class User {
         if(this.storesManaged.containsKey(storeID))
         {
             permissions = storesManaged.get(storeID);
+            permissions.remove(PermissionsEnum.REPLY_TO_BID);
         }
         managedReadLock.unlock();
 
