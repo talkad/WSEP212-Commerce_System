@@ -97,9 +97,14 @@ public interface IService {
 
     Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName); // 4.1 - c
 
-    Response<PurchasePolicy> getPurchasePolicy(String username, int storeID); // 4.2 - a
+    Response<String> getPurchasePolicy(String username, int storeID); // 4.2 - a
 
-    Response<DiscountPolicy> getDiscountPolicy(String username, int storeID); // 4.2 - b
+    Response<String> getDiscountPolicy(String username, int storeID); // 4.2 - b
+
+    // for tests
+    Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID); // 4.2 - a
+
+    Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID); // 4.2 - b
 
     Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule); // 4.2 - c
 

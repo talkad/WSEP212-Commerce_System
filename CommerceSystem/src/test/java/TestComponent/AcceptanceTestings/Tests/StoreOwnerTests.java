@@ -293,7 +293,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store owner will try to add a discount rule to his store's policy
-        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         DiscountPolicy policy = policyResponse.getResult();
 
         // store has no discount with id 1
@@ -321,7 +321,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store now contains a discount with id 1
-        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getDiscountRule(1));
 
@@ -358,7 +358,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // customer will try to add a discount rule to a store's policy
-        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         DiscountPolicy policy = policyResponse.getResult();
 
         // store has no discount with id 1
@@ -386,7 +386,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.addDiscountRule("jacob2000", this.storeID, new CategoryDiscountRule( "green", 50)).isFailure());
 
         // store still doesn't contain a discount with id 1
-        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNull(policy.getDiscountRule(1));
 
@@ -423,7 +423,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // store owner will try to add a purchase rule to his store's policy
-        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         PurchasePolicy policy = policyResponse.getResult();
 
         // store has no discount with id 1
@@ -445,7 +445,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store now contains a purchase rule with id 1
-        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getPurchaseRule(1));
 
@@ -476,7 +476,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         bridge.removePurchaseRule("aviad", this.storeID, 1);
 
         // customer will try to add a purchase rule to his store's policy
-        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         PurchasePolicy policy = policyResponse.getResult();
 
         // store has no discount with id 1
@@ -498,7 +498,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.addPurchaseRule("jacob4000", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store still doesn't contain a purchase rule with id 1
-        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNull(policy.getPurchaseRule(1));
 
@@ -532,7 +532,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store owner will try to remove a discount rule from his store's policy
-        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         DiscountPolicy policy = policyResponse.getResult();
 
         // store has a discount with id 1
@@ -560,7 +560,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.removeDiscountRule("aviad", this.storeID, 1).isFailure());
 
         // store now doesn't contain a discount with id 1
-        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNull(policy.getDiscountRule(1));
 
@@ -600,7 +600,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // customer will try to remove a discount rule from the store's policy, for some reason
-        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         DiscountPolicy policy = policyResponse.getResult();
 
         // store has a discount with id 1
@@ -628,7 +628,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.removeDiscountRule("jacob6000", this.storeID, 1).isFailure());
 
         // store still contains a discount with id 1
-        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getDiscountRule(1));
 
@@ -668,7 +668,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addDiscountRule("aviad", this.storeID, new CategoryDiscountRule("green", 15)).isFailure());
 
         // store owner will try to remove a discount rule from his store's policy
-        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        Response<DiscountPolicy> policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         DiscountPolicy policy = policyResponse.getResult();
 
         // store has a discount with id 1
@@ -699,7 +699,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.removeDiscountRule("aviad", this.storeID, 2).isFailure());
 
         // store still contains a discount with id 1
-        policyResponse = bridge.getDiscountPolicy("aviad", this.storeID);
+        policyResponse = bridge.getDiscountPolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getDiscountRule(1));
 
@@ -739,7 +739,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule(new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store owner will try to remove the purchase rule from his store's policy
-        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         PurchasePolicy policy = policyResponse.getResult();
 
         // store has a purchase policy with id 1
@@ -761,7 +761,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.removePurchaseRule("aviad", this.storeID, 1).isFailure());
 
         // store no longer contains a purchase rule with id 1
-        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNull(policy.getPurchaseRule(1));
 
@@ -787,7 +787,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("yarok", 7, 10))).isFailure());
 
         // customer will try to remove the purchase rule from his store's policy
-        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         PurchasePolicy policy = policyResponse.getResult();
 
         // store has a purchase policy with id 1
@@ -809,7 +809,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.removePurchaseRule("jacob9000", this.storeID, 1).isFailure());
 
         // store contains a purchase rule with id 1
-        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getPurchaseRule(1));
 
@@ -835,7 +835,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(bridge.addPurchaseRule("aviad", this.storeID, new CategoryPurchaseRule( new CategoryPredicate("green", 7, 10))).isFailure());
 
         // store owner will try to remove the purchase rule from his store's policy
-        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        Response<PurchasePolicy> policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         PurchasePolicy policy = policyResponse.getResult();
 
         // store has a purchase policy with id 1
@@ -860,7 +860,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(bridge.removePurchaseRule("aviad", this.storeID, 2).isFailure());
 
         // store still contains a purchase rule with id 1
-        policyResponse = bridge.getPurchasePolicy("aviad", this.storeID);
+        policyResponse = bridge.getPurchasePolicyReal("aviad", this.storeID);
         policy = policyResponse.getResult();
         Assert.assertNotNull(policy.getPurchaseRule(1));
 

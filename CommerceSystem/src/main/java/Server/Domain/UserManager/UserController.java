@@ -715,7 +715,7 @@ public class UserController {
         return new Response<>(false, true, "User not connected");
     }
 
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -727,13 +727,37 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
 
             return user.getDiscountPolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getPurchasePolicyReal(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getDiscountPolicyReal(storeID);
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");

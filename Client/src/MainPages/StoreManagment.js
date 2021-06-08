@@ -20,6 +20,10 @@ import MainDiscountPolicyPage from "../DiscountPurchasePolicyPages/MainDiscountP
 import DeleteDiscountRule from "../DiscountPurchasePolicyPages/DeleteDiscountRule";
 import StoreRevenue from "../ReportsPages/StoreRevenue";
 import SystemRevenue from "../ReportsPages/SystemRevenue";
+import DiscountsDetails from "../ReportsPages/DiscountsDetails";
+import PurchaseDetails from "../ReportsPages/PurchaseDetails";
+import RemoveDiscountRule from "../DiscountPurchasePolicyPages/RemoveDiscountRule";
+import RemovePurchaseRule from "../DiscountPurchasePolicyPages/RemovePurchaseRule";
 
 class StoreManagment extends React.Component {
     constructor(props) {
@@ -38,18 +42,18 @@ class StoreManagment extends React.Component {
     componentDidMount() {
         //console.log('mounted!!!!!!!!!!!')
         Connection.sendGetPermissionsRequest('getUserPermissions',this.state.username,this.state.storeId).then
-            (this.handleGetPermissionsResponse, Connection.handleReject)
+        (this.handleGetPermissionsResponse, Connection.handleReject)
     }
 
     /* result here is list of permissions (enums) */
     handleGetPermissionsResponse(result){
 
         if(!result.isFailure){
-             var arrayOfPerm = result.result
+            var arrayOfPerm = result.result
             this.setState({loaded: true});
-             //console.log('the result isss:  ' + result.response.result)
-             //console.log('the result isss:  ' + ['asd', 'asd'])
-             this.setState({permissions: arrayOfPerm});
+            //console.log('the result isss:  ' + result.response.result)
+            //console.log('the result isss:  ' + ['asd', 'asd'])
+            this.setState({permissions: arrayOfPerm});
         }
         else{
             alert(result.errMsg);
@@ -74,11 +78,11 @@ class StoreManagment extends React.Component {
                                                         perm === 'RECEIVE_GENERAL_REVENUE' ? ReactDOM.render(<React.StrictMode><SystemRevenue /></React.StrictMode>, document.getElementById('root')) :
                                                             perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
                                                                 perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
-                                    //perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
-                                        //perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
-                                            //perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
-                                                //    perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><UserPurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
-                                                console.log('warning')
+                                                                    perm === 'VIEW_DISCOUNT_POLICY' ? ReactDOM.render(<React.StrictMode><DiscountsDetails /></React.StrictMode>, document.getElementById('root')) :
+                                                                        perm === 'VIEW_PURCHASE_POLICY' ? ReactDOM.render(<React.StrictMode><PurchaseDetails /></React.StrictMode>, document.getElementById('root')) :
+                                                                            perm === 'REMOVE_DISCOUNT_RULE' ? ReactDOM.render(<React.StrictMode><RemoveDiscountRule /></React.StrictMode>, document.getElementById('root')) :
+                                                                                perm === 'REMOVE_PURCHASE_RULE' ? ReactDOM.render(<React.StrictMode><RemovePurchaseRule /></React.StrictMode>, document.getElementById('root')) :
+                                                                    console.log('warning')
     }
 
     render() {
@@ -86,13 +90,13 @@ class StoreManagment extends React.Component {
             <div>
                 {!this.state.loaded &&
                 <Spinner animation="border" />
-                // <Spinner
-                //     as="span"
-                //     animation="grow"
-                //     size="sm"
-                //     role="status"
-                //     aria-hidden="true"
-                // />
+                    // <Spinner
+                    //     as="span"
+                    //     animation="grow"
+                    //     size="sm"
+                    //     role="status"
+                    //     aria-hidden="true"
+                    // />
                 }
                 {this.state.loaded && this.state.permissions.map((perm) => {
                     return <div><Link to={perm}><button>{perm.toString().replaceAll('_',' ')}</button></Link></div>

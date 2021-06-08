@@ -10,7 +10,7 @@ class WorkerDetails extends React.Component{
             username: StaticUserInfo.getUsername(),
             storeId: StaticUserInfo.getStoreId(),
             showMessage: false,
-            toShow: ''
+            toShow: '',
         };
         this.handleReportResponse = this.handleReportResponse.bind(this)
     }
@@ -25,7 +25,13 @@ class WorkerDetails extends React.Component{
 
     handleReportResponse(result){
         if(!result.isFailure){
-            this.setState({toShow: result.result.toString()})
+            let show = "";
+            let EmpCounter = 1;
+
+            result.result.forEach(element => show = show.concat(
+                "Employee Num: " + EmpCounter++ + " Name: " + element.name.toString() + " How much he ownes: " + element.storesOwned.size().toString() + "  :::  "));
+
+            this.setState({toShow: show});
         }
         else{
             alert(result.errMsg);

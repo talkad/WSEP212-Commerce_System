@@ -806,7 +806,41 @@ public class User {
         }
     }
 
-    public Response<PurchasePolicy> getPurchasePolicy(int storeID) {
+    public Response<String> getPurchasePolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(PermissionsEnum.VIEW_PURCHASE_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                PurchasePolicy policy = store.getPurchasePolicy();
+                return new Response<>(policy.getDescription(), false, "Successfully retrieved purchase policy");
+            }
+            else {
+                return new Response<>("", true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>("", true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<String> getDiscountPolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(PermissionsEnum.VIEW_DISCOUNT_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                DiscountPolicy policy = store.getDiscountPolicy();
+                return new Response<>(policy.getDescription(), false, "Successfully retrieved discount policy");
+            }
+            else {
+                return new Response<>("", true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>("", true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<PurchasePolicy> getPurchasePolicyReal(int storeID) {
         Store store;
         if(this.state.allowed(PermissionsEnum.VIEW_PURCHASE_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
@@ -823,7 +857,7 @@ public class User {
         }
     }
 
-    public Response<DiscountPolicy> getDiscountPolicy(int storeID) {
+    public Response<DiscountPolicy> getDiscountPolicyReal(int storeID) {
         Store store;
         if(this.state.allowed(PermissionsEnum.VIEW_DISCOUNT_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);

@@ -201,13 +201,23 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         return userController.getPurchasePolicy(username, storeID);
     }
 
     @Override
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         return userController.getDiscountPolicy(username, storeID);
+    }
+
+    @Override
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        return userController.getPurchasePolicyReal(username, storeID);
+    }
+
+    @Override
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        return userController.getDiscountPolicyReal(username, storeID);
     }
 
     @Override
