@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.AppointmentDTO;
-import Server.DAL.IntStringListPair;
+import Server.DAL.PairDTOs.IntStringListPair;
 
 import Server.Domain.CommonClasses.Response;
 

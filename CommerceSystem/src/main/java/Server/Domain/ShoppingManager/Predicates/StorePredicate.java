@@ -1,8 +1,8 @@
 package Server.Domain.ShoppingManager.Predicates;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.PredicateDTO;
-import Server.DAL.StorePredicateDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import java.util.Map;
 
 public class StorePredicate implements Predicate {

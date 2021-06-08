@@ -1,5 +1,6 @@
 package Server.DAL;
 
+import Server.DAL.PairDTOs.IntStringListPair;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;

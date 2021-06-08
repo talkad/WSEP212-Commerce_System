@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.Predicates;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.PredicateDTO;
+import Server.DAL.PredicateDTOs.PredicateDTO;
 
 import java.util.Map;
 

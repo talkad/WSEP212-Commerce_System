@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager;
 
 import Server.DAL.PurchasePolicyDTO;
-import Server.DAL.PurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;

@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
-import Server.DAL.CategoryPurchaseRuleDTO;
-import Server.DAL.PurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTOs.CategoryPurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 

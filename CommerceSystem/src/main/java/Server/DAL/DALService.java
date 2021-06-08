@@ -1,5 +1,12 @@
 package Server.DAL;
 
+import Server.DAL.DiscountRuleDTOs.*;
+import Server.DAL.PairDTOs.IntPermsListPair;
+import Server.DAL.PairDTOs.IntStringListPair;
+import Server.DAL.PairDTOs.PredPair;
+import Server.DAL.PairDTOs.ProductIntPair;
+import Server.DAL.PredicateDTOs.*;
+import Server.DAL.PurchaseRuleDTOs.*;
 import Server.Domain.CommonClasses.Pair;
 import Server.Domain.UserManager.UserStateEnum;
 import com.mongodb.ConnectionString;

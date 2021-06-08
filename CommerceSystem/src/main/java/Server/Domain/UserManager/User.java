@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.*;
-import Server.DAL.IntPermsListPair;
+import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;

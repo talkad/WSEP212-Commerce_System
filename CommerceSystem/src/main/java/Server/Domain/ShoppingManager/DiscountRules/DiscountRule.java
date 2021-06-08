@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.DiscountRuleDTO;
+import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 
 
 import java.util.Map;

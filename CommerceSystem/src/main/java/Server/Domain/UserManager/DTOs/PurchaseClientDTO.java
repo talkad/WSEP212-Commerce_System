@@ -2,7 +2,7 @@ package Server.Domain.UserManager.DTOs;
 
 import java.time.LocalDate;
 
-import Server.DAL.ProductIntPair;
+import Server.DAL.PairDTOs.ProductIntPair;
 import Server.DAL.ProductDTO;
 import Server.DAL.ReviewDTO;
 import Server.DAL.PurchaseDTO;
