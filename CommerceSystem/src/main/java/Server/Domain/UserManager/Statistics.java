@@ -7,6 +7,8 @@ import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -159,14 +161,14 @@ public class Statistics {
         DALService.getInstance().saveCounters(dailyCountersDTO);
     }
 
-    private Map<String, Integer> getCounters(){
+    private List<String> getCounters(){
 
-        return new ConcurrentHashMap<>(){{
-            put("Guest", getDailyGuestCounter().get());
-            put("Registered", getDailyRegisteredCounter().get());
-            put("Manager", getDailyManagerCounter().get());
-            put("Owner", getDailyOwnerCounter().get());
-            put("Admin", getDailyAdminCounter().get());
-        }};
+        return Arrays.asList("Guest: " + getDailyGuestCounter().get(),
+                "Registered: " + getDailyRegisteredCounter().get(),
+                "Manager: " + getDailyManagerCounter().get(),
+                "Owner: " + getDailyOwnerCounter().get(),
+                "Admin: " + getDailyAdminCounter().get()
+        );
+
     }
 }

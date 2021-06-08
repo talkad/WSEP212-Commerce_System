@@ -73,6 +73,7 @@ class App extends React.Component {
             visitor: true,
             registered: false,
             storeOwner: false,
+            admin: false,
 
             showAlert: false,
             alertVariant: '',
@@ -117,6 +118,7 @@ class App extends React.Component {
         this.getNotifications = this.getNotifications.bind(this);
         this.handleNotification = this.handleNotification.bind(this);
         this.removeNotification = this.removeNotification.bind(this);
+        this.handleIsAdmin = this.handleIsAdmin.bind(this);
     }
 
     componentDidMount() {
@@ -133,11 +135,18 @@ class App extends React.Component {
 
         if (window.sessionStorage.getItem('username') !== null) {
             Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
+            Connection.sendIsAdmin().then(this.handleIsAdmin, Connection.handleReject);
         }
 
 
         Connection.getNotification().then(this.handleNotification, Connection.handleReject);
 
+    }
+
+    handleIsAdmin(result) {
+        if (!result.isFailure) {
+            this.setState({admin: true});
+        }
     }
 
     handleNotification(result) {
@@ -151,9 +160,13 @@ class App extends React.Component {
         if (result.action === "bidOffer") {
             let parsed = JSON.parse(result.message);
             this.setState({
-                showManagerAlert: true, offerManagerName: parsed.name,
-                offerManagerProductName: parsed.productName, offerManagerProductID: parsed.productID,
-                offerManagerStoreID: parsed.storeID, offerManagerPriceOffer: parsed.priceOffer, bidNotificationIndex: index,
+                showManagerAlert: true,
+                offerManagerName: parsed.name,
+                offerManagerProductName: parsed.productName,
+                offerManagerProductID: parsed.productID,
+                offerManagerStoreID: parsed.storeID,
+                offerManagerPriceOffer: parsed.priceOffer,
+                bidNotificationIndex: index,
             });
         } else if (result.action === "changeOfferStatusAccepted") {
             let parsed = JSON.parse(result.message);
@@ -291,13 +304,12 @@ class App extends React.Component {
     }
 
 
-
     getNotifications() {
 
-        let removeNotification = function (event){
+        let removeNotification = function (event) {
             let index = parseInt(event.target.id);
             let notificationList = JSON.parse(window.sessionStorage.getItem('notifications'));
-            if(notificationList !== null) {
+            if (notificationList !== null) {
                 notificationList.splice(index, 1);
                 if (notificationList.length !== 0) {
                     window.sessionStorage.setItem('notifications', JSON.stringify(notificationList));
@@ -321,7 +333,8 @@ class App extends React.Component {
             let parsedNotifications = JSON.parse(this.state.notifications);
 
             return (
-                <NavDropdown onClick={changeNotificationState} id="notification_dropdown" title={this.state.unreadNotification ? <UnreadNotification/> : <Icon.Bell/>}>
+                <NavDropdown onClick={changeNotificationState} id="notification_dropdown"
+                             title={this.state.unreadNotification ? <UnreadNotification/> : <Icon.Bell/>}>
                     {parsedNotifications.map(function (notification) {
                         counter++;
                         if (notification.type === 'notification') {
@@ -339,7 +352,8 @@ class App extends React.Component {
                                 <NavDropdown.Item>
                                     <Card style={{overflowY: 'auto'}} id="notification_card">
                                         <Card.Header>Bid offer notification</Card.Header>
-                                        <Card.Link id={counter.toString()} onClick={() => bidOfferHandler(notification, counter.toString())}>More
+                                        <Card.Link id={counter.toString()}
+                                                   onClick={() => bidOfferHandler(notification, counter.toString())}>More
                                             details</Card.Link>
                                     </Card>
                                 </NavDropdown.Item>
@@ -388,6 +402,13 @@ class App extends React.Component {
 
                             {this.state.storeOwner &&
                             <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
+
+                            {this.state.admin &&
+                            <NavDropdown id={"admin-nav-dropdown"} title={"Admin"}>
+                                <NavDropdown.Item href="/dailyStatistics">Daily Statistics</NavDropdown.Item>
+                                <NavDropdown.Item href="/">System revenue</NavDropdown.Item>
+                                <NavDropdown.Item href="/dailyStatistics">Store history</NavDropdown.Item>
+                            </NavDropdown>}
 
                             {this.state.registered && this.getNotifications()}
 
