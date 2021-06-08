@@ -4,6 +4,7 @@ import Server.DAL.PurchasePolicyDTO;
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 
 import java.util.*;
@@ -71,5 +72,14 @@ public class PurchasePolicy {
             if (purchaseRule.getID() == id)
                 return purchaseRule;
         return null;
+    }
+
+    public String getDescription() {
+        StringBuilder result = new StringBuilder();
+
+        for(PurchaseRule rule: purchaseRules)
+            result.append("- ").append(rule.getDescription()).append("\n");
+
+        return result.toString();
     }
 }

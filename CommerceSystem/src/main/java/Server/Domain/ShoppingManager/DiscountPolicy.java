@@ -75,4 +75,13 @@ public class DiscountPolicy {
                 return discountRule;
         return null;
     }
+
+    public String getDescription() {
+        StringBuilder result = new StringBuilder();
+
+        for(DiscountRule discount: discountRules)
+            result.append("- ").append(discount.getDescription()).append("\n");
+
+        return result.toString();
+    }
 }

@@ -58,6 +58,8 @@ import StoreRevenue from "./ReportsPages/StoreRevenue";
 import SystemRevenue from "./ReportsPages/SystemRevenue";
 import {ReactComponent as UnreadNotification} from './Images/bell_notification.svg';
 import DailyStatistics from "./Pages/DailyStatistics";
+import DiscountsDetails from "./ReportsPages/DiscountsDetails";
+import PurchaseDetails from "./ReportsPages/PurchaseDetails";
 
 
 
@@ -484,6 +486,8 @@ class App extends React.Component {
                         <Route path="/Disconnected" component={Disconnected}/>
                         <Route path="/RECEIVE_STORE_REVENUE" component={StoreRevenue}/>
                         <Route path="/RECEIVE_GENERAL_REVENUE" component={SystemRevenue}/>
+                        <Route path="/RECEIVE_Discounts_Info" component={DiscountsDetails}/>
+                        <Route path="/RECEIVE_Purchase_Info" component={PurchaseDetails}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>

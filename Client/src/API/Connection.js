@@ -497,12 +497,22 @@ class Connection{
     }
 
     /*
-    * Holds for all 3 pages in Report Pages- Need to receive information too
+    * Holds for 2 pages in Report Pages- Need to receive information too
     */
     static sendReportRequest (functionName, adminName, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendStoreHistoryRequest(functionName, adminName, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            adminName: adminName,
             storeID: storeId,
         }))
 
@@ -667,6 +677,20 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    static sendCompositionPoliciesTerm (functionName, username, storeId, type, predicate){
+        let fixedRules = predicate.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                predicates: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
     static sendGetStoreRevenue (functionName, username, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
@@ -687,6 +711,38 @@ class Connection{
     }
 
     static sendGetStoreWorkersInfo (functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemoveDiscount (functionName, username, storeId, discountRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            discountRuleID: discountRuleID,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemovePurchase (functionName, username, storeId, purchaseRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            purchaseRuleID: purchaseRuleID,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendDiscountPurchaseReportRequest(functionName, username, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
