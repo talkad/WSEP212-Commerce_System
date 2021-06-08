@@ -347,6 +347,6 @@ public class SystemManagerHandler extends  Handler{
     private String[] parseList(String listStr){
         //String str = listStr.substring(1, listStr.length() - 1);
 
-        return listStr.split(",");
+        return listStr.split(", ");
     }
 }

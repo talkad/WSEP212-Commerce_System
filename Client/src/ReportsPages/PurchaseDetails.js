@@ -25,14 +25,14 @@ class PurchaseDetails extends React.Component{
 
     handleReportResponse(result){
         if(!result.isFailure){
-            let show = "";
-            let PurchaseCounter = 1;
+            // let show = "";
+            // let PurchaseCounter = 1;
+            //
+            // result.result.forEach(element => show = show.concat(
+            //     "Purchase Num: " + PurchaseCounter++ + " Num Of Rules: " +
+            //     result.result[0].size().toString()));
 
-            result.result.forEach(element => show = show.concat(
-                "Purchase Num: " + PurchaseCounter++ + " Num Of Rules: " +
-                result.result[0].size().toString()));
-
-            this.setState({toShow: show});
+            this.setState({toShow: result.result});
         }
         else{
             alert(result.errMsg);
@@ -49,8 +49,8 @@ class PurchaseDetails extends React.Component{
         return(
             <form>
                 <h1>Purchase Details Page </h1>
-                <div> <label> Username Name : <input className = "username" type = "text" onChange = {(e) => this.handleInputChange(e, 'username')}/> </label> </div>
-                <div> <label> Store Id : <input className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>
+                <div> <label> Username Name : <input readOnly value = {this.state.storeId} className = "username" type = "text" onChange = {(e) => this.handleInputChange(e, 'username')}/> </label> </div>
+                <div> <label> Store Id : <input readOnly value = {this.state.storeId} className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>
                 <div className="toShow"> {this.state.showMessage && <p> {this.state.toShow} </p>}
                     <button type = "button" onClick = {(e) => this.onButtonClickHandler(e)}> Show Details </button>
                 </div>
