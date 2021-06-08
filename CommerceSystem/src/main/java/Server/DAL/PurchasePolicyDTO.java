@@ -1,13 +1,15 @@
 package Server.DAL;
 
-import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
+@BsonDiscriminator("PurchasePolicyDTO")
+
 public class PurchasePolicyDTO {
 
     @Property(value = "purchaseRules")

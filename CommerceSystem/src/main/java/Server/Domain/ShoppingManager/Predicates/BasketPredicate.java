@@ -1,8 +1,8 @@
 package Server.Domain.ShoppingManager.Predicates;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.PredicateDTOs.BasketPredicateDTO;
-import Server.DAL.PredicateDTOs.PredicateDTO;
+import Server.DAL.BasketPredicateDTO;
+import Server.DAL.PredicateDTO;
 
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.*;
-import Server.DAL.PairDTOs.IntPermsListPair;
+import Server.DAL.IntPermsListPair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

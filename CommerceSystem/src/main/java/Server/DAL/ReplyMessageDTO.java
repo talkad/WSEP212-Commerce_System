@@ -2,8 +2,11 @@ package Server.DAL;
 
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("ReplyMessageDTO")
+
 public class ReplyMessageDTO {
 
     @Property(value = "type")

@@ -1,13 +1,16 @@
 package Server.DAL;
 
-import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
+import java.lang.annotation.Inherited;
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
+@BsonDiscriminator("DiscountPolicyDTO")
+
 public class DiscountPolicyDTO {
 
     @Property(value = "discountRules")

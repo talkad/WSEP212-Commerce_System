@@ -1,13 +1,12 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.DALService;
-import Server.DAL.PairDTOs.IntStringListPair;
+import Server.DAL.IntStringListPair;
 import Server.DAL.PublisherDTO;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
 
-import java.security.Permission;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;

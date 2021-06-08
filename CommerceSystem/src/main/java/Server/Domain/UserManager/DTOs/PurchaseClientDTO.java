@@ -2,7 +2,7 @@ package Server.Domain.UserManager.DTOs;
 
 import java.time.LocalDate;
 
-import Server.DAL.PairDTOs.ProductIntPair;
+import Server.DAL.ProductIntPair;
 import Server.DAL.ProductDTO;
 import Server.DAL.ReviewDTO;
 import Server.DAL.PurchaseDTO;
@@ -12,7 +12,6 @@ import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class PurchaseClientDTO {
 

@@ -1,8 +1,8 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.PurchaseRuleDTOs.AndCompositionPurchaseRuleDTO;
-import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
+import Server.DAL.AndCompositionPurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTO;
 import java.util.List;
 import java.util.Map;
 

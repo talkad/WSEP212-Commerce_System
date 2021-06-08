@@ -1,6 +1,5 @@
 package Server.DAL;
 
-import Server.DAL.PairDTOs.IntStringListPair;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;

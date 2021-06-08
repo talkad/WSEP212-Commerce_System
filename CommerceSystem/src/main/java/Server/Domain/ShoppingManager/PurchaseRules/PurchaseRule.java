@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
-import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
+import Server.DAL.PurchaseRuleDTO;
 import java.util.Map;
 
 public interface PurchaseRule {
