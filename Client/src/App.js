@@ -479,15 +479,15 @@ class App extends React.Component {
                         <Route path="/Conditional_Category_Discount_Rule" component={ConditionalCategoryDiscountRule}/>
                         <Route path="/Conditional_Product_Discount_Rule" component={ConditionalProductDiscountRule}/>
                         <Route path="/Conditional_Store_Discount_Rule" component={ConditionalStoreDiscountRule}/>
-                        <Route path="/Delete_Discount_Rule" component={DeleteDiscountRule}/>
-                        <Route path="/Delete_Purchase_Rule" component={DeletePurchaseRule}/>
+                        <Route path="/REMOVE_DISCOUNT_RULE" component={DeleteDiscountRule}/>
+                        <Route path="/REMOVE_PURCHASE_RULE" component={DeletePurchaseRule}/>
                         <Route path="/Product_Discount_Rule" component={ProductDiscountRule}/>
                         <Route path="/Store_Discount_Rule" component={StoreDiscountRule}/>
                         <Route path="/Disconnected" component={Disconnected}/>
                         <Route path="/RECEIVE_STORE_REVENUE" component={StoreRevenue}/>
                         <Route path="/RECEIVE_GENERAL_REVENUE" component={SystemRevenue}/>
-                        <Route path="/RECEIVE_Discounts_Info" component={DiscountsDetails}/>
-                        <Route path="/RECEIVE_Purchase_Info" component={PurchaseDetails}/>
+                        <Route path="/VIEW_DISCOUNT_POLICY" component={DiscountsDetails}/>
+                        <Route path="/VIEW_Purchase_POLICY" component={PurchaseDetails}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>
