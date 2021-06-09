@@ -9,7 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 @Embedded
 @BsonDiscriminator("LeafPurchaseRuleDTO")
 
-public class LeafPurchaseRuleDTO extends PurchaseRuleDTO {
+public abstract class LeafPurchaseRuleDTO implements PurchaseRuleDTO {
 
     @Property(value = "id")
     protected int id;

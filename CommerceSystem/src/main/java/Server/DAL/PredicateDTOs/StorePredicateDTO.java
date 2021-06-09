@@ -9,7 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 @Embedded
 @BsonDiscriminator("StorePredicateDTO")
 
-public class StorePredicateDTO extends PredicateDTO{
+public class StorePredicateDTO implements PredicateDTO{
 
     @Property(value = "minUnits")
     private int minUnits;

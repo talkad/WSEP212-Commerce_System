@@ -178,6 +178,7 @@ public class DALService implements Runnable{
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
             else{
@@ -373,7 +374,7 @@ public class DALService implements Runnable{
                     System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
                     saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
                 }
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
@@ -598,7 +599,7 @@ public class DALService implements Runnable{
                                 Filters.eq("currentDate", date.toString())
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.countersLock.writeLock().unlock();
                 return getDailyCounters(date); // timeout, try again
@@ -764,7 +765,7 @@ public class DALService implements Runnable{
                 publisherDTO = datastore.find(PublisherDTO.class).first();
 
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.publisherLock.writeLock().unlock();
                 return getPublisher(); // timeout, try again
@@ -915,7 +916,7 @@ public class DALService implements Runnable{
                                 Filters.eq("username", username)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.accountLock.writeLock().unlock();
                 return getAccount(username); // timeout, try again
@@ -1064,7 +1065,7 @@ public class DALService implements Runnable{
                                 Filters.eq("storeID", storeId)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.storeLock.writeLock().unlock();
                 return getStore(storeId); // timeout, try again
@@ -1189,7 +1190,7 @@ public class DALService implements Runnable{
                                 .sort(Sort.ascending("storeID")))
                         .toList();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
@@ -1402,7 +1403,7 @@ public class DALService implements Runnable{
                                 Filters.eq("name", username)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.userLock.writeLock().unlock();
                 return getUser(username); // timeout, try again
@@ -1581,7 +1582,7 @@ public class DALService implements Runnable{
                 StoreDTO head = storeDTOs.get(0);
                 int id = head.getStoreID();
                 return id + 1;
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 return getNextAvailableStoreID(); // timeout, try again
             }
@@ -1599,7 +1600,7 @@ public class DALService implements Runnable{
                 mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
                 mongoClient.getDatabase(this.dbName).getCollection("dailyCounters").drop();
 
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 resetDatabase(); // timeout, try again
             }

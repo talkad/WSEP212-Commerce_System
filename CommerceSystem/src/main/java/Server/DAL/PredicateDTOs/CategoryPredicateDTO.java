@@ -9,7 +9,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 @Embedded
 @BsonDiscriminator("CategoryPredicateDTO")
 
-public class CategoryPredicateDTO extends PredicateDTO {
+public class CategoryPredicateDTO implements PredicateDTO {
 
     @Property(value = "category")
     private String category;

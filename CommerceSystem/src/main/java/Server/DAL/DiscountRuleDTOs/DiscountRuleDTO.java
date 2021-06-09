@@ -9,9 +9,6 @@ import java.io.Serializable;
 @Embedded
 @BsonDiscriminator("DiscountRuleDTO")
 
-public class DiscountRuleDTO {
-    public DiscountRuleDTO(){
-        // For Morphia
-    }
-    public DiscountRule toConcreteDiscountRule(){return null;}
+public interface DiscountRuleDTO {
+    public DiscountRule toConcreteDiscountRule();
 }

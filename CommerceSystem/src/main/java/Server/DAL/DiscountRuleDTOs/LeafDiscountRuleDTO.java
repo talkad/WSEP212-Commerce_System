@@ -7,7 +7,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 @Embedded
 @BsonDiscriminator("LeafDiscountRuleDTO")
 
-public class LeafDiscountRuleDTO extends DiscountRuleDTO {
+public abstract class LeafDiscountRuleDTO implements DiscountRuleDTO {
 
     @Property(value = "id")
     protected int id;
