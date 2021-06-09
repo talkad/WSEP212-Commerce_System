@@ -7,6 +7,7 @@ class Connection{
     static connection;
     static dataFromServer = [];
     static gotNotification = 0;
+    static dailyStatisticsLiveUpdate = null;
 
     static setConnection(connection) {
         this.connection = connection;
@@ -41,6 +42,8 @@ class Connection{
 
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
+
+            console.log("just got from server");
             console.log(receivedData);
 
             if(receivedData.type === "startup"){
@@ -56,7 +59,8 @@ class Connection{
                 // alert(receivedData.message);
             }
             else if(receivedData.type === "liveUpdate"){
-
+                this.dailyStatisticsLiveUpdate = receivedData;
+                //this.addLiveUpdate(receivedData);
             }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
@@ -91,6 +95,10 @@ class Connection{
         }
 
         this.gotNotification = 1;
+    }
+
+    static addLiveUpdate(update){
+        this.dailyStatisticsLiveUpdate = update;
     }
 
     static waitForOpenConnection = (socket) => {
@@ -146,6 +154,28 @@ class Connection{
         return await Connection.catchNotification();
     }
 
+    static catchLiveUpdate(){
+        function sleep(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        this.dailyStatisticsLiveUpdate = null;
+        return new Promise(async (resolve, reject) => {
+            while(true){
+                if(this.dailyStatisticsLiveUpdate !== null){
+                    console.log("got a live update");
+                    resolve(this.dailyStatisticsLiveUpdate);
+                }
+                await sleep(5000);
+            }
+        });
+    }
+
+    static async getLiveUpdate(){
+        console.log("waiting for live update");
+        return await Connection.catchLiveUpdate();
+    }
+
 
     static searchAndReturn(action){
         for(let i=0; i < Connection.dataFromServer.length; i++){
@@ -175,6 +205,7 @@ class Connection{
                         let message = Connection.dataFromServer[index];
                         Connection.dataFromServer.splice(index, 1);
                         // delete Connection.dataFromServer[index];
+                        console.log("resolving " + action);
                         resolve(JSON.parse(message.message));
                     }
 
@@ -398,10 +429,19 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getDailyStatistics",
             adminName: window.sessionStorage.getItem('username'),
-            date: date
-        }))
+            date: date,
+        }));
 
         return Connection.getResponse("getDailyStatistics");
+    }
+
+    static sendIsAdmin(){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "isAdmin",
+            username: window.sessionStorage.getItem('username'),
+        }))
+
+        return Connection.getResponse("isAdmin");
     }
 
     // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
