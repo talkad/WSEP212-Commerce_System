@@ -22,7 +22,6 @@ class Connection{
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
-                // TODO: when waiting for a response for this message then make the site "load"
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -68,7 +67,6 @@ class Connection{
         }
 
         this.connection.onclose = (event) => {
-            // console.log(event); // TODO: just in case
 
             setTimeout(this.disconnect, 3000);
 
@@ -143,6 +141,7 @@ class Connection{
                     console.log("got a notification");
                     this.gotNotification = 0;
                     resolve(true);
+                    break;
                 }
                 await sleep(5000);
             }
@@ -165,6 +164,7 @@ class Connection{
                 if(this.dailyStatisticsLiveUpdate !== null){
                     console.log("got a live update");
                     resolve(this.dailyStatisticsLiveUpdate);
+                    break;
                 }
                 await sleep(5000);
             }
@@ -206,10 +206,14 @@ class Connection{
                         Connection.dataFromServer.splice(index, 1);
                         // delete Connection.dataFromServer[index];
                         console.log("resolving " + action);
+                        console.log("about to resolve");
+                        console.log(message);
                         resolve(JSON.parse(message.message));
+                        break;
                     }
 
                 }
+                //console.log("going to sleep on " + action);
                 await sleep(1000);
                 i++;
             }
