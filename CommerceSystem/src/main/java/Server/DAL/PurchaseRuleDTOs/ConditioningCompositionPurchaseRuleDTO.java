@@ -1,19 +1,19 @@
 package Server.DAL.PurchaseRuleDTOs;
 
 import Server.DAL.PairDTOs.PredPair;
-import Server.DAL.PredicateDTOs.PredicateDTO;
-
 import Server.Domain.ShoppingManager.PurchaseRules.ConditioningCompositionPurchaseRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 @Embedded
-public class ConditioningCompositionPurchaseRuleDTO extends CompoundPurchaseRuleDTO{
+@BsonDiscriminator("ConditioningCompositionPurchaseRuleDTO")
+
+public class ConditioningCompositionPurchaseRuleDTO extends CompoundPurchaseRuleDTO {
 
     @Property(value = "conditionsMap")
     List<PredPair> conditionsMap;

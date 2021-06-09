@@ -12,7 +12,6 @@ import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class PurchaseClientDTO {
 

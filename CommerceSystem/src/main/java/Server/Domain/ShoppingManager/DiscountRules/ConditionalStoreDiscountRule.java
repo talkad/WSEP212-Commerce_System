@@ -2,7 +2,6 @@ package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.DAL.DiscountRuleDTOs.ConditionalStoreDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
-import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
 import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.StorePredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;

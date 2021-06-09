@@ -3,8 +3,11 @@ package Server.DAL.PairDTOs;
 import Server.DAL.PredicateDTOs.PredicateDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("PredPair")
+
 public class PredPair {
     @Property(value = "first")
     private PredicateDTO first;

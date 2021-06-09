@@ -4,9 +4,12 @@ import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class CategoryDiscountRuleDTO extends LeafDiscountRuleDTO{
+@BsonDiscriminator("CategoryDiscountRuleDTO")
+
+public class CategoryDiscountRuleDTO extends LeafDiscountRuleDTO {
 
     @Property(value = "category")
     protected String category;

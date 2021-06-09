@@ -4,9 +4,12 @@ import Server.Domain.ShoppingManager.Predicates.Predicate;
 import Server.Domain.ShoppingManager.Predicates.StorePredicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class StorePredicateDTO implements PredicateDTO{
+@BsonDiscriminator("StorePredicateDTO")
+
+public class StorePredicateDTO extends PredicateDTO{
 
     @Property(value = "minUnits")
     private int minUnits;

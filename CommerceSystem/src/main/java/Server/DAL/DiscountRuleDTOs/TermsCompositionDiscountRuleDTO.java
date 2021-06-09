@@ -5,12 +5,15 @@ import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.TermsCompositionDiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
-public class TermsCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
+@BsonDiscriminator("TermsCompositionDiscountRuleDTO")
+
+public class TermsCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
     @Property(value = "category")
     private String category;

@@ -4,12 +4,15 @@ import Server.Domain.ShoppingManager.Predicates.BasketPredicate;
 import Server.Domain.ShoppingManager.Predicates.Predicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
-public class BasketPredicateDTO implements PredicateDTO{
+@BsonDiscriminator("BasketPredicateDTO")
+
+public class BasketPredicateDTO extends PredicateDTO {
 
     @Property(value = "minUnits")
     private int minUnits;

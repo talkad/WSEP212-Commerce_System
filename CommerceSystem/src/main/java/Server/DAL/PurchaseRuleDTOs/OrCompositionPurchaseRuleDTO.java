@@ -3,11 +3,14 @@ package Server.DAL.PurchaseRuleDTOs;
 import Server.Domain.ShoppingManager.PurchaseRules.OrCompositionPurchaseRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 
 @Embedded
-public class OrCompositionPurchaseRuleDTO extends CompoundPurchaseRuleDTO{
+@BsonDiscriminator("OrCompositionPurchaseRuleDTO")
+
+public class OrCompositionPurchaseRuleDTO extends CompoundPurchaseRuleDTO {
 
     public OrCompositionPurchaseRuleDTO() {
         super();

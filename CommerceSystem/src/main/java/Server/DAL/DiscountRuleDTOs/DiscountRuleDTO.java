@@ -2,8 +2,16 @@ package Server.DAL.DiscountRuleDTOs;
 
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
+import java.io.Serializable;
 
 @Embedded
-public interface DiscountRuleDTO {
-    public DiscountRule toConcreteDiscountRule();
+@BsonDiscriminator("DiscountRuleDTO")
+
+public class DiscountRuleDTO {
+    public DiscountRuleDTO(){
+        // For Morphia
+    }
+    public DiscountRule toConcreteDiscountRule(){return null;}
 }

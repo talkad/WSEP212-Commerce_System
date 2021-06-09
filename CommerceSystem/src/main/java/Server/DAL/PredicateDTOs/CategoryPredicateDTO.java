@@ -4,9 +4,12 @@ import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.Predicates.Predicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class CategoryPredicateDTO implements PredicateDTO{
+@BsonDiscriminator("CategoryPredicateDTO")
+
+public class CategoryPredicateDTO extends PredicateDTO {
 
     @Property(value = "category")
     private String category;

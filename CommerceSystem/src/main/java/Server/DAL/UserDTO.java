@@ -1,8 +1,6 @@
 package Server.DAL;
 
 import Server.DAL.PairDTOs.IntPermsListPair;
-import Server.Domain.UserManager.Appointment;
-import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.UserStateEnum;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;

@@ -1,13 +1,17 @@
 package Server.DAL.DiscountRuleDTOs;
 
+import Server.DAL.DiscountRuleDTOs.CategoryDiscountRuleDTO;
 import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
 import Server.Domain.ShoppingManager.DiscountRules.ConditionalCategoryDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class ConditionalCategoryDiscountRuleDTO extends CategoryDiscountRuleDTO{
+@BsonDiscriminator("ConditionalCategoryDiscountRuleDTO")
+
+public class ConditionalCategoryDiscountRuleDTO extends CategoryDiscountRuleDTO {
 
     @Property(value = "categoryPredicate")
     private CategoryPredicateDTO categoryPredicate;

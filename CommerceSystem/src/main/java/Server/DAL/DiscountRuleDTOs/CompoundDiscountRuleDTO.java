@@ -3,12 +3,15 @@ package Server.DAL.DiscountRuleDTOs;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
-public abstract class CompoundDiscountRuleDTO implements DiscountRuleDTO {
+@BsonDiscriminator("CompoundDiscountRuleDTO")
+
+public class CompoundDiscountRuleDTO extends DiscountRuleDTO {
 
     @Property(value = "id")
     protected int id;

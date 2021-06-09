@@ -1,7 +1,6 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.DAL.PairDTOs.PredPair;
-import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.DAL.PurchaseRuleDTOs.ConditioningCompositionPurchaseRuleDTO;
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 
