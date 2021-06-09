@@ -224,8 +224,9 @@ class DailyStatistics extends React.Component {
     }
 
     onChangeDate(date) {
-        Connection.sendGetDailyStatistics(this.formatDate(date)).then(this.handleDailyStatistics, Connection.handleReject);
-        this.setState({loaded: false, data: [], labels: [], datasets: [], selectedDate: date});
+        let formattedDate = this.formatDate(date);
+        Connection.sendGetDailyStatistics(formattedDate).then(this.handleDailyStatistics, Connection.handleReject).catch(err => console.log("hello there"));
+        this.setState({loaded: false, labels: [], datasets: [], selectedDate: date});
     }
 
     render() {

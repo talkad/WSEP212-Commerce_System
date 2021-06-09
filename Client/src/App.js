@@ -408,7 +408,7 @@ class App extends React.Component {
                             {this.state.admin &&
                             <NavDropdown id={"admin-nav-dropdown"} title={"Admin"}>
                                 <NavDropdown.Item href="/dailyStatistics">Daily Statistics</NavDropdown.Item>
-                                <NavDropdown.Item href="/">System revenue</NavDropdown.Item>
+                                <NavDropdown.Item href="/">System revenue</NavDropdown.Item> //TODO: ask almog what the address is
                                 <NavDropdown.Item href="/dailyStatistics">Store history</NavDropdown.Item>
                             </NavDropdown>}
 

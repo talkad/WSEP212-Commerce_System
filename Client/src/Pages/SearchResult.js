@@ -3,6 +3,7 @@ import ProductEntry from '../Components/ProductEntry'
 import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
 import {Button, Col, Container, Image, Row, Spinner} from "react-bootstrap";
+import Search from "../Components/Search";
 
 const products = [
     {
@@ -281,6 +282,7 @@ class SearchResult extends React.Component {
     render() {
         return (
             <div>
+                <Search/>
                 <h1>Search Results</h1>
                 {this.state.loaded && (this.state.responseResults.length === 0) &&
                 <Image src="https://i.imgflip.com/5a4a1e.jpg"/>}

@@ -74,7 +74,7 @@ public class DALService implements Runnable{
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
 
-    private boolean useLocal = false;
+    private boolean useLocal = true;
 
     private boolean cleaningCache = false;
 
