@@ -11,7 +11,7 @@ import java.util.Vector;
 @Embedded
 @BsonDiscriminator("CompoundPurchaseRuleDTO")
 
-public class CompoundPurchaseRuleDTO extends PurchaseRuleDTO {
+public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO {
 
     @Property(value = "id")
     protected int id;

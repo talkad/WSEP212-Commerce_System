@@ -7,10 +7,6 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 @Embedded
 @BsonDiscriminator("PurchaseRuleDTO")
 
-public class PurchaseRuleDTO {
-    public PurchaseRuleDTO(){
-        // For Morphia
-    }
-
-    public PurchaseRule toConcretePurchaseRule(){return null;}
+public interface PurchaseRuleDTO {
+    public PurchaseRule toConcretePurchaseRule();
 }

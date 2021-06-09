@@ -7,7 +7,10 @@ public class CacheCleaner implements Runnable{
 
             try {
                 Thread.sleep(2*60*1000);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Vector;
 @Embedded
 @BsonDiscriminator("BasketPredicateDTO")
 
-public class BasketPredicateDTO extends PredicateDTO {
+public class BasketPredicateDTO implements PredicateDTO {
 
     @Property(value = "minUnits")
     private int minUnits;
