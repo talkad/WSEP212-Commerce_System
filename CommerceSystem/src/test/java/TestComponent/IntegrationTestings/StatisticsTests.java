@@ -18,6 +18,7 @@ public class StatisticsTests {
     @Before
     public void init(){
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();

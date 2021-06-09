@@ -74,7 +74,7 @@ public class DALService implements Runnable{
     private String dbName = "commerceDatabase";
     private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
 
-    private boolean useLocal = true;
+    private boolean useLocal = false;
 
     private boolean cleaningCache = false;
 
@@ -1418,7 +1418,6 @@ public class DALService implements Runnable{
 
     public void insertUser(UserDTO userDTO){
         this.userLock.writeLock().lock();
-
         if(userDTO.getState() == UserStateEnum.GUEST) {
             this.guestCartLock.writeLock().lock();
             this.guestCarts.put(userDTO.getName(), new Pair<>(userDTO.getShoppingCart(), System.currentTimeMillis()));
@@ -1465,7 +1464,6 @@ public class DALService implements Runnable{
         this.userLock.writeLock().unlock();
         return true;
     }
-
 
     public int getNextAvailableStoreID(){
         if(useLocal){

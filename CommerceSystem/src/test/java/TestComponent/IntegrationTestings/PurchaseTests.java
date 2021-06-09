@@ -37,7 +37,8 @@ public class PurchaseTests {
     @Before
     public void init(){
         DALService.getInstance().useTestDatabase();
-        //DALService.getInstance().resetDatabase();
+        DALService.getInstance().startDB();
+        DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
     }

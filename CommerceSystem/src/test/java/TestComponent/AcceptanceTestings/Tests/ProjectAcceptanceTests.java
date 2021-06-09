@@ -14,11 +14,12 @@ public abstract class ProjectAcceptanceTests {
 
     public void setUp(boolean toInit) {
         if (toInit) {
+            DALService.getInstance().useTestDatabase();
+            DALService.getInstance().startDB();
+            DALService.getInstance().resetDatabase();
             bridge = Driver.getBridge();
             bridge.init();
             notifier = Driver.getNotifier();
-            DALService.getInstance().useTestDatabase();
-            DALService.getInstance().resetDatabase();
             PaymentSystemAdapter.getInstance().setMockFlag();
             ProductSupplyAdapter.getInstance().setMockFlag();
         }

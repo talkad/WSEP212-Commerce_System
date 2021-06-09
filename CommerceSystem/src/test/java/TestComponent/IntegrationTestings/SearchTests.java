@@ -37,6 +37,7 @@ public class SearchTests {
     public void setUp(){
 
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
 
         userController = UserController.getInstance();

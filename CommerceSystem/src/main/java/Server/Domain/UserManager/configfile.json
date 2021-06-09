@@ -1,6 +1,6 @@
 {
-  "adminuser": "u1",
-  "adminpass": "u1",
+  "adminuser": "a1",
+  "adminpass": "a1",
   "dbloc": "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/test",
   "dbuser": "commerceserver",
   "dbpass": "commerceserver",
