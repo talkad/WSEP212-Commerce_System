@@ -1,4 +1,4 @@
-import React from "react";
+    import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
 import ReactDOM from "react-dom";
 import CategoryDiscountRule from "./CategoryDiscountRule";

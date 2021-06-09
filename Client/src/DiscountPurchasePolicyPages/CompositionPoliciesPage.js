@@ -1,7 +1,9 @@
 import React from 'react';
+import {Button} from 'react-bootstrap';
 import Select from 'react-select';
 import StaticUserInfo from "../API/StaticUserInfo";
 import Connection from "../API/Connection";
+import {Option} from "react-bootstrap-icons";
 
 const DiscountOptions = [
     { value: 'AND', label: 'AND' },
@@ -53,7 +55,7 @@ class CompositionPoliciesPage extends React.Component {
                 this.state.selectedOption === 'XOR' ? Connection.sendCompositionPoliciesXor(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.discount, policiesRule, this.state.xoresolve).then(this.handleCompPoliciesResponse, Connection.handleReject) :
                     this.state.selectedOption === 'SUM' ? Connection.sendCompositionPoliciesSumMax(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject) :
                         this.state.selectedOption === 'MAX' ? Connection.sendCompositionPoliciesSumMax(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject):
-                            Connection.sendCompositionPoliciesTerm(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject);
+                            Connection.sendCompositionPoliciesTerm(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject);
     }
 
     handleCompPoliciesResponse(result){
@@ -134,18 +136,18 @@ class CompositionPoliciesPage extends React.Component {
     render() {
         let show;
         let body1, body2, body3;
-
+        let button_margin = {marginLeft: "25px" };
         if (this.state.selectedOption === 'AND' || this.state.selectedOption === 'OR'){
             show = <div> <label> Category : <input className = "category" type = "text" onChange = {(e) => this.handleInputChange(e, 'category')}/> </label> <label> Discount : <input className = "discount" type = "text" onChange = {(e) => this.handleInputChange(e, 'discount')}/> </label> </div>
 
             body1 = <div> <label> Conditional Category Discount ::: </label> <label> Category : <input className = "CondCategoryCategory" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryCategory')}/> </label> <label> Discount : <input className = "CondCategoryDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondCategoryDiscount')}/> </label>
-                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <Button variant="dark"   type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e) }> Add </Button>  </div>
 
             body2 = <div> <label> Conditional Store Discount ::: </label> <label> Discount : <input className = "CondStoreDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondStoreDiscount')}/> </label> <label> Min Units : <input className = "CondStoreMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinUnits')}/> </label>
-                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)}> Add </button> ----- </div>
+                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)} style={button_margin}> Add </Button>  </div>
 
             body3 = <div> <label> Conditional Product Discount ::: </label> <label> Product Id : <input className = "CondProductProductId" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductProductId')}/> </label> <label> Discount : <input className = "CondProductDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondProductDiscount')}/> </label>
-                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </Button>  </div>
         }
 
         else if (this.state.selectedOption === 'XOR'){
@@ -153,39 +155,39 @@ class CompositionPoliciesPage extends React.Component {
                 <label> XOR type : <input className = "xoresolve" type = "text" onChange = {(e) => this.handleInputChange(e, 'xoresolve')}/> </label> </div>
 
             body1 = <div> <label> Conditional Category Discount ::: </label> <label> Category : <input className = "CondCategoryCategory" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryCategory')}/> </label> <label> Discount : <input className = "CondCategoryDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondCategoryDiscount')}/> </label>
-                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </Button>  </div>
 
             body2 = <div> <label> Conditional Store Discount ::: </label> <label> Discount : <input className = "CondStoreDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondStoreDiscount')}/> </label> <label> Min Units : <input className = "CondStoreMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinUnits')}/> </label>
-                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)}> Add </button> ----- </div>
+                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)} style={button_margin}> Add </Button>  </div>
 
             body3 = <div> <label> Conditional Product Discount ::: </label> <label> Product Id : <input className = "CondProductProductId" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductProductId')}/> </label> <label> Discount : <input className = "CondProductDiscount" type = "text" style={{ width: "100px" }} readOnly value={'-100'} onChange = {(e) => this.handleInputChange(e, 'CondProductDiscount')}/> </label>
-                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </Button>  </div>
         }
 
         else if (this.state.selectedOption === 'SUM' || this.state.selectedOption === 'MAX'){
             show = ''
 
             body1 = <div> <label> Conditional Category Discount ::: </label> <label> Category : <input className = "CondCategoryCategory" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryCategory')}/> </label> <label> Discount : <input className = "CondCategoryDiscount" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryDiscount')}/> </label>
-                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </Button>  </div>
 
             body2 = <div> <label> Conditional Store Discount ::: </label> <label> Discount : <input className = "CondStoreDiscount" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreDiscount')}/> </label> <label> Min Units : <input className = "CondStoreMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinUnits')}/> </label>
-                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)}> Add </button> ----- </div>
+                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)} style={button_margin}> Add </Button>  </div>
 
             body3 = <div> <label> Conditional Product Discount ::: </label> <label> Product Id : <input className = "CondProductProductId" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductProductId')}/> </label> <label> Discount : <input className = "CondProductDiscount" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductDiscount')}/> </label>
-                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </Button>  </div>
         }
 
         else if (this.state.selectedOption === 'TERM'){
             show = <div> <label> Category : <input className = "category" type = "text" onChange = {(e) => this.handleInputChange(e, 'category')}/> </label> <label> Discount : <input className = "discount" type = "text" onChange = {(e) => this.handleInputChange(e, 'discount')}/> </label> </div>
 
             body1 = <div> <label> Category Predicate ::: </label> <label> Category : <input className = "CondCategoryCategory" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryCategory')}/> </label>
-                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondCategoryMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMinUnits')}/> </label> <label> Max Units : <input className = "CondCategoryMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondCategoryMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondCategoryDis(e)}> Add </Button>  </div>
 
             body2 = <div> <label> Store Predicate ::: </label>  <label> Min Units : <input className = "CondStoreMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinUnits')}/> </label>
-                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)}> Add </button> ----- </div>
+                <label> Max Units : <input className = "CondStoreMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMaxUnits')}/> </label> <label> Min price : <input className = "CondStoreMinPrice" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondStoreMinPrice')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondStoreDis(e)} style={button_margin}> Add </Button> </div>
 
             body3 = <div> <label> Product Predicate ::: </label> <label> Product Id : <input className = "CondProductProductId" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductProductId')}/> </label>
-                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <button type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </button> - </div>
+                <label> Min Units : <input className = "CondProductMinUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMinUnits')}/> </label> <label> Max Units : <input className = "CondProductMaxUnits" type = "text" style={{ width: "100px" }} onChange = {(e) => this.handleInputChange(e, 'CondProductMaxUnits')}/> </label> <Button variant="dark" type = "button" onClick = {(e) => this.handleClickCondProductDis(e)}> Add </Button>  </div>
 
         }
 
@@ -194,7 +196,8 @@ class CompositionPoliciesPage extends React.Component {
         return (
             <form>
                 <h1>Policy Page</h1>
-                <Select value={this.state.selectedOption} onChange={this.handleOptionChange} options={DiscountOptions}/>
+                <Select onChange={this.handleOptionChange} options={DiscountOptions} isSearchable={false} />
+
                 <div> <label> Username : <input readOnly value = {this.state.username} className = "username" type = "text" onChange = {(e) => this.handleInputChange(e, 'username')}/> </label> </div>
                 <div> <label> Store Id : <input readOnly value = {this.state.storeId} className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>
                 {show}
@@ -202,11 +205,14 @@ class CompositionPoliciesPage extends React.Component {
                 {body1}
                 {body2}
                 {body3}
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Add Policy </button>
+                <Button type = "button" onClick = {(e) => this.handleClick(e)}> Add Policy </Button>
             </form>
         )
     }
 }
+
+
+
 
 
 export default CompositionPoliciesPage;

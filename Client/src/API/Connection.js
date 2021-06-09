@@ -651,6 +651,22 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    static sendCompositionPoliciesTerm (functionName, username, storeId, type, category, discount, predicate){
+        let fixedRules = predicate.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+                predicates: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
     static sendCompositionPoliciesXor (functionName, username, storeId, type, discount, policyRules, xorResolveType){
         let fixedRules = policyRules.join(', ');
         Connection.sendMessage(Connection.connection, JSON.stringify({

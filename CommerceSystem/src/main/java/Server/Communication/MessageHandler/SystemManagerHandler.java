@@ -95,7 +95,7 @@ public class SystemManagerHandler extends  Handler{
 
                 rule = new BasketPurchaseRule(parseBasketPredicate(basketPredicate));
             }
-            case "CategoryPurchaseRule" -> {
+            case "CategoryPurchaseRule  " -> {
                 String categoryPredicate = data.getProperty("categoryPredicate");
 
                 rule = new CategoryPurchaseRule(parseCategoryPredicate(categoryPredicate));
@@ -268,16 +268,21 @@ public class SystemManagerHandler extends  Handler{
                 String discount = data.getProperty("discount");
                 String predicates = data.getProperty("predicates");
                 String[] predStrList = parseList(predicates);
+                String pred;
                 List<Predicate> predList = new LinkedList<>();
                 for(String s : predStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("storePredicate")){
-                        predList.add(parseStorePredicate(s));
+                        pred = data.getProperty("storePredicate");
+                        predList.add(parseStorePredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        predList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        predList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        predList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        predList.add(parseProductPredicate(pred));
                     }
                     else
                         throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
@@ -324,7 +329,7 @@ public class SystemManagerHandler extends  Handler{
         return new StorePredicate(Integer.parseInt(minUnits), Integer.parseInt(maxUnits), Double.parseDouble(minPrice));
     }
 
-    private ProductPredicate parseProductPredicate(String storePredicate){
+    private ProductPredicate    parseProductPredicate(String storePredicate){
         Gson gson = new Gson();
         Properties data = gson.fromJson(storePredicate, Properties.class);
         String minUnits = data.getProperty("minUnits");
@@ -347,6 +352,6 @@ public class SystemManagerHandler extends  Handler{
     private String[] parseList(String listStr){
         //String str = listStr.substring(1, listStr.length() - 1);
 
-        return listStr.split(",");
+        return listStr.split(", ");
     }
 }
