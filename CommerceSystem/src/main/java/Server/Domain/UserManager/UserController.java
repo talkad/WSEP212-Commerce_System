@@ -575,7 +575,7 @@ public class UserController {
         User user = new User(username);
         user.setState(new Admin());
         DALService.getInstance().insertUser(user.toDTO());
-        connectedUsers.put(username, user);
+        connectedUsers.put(username, user);//todo always connected or just in the system?
     }
 
 

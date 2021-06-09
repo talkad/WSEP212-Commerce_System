@@ -20,6 +20,7 @@ public class PublisherTest {
     @Before
     public void setUp(){
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
 

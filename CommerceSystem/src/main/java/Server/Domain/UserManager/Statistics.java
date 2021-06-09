@@ -59,9 +59,9 @@ public class Statistics {
         saveCounters();
         lock.writeLock().unlock();
 
-        if(UserController.getInstance().isConnected("u1")){
+        if(UserController.getInstance().isConnected("a1")){
             Gson gson = new Gson();
-            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+            Publisher.getInstance().notify("a1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
         }
     }
 
@@ -72,9 +72,9 @@ public class Statistics {
         saveCounters();
         lock.writeLock().unlock();
 
-        if(UserController.getInstance().isConnected("u1")){
+        if(UserController.getInstance().isConnected("a1")){
             Gson gson = new Gson();
-            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+            Publisher.getInstance().notify("a1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
         }
     }
 
@@ -85,9 +85,9 @@ public class Statistics {
         saveCounters();
         lock.writeLock().unlock();
 
-        if(UserController.getInstance().isConnected("u1")){
+        if(UserController.getInstance().isConnected("a1")){
             Gson gson = new Gson();
-            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+            Publisher.getInstance().notify("a1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
         }
     }
 
@@ -98,9 +98,9 @@ public class Statistics {
         saveCounters();
         lock.writeLock().unlock();
 
-        if(UserController.getInstance().isConnected("u1")){
+        if(UserController.getInstance().isConnected("a1")){
             Gson gson = new Gson();
-            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+            Publisher.getInstance().notify("a1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
         }
     }
 
@@ -111,9 +111,9 @@ public class Statistics {
         saveCounters();
         lock.writeLock().unlock();
 
-        if(UserController.getInstance().isConnected("u1")){
+        if(UserController.getInstance().isConnected("a1")){
             Gson gson = new Gson();
-            Publisher.getInstance().notify("u1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
+            Publisher.getInstance().notify("a1", new ReplyMessage("liveUpdate", gson.toJson(getCounters()), "dailyStatistics"));
         }
     }
 

@@ -57,12 +57,12 @@ public class CommerceSystem implements IService {
     public Response<Boolean> init() {
         Response<Boolean> responseInit;
         Response<Boolean> responseConfig;
-        DALService.getInstance().resetDatabase();
+        //DALService.getInstance().resetDatabase();
         //responseConfig = configInit();
-        userController.adminBoot("u1", "u1");
+        userController.adminBoot("a1", "a1");
 
         // todo if(DALService.getInstance().getStore(0) == null)
-        responseInit = initState(null);
+        responseInit = initState("initfileforpresentation");
 
 //        if (responseInit.isFailure() || responseConfig.isFailure())
 //            return new Response<>(false, true, "initialization failed (CRITICAL)");
@@ -356,7 +356,6 @@ public class CommerceSystem implements IService {
 
 
     public Response<Boolean> initState(String filename) {
-
         try {
             File file;
             if(filename != null){
@@ -370,6 +369,9 @@ public class CommerceSystem implements IService {
             fis.read(data);
             fis.close();
             String str = new String(data, StandardCharsets.UTF_8);
+            if(str.length() == 0){
+                return new Response<>(true, false, "Successfully initialized the system with the initialization file");
+            }
             String[] funcs = str.split(";");
             String[] attributes;
             String currUser = addGuest().getResult();

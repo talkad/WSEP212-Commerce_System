@@ -23,6 +23,7 @@ public class StoreControllerTest {
     public void setUp(){
         if(!initialized) {
             DALService.getInstance().useTestDatabase();
+            DALService.getInstance().startDB();
             DALService.getInstance().resetDatabase();
 
             storeController = StoreController.getInstance();

@@ -20,6 +20,7 @@ public class DeliverySystemTests {
     public void setUp(){
         supplier = ProductSupplyAdapter.getInstance();
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
 

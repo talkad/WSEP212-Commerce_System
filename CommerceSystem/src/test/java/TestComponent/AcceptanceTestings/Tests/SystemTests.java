@@ -21,11 +21,12 @@ public class SystemTests extends ProjectAcceptanceTests {
     @Test
     public void systemBootTest(){ // 1.1
         // checking if there exists an admin. there's a built in admin and we'll try to log into his account
+        DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
+        DALService.getInstance().resetDatabase();
         bridge = Driver.getBridge();
         bridge.init();
         notifier = Driver.getNotifier();
-        DALService.getInstance().useTestDatabase();
-        DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
         String guestName = bridge.addGuest().getResult();
@@ -35,12 +36,14 @@ public class SystemTests extends ProjectAcceptanceTests {
 
     @Test
     public void initfileSuccess(){
-        bridge = Driver.getBridge();
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
-        //bridge.init();
-        bridge.configInit();
+        bridge = Driver.getBridge();
         notifier = Driver.getNotifier();
+
+        //bridge.init();
+        //bridge.configInit();//todo
 
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
@@ -51,11 +54,12 @@ public class SystemTests extends ProjectAcceptanceTests {
 
     @Test
     public void initfileFailure(){
-        bridge = Driver.getBridge();
-        bridge.configInit();
-        notifier = Driver.getNotifier();
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
+        bridge = Driver.getBridge();
+        //bridge.configInit();//todo
+        notifier = Driver.getNotifier();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
         Response<Boolean> res = bridge.initState("failedinitfile");
