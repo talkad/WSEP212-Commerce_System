@@ -56,8 +56,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> configInit() {
-        return commerceSystem.configInit();
+    public Response<Boolean> configInit(String filename) {
+        return commerceSystem.configInit(filename);
     }
 
     @Override

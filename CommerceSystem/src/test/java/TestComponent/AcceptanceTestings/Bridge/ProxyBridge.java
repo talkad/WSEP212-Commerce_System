@@ -51,9 +51,9 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> configInit() {
+    public Response<Boolean> configInit(String filename) {
         if (real != null){
-            return real.configInit();
+            return real.configInit(filename);
         }
         return new Response<>(null, true, "not implemented");
     }

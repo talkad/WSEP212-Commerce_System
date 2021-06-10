@@ -71,10 +71,10 @@ public class DALService implements Runnable{
     private List<Pair<DailyCountersDTO, DBOperation>> countersSaveCache;
     private ReadWriteLock countersLock;
 
-    private String dbName = "commerceDatabase";
-    private String dbURL = "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/database1?retryWrites=true&w=majority";
+    private String dbName;
+    private String dbURL;
 
-    private boolean useLocal = true;
+    private boolean useLocal = false;
 
     private boolean cleaningCache = false;
 
@@ -484,14 +484,6 @@ public class DALService implements Runnable{
     public void useTestDatabase() {
         dbName = "testDatabase";
     }
-
-    public void setUseLocal(boolean useLocal){
-        this.useLocal = useLocal;
-    }
-
-    public void setDbName(String dbName){ this.dbName = dbName;}
-
-    public void setDbURL(String dbURL){ this.dbURL = dbURL; }
 
     public DailyCountersDTO getDailyCounters(LocalDate date){
         DailyCountersDTO dailyCountersDTO;
@@ -1607,7 +1599,28 @@ public class DALService implements Runnable{
         }
     }
 
+    public void setName(String dbName){
+        this.dbName = dbName;
+    }
 
+    public void setURL(String dbURL){
+        this.dbURL = dbURL;
+    }
+
+    public void setUseLocal(boolean useLocal){
+        this.useLocal = useLocal;
+    }
+
+    public boolean checkConnection(){
+        try{
+            MongoClient mongoClient = MongoClients.create(this.dbURL);
+            mongoClient.close();
+            return true;
+
+        }catch(Exception e){
+            return false;
+        }
+    }
 
 
 }

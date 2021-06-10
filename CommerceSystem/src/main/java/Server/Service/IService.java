@@ -32,7 +32,7 @@ public interface IService {
 
     Response<Boolean> initState(String filename);
 
-    Response<Boolean> configInit();
+    Response<Boolean> configInit(String filename);
 
         /**
          * Guest requirements - 2
