@@ -1,5 +1,6 @@
 package Server.Service;
 
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -282,7 +283,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
         return commerceSystem.getStoreWorkersDetails(username, storeID);
     }
 

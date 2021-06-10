@@ -1,5 +1,6 @@
 package TestComponent.AcceptanceTestings.Tests;
 
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;
@@ -978,7 +979,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         // new appointee should be able to see the workers but not appoint a new owner or manager
-        Response<List<User>> workersResult = bridge.getStoreWorkersDetails("aa", this.storeID);
+        Response<List<UserDTO>> workersResult = bridge.getStoreWorkersDetails("aa", this.storeID);
         Assert.assertFalse(workersResult.isFailure());
         Assert.assertFalse(workersResult.getResult().isEmpty());
 
@@ -1010,7 +1011,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(appointResult.getResult());
 
         // new appointee should not be able to see the workers
-        Response<List<User>> workersResult = bridge.getStoreWorkersDetails("tt", this.storeID);
+        Response<List<UserDTO>> workersResult = bridge.getStoreWorkersDetails("tt", this.storeID);
         Assert.assertTrue(workersResult.isFailure());
     }
 
@@ -1286,7 +1287,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
-        Response<List<User>> workersDetailsResult = bridge.getStoreWorkersDetails("x", this.storeID);
+        Response<List<UserDTO>> workersDetailsResult = bridge.getStoreWorkersDetails("x", this.storeID);
         Assert.assertTrue(workersDetailsResult.isFailure());
 
         // receive store history
@@ -1368,7 +1369,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(appointResult.getResult());
 
         // the second degree appointee shouldn't be able to look up the employees of the store
-        Response<List<User>> workersDetails = bridge.getStoreWorkersDetails("b", this.storeID);
+        Response<List<UserDTO>> workersDetails = bridge.getStoreWorkersDetails("b", this.storeID);
         Assert.assertTrue(workersDetails.isFailure());
     }
 
@@ -1392,7 +1393,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertFalse(removeResult.getResult());
 
         // manager still should be able to look up the workers of the store
-        Response<List<User>> workersDetails = bridge.getStoreWorkersDetails("uu", this.storeID);
+        Response<List<UserDTO>> workersDetails = bridge.getStoreWorkersDetails("uu", this.storeID);
         Assert.assertFalse(workersDetails.isFailure());
     }
 
@@ -1411,7 +1412,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         Assert.assertTrue(appointResult.getResult());
 
         // manager and owner trying to view it
-        Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("irina", this.storeID);
+        Response<List<UserDTO>> workerDetailsResult = bridge.getStoreWorkersDetails("irina", this.storeID);
         Assert.assertFalse(workerDetailsResult.isFailure());
         Assert.assertFalse(workerDetailsResult.getResult().isEmpty());
 
@@ -1439,7 +1440,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 "shaoli", PermissionsEnum.RECEIVE_STORE_WORKER_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
-        Response<List<User>> workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
+        Response<List<UserDTO>> workerDetailsResult = bridge.getStoreWorkersDetails("shaoli", this.storeID);
         Assert.assertTrue(workerDetailsResult.isFailure());
 
         // now a user which is not a manger or an owner will try to view it

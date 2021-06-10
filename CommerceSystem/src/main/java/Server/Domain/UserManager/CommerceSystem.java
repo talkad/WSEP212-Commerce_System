@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.DALService;
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -296,7 +297,7 @@ public class CommerceSystem implements IService {
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
         return userController.getStoreWorkersDetails(username, storeID);
     }
 

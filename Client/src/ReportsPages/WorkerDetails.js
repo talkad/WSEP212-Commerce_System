@@ -29,7 +29,7 @@ class WorkerDetails extends React.Component{
             let EmpCounter = 1;
 
             result.result.forEach(element => show = show.concat(
-                "Employee Num: " + EmpCounter++ + " Name: " + element.name.toString() + " How much he ownes: " + element.storesOwned.size().toString() + "  :::  "));
+                "Employee Num: " + EmpCounter++ + " Name: " + element.name.toString() + " How much he ownes: " + element.storesOwned.length.toString() + "  :::  "));
 
             this.setState({toShow: show});
         }

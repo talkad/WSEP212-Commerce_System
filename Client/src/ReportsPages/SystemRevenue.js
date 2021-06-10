@@ -7,7 +7,7 @@ class SystemRevenue extends React.Component{
         super(props);
         this.state = {
             functionName: 'getTotalSystemRevenue',
-            adminName: StaticUserInfo.getUsername(),
+            adminName: '',
             showMessage: false,
             toShow: ''
         };
@@ -42,7 +42,7 @@ class SystemRevenue extends React.Component{
         return(
             <form>
                 <h1>System Daily Revenue Report </h1>
-                <div> <label> Admin Name : <input readOnly value = {this.state.adminName} className = "adminName" type = "text"/> </label> </div>
+                <div> <label> Admin Name : <input value = {this.state.adminName} className = "adminName" type = "text" onChange = {(e) => this.handleInputChange(e, 'adminName')}/> </label> </div>
                 <div className="toShow"> {this.state.showMessage && <p> {this.state.toShow} </p>}
                     <button type = "button" onClick = {(e) => this.onButtonClickHandler(e)}> Show Report </button>
                 </div>

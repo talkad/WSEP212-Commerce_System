@@ -590,18 +590,18 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<List<User>> getStoreWorkersDetails(String username,int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username,int storeID) {
         if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
             String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
-            List<User> result = new Vector<>();
-            result.add(new User(DALService.getInstance().getUser(ownerName)));
+            List<UserDTO> result = new Vector<>();
+            result.add(DALService.getInstance().getUser(ownerName));
             List<String> appointees = connectedUsers.get(username).getAppointments().getAppointees(storeID).getResult();
             List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             for(String name : appointees){
-                result.add(new User(DALService.getInstance().getUser(name)));
+                result.add(DALService.getInstance().getUser(name));
             }
             return new Response<>(result, false, "Workers found");
         }

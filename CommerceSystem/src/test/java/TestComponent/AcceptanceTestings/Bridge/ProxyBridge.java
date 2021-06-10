@@ -1,5 +1,6 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -370,7 +371,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
         if (real != null){
             return real.getStoreWorkersDetails(username, storeID);
         }

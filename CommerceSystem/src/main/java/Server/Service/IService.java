@@ -1,5 +1,6 @@
 package Server.Service;
 
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -126,7 +127,7 @@ public interface IService {
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
-    Response<List<User>> getStoreWorkersDetails(String username, int storeID); // 4.9
+    Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID); // 4.9
 
     Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 

@@ -2,6 +2,7 @@ package TestComponent.IntegrationTestings;
 
 import Server.DAL.DALService;
 import Server.DAL.PurchaseDTO;
+import Server.DAL.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DiscountRules.StoreDiscountRule;
@@ -844,9 +845,9 @@ public class UserControllerIntegrationTests {
         userController.appointOwner(talUserName, "almog4", storeID);
         userController.appointManager(jacobUserName, "shaked64", storeID);
 
-        Response<List<User>> result = userController.getStoreWorkersDetails(yoniUserName, storeID);
+        Response<List<UserDTO>> result = userController.getStoreWorkersDetails(yoniUserName, storeID);
         Assert.assertFalse(result.isFailure());
-        List<User> actualUsers = result.getResult();
+        List<UserDTO> actualUsers = result.getResult();
 
         List<String> users = new Vector<>();
         users.add("yoni4");
@@ -857,7 +858,7 @@ public class UserControllerIntegrationTests {
         users.add("shaked64");
 
         Assert.assertEquals(6, users.size());
-        for(User user : actualUsers){
+        for(UserDTO user : actualUsers){
             Assert.assertTrue(users.contains(user.getName()));
         }
     }
@@ -906,7 +907,7 @@ public class UserControllerIntegrationTests {
         userController.appointOwner(talUserName, "almog4", storeID);
         userController.appointManager(jacobUserName, "shaked64", storeID);
 
-        Response<List<User>> result = userController.getStoreWorkersDetails(bruhUserName, storeID);
+        Response<List<UserDTO>> result = userController.getStoreWorkersDetails(bruhUserName, storeID);
         Assert.assertTrue(result.isFailure());
     }
 

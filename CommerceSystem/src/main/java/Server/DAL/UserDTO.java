@@ -41,7 +41,7 @@ public class UserDTO {
     @Property(value = "pendingMessages")
     private PendingMessagesDTO pendingMessages;
 
-    public UserDTO(){
+    public UserDTO() {
         // For Morphia
     }
 
