@@ -246,7 +246,18 @@ class SearchResult extends React.Component {
 
     handleSearchResponse(result) {
         if (!result.isFailure) {
-            this.setState({responseResults: result.result, loaded: true});
+            if(this.state.showProduct){
+                this.setState({responseResults: result.result, loaded: true});
+            }
+            else if(this.state.showStore){
+                let allProducts = [];
+                let stores = result.result;
+
+                stores.map(({storeID, storeName, products}) => allProducts = allProducts.concat(products));
+
+                this.setState({responseResults: allProducts, loaded: true, showStore: false, showProduct: true});
+            }
+
         } else {
             alert(result.errMsg);
         }
