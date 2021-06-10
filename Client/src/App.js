@@ -67,6 +67,7 @@ import DiscountsDetails from "./ReportsPages/DiscountsDetails";
 import PurchaseDetails from "./ReportsPages/PurchaseDetails";
 import RemovePurchaseRule from "./DiscountPurchasePolicyPages/RemovePurchaseRule";
 import RemoveDiscountRule from "./DiscountPurchasePolicyPages/RemoveDiscountRule";
+import OwnerStoreHistory from "./ReportsPages/OwnerStoreHistory";
 
 
 
@@ -416,7 +417,7 @@ class App extends React.Component {
                             <NavDropdown id={"admin-nav-dropdown"} title={"Admin"}>
                                 <NavDropdown.Item href="/dailyStatistics">Daily Statistics</NavDropdown.Item>
                                 <NavDropdown.Item href="/RECEIVE_GENERAL_REVENUE">System revenue</NavDropdown.Item>
-                                <NavDropdown.Item href="/RECEIVE_STORE_HISTORY">Store history</NavDropdown.Item>
+                                <NavDropdown.Item href="/RECEIVE_STORE_HISTORY_ADMIN">Store history</NavDropdown.Item>
                             </NavDropdown>}
 
                             {this.state.registered && this.getNotifications()}
@@ -501,7 +502,7 @@ class App extends React.Component {
                         <Route path="/APPOINT_MANAGER" component={AppointManager}/>
                         <Route path="/REMOVE_MANAGER_APPOINTMENT" component={RemoveManager}/>
                         <Route path="/RECEIVE_STORE_WORKER_INFO" component={WorkerDetails}/>
-                        <Route path="/RECEIVE_STORE_HISTORY" component={StorePurchaseHistory}/>
+                        <Route path="/RECEIVE_STORE_HISTORY_ADMIN" component={StorePurchaseHistory}/>
                         <Route path="/Category_Discount_Rule" component={CategoryDiscountRule}/>
                         <Route path="/Composition_Policies_Page" component={CompositionPoliciesPage}/>
                         <Route path="/Conditional_Category_Discount_Rule" component={ConditionalCategoryDiscountRule}/>
@@ -521,6 +522,7 @@ class App extends React.Component {
                         <Route path="/Composition_Purchase_Page" component={CompositionPurchasePage}/>
                         <Route path="/VIEW_DISCOUNT_POLICY" component={DiscountsDetails}/>
                         <Route path="/VIEW_Purchase_POLICY" component={PurchaseDetails}/>
+                        <Route path="/RECEIVE_STORE_HISTORY" component={OwnerStoreHistory}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>

@@ -25,6 +25,7 @@ import DiscountsDetails from "../ReportsPages/DiscountsDetails";
 import PurchaseDetails from "../ReportsPages/PurchaseDetails";
 import RemoveDiscountRule from "../DiscountPurchasePolicyPages/RemoveDiscountRule";
 import RemovePurchaseRule from "../DiscountPurchasePolicyPages/RemovePurchaseRule";
+import OwnerStoreHistory from "../ReportsPages/OwnerStoreHistory";
 
 class StoreManagment extends React.Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class StoreManagment extends React.Component {
                                                 perm === 'REMOVE_MANAGER_APPOINTMENT' ? ReactDOM.render(<React.StrictMode><RemoveManager /></React.StrictMode>, document.getElementById('root')) :
                                                     perm === 'RECEIVE_STORE_REVENUE' ? ReactDOM.render(<React.StrictMode><StoreRevenue /></React.StrictMode>, document.getElementById('root')) :
                                                         perm === 'RECEIVE_GENERAL_REVENUE' ? ReactDOM.render(<React.StrictMode><SystemRevenue /></React.StrictMode>, document.getElementById('root')) :
-                                                            perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><StorePurchaseHistory /></React.StrictMode>, document.getElementById('root')) :
+                                                            perm === 'RECEIVE_STORE_HISTORY' ? ReactDOM.render(<React.StrictMode><OwnerStoreHistory /></React.StrictMode>, document.getElementById('root')) :
                                                                 perm === 'RECEIVE_STORE_WORKER_INFO' ? ReactDOM.render(<React.StrictMode><WorkerDetails /></React.StrictMode>, document.getElementById('root')) :
                                                                     perm === 'ADD_PURCHASE_RULE' ? ReactDOM.render(<React.StrictMode><MainPurchasePolicyPage /></React.StrictMode>, document.getElementById('root')) :
                                                                         perm === 'VIEW_DISCOUNT_POLICY' ? ReactDOM.render(<React.StrictMode><DiscountsDetails /></React.StrictMode>, document.getElementById('root')) :
