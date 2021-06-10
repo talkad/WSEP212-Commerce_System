@@ -5,11 +5,13 @@ import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.CommerceSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class StoreControllerTest {
     private static StoreController storeController;
@@ -20,9 +22,9 @@ public class StoreControllerTest {
     private static boolean initialized = false;
 
     @Before
-    public void setUp(){
+    public void setUp() throws InterruptedException {
         if(!initialized) {
-            DALService.getInstance().useTestDatabase();
+            CommerceSystem.getInstance().configInit("successconfigfile.json");
             DALService.getInstance().startDB();
             DALService.getInstance().resetDatabase();
 
@@ -33,6 +35,9 @@ public class StoreControllerTest {
             store = storeController.getStoreById(res.getResult());
             store.addProduct(product1, 5);
             store.addProduct(product2, 8);
+
+            DALService.getInstance().insertStore(store.toDTO());
+            DALService.getInstance().waitForDataStorage();
 
             initialized = true;
         }
@@ -78,9 +83,9 @@ public class StoreControllerTest {
         List<ProductClientDTO> products = storeController.searchByCategory("Apple").getResult();
 
         for(ProductClientDTO productDTO: products) {
-            System.out.println(productDTO.getName());
-            if (productDTO.getName().equals("Airpods")) {
+            if (productDTO.getName().equalsIgnoreCase("AirPods")) {
                 result = true;
+                break;
             }
         }
 

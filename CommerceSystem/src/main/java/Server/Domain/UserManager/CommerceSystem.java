@@ -330,7 +330,7 @@ public class CommerceSystem implements IService {
     public Response<Boolean> configInit(String filename){
         Gson gson = new Gson();
         try {
-            Path pathToFile = Paths.get(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\" + filename);
+            Path pathToFile = Paths.get(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\" + filename);
             byte [] jsonBytes = Files.readAllBytes(pathToFile);
             String jsonString = new String(jsonBytes);
 
@@ -364,7 +364,7 @@ public class CommerceSystem implements IService {
             else
                 return new Response<>(false, true, "External System connection failed. (CRITICAL)");
 
-            return new Response<>(true,false,"System initialized successfully.");
+            return new Response<>(true,false,"System configured successfully.");
         }
         catch(Exception e) {
             return new Response<>(false, true, "Error with config file. (CRITICAL)");
@@ -376,10 +376,10 @@ public class CommerceSystem implements IService {
         try {
             File file;
             if(filename != null){
-                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\" + filename);
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\" + filename);
             }
             else {
-                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\initfile");
             }
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
@@ -436,6 +436,7 @@ public class CommerceSystem implements IService {
             }
         }
         catch (Exception e) {
+            e.printStackTrace();
             return new Response<>(false, true, "init: unexpected syntax");
         }
         return new Response<>(true, false, "Successfully initialized the system with the initialization file");

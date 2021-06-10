@@ -6,6 +6,7 @@ import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ShoppingCart;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +23,7 @@ public class ShoppingCartTest {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }

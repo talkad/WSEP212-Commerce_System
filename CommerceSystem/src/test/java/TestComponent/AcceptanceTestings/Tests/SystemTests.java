@@ -10,6 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.security.Provider;
+
 public class SystemTests extends ProjectAcceptanceTests {
 
 
@@ -21,11 +23,11 @@ public class SystemTests extends ProjectAcceptanceTests {
     @Test
     public void systemBootTest(){ // 1.1
         // checking if there exists an admin. there's a built in admin and we'll try to log into his account
-        DALService.getInstance().useTestDatabase();
-        DALService.getInstance().startDB();
-        DALService.getInstance().resetDatabase();
         bridge = Driver.getBridge();
-        bridge.init();
+        bridge.configInit("successconfigfile.json");
+        DALService.getInstance().resetDatabase();
+        bridge.initState("initfile");
+
         notifier = Driver.getNotifier();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
@@ -36,34 +38,48 @@ public class SystemTests extends ProjectAcceptanceTests {
 
     @Test
     public void initfileSuccess(){
-        DALService.getInstance().useTestDatabase();
-        DALService.getInstance().startDB();
-        DALService.getInstance().resetDatabase();
         bridge = Driver.getBridge();
+        bridge.configInit("successconfigfile.json");
+        DALService.getInstance().resetDatabase();
+        Response<Boolean> res = bridge.initState("initfile");
+
         notifier = Driver.getNotifier();
-
-        //bridge.init();
-        //bridge.configInit();//todo
-
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
-        Response<Boolean> res = bridge.initState("initfile");
         Assert.assertFalse(res.isFailure());
         Assert.assertEquals("u2", bridge.getUserByName("u2").getName());
     }
 
     @Test
     public void initfileFailure(){
-        DALService.getInstance().useTestDatabase();
-        DALService.getInstance().startDB();
-        DALService.getInstance().resetDatabase();
         bridge = Driver.getBridge();
-        //bridge.configInit();//todo
+        bridge.configInit("successconfigfile.json");
+        DALService.getInstance().resetDatabase();
+        Response<Boolean> res = bridge.initState("failedinitfile");
+
         notifier = Driver.getNotifier();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
-        Response<Boolean> res = bridge.initState("failedinitfile");
         Assert.assertTrue(res.isFailure());
         Assert.assertEquals(res.getErrMsg(), "CRITICAL Error: Bad initfile");
+    }
+
+    @Test
+    public void configFileSuccess(){
+        bridge = Driver.getBridge();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
+        Response<Boolean> res = bridge.configInit("successconfigfile.json");
+        Assert.assertTrue(res.getResult());
+    }
+
+    @Test
+    public void configFileFailure(){
+        bridge = Driver.getBridge();
+        PaymentSystemAdapter.getInstance().setMockFlag();
+        ProductSupplyAdapter.getInstance().setMockFlag();
+        Response<Boolean> res = bridge.configInit("failedconfigfile.json");
+        Assert.assertTrue(res.isFailure());
+        Assert.assertEquals(res.getErrMsg(), "DB Connection failed (CRITICAL)");
     }
 }

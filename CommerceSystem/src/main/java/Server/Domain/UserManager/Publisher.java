@@ -3,6 +3,7 @@ package Server.Domain.UserManager;
 import Server.DAL.DALService;
 import Server.DAL.PairDTOs.IntStringListPair;
 import Server.DAL.PublisherDTO;
+import Server.Domain.CommonClasses.Response;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
 import Server.Service.Notify;
@@ -59,9 +60,6 @@ public class Publisher{
         if(users == null)
             return;
 
-        for(String name: users)
-            System.out.println(name);
-
         for(String username: users){
 
             user = userController.getUserByName(username);
@@ -69,7 +67,7 @@ public class Publisher{
             if(perm == null || (user.getStoresOwned().contains(storeID) || user.getStoresManaged().get(storeID).contains(perm))) {
 
                 if (userController.isConnected(username)) {
-                    System.out.println("notification sent to " + username + ": " + msg.getMessage());
+                    new Response<>(true, false, "notification sent to " + username + ": " + msg.getMessage());
 
                     notify(username, msg);
                 } else {

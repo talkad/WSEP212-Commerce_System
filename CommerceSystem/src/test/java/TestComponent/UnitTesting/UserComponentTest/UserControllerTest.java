@@ -3,6 +3,7 @@ package TestComponent.UnitTesting.UserComponentTest;
 
 import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.UserController;
 import Server.Domain.UserManager.UserDAO;
 import Server.Service.CommerceService;
@@ -23,7 +24,7 @@ public class UserControllerTest {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }

@@ -131,8 +131,6 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
         // one needs to succeed while the other to fail
         if((buyer1Result[0] == 0 && buyer2Result[0] == 0) || (buyer1Result[0] == 1 && buyer2Result[0] == 1)){
-            System.out.println(buyer1Result[0]);
-            System.out.println(buyer2Result[0]);
             Assert.fail();
         }
     }

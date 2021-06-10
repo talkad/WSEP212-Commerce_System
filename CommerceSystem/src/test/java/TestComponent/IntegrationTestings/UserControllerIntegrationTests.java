@@ -46,13 +46,11 @@ public class UserControllerIntegrationTests {
 
         // initial user registrations
         String guest = commerceService.addGuest().getResult();
-        System.out.println(userController.register(initialUserName, "tal", "kadosh").getErrMsg());
         userController.register(initialUserName, "yoni", "pis");
 
         // login of users
         Response<String> login = userController.login(initialUserName, "yoni", "pis");
         String newUserName = login.getResult();
-        System.out.println(userController.login(guest, "tal", "kadosh").getErrMsg());
 
         // opening the store
         Response<Integer> storeRes = userController.openStore(newUserName, "eggStore");

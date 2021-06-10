@@ -71,6 +71,8 @@ public class DALService implements Runnable{
     private List<Pair<DailyCountersDTO, DBOperation>> countersSaveCache;
     private ReadWriteLock countersLock;
 
+    private final ReadWriteLock testLock;
+
     private String dbName;
     private String dbURL;
 
@@ -112,6 +114,8 @@ public class DALService implements Runnable{
         this.publisherLock = new ReentrantReadWriteLock();
         this.guestCartLock = new ReentrantReadWriteLock();
         this.countersLock = new ReentrantReadWriteLock();
+
+        this.testLock = new ReentrantReadWriteLock();
     }
 
     public void startDB(){
@@ -199,7 +203,7 @@ public class DALService implements Runnable{
         boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
         if(!allEmpty) {
-            System.out.println("Accessing DB for save iteration");
+            System.out.println("Accessing DB for save iteration: " + this.dbName);
 //            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
 //                    AndCompositionDiscountRuleDTO.class,
 //                    CategoryDiscountRuleDTO.class,
@@ -378,6 +382,11 @@ public class DALService implements Runnable{
                 System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
+
+            synchronized(this.testLock){
+                this.testLock.notifyAll();
+            }
+
             System.out.println("Completed save iteration");
         }
     }
@@ -1619,6 +1628,17 @@ public class DALService implements Runnable{
 
         }catch(Exception e){
             return false;
+        }
+    }
+
+    public void waitForDataStorage(){
+        try{
+            synchronized(this.testLock) {
+                this.testLock.wait();
+            }
+        }
+        catch(InterruptedException e){
+            Thread.currentThread().interrupt();
         }
     }
 
