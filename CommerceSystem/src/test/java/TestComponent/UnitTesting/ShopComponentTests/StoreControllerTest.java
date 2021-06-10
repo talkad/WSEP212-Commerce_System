@@ -77,9 +77,12 @@ public class StoreControllerTest {
         boolean result = false;
         List<ProductClientDTO> products = storeController.searchByCategory("Apple").getResult();
 
-        for(ProductClientDTO productDTO: products)
-            if(productDTO.getProductID() == 1)
+        for(ProductClientDTO productDTO: products) {
+            System.out.println(productDTO.getName());
+            if (productDTO.getName().equals("Airpods")) {
                 result = true;
+            }
+        }
 
         Assert.assertTrue(result);
     }

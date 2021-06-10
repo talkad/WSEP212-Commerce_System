@@ -30,13 +30,13 @@ public class StatisticsTests {
         commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
-        userController.login(initialUserName, "u1", "u1");
-        List<String> statistics = userController.getDailyStatistics("u1", LocalDate.now()).getResult();
+        userController.login(initialUserName, "a1", "a1");
+        List<String> statistics = userController.getDailyStatistics("a1", LocalDate.now()).getResult();
         Assert.assertEquals("Guest: 3", statistics.get(0));
-        Assert.assertEquals("Registered: 0", statistics.get(1));
+        Assert.assertEquals("Registered: 1", statistics.get(1));
         Assert.assertEquals("Manager: 0", statistics.get(2));
         Assert.assertEquals("Owner: 0"  , statistics.get(3));
-        Assert.assertEquals("Admin: 2", statistics.get(4));
+        Assert.assertEquals("Admin: 1", statistics.get(4));
     }
 
     @Test
@@ -45,10 +45,10 @@ public class StatisticsTests {
         commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
-        userController.login(initialUserName, "u1", "u1");
+        userController.login(initialUserName, "a1", "a1");
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        Response<List<String>> statisticsRes = userController.getDailyStatistics("u1", tomorrow);
+        Response<List<String>> statisticsRes = userController.getDailyStatistics("a1", tomorrow);
         Assert.assertTrue(statisticsRes.isFailure());
     }
 }
