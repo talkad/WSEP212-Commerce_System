@@ -267,7 +267,7 @@ public class StoreController {
     }
 
 
-//    public Response<Boolean> addProductRating(int storeID, int productID, Rating rate) { todo next version
+//    public Response<Boolean> addStoreRating(int storeID, int productID, Rating rate) { todo next version
 //        Response<Boolean> result;
 //        Store store;
 //
