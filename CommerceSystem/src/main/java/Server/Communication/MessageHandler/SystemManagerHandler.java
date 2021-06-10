@@ -78,8 +78,8 @@ public class SystemManagerHandler extends  Handler{
                 String purchaseRuleID = data.getProperty("purchaseRuleID");
 
                 response = service.removePurchaseRule(username, Integer.parseInt(storeID), Integer.parseInt(purchaseRuleID));
-
             }
+
             case "getDailyStatistics" -> {
                 String adminName = data.getProperty("adminName");
                 String date = data.getProperty("date");

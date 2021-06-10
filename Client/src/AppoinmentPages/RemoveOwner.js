@@ -15,12 +15,12 @@ class RemoveOwner extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName).then(this.handleAppointResponse, Connection.handleReject)
+        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName, this.state.storeId).then(this.handleAppointResponse, Connection.handleReject)
     }
 
     handleAppointResponse(result){
         if(!result.isFailure){
-            alert("appointing successful");
+            alert("Appointment removal successful");
         }
         else{
             alert(result.errMsg);

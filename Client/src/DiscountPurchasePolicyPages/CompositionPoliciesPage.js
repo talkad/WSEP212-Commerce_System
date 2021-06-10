@@ -56,6 +56,7 @@ class CompositionPoliciesPage extends React.Component {
                     this.state.selectedOption === 'SUM' ? Connection.sendCompositionPoliciesSumMax(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject) :
                         this.state.selectedOption === 'MAX' ? Connection.sendCompositionPoliciesSumMax(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject):
                             Connection.sendCompositionPoliciesTerm(this.state.functionName, this.state.username, this.state.storeId, this.state.type, this.state.category, this.state.discount, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject);
+        listToSend = [];
     }
 
     handleCompPoliciesResponse(result){
