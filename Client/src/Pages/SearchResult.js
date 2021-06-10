@@ -4,6 +4,7 @@ import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
 import {Button, Col, Container, Image, Row, Spinner} from "react-bootstrap";
 import Search from "../Components/Search";
+import could_not_find_harold from '../Images/harold_couldnt_find.png'
 
 const products = [
     {
@@ -285,7 +286,7 @@ class SearchResult extends React.Component {
                 <Search/>
                 <h1>Search Results</h1>
                 {this.state.loaded && (this.state.responseResults.length === 0) &&
-                <Image src="https://i.imgflip.com/5a4a1e.jpg"/>}
+                <Image src={could_not_find_harold}/>}
                 {! this.state.loaded && <Spinner animation="grow"/>}
                 {this.state.loaded && this.state.showProduct && this.state.responseResults.map(({
                      name, productID, storeID, price, categories, keywords, reviews, rating, numRatings}) => (

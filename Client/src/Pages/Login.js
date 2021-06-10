@@ -4,7 +4,7 @@ import StaticUserInfo from "../API/StaticUserInfo";
 import {Form, Button, Container, Spinner, InputGroup, Alert, Image} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Link} from "react-router-dom";
-import hello_there from "../Images/hello_there.gif";
+import hello_there from "../Images/harold_star_wars.gif";
 
 class Login extends React.Component{
 
