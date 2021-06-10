@@ -89,19 +89,36 @@ public class StoreController {
             return stores.get(storeId);
         }
         else {
-            Store store = new Store(DALService.getInstance().getStore(storeId));
+            StoreDTO storeDTO = DALService.getInstance().getStore(storeId);
+            if(storeDTO == null){
+                return null;
+            }
+            Store store = new Store(storeDTO);
             stores.put(storeId, store);
             return store;
         }
     }
 
-    /**
-     * @pre only searchEngine can use this function (concurrency issues)
-     * @return stores list
-     */
-    public Collection<Store> getStores(){
-        return stores.values();
+    public String getStoreName(int storeId) {
+        if(stores.containsKey(storeId)) {
+            return stores.get(storeId).getName();
+        }
+        else {
+            StoreDTO storeDTO = DALService.getInstance().getStore(storeId);
+            if(storeDTO == null){
+                return null;
+            }
+            return storeDTO.getName();
+        }
     }
+
+//    /**
+//     * @pre only searchEngine can use this function (concurrency issues)
+//     * @return stores list
+//     */
+//    public Collection<Store> getStores(){
+//        return stores.values();
+//    }
 
     // activated when purchase aborted and all products need to be added to their inventories
     public void addProductsToInventories(ShoppingCart shoppingCart) {
@@ -237,7 +254,10 @@ public class StoreController {
         Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
 
         for(StoreDTO store: storeDTOS){
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            System.out.println(store.getName());
             Store domainStore = new Store(store);
+            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
             if(store.getName().equals(storeName))
                 storeList.add(new StoreClientDTO(store.getStoreID(), store.getName(), domainStore.getInventory().getProductsDTO()));
         }

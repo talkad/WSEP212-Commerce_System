@@ -45,7 +45,7 @@ public class PurchaseClientDTO {
             amounts.add(pair.getSecond());
         }
 
-        this.basket = new BasketClientDTO(purchaseDTO.getStoreID(), StoreController.getInstance().getStore(purchaseDTO.getStoreID()).getResult().getStoreName(), productsDTO, amounts);
+        this.basket = new BasketClientDTO(purchaseDTO.getStoreID(), StoreController.getInstance().getStoreName(purchaseDTO.getStoreID()), productsDTO, amounts);
     }
 
     public PurchaseDTO toDTO(){
