@@ -49,6 +49,8 @@ class CompositionPurchasePage extends React.Component {
         this.state.selectedOption === 'AND' ? Connection.sendCompositionPurchaseAndOr(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject) :
             this.state.selectedOption === 'OR' ? Connection.sendCompositionPurchaseAndOr(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule).then(this.handleCompPoliciesResponse, Connection.handleReject) :
                             Connection.sendCompositionPurchaseConditioning(this.state.functionName, this.state.username, this.state.storeId, this.state.type, policiesRule, policiesRule2).then(this.handleCompPoliciesResponse, Connection.handleReject);
+        listToSend = [];
+        listToSend2 = [];
     }
 
     handleCompPoliciesResponse(result){
@@ -56,12 +58,17 @@ class CompositionPurchasePage extends React.Component {
             alert("adding purchase success");
         }
         else{
-            alert(result.errMsg);
+            if(listToSend.length === 0)
+                alert("Please fill composed rule with at least one simple rule.");
+            else
+                alert(result.errMsg);
         }
     }
 
     handleOptionChange = selectedOption => {
-        this.setState( {selectedOption : selectedOption.label});
+        // this.setState( {selectedOption : selectedOption.label});
+        this.state.selectedOption = selectedOption.label;
+
         this.state.selectedOption === 'AND' ? this.setState({type:'AndCompositionPurchaseRule'}) :
             this.state.selectedOption === 'OR' ? this.setState({type:'OrCompositionPurchaseRule'}) :
                 this.setState({type:'ConditioningCompositionPurchaseRule'});
@@ -173,7 +180,7 @@ class CompositionPurchasePage extends React.Component {
                 {body5}
                 {body6}
                 {body7}
-                <button type = "button" onClick = {(e) => this.handleClick(e)}> Add Purchase Policy </button>
+                <Button type = "button" onClick = {(e) => this.handleClick(e)}> Add Purchase Policy </Button>
             </form>
         )
     }

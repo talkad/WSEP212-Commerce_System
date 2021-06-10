@@ -1,0 +1,1 @@
+register(u1, u1);register(u2, u2);register(u3, u3);register(u4, u4);login(u1, u1);openStore(u1, s1);addProductsToStore(Wine, 0, 35, [drinks], [alcohol], 40);appointStoreManager(u4, 0);logout(u1);

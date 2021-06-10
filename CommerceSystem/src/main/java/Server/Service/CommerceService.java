@@ -195,13 +195,23 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         return commerceSystem.getPurchasePolicy(username, storeID);
     }
 
     @Override
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         return commerceSystem.getDiscountPolicy(username, storeID);
+    }
+
+    @Override
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        return commerceSystem.getPurchasePolicyReal(username, storeID);
+    }
+
+    @Override
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        return commerceSystem.getDiscountPolicyReal(username, storeID);
     }
 
     @Override
@@ -292,7 +302,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Map<String, Integer>> getDailyStatistics(String adminName, LocalDate date){
+    public Response<List<String>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
     }
 

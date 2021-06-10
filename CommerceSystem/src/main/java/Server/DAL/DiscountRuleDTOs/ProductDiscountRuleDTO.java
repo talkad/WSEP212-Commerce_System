@@ -4,8 +4,11 @@ import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.ProductDiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("ProductDiscountRuleDTO")
+
 public class ProductDiscountRuleDTO extends LeafDiscountRuleDTO{
 
     @Property(value = "productID")

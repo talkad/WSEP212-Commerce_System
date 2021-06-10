@@ -52,7 +52,7 @@ public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 
-        Response<String> response = CommerceService.getInstance().addGuest();
+        Response<String> response = CommerceService.getInstance().addGuest();//todo adds an additional guest?
 
         ByteBuf content = Unpooled.copiedBuffer(response.getResult(), CharsetUtil.UTF_8);
 

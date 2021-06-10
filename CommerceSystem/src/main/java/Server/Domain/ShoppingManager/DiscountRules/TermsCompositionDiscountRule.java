@@ -1,7 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
-import Server.DAL.DiscountRuleDTOs.SumCompositionDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.TermsCompositionDiscountRuleDTO;
 import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.Predicate;

@@ -185,18 +185,20 @@ input[type="radio"]{
 }
 
 #daily_statistics_info{
-
+  padding-top: 2%;
 }
 
 #daily_statistics_pie_chart{
   width: 50%;
-  height: auto;
+  height: 50%;
+
   float: left;
 }
 
 #daily_statistics_bar_chart{
   width: 50%;
-  height: auto;
+  height: 50%;
+  padding-right: 5%;
   float: left;
 }
 

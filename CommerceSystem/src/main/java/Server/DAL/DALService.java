@@ -1,9 +1,15 @@
 package Server.DAL;
 
+import Server.DAL.DiscountRuleDTOs.*;
+import Server.DAL.PairDTOs.IntPermsListPair;
+import Server.DAL.PairDTOs.IntStringListPair;
+import Server.DAL.PairDTOs.PredPair;
+import Server.DAL.PairDTOs.ProductIntPair;
+import Server.DAL.PredicateDTOs.*;
+import Server.DAL.PurchaseRuleDTOs.*;
 import Server.Domain.CommonClasses.Pair;
-import Server.Domain.ShoppingManager.Product;
 import Server.Domain.UserManager.UserStateEnum;
-import com.mongodb.DB;
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoConfigurationException;
 import com.mongodb.MongoTimeoutException;
@@ -17,6 +23,10 @@ import dev.morphia.mapping.MapperOptions;
 import dev.morphia.query.FindOptions;
 import dev.morphia.query.Sort;
 import dev.morphia.query.experimental.filters.Filters;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -168,6 +178,7 @@ public class DALService implements Runnable{
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
             else{
@@ -189,6 +200,46 @@ public class DALService implements Runnable{
 
         if(!allEmpty) {
             System.out.println("Accessing DB for save iteration");
+//            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+//                    AndCompositionDiscountRuleDTO.class,
+//                    CategoryDiscountRuleDTO.class,
+//                    CompoundDiscountRuleDTO.class,
+//                    ConditionalCategoryDiscountRuleDTO.class,
+//                    ConditionalProductDiscountRuleDTO.class,
+//                    ConditionalStoreDiscountRuleDTO.class,
+//                    DiscountRuleDTO.class,
+//                    LeafDiscountRuleDTO.class,
+//                    MaximumCompositionDiscountRuleDTO.class,
+//                    OrCompositionDiscountRuleDTO.class,
+//                    ProductDiscountRuleDTO.class,
+//                    StoreDiscountRuleDTO.class,
+//                    SumCompositionDiscountRuleDTO.class,
+//                    TermsCompositionDiscountRuleDTO.class,
+//                    XorCompositionDiscountRuleDTO.class,
+//
+//                    IntPermsListPair.class,
+//                    IntStringListPair.class,
+//                    PredPair.class,
+//                    ProductIntPair.class,
+//
+//                    BasketPredicateDTO.class,
+//                    CategoryPredicateDTO.class,
+//                    PredicateDTO.class,
+//                    ProductPredicateDTO.class,
+//                    StorePredicateDTO.class,
+//
+//                    AndCompositionPurchaseRuleDTO.class,
+//                    BasketPurchaseRuleDTO.class,
+//                    CategoryPurchaseRuleDTO.class,
+//                    CompoundPurchaseRuleDTO.class,
+//                    ConditioningCompositionPurchaseRuleDTO.class,
+//                    LeafPurchaseRuleDTO.class,
+//                    OrCompositionPurchaseRuleDTO.class,
+//                    ProductPurchaseRuleDTO.class,
+//                    PurchaseRuleDTO.class
+//            ).build();
+//            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
@@ -198,6 +249,43 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PredicateDTOs");
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
+
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
 
                 try (MorphiaSession session = datastore.startSession()) {
                     session.startTransaction();
@@ -284,8 +372,9 @@ public class DALService implements Runnable{
                     session.commitTransaction();
                 } catch (Exception e) {
                     System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
+                    saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
                 }
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
@@ -400,6 +489,10 @@ public class DALService implements Runnable{
         this.useLocal = useLocal;
     }
 
+    public void setDbName(String dbName){ this.dbName = dbName;}
+
+    public void setDbURL(String dbURL){ this.dbURL = dbURL; }
+
     public DailyCountersDTO getDailyCounters(LocalDate date){
         DailyCountersDTO dailyCountersDTO;
         this.countersLock.writeLock().lock();
@@ -412,7 +505,49 @@ public class DALService implements Runnable{
             this.counters.put(dailyCountersDTO.getCurrentDate(), new Pair<>(dailyCountersDTO, System.currentTimeMillis()));
         }
         else{
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
@@ -421,13 +556,50 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
 
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
+
                 dailyCountersDTO = datastore.find(DailyCountersDTO.class)
                         // filters find relevant entries
                         .filter(
                                 Filters.eq("currentDate", date.toString())
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.countersLock.writeLock().unlock();
                 return getDailyCounters(date); // timeout, try again
@@ -501,7 +673,49 @@ public class DALService implements Runnable{
             this.publisher.put(0, new Pair<>(publisherDTO, System.currentTimeMillis()));
         }
         else{
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
@@ -511,10 +725,47 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
 
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
+
                 publisherDTO = datastore.find(PublisherDTO.class).first();
 
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.publisherLock.writeLock().unlock();
                 return getPublisher(); // timeout, try again
@@ -571,7 +822,49 @@ public class DALService implements Runnable{
             this.accounts.put(username, new Pair<>(accountDTO, System.currentTimeMillis()));
         }
         else if(!useLocal){
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
@@ -580,13 +873,50 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
 
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
+
                 accountDTO = datastore.find(AccountDTO.class)
                         // filters find relevant entries
                         .filter(
                                 Filters.eq("username", username)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.accountLock.writeLock().unlock();
                 return getAccount(username); // timeout, try again
@@ -641,7 +971,49 @@ public class DALService implements Runnable{
             this.stores.put(storeDTO.getStoreID(), new Pair<>(storeDTO, System.currentTimeMillis()));
         }
         else if(!useLocal){
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
@@ -650,13 +1022,50 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
 
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
+
                 storeDTO = datastore.find(StoreDTO.class)
                         // filters find relevant entries
                         .filter(
                                 Filters.eq("storeID", storeId)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.storeLock.writeLock().unlock();
                 return getStore(storeId); // timeout, try again
@@ -685,7 +1094,49 @@ public class DALService implements Runnable{
         }
         else {
             List<StoreDTO> storeDTOList = null;
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
@@ -693,6 +1144,43 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PredicateDTOs");
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
+
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
 
                 storeDTOList = datastore.find(StoreDTO.class)
                         .filter(
@@ -702,7 +1190,7 @@ public class DALService implements Runnable{
                                 .sort(Sort.ascending("storeID")))
                         .toList();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
@@ -821,7 +1309,49 @@ public class DALService implements Runnable{
             this.users.put(username, new Pair<>(userDTO, System.currentTimeMillis()));
         }
         else if(!useLocal){
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
                 mapper.mapPackage("Server.DAL");
@@ -830,13 +1360,50 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
 
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
+
                 userDTO = datastore.find(UserDTO.class)
                         // filters find relevant entries
                         .filter(
                                 Filters.eq("name", username)
                         ).first();
             }
-            catch(MongoConfigurationException | MongoTimeoutException e){
+            catch(Exception e){
                 System.out.println("Exception received: " + e.getMessage());
                 this.userLock.writeLock().unlock();
                 return getUser(username); // timeout, try again
@@ -852,7 +1419,6 @@ public class DALService implements Runnable{
 
     public void insertUser(UserDTO userDTO){
         this.userLock.writeLock().lock();
-
         if(userDTO.getState() == UserStateEnum.GUEST) {
             this.guestCartLock.writeLock().lock();
             this.guestCarts.put(userDTO.getName(), new Pair<>(userDTO.getShoppingCart(), System.currentTimeMillis()));
@@ -900,7 +1466,6 @@ public class DALService implements Runnable{
         return true;
     }
 
-
     public int getNextAvailableStoreID(){
         if(useLocal){
             this.storeLock.writeLock().lock();
@@ -909,7 +1474,49 @@ public class DALService implements Runnable{
             return size;
         }
         else {
-            try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
+            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
+                    AndCompositionDiscountRuleDTO.class,
+                    CategoryDiscountRuleDTO.class,
+                    CompoundDiscountRuleDTO.class,
+                    ConditionalCategoryDiscountRuleDTO.class,
+                    ConditionalProductDiscountRuleDTO.class,
+                    ConditionalStoreDiscountRuleDTO.class,
+                    DiscountRuleDTO.class,
+                    LeafDiscountRuleDTO.class,
+                    MaximumCompositionDiscountRuleDTO.class,
+                    OrCompositionDiscountRuleDTO.class,
+                    ProductDiscountRuleDTO.class,
+                    StoreDiscountRuleDTO.class,
+                    SumCompositionDiscountRuleDTO.class,
+                    TermsCompositionDiscountRuleDTO.class,
+                    XorCompositionDiscountRuleDTO.class,
+
+                    IntPermsListPair.class,
+                    IntStringListPair.class,
+                    PredPair.class,
+                    ProductIntPair.class,
+
+                    BasketPredicateDTO.class,
+                    CategoryPredicateDTO.class,
+                    PredicateDTO.class,
+                    ProductPredicateDTO.class,
+                    StorePredicateDTO.class,
+
+                    AndCompositionPurchaseRuleDTO.class,
+                    BasketPurchaseRuleDTO.class,
+                    CategoryPurchaseRuleDTO.class,
+                    CompoundPurchaseRuleDTO.class,
+                    ConditioningCompositionPurchaseRuleDTO.class,
+                    LeafPurchaseRuleDTO.class,
+                    OrCompositionPurchaseRuleDTO.class,
+                    ProductPurchaseRuleDTO.class,
+                    PurchaseRuleDTO.class
+            ).build();
+            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+
+            try (MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(this.dbURL))
+                    .codecRegistry(pojoCodecRegistry).build())) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
 
                 Mapper mapper = new Mapper(datastore, MongoClientSettings.getDefaultCodecRegistry(), MapperOptions.DEFAULT);
@@ -918,6 +1525,43 @@ public class DALService implements Runnable{
                 mapper.mapPackage("Server.DAL.PredicateDTOs");
                 mapper.mapPackage("Server.DAL.PurchaseRuleDTOs");
                 mapper.mapPackage("Server.DAL.PairDTOs");
+
+                mapper.map(AndCompositionDiscountRuleDTO.class);
+                mapper.map(CategoryDiscountRuleDTO.class);
+                mapper.map(CompoundDiscountRuleDTO.class);
+                mapper.map(ConditionalCategoryDiscountRuleDTO.class);
+                mapper.map(ConditionalProductDiscountRuleDTO.class);
+                mapper.map(ConditionalStoreDiscountRuleDTO.class);
+                mapper.map(DiscountRuleDTO.class);
+                mapper.map(LeafDiscountRuleDTO.class);
+                mapper.map(MaximumCompositionDiscountRuleDTO.class);
+                mapper.map(OrCompositionDiscountRuleDTO.class);
+                mapper.map(ProductDiscountRuleDTO.class);
+                mapper.map(StoreDiscountRuleDTO.class);
+                mapper.map(SumCompositionDiscountRuleDTO.class);
+                mapper.map(TermsCompositionDiscountRuleDTO.class);
+                mapper.map(XorCompositionDiscountRuleDTO.class);
+
+                mapper.map(IntPermsListPair.class);
+                mapper.map(IntStringListPair.class);
+                mapper.map(PredPair.class);
+                mapper.map(ProductIntPair.class);
+
+                mapper.map(BasketPredicateDTO.class);
+                mapper.map(CategoryPredicateDTO.class);
+                mapper.map(PredicateDTO.class);
+                mapper.map(ProductPredicateDTO.class);
+                mapper.map(StorePredicateDTO.class);
+
+                mapper.map(AndCompositionPurchaseRuleDTO.class);
+                mapper.map(BasketPurchaseRuleDTO.class);
+                mapper.map(CategoryPurchaseRuleDTO.class);
+                mapper.map(CompoundPurchaseRuleDTO.class);
+                mapper.map(ConditioningCompositionPurchaseRuleDTO.class);
+                mapper.map(LeafPurchaseRuleDTO.class);
+                mapper.map(OrCompositionPurchaseRuleDTO.class);
+                mapper.map(ProductPurchaseRuleDTO.class);
+                mapper.map(PurchaseRuleDTO.class);
 
                 List<StoreDTO> storeDTOs = datastore.find(StoreDTO.class)
                         // filters find relevant entries
@@ -938,7 +1582,7 @@ public class DALService implements Runnable{
                 StoreDTO head = storeDTOs.get(0);
                 int id = head.getStoreID();
                 return id + 1;
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 return getNextAvailableStoreID(); // timeout, try again
             }
@@ -956,7 +1600,7 @@ public class DALService implements Runnable{
                 mongoClient.getDatabase(this.dbName).getCollection("adminAccounts").drop();
                 mongoClient.getDatabase(this.dbName).getCollection("dailyCounters").drop();
 
-            } catch (MongoConfigurationException | MongoTimeoutException e) {
+            } catch (Exception e) {
                 System.out.println("Exception received: " + e.getMessage());
                 resetDatabase(); // timeout, try again
             }

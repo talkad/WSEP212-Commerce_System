@@ -3,12 +3,15 @@ package Server.DAL.PurchaseRuleDTOs;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
-public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO{
+@BsonDiscriminator("CompoundPurchaseRuleDTO")
+
+public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO {
 
     @Property(value = "id")
     protected int id;

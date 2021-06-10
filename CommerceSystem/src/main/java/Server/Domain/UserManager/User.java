@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -396,7 +395,7 @@ public class User {
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
-        if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_PRICE, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_INFO, this, storeID)) {
             Response<Boolean> response = StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
             if(!response.isFailure()){
                 Store store = StoreController.getInstance().getStoreById(storeID);
@@ -699,7 +698,7 @@ public class User {
         if(this.storesOwned.contains(storeID))
         {
             permissions = Arrays.asList( PermissionsEnum.ADD_PRODUCT_TO_STORE, PermissionsEnum.REMOVE_PRODUCT_FROM_STORE,
-                    PermissionsEnum.UPDATE_PRODUCT_PRICE, PermissionsEnum.VIEW_DISCOUNT_POLICY,  PermissionsEnum.VIEW_PURCHASE_POLICY,
+                    PermissionsEnum.UPDATE_PRODUCT_INFO, PermissionsEnum.VIEW_DISCOUNT_POLICY,  PermissionsEnum.VIEW_PURCHASE_POLICY,
                     PermissionsEnum.ADD_DISCOUNT_RULE, PermissionsEnum.ADD_PURCHASE_RULE, PermissionsEnum.REMOVE_DISCOUNT_RULE,
                     PermissionsEnum.REMOVE_PURCHASE_RULE, PermissionsEnum.APPOINT_OWNER, PermissionsEnum.REMOVE_OWNER_APPOINTMENT,
                     PermissionsEnum.APPOINT_MANAGER, PermissionsEnum.ADD_PERMISSION, PermissionsEnum.REMOVE_PERMISSION,
@@ -806,7 +805,41 @@ public class User {
         }
     }
 
-    public Response<PurchasePolicy> getPurchasePolicy(int storeID) {
+    public Response<String> getPurchasePolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(PermissionsEnum.VIEW_PURCHASE_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                PurchasePolicy policy = store.getPurchasePolicy();
+                return new Response<>(policy.getDescription(), false, "Successfully retrieved purchase policy");
+            }
+            else {
+                return new Response<>("", true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>("", true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<String> getDiscountPolicy(int storeID) {
+        Store store;
+        if(this.state.allowed(PermissionsEnum.VIEW_DISCOUNT_POLICY, this, storeID)) {
+            store = StoreController.getInstance().getStoreById(storeID);
+            if (store != null) {
+                DiscountPolicy policy = store.getDiscountPolicy();
+                return new Response<>(policy.getDescription(), false, "Successfully retrieved discount policy");
+            }
+            else {
+                return new Response<>("", true, "The given store doesn't exists");
+            }
+        }
+        else {
+            return new Response<>("", true, "The user doesn't have the right permissions");
+        }
+    }
+
+    public Response<PurchasePolicy> getPurchasePolicyReal(int storeID) {
         Store store;
         if(this.state.allowed(PermissionsEnum.VIEW_PURCHASE_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
@@ -823,7 +856,7 @@ public class User {
         }
     }
 
-    public Response<DiscountPolicy> getDiscountPolicy(int storeID) {
+    public Response<DiscountPolicy> getDiscountPolicyReal(int storeID) {
         Store store;
         if(this.state.allowed(PermissionsEnum.VIEW_DISCOUNT_POLICY, this, storeID)) {
             store = StoreController.getInstance().getStoreById(storeID);
@@ -1006,22 +1039,22 @@ public class User {
         return this.storesManaged != null && !this.storesManaged.isEmpty();
     }
 
-    public Response<Map<String, Integer>> getDailyStatistics(LocalDate date) {
+    public Response<List<String>> getDailyStatistics(LocalDate date) {
         if(this.state.allowed(PermissionsEnum.DAILY_VISITOR_STATISTICS, this)){
             if(date.isAfter(LocalDate.now())) {
                 return new Response<>(null, true, "date is in the future");
             }
             else{
                 DailyCountersDTO dto = DALService.getInstance().getDailyCounters(date);
-                Map<String, Integer> counters = new ConcurrentHashMap<>(){{
-                    put("Guest", dto.getGuestCounter());
-                    put("Registered", dto.getRegisteredCounter());
-                    put("Manager", dto.getManagerCounter());
-                    put("Owner", dto.getOwnerCounter());
-                    put("Admin", dto.getAdminCounter());
-                }};
 
-                return new Response<>(counters,false, "");
+                List<String> counters = Arrays.asList("Guest: " + dto.getGuestCounter(),
+                        "Registered: " + dto.getRegisteredCounter(),
+                        "Manager: " + dto.getManagerCounter(),
+                        "Owner: " + dto.getOwnerCounter(),
+                        "Admin: " + dto.getAdminCounter()
+                );
+
+                return new Response<>(counters,false, "daily statistics? success!");
             }
         }
         else{

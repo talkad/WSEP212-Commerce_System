@@ -74,19 +74,29 @@ class Checkout extends React.Component{
     }
 
     handlePurchase(){
-        //tODO: check if a field is not empty
-        const supplyDetails = new SupplyDetails(this.state.name, this.state.address, this.state.city,
-            this.state.country, this.state.zip);
-        const paymentDetails = new PaymentDetails(this.state.card_number, this.state.expiration, this.state.ccv,
-            this.state.holder, this.state.id);
 
-        if(this.state.singleProduct){
-            Connection.sendBuyOffer(this.state.productID, this.state.storeID, paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
-            this.setState({submitted: true});
-        }
-        else{
-            Connection.sendDirectPurchase(paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
-            this.setState({submitted: true});
+        if(this.state.name !== '' &&
+            this.state.address !== '' &&
+            this.state.city !== '' &&
+            this.state.country !== '' &&
+            this.state.zip !== '' &&
+            this.state.card_number !== '' &&
+            this.state.expiration !== '' &&
+            this.state.holder !== '' &&
+            this.state.ccv !== '' &&
+            this.state.id !== '') {
+            const supplyDetails = new SupplyDetails(this.state.name, this.state.address, this.state.city,
+                this.state.country, this.state.zip);
+            const paymentDetails = new PaymentDetails(this.state.card_number, this.state.expiration, this.state.ccv,
+                this.state.holder, this.state.id);
+
+            if (this.state.singleProduct) {
+                Connection.sendBuyOffer(this.state.productID, this.state.storeID, paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
+                this.setState({submitted: true});
+            } else {
+                Connection.sendDirectPurchase(paymentDetails, supplyDetails).then(this.handleResponse, Connection.handleReject);
+                this.setState({submitted: true});
+            }
         }
     }
 

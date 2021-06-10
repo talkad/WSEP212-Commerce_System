@@ -2,7 +2,6 @@ package Server.Domain.ShoppingManager;
 
 import Server.DAL.InventoryDTO;
 import Server.DAL.PairDTOs.ProductIntPair;
-import Server.DAL.PublisherDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 

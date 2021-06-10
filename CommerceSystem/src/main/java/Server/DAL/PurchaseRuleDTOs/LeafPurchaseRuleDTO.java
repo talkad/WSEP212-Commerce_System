@@ -4,8 +4,11 @@ import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.DAL.PredicateDTOs.ProductPredicateDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("LeafPurchaseRuleDTO")
+
 public abstract class LeafPurchaseRuleDTO implements PurchaseRuleDTO {
 
     @Property(value = "id")

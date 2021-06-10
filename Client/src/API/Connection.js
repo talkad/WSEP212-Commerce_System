@@ -7,6 +7,7 @@ class Connection{
     static connection;
     static dataFromServer = [];
     static gotNotification = 0;
+    static dailyStatisticsLiveUpdate = null;
 
     static setConnection(connection) {
         this.connection = connection;
@@ -21,7 +22,6 @@ class Connection{
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
-                // TODO: when waiting for a response for this message then make the site "load"
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -41,6 +41,8 @@ class Connection{
 
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
+
+            console.log("just got from server");
             console.log(receivedData);
 
             if(receivedData.type === "startup"){
@@ -56,7 +58,8 @@ class Connection{
                 // alert(receivedData.message);
             }
             else if(receivedData.type === "liveUpdate"){
-
+                this.dailyStatisticsLiveUpdate = receivedData;
+                //this.addLiveUpdate(receivedData);
             }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
@@ -64,7 +67,6 @@ class Connection{
         }
 
         this.connection.onclose = (event) => {
-            // console.log(event); // TODO: just in case
 
             setTimeout(this.disconnect, 3000);
 
@@ -91,6 +93,10 @@ class Connection{
         }
 
         this.gotNotification = 1;
+    }
+
+    static addLiveUpdate(update){
+        this.dailyStatisticsLiveUpdate = update;
     }
 
     static waitForOpenConnection = (socket) => {
@@ -135,6 +141,7 @@ class Connection{
                     console.log("got a notification");
                     this.gotNotification = 0;
                     resolve(true);
+                    break;
                 }
                 await sleep(5000);
             }
@@ -144,6 +151,29 @@ class Connection{
     static async getNotification(){
         console.log("waiting for a notification");
         return await Connection.catchNotification();
+    }
+
+    static catchLiveUpdate(){
+        function sleep(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        this.dailyStatisticsLiveUpdate = null;
+        return new Promise(async (resolve, reject) => {
+            while(true){
+                if(this.dailyStatisticsLiveUpdate !== null){
+                    console.log("got a live update");
+                    resolve(this.dailyStatisticsLiveUpdate);
+                    break;
+                }
+                await sleep(5000);
+            }
+        });
+    }
+
+    static async getLiveUpdate(){
+        console.log("waiting for live update");
+        return await Connection.catchLiveUpdate();
     }
 
 
@@ -175,10 +205,15 @@ class Connection{
                         let message = Connection.dataFromServer[index];
                         Connection.dataFromServer.splice(index, 1);
                         // delete Connection.dataFromServer[index];
+                        console.log("resolving " + action);
+                        console.log("about to resolve");
+                        console.log(message);
                         resolve(JSON.parse(message.message));
+                        break;
                     }
 
                 }
+                //console.log("going to sleep on " + action);
                 await sleep(1000);
                 i++;
             }
@@ -398,10 +433,19 @@ class Connection{
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "getDailyStatistics",
             adminName: window.sessionStorage.getItem('username'),
-            date: date
-        }))
+            date: date,
+        }));
 
         return Connection.getResponse("getDailyStatistics");
+    }
+
+    static sendIsAdmin(){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "isAdmin",
+            username: window.sessionStorage.getItem('username'),
+        }))
+
+        return Connection.getResponse("isAdmin");
     }
 
     // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
@@ -497,12 +541,22 @@ class Connection{
     }
 
     /*
-    * Holds for all 3 pages in Report Pages- Need to receive information too
+    * Holds for 2 pages in Report Pages- Need to receive information too
     */
     static sendReportRequest (functionName, adminName, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: adminName,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendStoreHistoryRequest(functionName, adminName, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            adminName: adminName,
             storeID: storeId,
         }))
 
@@ -683,6 +737,20 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    // static sendCompositionPoliciesTerm (functionName, username, storeId, type, predicate){
+    //     let fixedRules = predicate.join(', ');
+    //     Connection.sendMessage(Connection.connection, JSON.stringify({
+    //         action: functionName,
+    //         username: username,
+    //         storeID: storeId,
+    //
+    //         discountRule: JSON.stringify({type: type,
+    //             predicates: fixedRules,
+    //         }),
+    //     }))
+    //     return Connection.getResponse(functionName);
+    // }
+
     static sendGetStoreRevenue (functionName, username, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
@@ -707,6 +775,28 @@ class Connection{
             action: functionName,
             username: username,
             storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemoveDiscount (functionName, username, storeId, discountRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            discountRuleID: discountRuleID,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemovePurchase (functionName, username, storeId, purchaseRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            purchaseRuleID: purchaseRuleID,
         }))
 
         return Connection.getResponse(functionName);
@@ -770,7 +860,6 @@ class Connection{
     static sendCompositionPurchaseConditioning (functionName, username, storeId, type, predicate1, predicate2){
         let fixedRules = predicate1.join(', ');
         let fixedRules2 = predicate2.join(', ');
-
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,
@@ -782,6 +871,17 @@ class Connection{
 
             }),
         }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendDiscountPurchaseReportRequest(functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
         return Connection.getResponse(functionName);
     }
 

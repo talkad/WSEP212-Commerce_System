@@ -14,6 +14,7 @@ public class PaymentSystemTests {
     public void setUp(){
         payment = PaymentSystemAdapter.getInstance();
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
 

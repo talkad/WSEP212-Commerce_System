@@ -65,6 +65,21 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.addPurchaseRule(username, Integer.parseInt(storeID), purchaseRule);
             }
+            case "removeDiscountRule" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String discountID = data.getProperty("discountRuleID");
+
+                response = service.removeDiscountRule(username, Integer.parseInt(storeID), Integer.parseInt(discountID));
+            }
+            case "removePurchaseRule" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String purchaseRuleID = data.getProperty("purchaseRuleID");
+
+                response = service.removePurchaseRule(username, Integer.parseInt(storeID), Integer.parseInt(purchaseRuleID));
+
+            }
             case "getDailyStatistics" -> {
                 String adminName = data.getProperty("adminName");
                 String date = data.getProperty("date");

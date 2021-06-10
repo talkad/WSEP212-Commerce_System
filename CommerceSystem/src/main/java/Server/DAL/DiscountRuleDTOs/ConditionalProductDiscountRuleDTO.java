@@ -5,9 +5,12 @@ import Server.Domain.ShoppingManager.DiscountRules.ConditionalProductDiscountRul
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class ConditionalProductDiscountRuleDTO extends ProductDiscountRuleDTO{
+@BsonDiscriminator("ConditionalProductDiscountRuleDTO")
+
+public class ConditionalProductDiscountRuleDTO extends ProductDiscountRuleDTO {
 
     @Property(value = "productPredicate")
     private ProductPredicateDTO productPredicate;

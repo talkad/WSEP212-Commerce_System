@@ -63,12 +63,17 @@ class CompositionPoliciesPage extends React.Component {
             alert("adding policy success");
         }
         else{
-            alert(result.errMsg);
+            if(listToSend.length === 0)
+                alert("Please fill composed rule with at least one simple rule.");
+            else
+                alert(result.errMsg);
         }
     }
 
     handleOptionChange = selectedOption => {
-        this.setState( {selectedOption : selectedOption.label});
+        // this.setState( {selectedOption : selectedOption.label});
+        this.state.selectedOption = selectedOption.label;
+
         this.state.selectedOption === 'AND' ? this.setState({type:'AndCompositionDiscountRule'}) :
             this.state.selectedOption === 'OR' ? this.setState({type:'OrCompositionDiscountRule'}) :
                 this.state.selectedOption === 'XOR' ? this.setState({type:'XorCompositionDiscountRule'}) :

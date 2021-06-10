@@ -3,8 +3,10 @@ package Server.DAL;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Entity(value = "accounts")
+@BsonDiscriminator("AccountDTO")
 public class AccountDTO {
 
     @Id

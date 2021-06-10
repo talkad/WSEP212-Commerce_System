@@ -575,7 +575,7 @@ public class UserController {
         User user = new User(username);
         user.setState(new Admin());
         DALService.getInstance().insertUser(user.toDTO());
-        connectedUsers.put(username, user);
+        connectedUsers.put(username, user);//todo always connected or just in the system?
     }
 
 
@@ -715,7 +715,7 @@ public class UserController {
         return new Response<>(false, true, "User not connected");
     }
 
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -727,13 +727,37 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
 
             return user.getDiscountPolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getPurchasePolicyReal(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getDiscountPolicyReal(storeID);
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
@@ -864,7 +888,7 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<Map<String, Integer>> getDailyStatistics(String username, LocalDate date) {
+    public Response<List<String>> getDailyStatistics(String username, LocalDate date) {
 
         readLock.lock();
         if (connectedUsers.containsKey(username)) {

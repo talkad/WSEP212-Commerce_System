@@ -35,6 +35,6 @@ public class CategoryPurchaseRule extends LeafPurchaseRule {
 
     @Override
     public String toString() {
-        return "" + predicate;
+        return predicate.toString();
     }
 }

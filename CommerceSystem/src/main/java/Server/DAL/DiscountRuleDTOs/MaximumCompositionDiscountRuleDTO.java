@@ -3,11 +3,14 @@ package Server.DAL.DiscountRuleDTOs;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.MaximumCompositionDiscountRule;
 import dev.morphia.annotations.Embedded;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 
 @Embedded
-public class MaximumCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
+@BsonDiscriminator("MaximumCompositionDiscountRuleDTO")
+
+public class MaximumCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
     public MaximumCompositionDiscountRuleDTO() {
         super();

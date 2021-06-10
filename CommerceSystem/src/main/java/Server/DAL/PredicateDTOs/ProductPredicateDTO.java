@@ -4,8 +4,11 @@ import Server.Domain.ShoppingManager.Predicates.Predicate;
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("ProductPredicateDTO")
+
 public class ProductPredicateDTO implements PredicateDTO{
 
     @Property(value = "productID")

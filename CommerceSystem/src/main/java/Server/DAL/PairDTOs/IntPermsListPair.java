@@ -3,11 +3,14 @@ package Server.DAL.PairDTOs;
 import Server.Domain.UserManager.PermissionsEnum;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
+@BsonDiscriminator("IntPermsListPair")
+
 public class IntPermsListPair {
     @Property(value = "first")
     private int first;

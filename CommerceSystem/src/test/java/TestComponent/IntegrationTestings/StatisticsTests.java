@@ -12,12 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 public class StatisticsTests {
     @Before
     public void init(){
         DALService.getInstance().useTestDatabase();
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
         ProductSupplyAdapter.getInstance().setMockFlag();
@@ -30,12 +31,12 @@ public class StatisticsTests {
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         userController.login(initialUserName, "u1", "u1");
-        Map<String, Integer> statistics = userController.getDailyStatistics("u1", LocalDate.now()).getResult();
-        Assert.assertEquals(3, statistics.get("Guest"), 0);
-        Assert.assertEquals(0, statistics.get("Registered"), 0);
-        Assert.assertEquals(0, statistics.get("Manager"), 0);
-        Assert.assertEquals(0, statistics.get("Owner"), 0);
-        Assert.assertEquals(2, statistics.get("Admin"), 0);
+        List<String> statistics = userController.getDailyStatistics("u1", LocalDate.now()).getResult();
+        Assert.assertEquals("Guest: 3", statistics.get(0));
+        Assert.assertEquals("Registered: 0", statistics.get(1));
+        Assert.assertEquals("Manager: 0", statistics.get(2));
+        Assert.assertEquals("Owner: 0"  , statistics.get(3));
+        Assert.assertEquals("Admin: 2", statistics.get(4));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class StatisticsTests {
         userController.login(initialUserName, "u1", "u1");
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        Response<Map<String, Integer>> statisticsRes = userController.getDailyStatistics("u1", tomorrow);
+        Response<List<String>> statisticsRes = userController.getDailyStatistics("u1", tomorrow);
         Assert.assertTrue(statisticsRes.isFailure());
     }
 }

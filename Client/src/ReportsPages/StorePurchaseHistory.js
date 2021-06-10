@@ -7,8 +7,8 @@ class StorePurchaseHistory extends React.Component{
         super(props);
         this.state = {
             functionName: 'getStorePurchaseHistory',
-            adminName: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            adminName: '',
+            storeId: '',
             showMessage: false,
             toShow: ''
         };
@@ -18,7 +18,7 @@ class StorePurchaseHistory extends React.Component{
     onButtonClickHandler = (e) => {
         e.preventDefault();
 
-        Connection.sendReportRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject)
+        Connection.sendStoreHistoryRequest(this.state.functionName, this.state.adminName, this.state.storeId).then(this.handleReportResponse, Connection.handleReject)
 
         this.setState({showMessage: true});
         //e.preventDefault();
@@ -26,7 +26,13 @@ class StorePurchaseHistory extends React.Component{
 
     handleReportResponse(result){
         if(!result.isFailure){
-            this.setState({toShow: result.result.toString()})
+            let show = "";
+            let ProductCounter = 1;
+
+            result.result.forEach(element => show = show.concat(
+                "Purchase Num: " + ProductCounter++ + " Price: " + element.totalPrice.toString() + " Date: " + element.purchaseDate.toString() + "  :::  "));
+
+            this.setState({toShow: show});
         }
         else{
             alert(result.errMsg);
@@ -43,8 +49,8 @@ class StorePurchaseHistory extends React.Component{
         return(
             <form>
                 <h1>Purchase History Details For Store Page </h1>
-                <div> <label> Admin Name : <input readOnly value = {this.state.adminName} className = "adminName" type = "text" onChange = {(e) => this.handleInputChange(e, 'adminName')}/> </label> </div>
-                <div> <label> Store Id : <input className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'StoreId')}/> </label> </div>
+                <div> <label> Admin Name : <input className = "adminName" type = "text" onChange = {(e) => this.handleInputChange(e, 'adminName')}/> </label> </div>
+                <div> <label> Store Id : <input className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>
                 <div className="toShow"> {this.state.showMessage && <p> {this.state.toShow} </p>}
                     <button type = "button" onClick = {(e) => this.onButtonClickHandler(e)}> Show History </button>
                 </div>

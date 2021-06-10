@@ -3,11 +3,14 @@ package Server.DAL;
 import Server.Domain.UserManager.OfferState;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 import java.util.Vector;
 
 @Embedded
+@BsonDiscriminator("OfferDTO")
+
 public class OfferDTO {
 
     @Property(value = "productID")

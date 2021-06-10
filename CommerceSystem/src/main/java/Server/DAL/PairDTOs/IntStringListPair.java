@@ -1,6 +1,5 @@
 package Server.DAL.PairDTOs;
 
-import Server.DAL.PredicateDTOs.PredicateDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
 
