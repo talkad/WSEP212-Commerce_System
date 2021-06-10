@@ -16,7 +16,7 @@ public enum PermissionsEnum {
     //MANAGE_PRODUCTS,           /* Use Case: 4.1 - includes 4.1.1, 4.1.2, 4.1.3 */
     ADD_PRODUCT_TO_STORE,
     REMOVE_PRODUCT_FROM_STORE,
-    UPDATE_PRODUCT_PRICE,
+    UPDATE_PRODUCT_INFO,
 
     VIEW_DISCOUNT_POLICY,    /* Use Case: 4.2 */
     VIEW_PURCHASE_POLICY,    /* Use Case: 4.2 */

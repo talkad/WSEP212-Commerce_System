@@ -1046,7 +1046,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // permission to update a product
         permissionResult = bridge.addPermission("aviad", this.storeID, "e",
-                PermissionsEnum.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.updateProductInfo("e", this.storeID, product.getProductID(),
@@ -1160,7 +1160,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // update product permission
         permissionResult = bridge.addPermission("aviad", this.storeID, "x",
-                PermissionsEnum.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
         // appoint owner permission
@@ -1225,7 +1225,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
         // update product removed
         permissionResult = bridge.removePermission("aviad", this.storeID, "x",
-                PermissionsEnum.UPDATE_PRODUCT_PRICE);
+                PermissionsEnum.UPDATE_PRODUCT_INFO);
         Assert.assertTrue(permissionResult.getResult());
 
         actionResult = bridge.updateProductInfo("x", this.storeID, product.getProductID(),

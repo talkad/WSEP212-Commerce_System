@@ -484,7 +484,7 @@ class App extends React.Component {
                         <Route path="/dailyStatistics" component={DailyStatistics}/>
                         <Route path="/ADD_PRODUCT_TO_STORE" component={AddProduct}/>
                         <Route path="/REMOVE_PRODUCT_FROM_STORE" component={DeleteProduct}/>
-                        <Route path="/UPDATE_PRODUCT_PRICE" component={EditProduct}/>
+                        <Route path="/UPDATE_PRODUCT_INFO" component={EditProduct}/>
                         <Route path="/ADD_DISCOUNT_RULE" component={MainDiscountPolicyPage}/>
                         <Route path="/DELETE_DISCOUNT_RULE" component={DeleteDiscountRule}/>
                         <Route path="/APPOINT_OWNER" component={AppointOwner}/>

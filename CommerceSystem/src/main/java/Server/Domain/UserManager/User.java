@@ -395,7 +395,7 @@ public class User {
     }
 
     public Response<Boolean> updateProductInfo(int storeID, int productID, double newPrice, String newName) {
-        if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_PRICE, this, storeID)) {
+        if (this.state.allowed(PermissionsEnum.UPDATE_PRODUCT_INFO, this, storeID)) {
             Response<Boolean> response = StoreController.getInstance().updateProductInfo(storeID, productID, newPrice, newName);
             if(!response.isFailure()){
                 Store store = StoreController.getInstance().getStoreById(storeID);
@@ -698,7 +698,7 @@ public class User {
         if(this.storesOwned.contains(storeID))
         {
             permissions = Arrays.asList( PermissionsEnum.ADD_PRODUCT_TO_STORE, PermissionsEnum.REMOVE_PRODUCT_FROM_STORE,
-                    PermissionsEnum.UPDATE_PRODUCT_PRICE, PermissionsEnum.VIEW_DISCOUNT_POLICY,  PermissionsEnum.VIEW_PURCHASE_POLICY,
+                    PermissionsEnum.UPDATE_PRODUCT_INFO, PermissionsEnum.VIEW_DISCOUNT_POLICY,  PermissionsEnum.VIEW_PURCHASE_POLICY,
                     PermissionsEnum.ADD_DISCOUNT_RULE, PermissionsEnum.ADD_PURCHASE_RULE, PermissionsEnum.REMOVE_DISCOUNT_RULE,
                     PermissionsEnum.REMOVE_PURCHASE_RULE, PermissionsEnum.APPOINT_OWNER, PermissionsEnum.REMOVE_OWNER_APPOINTMENT,
                     PermissionsEnum.APPOINT_MANAGER, PermissionsEnum.ADD_PERMISSION, PermissionsEnum.REMOVE_PERMISSION,
