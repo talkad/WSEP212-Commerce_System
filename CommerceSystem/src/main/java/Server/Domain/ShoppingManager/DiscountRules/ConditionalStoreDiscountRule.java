@@ -61,6 +61,6 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Conditional store discount: " + this.discount + "% discount on the entire store.";
+        return "Conditional Store Discount Rule No." + id + ":\n " + this.discount + "% discount on the entire store - " + storePredicate;
     }
 }

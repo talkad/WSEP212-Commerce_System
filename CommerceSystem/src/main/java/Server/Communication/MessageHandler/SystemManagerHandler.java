@@ -95,7 +95,7 @@ public class SystemManagerHandler extends  Handler{
 
                 rule = new BasketPurchaseRule(parseBasketPredicate(basketPredicate));
             }
-            case "CategoryPurchaseRule  " -> {
+            case "CategoryPurchaseRule" -> {
                 String categoryPredicate = data.getProperty("categoryPredicate");
 
                 rule = new CategoryPurchaseRule(parseCategoryPredicate(categoryPredicate));
@@ -111,8 +111,10 @@ public class SystemManagerHandler extends  Handler{
                 String[] ruleList = parseList(policyRules);
                 List<PurchaseRule> rules = new LinkedList<>();
 
-                for(String purchaseRule: ruleList)
-                    rules.add(parsePurchaseRule(purchaseRule));
+                for(String purchaseRule: ruleList) {
+                    PurchaseRule x = parsePurchaseRule(purchaseRule);
+                    rules.add(x);
+                }
                 rule = new AndCompositionPurchaseRule(rules);
             }
 
@@ -133,33 +135,41 @@ public class SystemManagerHandler extends  Handler{
 
                 String[] condStrList = parseList(conditions);
                 String[] impliedCondStrList = parseList(impliedConditions);
-
+                String pred;
                 List<Predicate> condList = new LinkedList<>();
                 List<Predicate> impliedCondList = new LinkedList<>();
 
                 for(String s : condStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("basketPredicate")){
-                        condList.add(parseBasketPredicate(s));
+                        pred = data.getProperty("basketPredicate");
+                        condList.add(parseBasketPredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        condList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        condList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        condList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        condList.add(parseProductPredicate(pred));
                     }
                     else
-                        throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
+                        throw new IllegalArgumentException("Invalid predicate type provided to purchase rule");
                 }
 
                 for(String s : impliedCondStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("basketPredicate")){
-                        impliedCondList.add(parseBasketPredicate(s));
+                        pred = data.getProperty("basketPredicate");
+                        impliedCondList.add(parseBasketPredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        impliedCondList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        impliedCondList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        impliedCondList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        impliedCondList.add(parseProductPredicate(pred));
                     }
                     else
                         throw new IllegalArgumentException("Invalid predicate type provided to purchase rule");
@@ -329,7 +339,7 @@ public class SystemManagerHandler extends  Handler{
         return new StorePredicate(Integer.parseInt(minUnits), Integer.parseInt(maxUnits), Double.parseDouble(minPrice));
     }
 
-    private ProductPredicate    parseProductPredicate(String storePredicate){
+    private ProductPredicate parseProductPredicate(String storePredicate){
         Gson gson = new Gson();
         Properties data = gson.fromJson(storePredicate, Properties.class);
         String minUnits = data.getProperty("minUnits");

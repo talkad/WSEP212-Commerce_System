@@ -58,6 +58,11 @@ import StoreRevenue from "./ReportsPages/StoreRevenue";
 import SystemRevenue from "./ReportsPages/SystemRevenue";
 import {ReactComponent as UnreadNotification} from './Images/bell_notification.svg';
 import DailyStatistics from "./Pages/DailyStatistics";
+import MainPurchasePolicyPage from "./DiscountPurchasePolicyPages/MainPurchasePolicyPage";
+import BasketPurchase from "./DiscountPurchasePolicyPages/BasketPurchase";
+import ProductPurchase from "./DiscountPurchasePolicyPages/ProductPurchase";
+import CompositionPurchasePage from "./DiscountPurchasePolicyPages/CompositionPurchasePage";
+import CategoryPurchase from "./DiscountPurchasePolicyPages/CategoryPurchase";
 
 
 
@@ -484,6 +489,11 @@ class App extends React.Component {
                         <Route path="/Disconnected" component={Disconnected}/>
                         <Route path="/RECEIVE_STORE_REVENUE" component={StoreRevenue}/>
                         <Route path="/RECEIVE_GENERAL_REVENUE" component={SystemRevenue}/>
+                        <Route path="/ADD_PURCHASE_RULE" component={MainPurchasePolicyPage}/>
+                        <Route path="/Category_Purchase" component={CategoryPurchase}/>
+                        <Route path="/Basket_Purchase" component={BasketPurchase}/>
+                        <Route path="/Product_Purchase" component={ProductPurchase}/>
+                        <Route path="/Composition_Purchase_Page" component={CompositionPurchasePage}/>
                         {/*<Route path="/RECEIVE_STORE_WORKER_INFO" component={RemoveOwner}/>*/}
                     </Switch>
                 </div>

@@ -34,4 +34,16 @@ public class OrCompositionPurchaseRule extends CompoundPurchaseRule {
     public String getDescription() {
         return "Or Composition Purchase Rule " + id;
     }
+
+    @Override
+    public String toString() {
+        String [] compoundStrings = new String[purchaseRules.size()];
+        int i = 0;
+        for(PurchaseRule rule: purchaseRules) {
+            compoundStrings[i] = rule.toString();
+            ++i;
+        }
+
+        return "Or Composition Purchase Rule No." + id + ":\n" + String.join("OR\n", compoundStrings);
+    }
 }

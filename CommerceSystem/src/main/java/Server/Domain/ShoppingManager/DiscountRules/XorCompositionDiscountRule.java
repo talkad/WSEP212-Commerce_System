@@ -76,4 +76,17 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
     public String getDescription() {
         return "Xor Composition: " + id;
     }
+
+    @Override
+    public String toString() {
+        String [] compoundStrings = new String[discountRules.size()];
+        int i = 0;
+        for(DiscountRule rule: discountRules) {
+            compoundStrings[i] = rule.toString();
+            ++i;
+        }
+
+        return "Xor Composition Discount Rule No." + id + ":\n" + "Select the " + xorResolveType
+                  + "eligible discount rule of the following:\n" + String.join("", compoundStrings);
+    }
 }

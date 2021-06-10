@@ -42,6 +42,8 @@ public class ConditionalProductDiscountRule extends ProductDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Conditional Product discount: ProductID - " + productID + " with a discount of " + discount + "%";
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Product Discount Rule No." + id + ":\n" +
+                                                                                            discount + "% Discount - " + productPredicate)
+                                                                                        : ("" + productPredicate);
     }
 }

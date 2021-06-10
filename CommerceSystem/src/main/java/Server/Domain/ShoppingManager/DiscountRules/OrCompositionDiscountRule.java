@@ -50,4 +50,17 @@ public class OrCompositionDiscountRule extends CompoundDiscountRule {
     public String getDescription() {
         return "Or Composition: "+ id;
     }
+
+    @Override
+    public String toString() {
+        String [] compoundStrings = new String[discountRules.size()];
+        int i = 0;
+        for(DiscountRule rule: discountRules) {
+            compoundStrings[i] = rule.toString();
+            ++i;
+        }
+
+        return "Or Composition Discount Rule No." + id + ":\n" + "Receive a " + discount + "% discount on category " + category + " - \n" +
+                String.join("OR\n", compoundStrings);
+    }
 }

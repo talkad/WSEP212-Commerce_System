@@ -47,6 +47,19 @@ public class AndCompositionDiscountRule extends CompoundDiscountRule {
 
     @Override
     public String getDescription() {
-        return "And Composition: " + id;
+        return "";
+    }
+
+    @Override
+    public String toString() {
+        String [] compoundStrings = new String[discountRules.size()];
+        int i = 0;
+        for(DiscountRule rule: discountRules) {
+            compoundStrings[i] = rule.toString();
+            ++i;
+        }
+
+        return "And Composition Discount Rule No." + id + ":\n" + "Receive a " + discount + "% discount on category " + category + " - \n" +
+                    String.join("AND\n", compoundStrings);
     }
 }

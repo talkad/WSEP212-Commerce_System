@@ -712,6 +712,79 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    static sendCategoryPurchaseRule (functionName, username, storeId, type, category, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                category: category,
+                categoryPredicate: JSON.stringify({category: category, minUnits: minUnits,maxUnits: maxUnits})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendBasketPurchaseRule (functionName, username, storeId, type, minUnits, maxUnits, minPrice){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                basketPredicate: JSON.stringify({ minUnits: minUnits,maxUnits: maxUnits,minPrice: minPrice})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendProductPurchaseRule (functionName, username, storeId, type, productId, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                productID: productId,
+                productPredicate: JSON.stringify({minUnits: minUnits,maxUnits: maxUnits, productID: productId})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPurchaseAndOr (functionName, username, storeId, type, policyRules){
+        let fixedRules = policyRules.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                policyRules: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPurchaseConditioning (functionName, username, storeId, type, predicate1, predicate2){
+        let fixedRules = predicate1.join(', ');
+        let fixedRules2 = predicate2.join(', ');
+
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                predicates: fixedRules,
+                impliedPredicates: fixedRules2,
+
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
 }
 
 export default Connection;

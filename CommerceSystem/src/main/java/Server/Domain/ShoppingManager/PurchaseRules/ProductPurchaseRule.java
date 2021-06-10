@@ -33,5 +33,8 @@ public class ProductPurchaseRule extends LeafPurchaseRule {
         return "Product Purchase rule: " + id;
     }
 
-
+    @Override
+    public String toString() {
+        return "" + predicate;
+    }
 }
