@@ -358,7 +358,7 @@ public class CommerceSystem implements IService {
 
             ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
             con.setSysLoc(extsysloc);
-            boolean extSysRes = con.createHandshake().getResult();
+            boolean extSysRes = con.checkConnection();
             if(extSysRes)
                 con.closeConnection();
             else

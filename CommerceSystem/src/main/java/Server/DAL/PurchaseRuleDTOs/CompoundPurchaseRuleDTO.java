@@ -46,7 +46,7 @@ public abstract class CompoundPurchaseRuleDTO implements PurchaseRuleDTO {
 
     public List<PurchaseRule> getConcretePurchaseRules(){
         List<PurchaseRule> concretePurchaseRules = new Vector<>();
-        for(PurchaseRuleDTO purchaseRuleDTO : this.purchaseRules){
+        for(PurchaseRuleDTO purchaseRuleDTO : this.getPurchaseRules()){
             concretePurchaseRules.add(purchaseRuleDTO.toConcretePurchaseRule());
         }
         return concretePurchaseRules;

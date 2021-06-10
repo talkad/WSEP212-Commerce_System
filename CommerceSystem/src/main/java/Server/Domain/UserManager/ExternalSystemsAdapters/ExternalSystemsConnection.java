@@ -53,6 +53,7 @@ public class ExternalSystemsConnection {
      * @return positive response if the handshake succeeds.
      */
     public Response<Boolean> createHandshake() {
+
         Response<String> res;
 
         // copyright - https://stackoverflow.com/questions/34655031/javax-net-ssl-sslpeerunverifiedexception-host-name-does-not-match-the-certifica
@@ -84,11 +85,6 @@ public class ExternalSystemsConnection {
                 .setConnectionManager(cm)
                 .build();
 
-//                HttpClients.custom()
-//                .setSSLSocketFactory(sslsf)
-//                .setConnectionManager(cm)
-//                .build();
-
         List<NameValuePair> urlParameters = new LinkedList<>();
         urlParameters.add(new BasicNameValuePair("action_type", "handshake"));
 
@@ -97,11 +93,13 @@ public class ExternalSystemsConnection {
         if(res.isFailure())
             return new Response<>(false, true, "Handshake failed (CRITICAL)");
 
+        this.isConnected = true;
         return new Response<>(true, false, "Connection initiated successfully");
     }
 
     public void closeConnection() {
         try {
+            this.isConnected = false;
             client.close();
         }catch (IOException e){
             e.printStackTrace();
@@ -112,13 +110,9 @@ public class ExternalSystemsConnection {
 
         try {
 
-//            if(!this.isConnected){
-//                return new Response<>("", true, "Sending message failed");
-//            }
-
             HttpEntity postParams = new UrlEncodedFormEntity(request);
-            HttpPost httpPost = (sysLoc == null) ? new HttpPost("https://cs-bgu-wsep.herokuapp.com/") :
-                                                                          new HttpPost(sysLoc);
+            HttpPost httpPost = (sysLoc == null) ? new HttpPost(sysLoc) :
+                    new HttpPost(sysLoc);
             httpPost.setEntity(postParams);
 
             CloseableHttpResponse httpResponse = client.execute(httpPost);
@@ -132,8 +126,6 @@ public class ExternalSystemsConnection {
                 response.append(inputLine);
             }
             reader.close();
-
-            this.isConnected = true;
 
             return new Response<>(response.toString(), false, "Request sent successfully. response: " + response.toString());
 
@@ -150,4 +142,47 @@ public class ExternalSystemsConnection {
     }
 
     public void setSysLoc(String sysLoc) { this.sysLoc = sysLoc; }
+
+
+    public boolean checkConnection() {
+        Response<String> res;
+
+        // copyright - https://stackoverflow.com/questions/34655031/javax-net-ssl-sslpeerunverifiedexception-host-name-does-not-match-the-certifica
+        final SSLConnectionSocketFactory sslsf;
+        try {
+            sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault(),
+                    NoopHostnameVerifier.INSTANCE);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", new PlainConnectionSocketFactory())
+                .register("https", sslsf)
+                .build();
+
+        final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
+        cm.setMaxTotal(100);
+
+        int timeout = 5; // seconds
+        RequestConfig config = RequestConfig.custom() // configure timeout to connection if there is no response
+                .setConnectTimeout(timeout * 1000)
+                .setConnectionRequestTimeout(timeout * 1000)
+                .setSocketTimeout(timeout * 1000).build();
+
+        this.client = HttpClientBuilder.create()
+                .setDefaultRequestConfig(config)
+                .setSSLSocketFactory(sslsf)
+                .setConnectionManager(cm)
+                .build();
+
+        List<NameValuePair> urlParameters = new LinkedList<>();
+        urlParameters.add(new BasicNameValuePair("action_type", "handshake"));
+
+        res = send(urlParameters);
+
+        closeConnection();
+
+        return !res.isFailure();
+    }
 }
