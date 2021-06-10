@@ -997,7 +997,7 @@ public class UserControllerIntegrationTests {
         String guestName2 = UserController.getInstance().addGuest().getResult();
         UserController.getInstance().register(initialUserName, "tal4", "kadosh");
         String tal = UserController.getInstance().login(initialUserName, "tal4", "kadosh").getResult();
-        String admin = UserController.getInstance().login(guestName2, "u1", "u1").getResult();
+        String admin = UserController.getInstance().login(guestName2, "a1", "a1").getResult();
 
         int storeID = UserController.getInstance().openStore(tal, "Apple").getResult();
         int productID = 65482;
