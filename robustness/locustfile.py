@@ -9,7 +9,6 @@ from websocket import create_connection
 import six
 
 from locust import TaskSet, task, HttpUser
-import socketio
 
 import string
 import random  # define the random module
@@ -137,30 +136,35 @@ class UserTaskSet(TaskSet):
         ans = self.ws.recv()
 
         products = json.loads(json.loads(ans)["message"])["result"]
+        if len(products) > 0:
+            first_product = products[0]
+            store_id = json.loads(first_product)["storeID"]
+            product_id = json.loads(first_product)["productID"]
 
-        first_product = products[0]
+            to_send = {"action": "addToCart", "username": self.username, "storeID": store_id, "productID": product_id}
+            msg = json.dumps(to_send)
 
-        store_id = json.loads(first_product)["storeID"]
-        product_id = json.loads(first_product)["productID"]
+            start_time = time.time()
+            self.ws.send(msg)
 
-        to_send = {"action": "addToCart", "username": self.username, "storeID": store_id, "productID": product_id}
-        msg = json.dumps(to_send)
-
-        start_time = time.time()
-        self.ws.send(msg)
-
-        ans = self.ws.recv()
-        end_time = time.time()
-        locust.events.request_success.fire(
-            request_type='addToCart',
-            name='test/ws/add_to_cart',
-            response_time=int((end_time - start_time) * 1000),
-            response_length=len(ans))
+            ans = self.ws.recv()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(ans))
+        else:
+            start_time = time.time()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(ans))
 
     @task(3)
     def purchase(self):
-        # ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
-        # storename = str(ran)
         to_send = {"action": "directPurchase", "username": self.username,
                    "paymentDetails": json.dumps(
                        {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": "a", "id": "a"}),
@@ -174,6 +178,73 @@ class UserTaskSet(TaskSet):
         locust.events.request_success.fire(
             request_type='directPurchase',
             name='test/ws/purchase',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+
+    @task(1)
+    def basic_action_set(self):
+        # registered user opens store
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
+        storename = str(ran)
+        to_send = {"action": "openStore", "username": self.username, "storeName": storename}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='openStore',
+            name='test/ws/open_store',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # adding products to the store
+        store_id = json.loads(json.loads(ans)["message"])["result"]
+
+        to_send = {"action": "addProductsToStore", "username": self.username,
+                   "productDTO": json.dumps({"name": "Bamba", "productID": "123", "storeID": str(store_id),
+                                             "price": "8", "categories": "[snack]", "keywords": "[peanuts]",
+                                             "reviews": "[]", "rating": "0", "numRatings": "0"}), "amount": "40"}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='addProductsToStore',
+            name='test/ws/add_products',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # todo appoint him as manager
+        manager_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=(S-4)))
+        to_send = {"action": "register", "identifier": self.username, "username": manager_name, "pwd": "123"}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+
+        locust.events.request_success.fire(
+            request_type='register',
+            name='test/ws/register',
+            response_time=int((time.time() - start_time) * 1000),
+            response_length=len(ans))
+
+        # add permission
+        to_send = {"action": "addPermission", "permitting": self.username, "storeID": str(store_id), "permitted": "someuser", "permission": "ADD_PRODUCT_TO_STORE"}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='addPermission',
+            name='test/ws/add_permission',
             response_time=int((end_time - start_time) * 1000),
             response_length=len(ans))
 
