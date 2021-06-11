@@ -11,8 +11,8 @@ class EditProduct extends React.Component {
         super(props);
         this.state = {
             functionName: 'updateProductInfo',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID')(),
             productId: '',
             newPrice: '',
             newName: '',

@@ -168,6 +168,11 @@ public class CommerceSystem implements IService {
     }
 
     @Override
+    public Response<List<String>> getMyStores(String username) {
+        return UserController.getInstance().getMyStores(username);
+    }
+
+    @Override
     public Response<StoreClientDTO> getStore(int storeID) {
         return StoreController.getInstance().getStore(storeID);
     }

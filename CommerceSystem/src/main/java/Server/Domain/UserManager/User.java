@@ -998,6 +998,16 @@ public class User {
         return new Response<>(storeIDs, false, "Get store owned Successfully");
     }
 
+
+    public Response<List<String>> getMyStores() {
+        List<String> stores = new LinkedList<>();
+
+        for(Integer storeID: getStoresOwnedAndManaged().getResult())
+            stores.add(storeID + ": " + StoreController.getInstance().getStoreName(storeID));
+
+        return new Response<>(stores, false, "Get store owned Successfully");
+    }
+
     public UserState getState() {
         return state;
     }
@@ -1061,4 +1071,5 @@ public class User {
             return new Response<>(null, true, "You are not an admin");
         }
     }
+
 }

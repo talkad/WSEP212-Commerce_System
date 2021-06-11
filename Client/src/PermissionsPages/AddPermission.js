@@ -8,8 +8,8 @@ class AddPermission extends React.Component {
         super(props);
         this.state = {
             functionName: 'addPermission',
-            permitting: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            permitting: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID')(),
             permitted: '',
             permissions: '',
         };

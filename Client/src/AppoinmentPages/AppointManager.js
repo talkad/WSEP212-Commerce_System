@@ -7,9 +7,9 @@ class AppointManager extends React.Component {
         super(props);
         this.state = {
             functionName: 'appointStoreManager',
-            appointerName: StaticUserInfo.getUsername(), //username
+            appointerName: window.sessionStorage.getItem('username'), //username
             appointeeName: '',
-            storeId: StaticUserInfo.getStoreId(),
+            storeId: window.sessionStorage.getItem('storeID')(),
         };
     }
 

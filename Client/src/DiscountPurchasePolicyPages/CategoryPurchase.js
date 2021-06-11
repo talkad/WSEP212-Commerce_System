@@ -7,8 +7,8 @@ class CategoryPurchase extends React.Component {
         super(props);
         this.state = {
             functionName: 'addPurchaseRule',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID')(),
             type: 'CategoryPurchaseRule',
             category: '',
             minUnits: '',

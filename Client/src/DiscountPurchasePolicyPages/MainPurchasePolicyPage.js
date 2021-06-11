@@ -11,8 +11,8 @@ class MainPurchasePolicyPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID')(),
         };
     }
 

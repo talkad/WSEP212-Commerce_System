@@ -31,8 +31,8 @@ class StoreManagment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
             permissions: [],
             loaded: false,
             //permissions: ['ADD_PRODUCT_TO_STORE','REMOVE_PRODUCT_FROM_STORE'],

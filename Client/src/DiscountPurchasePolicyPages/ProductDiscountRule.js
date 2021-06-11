@@ -9,8 +9,8 @@ class ProductDiscountRule extends React.Component {
         super(props);
         this.state = {
             functionName: 'addDiscountRule',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID')(),
             type: 'ProductDiscountRule',
             productId: '',
             discount: '',
