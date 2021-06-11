@@ -77,7 +77,7 @@ public interface IService {
     /**
      * Registered requirements - 3
      */
-    Response<String> logout(String userName); // 3.1
+    Response<String> logout(String username); // 3.1
 
     Response<Integer> openStore(String username, String storeName); // 3.2
 
