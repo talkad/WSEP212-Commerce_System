@@ -9,7 +9,7 @@ class BasketPurchase extends React.Component {
         this.state = {
             functionName: 'addPurchaseRule',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             type: 'BasketPurchaseRule',
             minUnits: '',
             maxUnits: '',

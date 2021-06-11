@@ -21,7 +21,7 @@ class CompositionPurchasePage extends React.Component {
             selectedOption: '',
             functionName: 'addPurchaseRule',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             type: '',
             PredicateCategoryCategory: '' , PredicateCategoryMinUnits: '', PredicateCategoryMaxUnits: '',
             PredicateBasketMinUnits: '', PredicateBasketMaxUnits: '', PredicateBasketMinPrice: '',

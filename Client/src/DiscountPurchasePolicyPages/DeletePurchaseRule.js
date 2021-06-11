@@ -9,7 +9,7 @@ class DeletePurchaseRule extends React.Component {
         this.state = {
             functionName: 'removePurchaseRule',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             purchaseRuleID: '',
         };
     }

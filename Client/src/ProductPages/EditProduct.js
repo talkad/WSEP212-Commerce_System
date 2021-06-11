@@ -12,7 +12,7 @@ class EditProduct extends React.Component {
         this.state = {
             functionName: 'updateProductInfo',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             productId: '',
             newPrice: '',
             newName: '',

@@ -8,7 +8,7 @@ class OwnerStoreHistory extends React.Component{
         this.state = {
             functionName: 'getPurchaseDetails',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             showMessage: false,
             toShow: ''
         };

@@ -9,7 +9,7 @@ class AppointManager extends React.Component {
             functionName: 'appointStoreManager',
             appointerName: window.sessionStorage.getItem('username'), //username
             appointeeName: '',
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 

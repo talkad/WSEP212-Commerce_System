@@ -8,7 +8,7 @@ class StoreRevenue extends React.Component{
         this.state = {
             functionName: 'getTotalStoreRevenue',
             managerName: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             showMessage: false,
             toShow: ''
         };

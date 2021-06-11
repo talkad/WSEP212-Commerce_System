@@ -12,7 +12,7 @@ class MainDiscountPolicyPage extends React.Component {
         super(props);
         this.state = {
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 

@@ -9,7 +9,7 @@ class RemoveManager extends React.Component {
             functionName: 'removeManagerAppointment',
             appointerName: window.sessionStorage.getItem('username'),
             appointeeName: '',
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 

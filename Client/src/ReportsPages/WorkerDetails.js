@@ -8,7 +8,7 @@ class WorkerDetails extends React.Component{
         this.state = {
             functionName: 'getStoreWorkersDetails',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             showMessage: false,
             toShow: '',
         };

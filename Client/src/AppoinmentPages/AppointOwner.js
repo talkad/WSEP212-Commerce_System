@@ -9,7 +9,7 @@ class AppointOwner extends React.Component {
             functionName: 'appointStoreOwner',
             appointerName: window.sessionStorage.getItem('username'),
             appointeeName: '',
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 

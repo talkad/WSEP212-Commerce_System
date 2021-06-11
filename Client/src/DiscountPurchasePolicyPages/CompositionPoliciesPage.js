@@ -24,7 +24,7 @@ class CompositionPoliciesPage extends React.Component {
             selectedOption: '',
             functionName: 'addDiscountRule',
             username: window.sessionStorage.getItem('username'),
-            storeId: window.sessionStorage.getItem('storeID')(),
+            storeId: window.sessionStorage.getItem('storeID'),
             type: '',
             category: '',
             discount: '',
