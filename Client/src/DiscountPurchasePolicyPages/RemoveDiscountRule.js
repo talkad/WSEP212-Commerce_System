@@ -8,8 +8,8 @@ class RemoveDiscountRule extends React.Component {
         super(props);
         this.state = {
             functionName: 'removeDiscountRule',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
             discountRuleID: '',
         };
 

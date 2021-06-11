@@ -10,9 +10,9 @@ class AddProduct extends React.Component {
         super(props);
         this.state = {
             functionName: 'addProductsToStore',
-            username: StaticUserInfo.getUsername(),
+            username: window.sessionStorage.getItem('username'),
             name: '',
-            storeId: StaticUserInfo.getStoreId(),
+            storeId: window.sessionStorage.getItem('storeID'),
             price: '',
             categories: '',
             keywords: '',

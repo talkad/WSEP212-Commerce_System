@@ -83,6 +83,7 @@ class App extends React.Component {
             visitor: true,
             registered: false,
             storeOwner: false,
+            stores: [],
             admin: false,
 
             showAlert: false,
@@ -144,7 +145,7 @@ class App extends React.Component {
         }
 
         if (window.sessionStorage.getItem('username') !== null) {
-            Connection.sendStoreOwned().then(this.handleStoreOwnedResponse, Connection.handleReject);
+            Connection.sendGetMyStores().then(this.handleStoreOwnedResponse, Connection.handleReject);
             Connection.sendIsAdmin().then(this.handleIsAdmin, Connection.handleReject);
         }
 
@@ -273,12 +274,17 @@ class App extends React.Component {
     //-----------------------------------USER OFFER END-------------------------------------------------------------
 
     handleStoreOwnedResponse(result) {
+        console.log("hello there")
+        console.log(result)
         if (!result.isFailure) {
             if (result.result.length !== 0) {
-                this.setState({storeOwner: true});
+                this.setState({storeOwner: true, stores: result.result});
             } else {
                 this.setState({storeOwner: false});
             }
+        }
+        else{
+            alert(result.errMsg);
         }
     }
 
@@ -382,6 +388,12 @@ class App extends React.Component {
         );
     }
 
+    sendToStoreManagement(storeID){
+        window.sessionStorage.setItem('storeID', storeID)
+        window.location.href = "/storeManagement"
+    }
+
+
     render() {
         return (
             <Router>
@@ -411,7 +423,20 @@ class App extends React.Component {
                             </NavDropdown>}
 
                             {this.state.storeOwner &&
-                            <Nav.Link href="/choosemystore">Manage stores</Nav.Link>}
+                            <NavDropdown title={"Manage stores"}>
+                                {this.state.stores.map((entry) => {
+                                    let split = entry.split(":")
+                                    let id = split[0] //TODO: should it be int?
+                                    let name = split[1]
+
+                                    return (<NavDropdown.Item onClick={() => this.sendToStoreManagement(id)}>
+                                        {`${name} (${id})`}
+                                    </NavDropdown.Item>)
+                                })}
+                            </NavDropdown>}
+
+                            {/*{this.state.storeOwner &&*/}
+                            {/*<Nav.Link href="/choosemystore">Manage stores</Nav.Link>}*/}
 
                             {this.state.admin &&
                             <NavDropdown id={"admin-nav-dropdown"} title={"Admin"}>

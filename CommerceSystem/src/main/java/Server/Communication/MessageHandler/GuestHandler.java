@@ -130,6 +130,11 @@ public class GuestHandler extends Handler{
 
                 response = service.getStoreOwned(username);
             }
+            case "getMyStores" ->{
+                String username = data.getProperty("username");
+
+                response = service.getMyStores(username);
+            }
             default -> response = super.handle(input);
         }
 

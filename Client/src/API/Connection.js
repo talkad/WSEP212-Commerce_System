@@ -408,6 +408,15 @@ class Connection{
         return Connection.getResponse("getStoreOwned");
     }
 
+    static sendGetMyStores(){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "getMyStores",
+            username: window.sessionStorage.getItem('username'),
+        }))
+
+        return Connection.getResponse("getMyStores");
+    }
+
     static sendAddProductReview(storeID, productID, review){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addProductReview",
@@ -553,14 +562,14 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
-    static sendStoreHistoryRequest(functionName, adminName, storeId){
+    static sendStoreHistoryRequest(storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
-            action: functionName,
-            adminName: adminName,
+            action: "getStorePurchaseHistory",
+            adminName: window.sessionStorage.getItem('username'),
             storeID: storeId,
         }))
 
-        return Connection.getResponse(functionName);
+        return Connection.getResponse("getStorePurchaseHistory");
     }
 
     static sendGetPermissionsRequest (functionName, username, storeId){

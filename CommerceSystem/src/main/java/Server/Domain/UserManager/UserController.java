@@ -888,6 +888,17 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
+    public Response<List<String>> getMyStores(String username) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getMyStores();
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
     public Response<List<String>> getDailyStatistics(String username, LocalDate date) {
 
         readLock.lock();

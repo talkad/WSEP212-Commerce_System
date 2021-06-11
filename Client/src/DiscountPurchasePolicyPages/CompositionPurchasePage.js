@@ -20,8 +20,8 @@ class CompositionPurchasePage extends React.Component {
         this.state = {
             selectedOption: '',
             functionName: 'addPurchaseRule',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
             type: '',
             PredicateCategoryCategory: '' , PredicateCategoryMinUnits: '', PredicateCategoryMaxUnits: '',
             PredicateBasketMinUnits: '', PredicateBasketMaxUnits: '', PredicateBasketMinPrice: '',

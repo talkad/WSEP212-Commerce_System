@@ -69,6 +69,8 @@ public interface IService {
 
     Response<List<Integer>> getStoreOwned(String username);
 
+    Response<List<String>> getMyStores(String username);
+
     Response<StoreClientDTO> getStore(int storeID);
 
     User getUserByName(String username); // for tests purposes
