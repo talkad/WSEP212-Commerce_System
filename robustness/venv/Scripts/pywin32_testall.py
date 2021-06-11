@@ -9,6 +9,7 @@ import subprocess
 this_dir = os.path.dirname(__file__)
 site_packages = [site.getusersitepackages(), ] + site.getsitepackages()
 
+
 # Run a test using subprocess and wait for the result.
 # If we get an returncode != 0, we know that there was an error.
 def run_test(script, cmdline_rest=""):
@@ -38,6 +39,7 @@ def find_and_run(possible_locations, script, cmdline_rest=""):
         raise RuntimeError("Failed to locate the test script '%s' in one of %s"
                            % (script, possible_locations))
 
+
 if __name__ == '__main__':
     import argparse
 
@@ -58,13 +60,14 @@ if __name__ == '__main__':
 
     # win32
     maybes = [os.path.join(directory, "win32", "test") for directory in code_directories]
-    command = ('testall.py', )
+    command = ('testall.py',)
     if args.no_user_interaction:
-        command += ("-no-user-interaction", )
+        command += ("-no-user-interaction",)
     find_and_run(maybes, *command)
 
     # win32com
-    maybes = [os.path.join(directory, "win32com", "test") for directory in [os.path.join(this_dir, "com"), ] + site_packages]
+    maybes = [os.path.join(directory, "win32com", "test") for directory in
+              [os.path.join(this_dir, "com"), ] + site_packages]
     find_and_run(maybes, 'testall.py', "2")
 
     # adodbapi
