@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.ReviewDTO;
+import Server.DAL.DomainDTOs.ReviewDTO;
 import Server.Domain.CommonClasses.Response;
 
 /**

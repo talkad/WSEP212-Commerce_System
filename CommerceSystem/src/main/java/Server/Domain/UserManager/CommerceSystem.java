@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
-import Server.DAL.UserDTO;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -16,15 +16,9 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 import com.google.gson.Gson;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.bson.json.JsonReader;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;

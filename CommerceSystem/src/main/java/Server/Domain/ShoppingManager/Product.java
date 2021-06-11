@@ -1,6 +1,7 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.ReviewDTO;
+import Server.DAL.DomainDTOs.ProductDTO;
+import Server.DAL.DomainDTOs.ReviewDTO;
 import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -49,7 +50,7 @@ public class Product {
     }
 
     // TODO DAL Constructor - DONT REFACTOR NAME
-    public Product(Server.DAL.ProductDTO productDTO){
+    public Product(ProductDTO productDTO){
         this.productID = productDTO.getProductID();
         this.storeID = productDTO.getStoreID();
         this.name = new AtomicReference<>(productDTO.getName());
@@ -69,14 +70,14 @@ public class Product {
         }
     }
 
-    public Server.DAL.ProductDTO toDTO(){
+    public ProductDTO toDTO(){
         //TODO maybe make thread-safe
         List<ReviewDTO> reviewsList = new Vector<>();
         for(Review review : this.reviews) {
             reviewsList.add(review.toDTO());
         }
 
-        return new Server.DAL.ProductDTO(this.getProductID(), this.getStoreID(), this.getPrice(), this.getName(), new Vector<>(this.categories), new Vector<>(this.keywords), this.getRating(), this.numRatings.get(), reviewsList);
+        return new ProductDTO(this.getProductID(), this.getStoreID(), this.getPrice(), this.getName(), new Vector<>(this.categories), new Vector<>(this.keywords), this.getRating(), this.numRatings.get(), reviewsList);
     }
 
     private void setProductID(int id) {

@@ -1,6 +1,6 @@
 package TestComponent.IntegrationTestings;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 
@@ -20,7 +20,6 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
 import org.junit.Before;

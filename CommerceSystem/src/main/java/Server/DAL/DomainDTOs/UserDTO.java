@@ -1,4 +1,4 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.Domain.UserManager.UserStateEnum;

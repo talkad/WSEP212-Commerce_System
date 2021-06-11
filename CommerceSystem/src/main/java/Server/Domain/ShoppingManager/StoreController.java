@@ -1,7 +1,7 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.DALService;
-import Server.DAL.StoreDTO;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DomainDTOs.StoreDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;

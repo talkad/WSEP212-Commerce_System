@@ -1,6 +1,6 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Inventory;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;

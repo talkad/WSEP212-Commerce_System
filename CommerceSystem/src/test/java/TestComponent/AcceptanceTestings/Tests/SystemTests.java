@@ -1,16 +1,13 @@
 package TestComponent.AcceptanceTestings.Tests;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
-import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import TestComponent.AcceptanceTestings.Bridge.Driver;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.security.Provider;
 
 public class SystemTests extends ProjectAcceptanceTests {
 

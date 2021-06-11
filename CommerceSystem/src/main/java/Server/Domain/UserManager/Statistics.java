@@ -1,16 +1,13 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
-import Server.DAL.DailyCountersDTO;
-import Server.Service.DataObjects.OfferData;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DomainDTOs.DailyCountersDTO;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

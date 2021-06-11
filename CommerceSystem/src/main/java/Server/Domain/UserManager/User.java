@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.*;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DomainDTOs.*;
 import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;

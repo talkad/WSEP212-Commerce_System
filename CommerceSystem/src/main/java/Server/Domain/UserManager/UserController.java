@@ -1,6 +1,9 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.*;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DomainDTOs.AccountDTO;
+import Server.DAL.DomainDTOs.AdminAccountDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;

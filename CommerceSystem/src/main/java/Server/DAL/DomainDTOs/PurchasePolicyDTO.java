@@ -1,4 +1,4 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import dev.morphia.annotations.Embedded;

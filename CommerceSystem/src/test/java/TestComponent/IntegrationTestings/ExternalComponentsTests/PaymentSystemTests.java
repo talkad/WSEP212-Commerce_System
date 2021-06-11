@@ -1,6 +1,6 @@
 package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;

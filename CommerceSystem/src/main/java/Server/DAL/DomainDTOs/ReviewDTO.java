@@ -1,4 +1,4 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;

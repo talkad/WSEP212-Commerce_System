@@ -1,4 +1,4 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;

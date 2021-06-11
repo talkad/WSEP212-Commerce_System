@@ -1,6 +1,6 @@
 package TestComponent.AcceptanceTestings.Tests;
 
-import Server.DAL.UserDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;

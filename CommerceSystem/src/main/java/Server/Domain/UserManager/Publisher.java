@@ -1,8 +1,8 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.DAL.PairDTOs.IntStringListPair;
-import Server.DAL.PublisherDTO;
+import Server.DAL.DomainDTOs.PublisherDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
