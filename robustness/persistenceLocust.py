@@ -173,13 +173,14 @@ class UserTaskSet(TaskSet):
                     product_name = str(ran)
 
                     to_send = {"action": "addProductsToStore",
+                               "username": username,
                                "productDTO": json.dumps({"name": product_name,
                                                          "storeID": store_id,
                                                          "price": 100,
                                                          "categories": [product_name],
                                                          "keywords": [product_name]
                                                          }),
-                               "username": username}
+                               "amount": 100}
 
                     msg = json.dumps(to_send)
                     start_time = time.time()
