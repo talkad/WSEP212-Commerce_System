@@ -17,6 +17,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.sonatype.aether.RepositorySystemSession;
+
 import javax.net.ssl.SSLContext;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -90,8 +92,10 @@ public class ExternalSystemsConnection {
 
         res = send(urlParameters);
 
-        if(res.isFailure())
+        if(res.isFailure()) {
+            this.isConnected = false;
             return new Response<>(false, true, "Handshake failed (CRITICAL)");
+        }
 
         this.isConnected = true;
         return new Response<>(true, false, "Connection initiated successfully");

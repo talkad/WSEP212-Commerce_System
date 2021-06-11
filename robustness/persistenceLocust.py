@@ -31,16 +31,19 @@ class UserTaskSet(TaskSet):
         self.store_count = 0
         self.registered_count = 0
         self.purchase_count = 0
-        self.ws = None
+        self.once = 0
 
-        if self.ws is None:
-            self.ws = create_connection('ws://127.0.0.1:8080/ws')
+
+        self.ws = create_connection('ws://127.0.0.1:8080/ws')
+
+        if self.once != 1:
 
             self.ws.send('{"action": "startup"}')
             ans = self.ws.recv()
 
             self.guest_name = json.loads(json.loads(ans)["message"])["result"]
-            self.username = "MainUser"
+            ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
+            self.username = str(ran)
 
             # REGISTER -----------------------------------------------------------------------------------------------------
 
@@ -57,7 +60,7 @@ class UserTaskSet(TaskSet):
             start_time = time.time()
             self.ws.send(msg)
             self.ws.recv()
-
+            stop = 1
             # OPEN STORE ---------------------------------------------------------------------------------------------------
 
             to_send = {"action": "openStore", "username": self.username, "storeName": "Hanut Botnim"}
@@ -96,18 +99,24 @@ class UserTaskSet(TaskSet):
             ans = self.ws.recv()
             self.guest_name = json.loads(json.loads(ans)["message"])["result"]
 
+            self.once = 1
+
     def on_quit(self):
         self.ws.close()
 
-    @task
+    @task(1)
     def persistence(self):
         if self.registered_count < 10000:
+            self.ws.send('{"action": "startup"}')
+            ans = self.ws.recv()
+
+            guest_name = json.loads(json.loads(ans)["message"])["result"]
             ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
             username = str(ran)
 
             # REGISTER -------------------------------------------------------------------------------------------------
 
-            to_send = {"action": "register", "identifier": self.guest_name, "username": username, "pwd": "123"}
+            to_send = {"action": "register", "identifier": guest_name, "username": username, "pwd": "123"}
             msg = json.dumps(to_send)
             start_time = time.time()
             self.ws.send(msg)
@@ -121,7 +130,7 @@ class UserTaskSet(TaskSet):
 
             # LOGIN ------------------------------------------------------------------------------------------------
 
-            to_send = {"action": "login", "identifier": self.guest_name, "username": username, "pwd": "123"}
+            to_send = {"action": "login", "identifier": guest_name, "username": username, "pwd": "123"}
             msg = json.dumps(to_send)
             start_time = time.time()
             self.ws.send(msg)
@@ -185,15 +194,13 @@ class UserTaskSet(TaskSet):
 
                     product_count += 1
 
-            print("ABOUT TO BUY")
-
             if self.purchase_count < 1000000:
                 self.purchase_count += 100
                 current_user_purchase_count = 0
 
                 while current_user_purchase_count < 100:
 
-                    to_send = {"action": "searchByProductName", "productName": "Bamba Nugat"}
+                    to_send = {"action": "searchByProductName", "productName": "Botnim"}
                     msg = json.dumps(to_send)
                     self.ws.send(msg)
                     new_user_ans = self.ws.recv()
@@ -201,8 +208,8 @@ class UserTaskSet(TaskSet):
                     products = json.loads(json.loads(new_user_ans)["message"])["result"]
                     if len(products) > 0:
                         first_product = products[0]
-                        store_id = json.loads(first_product)["storeID"]
-                        product_id = json.loads(first_product)["productID"]
+                        store_id = first_product["storeID"]
+                        product_id = first_product["productID"]
 
                         to_send = {"action": "addToCart", "username": username,
                                    "storeID": store_id, "productID": product_id}
@@ -266,20 +273,6 @@ class UserTaskSet(TaskSet):
                         response_length=len(ans))
                 else:
                     assert False
-
-            print("FINISHED BUYING")
-
-            to_send = {"action": "logout",
-                       "username": username}
-
-            msg = json.dumps(to_send)
-            start_time = time.time()
-            self.ws.send(msg)
-
-            ans = self.ws.recv()
-            print("WHAT DID WE GET HERE?")
-            print(ans)
-            self.guest_name = json.loads(json.loads(ans)["message"])["result"]
 
             self.registered_count += 1
 
