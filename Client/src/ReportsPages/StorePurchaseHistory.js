@@ -42,7 +42,7 @@ class StorePurchaseHistory extends React.Component {
 
     getPurchaseHistory(){
         Connection.sendStoreHistoryRequest(this.state.storeID).then(this.handleResponse, Connection.handleReject)
-        this.setState({loaded: false});
+        this.setState({loaded: false, afterSearch: false});
     }
 
     render() {
