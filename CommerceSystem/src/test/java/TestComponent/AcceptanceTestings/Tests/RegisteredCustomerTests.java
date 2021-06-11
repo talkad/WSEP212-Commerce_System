@@ -20,10 +20,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     private static boolean initialized = false;
 
     @Before
-    public void setUp(){
+    public void setUp() throws InterruptedException {
         if(!initialized) {
             super.setUp(true);
-
             String guestName = bridge.addGuest().getResult();
             bridge.register(guestName, "aviad", "123456");
             bridge.register(guestName, "shalom", "123456");
@@ -54,6 +53,16 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
             bridge.appointStoreOwner("aviad", "tzemah", storeID);
 
             initialized = true;
+
+            while(bridge.searchByProductName("simania zoheret").isFailure() || bridge.searchByProductName("simania zoheret").getResult().size() == 0){
+                try{
+                    System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                    Thread.sleep(1000);
+                }
+                catch(Exception e){
+
+                }
+            }
         }
     }
 
@@ -101,6 +110,14 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
                 productDTO.getProductID(), "best simania i ever bought! solid 5/7");
         Assert.assertTrue(reviewResult.getResult());
+
+        while(bridge.searchByProductName("simania zoheret").getResult().get(0).getReviews().size() < 1){
+            try{
+                Thread.sleep(1000);
+            }catch(Exception e){
+
+            }
+        }
 
         // checking if the review was added
         searchResult = bridge.searchByProductName("simania zoheret");
@@ -337,6 +354,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void reviewProductSuccessStoredNotificationTest(){ // 9.1 good (3.3)
+
         PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
@@ -363,6 +381,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
         boolean added = false;
         for(Review review: productDTO.getReviews()){
+            System.out.println(review.getReview());
             if(review.getReview().equals("best simania i ever bought! solid 5/7")){
                 added = true;
                 break;

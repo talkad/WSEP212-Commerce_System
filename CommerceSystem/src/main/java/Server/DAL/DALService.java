@@ -81,7 +81,7 @@ public class DALService implements Runnable{
     private boolean cleaningCache = false;
 
     private static class CreateSafeThreadSingleton {
-        private static final DALService INSTANCE = new DALService();
+        private static final DALService INSTANCE = isTest ? new TestDALService() : new DALService();
     }
 
     public static DALService getInstance() {

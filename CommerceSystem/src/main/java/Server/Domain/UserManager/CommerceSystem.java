@@ -75,10 +75,6 @@ public class CommerceSystem implements IService {
         if(responseInit.isFailure())
             return new Response<>(false, true, "initialization failed due to error in init (CRITICAL)");
 
-        UserController.getInstance().adminBoot("a1", "a1");
-
-
-
         return new Response<>(true, false, "initialization complete");
     }
 

@@ -67,6 +67,15 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
             bridge.addProductsToStore("aviad", productDTO, 1000);
 
+            while(bridge.searchByProductName("masmer yarok").isFailure() || bridge.searchByProductName("masmer yarok").getResult().size() == 0){
+                try{
+                    Thread.sleep(1000);
+                }
+                catch(Exception e){
+
+                }
+            }
+
             initialized = true;
         }
     }

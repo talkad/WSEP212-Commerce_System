@@ -4,6 +4,7 @@ import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PermissionsEnum;
@@ -20,7 +21,7 @@ public class UserIntegrationTests {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }

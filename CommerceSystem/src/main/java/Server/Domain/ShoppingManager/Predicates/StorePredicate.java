@@ -42,6 +42,6 @@ public class StorePredicate implements Predicate {
 
     @Override
     public String toString() {
-        return "If you buy at least " + minUnits + " and at most " + maxUnits + " and overall price is at least " + minPrice +".\n" ;
+        return "If you buy at least " + minUnits + " and at most " + maxUnits + " and overall price is at least " + minPrice +".\\n" ;
     }
 }

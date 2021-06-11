@@ -36,7 +36,7 @@ public class PurchaseTests {
 
     @Before
     public void init(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
@@ -566,7 +566,7 @@ public class PurchaseTests {
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
-        Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
+        Assert.assertTrue(response.getErrMsg().contains("didn't create external connection"));
     }
 
     @Test

@@ -36,7 +36,7 @@ public class SearchTests {
     @Before
     public void setUp(){
 
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
 

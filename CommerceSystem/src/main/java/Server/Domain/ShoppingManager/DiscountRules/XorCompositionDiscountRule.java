@@ -86,7 +86,7 @@ public class XorCompositionDiscountRule extends CompoundDiscountRule {
             ++i;
         }
 
-        return "Xor Composition Discount Rule No." + id + ":\n" + "Select the " + xorResolveType
-                  + "eligible discount rule of the following:\n" + String.join("", compoundStrings);
+        return "Xor Composition Discount Rule No." + id + ":\\n" + "Select the " + xorResolveType
+                  + "eligible discount rule of the following:\\n" + String.join("", compoundStrings);
     }
 }

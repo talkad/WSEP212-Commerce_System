@@ -47,6 +47,6 @@ public class SumCompositionDiscountRule extends CompoundDiscountRule {
             compoundStrings[i] = rule.toString();
             ++i;
         }
-        return "Sum Composition Discount Rule No." + id + ":\n" + "Receive sum of the following discounts:\n" + String.join("", compoundStrings);
+        return "Sum Composition Discount Rule No." + id + ":\\n" + "Receive sum of the following discounts:\\n" + String.join("", compoundStrings);
     }
 }
