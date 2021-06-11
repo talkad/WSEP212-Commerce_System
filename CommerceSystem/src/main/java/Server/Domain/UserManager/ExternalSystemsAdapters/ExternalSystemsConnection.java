@@ -17,6 +17,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.sonatype.aether.RepositorySystemSession;
+
 import javax.net.ssl.SSLContext;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +54,7 @@ public class ExternalSystemsConnection {
      * if the connection succeeds isConnected will be true, false otherwise.
      * @return positive response if the handshake succeeds.
      */
-    public Response<Boolean> createHandshake() {
+    public synchronized Response<Boolean> createHandshake() {
 
         Response<String> res;
 
@@ -90,8 +92,10 @@ public class ExternalSystemsConnection {
 
         res = send(urlParameters);
 
-        if(res.isFailure())
+        if(res.isFailure()) {
+            this.isConnected = false;
             return new Response<>(false, true, "Handshake failed (CRITICAL)");
+        }
 
         this.isConnected = true;
         return new Response<>(true, false, "Connection initiated successfully");
@@ -106,7 +110,7 @@ public class ExternalSystemsConnection {
         }
     }
 
-    public Response<String> send(List<NameValuePair> request){
+    public synchronized Response<String> send(List<NameValuePair> request){
 
         try {
 
