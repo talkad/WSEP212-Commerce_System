@@ -1,6 +1,6 @@
 package TestComponent.IntegrationTestings;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 
@@ -20,7 +20,6 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
-import Server.Service.CommerceService;
 import TestComponent.IntegrationTestings.Mocks.MockNotifier;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +35,7 @@ public class PurchaseTests {
 
     @Before
     public void init(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
@@ -566,7 +565,7 @@ public class PurchaseTests {
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 
         response = UserController.getInstance().purchase(guestName, paymentDetails, supplyDetails);
-        Assert.assertTrue(response.getErrMsg().contains("doesn't created external connection"));
+        Assert.assertTrue(response.getErrMsg().contains("didn't create external connection"));
     }
 
     @Test

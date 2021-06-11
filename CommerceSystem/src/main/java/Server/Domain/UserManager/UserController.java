@@ -1,6 +1,9 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.*;
+import Server.DAL.DALControllers.DALProxy;
+import Server.DAL.DomainDTOs.AccountDTO;
+import Server.DAL.DomainDTOs.AdminAccountDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -147,13 +150,13 @@ public class UserController {
                 Response<Boolean> result = user.register();
                 if (!result.isFailure()) {
                     writeLock.lock();  // TODO check if needed (prevents multiple registration)
-                    if (DALService.getInstance().getAccount(name) == null) {
+                    if (DALProxy.getInstance().getAccount(name) == null) {
                         //UserDAO.getInstance().registerUser(name, security.sha256(password));
-                        DALService.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
+                        DALProxy.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
                         UserDTO userDTO = new UserDTO();
                         userDTO.setName(name);
                         userDTO.setState(UserStateEnum.REGISTERED);
-                        DALService.getInstance().insertUser(userDTO);
+                        DALProxy.getInstance().insertUser(userDTO);
                         writeLock.unlock();
                         result = new Response<>(true, false, "Registration occurred");
                     } else {
@@ -194,7 +197,7 @@ public class UserController {
                 if (this.isValidUser(name, security.sha256(password))) {
                     writeLock.lock();
                     connectedUsers.remove(prevName);
-                    UserDTO userDTO = DALService.getInstance().getUser(name);
+                    UserDTO userDTO = DALProxy.getInstance().getUser(name);
                     if(userDTO == null)
                         userDTO = new User(name).toDTO();
                     user = new User(userDTO);
@@ -220,7 +223,7 @@ public class UserController {
     }
 
     public boolean isValidUser(String username, String password){
-        AccountDTO accountDTO = DALService.getInstance().getAccount(username);
+        AccountDTO accountDTO = DALProxy.getInstance().getAccount(username);
         return (accountDTO != null) && username.equals(accountDTO.getUsername()) && password.equals(accountDTO.getPassword());
     }
 
@@ -263,7 +266,7 @@ public class UserController {
         writeLock.lock();
         if(connectedUsers.containsKey(name)) {
             if (!connectedUsers.get(name).logout().isFailure()) {
-                DALService.getInstance().insertUser(connectedUsers.get(name).toDTO());
+                DALProxy.getInstance().insertUser(connectedUsers.get(name).toDTO());
                 connectedUsers.remove(name);
                 response = addGuest();
             } else {
@@ -353,11 +356,11 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
             User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
             if (!response.isFailure()) {
-                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
                 User appointee = new User(appointeeDTO);
                 if (appointee.isOwner(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
@@ -384,7 +387,7 @@ public class UserController {
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(appointerDTO);
                     userDTOS.add(appointeeDTO);
-                    DALService.getInstance().saveUsers(userDTOS);
+                    DALProxy.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
                     Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -414,11 +417,11 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
             User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
             if (!response.isFailure()) {
-                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
                 User appointee = new User(appointeeDTO);
                 if (appointee.isManager(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
@@ -445,7 +448,7 @@ public class UserController {
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(appointerDTO);
                     userDTOS.add(appointeeDTO);
-                    DALService.getInstance().saveUsers(userDTOS);
+                    DALProxy.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
                     Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -470,8 +473,8 @@ public class UserController {
     }
 
     private void removeAppointmentRec(String appointerName, String appointeeName, int storeID) {
-        UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
-        UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+        UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
+        UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
         User appointer = new User(appointerDTO);
         User appointee = new User(appointeeDTO);
         if(this.connectedUsers.containsKey(appointerName)) {                                    // if the user is connected:
@@ -483,7 +486,7 @@ public class UserController {
         //List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
 //        appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
         Appointment appointment = appointer.getAppointments();
-        appointment.removeAppointment(storeID, appointerName);
+        appointment.removeAppointment(storeID, appointeeName);
         appointer.setAppointments(appointment);
 
         appointee.notifyManagementCancellation(storeID);
@@ -495,7 +498,7 @@ public class UserController {
         List<UserDTO> userDTOS = new Vector<>();
         userDTOS.add(appointerDTO);
         userDTOS.add(appointeeDTO);
-        DALService.getInstance().saveUsers(userDTOS);
+        DALProxy.getInstance().saveUsers(userDTOS);
 
         Appointment appointments = new Appointment(appointeeDTO.getAppointments());
         Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -570,11 +573,11 @@ public class UserController {
     }
 
     public void adminBoot(String username, String password) {
-        DALService.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
-        DALService.getInstance().addAdmin(new AdminAccountDTO(username));
+        DALProxy.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
+        DALProxy.getInstance().addAdmin(new AdminAccountDTO(username));
         User user = new User(username);
         user.setState(new Admin());
-        DALService.getInstance().insertUser(user.toDTO());
+        DALProxy.getInstance().insertUser(user.toDTO());
         connectedUsers.put(username, user);
     }
 
@@ -594,14 +597,14 @@ public class UserController {
         if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
             String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
             List<UserDTO> result = new Vector<>();
-            result.add(DALService.getInstance().getUser(ownerName));
+            result.add(DALProxy.getInstance().getUser(ownerName));
             List<String> appointees = connectedUsers.get(username).getAppointments().getAppointees(storeID).getResult();
             List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             for(String name : appointees){
-                result.add(DALService.getInstance().getUser(name));
+                result.add(DALProxy.getInstance().getUser(name));
             }
             return new Response<>(result, false, "Workers found");
         }
@@ -609,7 +612,7 @@ public class UserController {
     }
 
     private List<String> getAppointeesNamesRec(String workerName, int storeID) {
-        List<String> appointees = new User(DALService.getInstance().getUser(workerName)).getAppointments().getAppointees(storeID).getResult();
+        List<String> appointees = new User(DALProxy.getInstance().getUser(workerName)).getAppointments().getAppointees(storeID).getResult();
 
         if(appointees != null && !appointees.isEmpty()){
             List<String> names = new Vector<>(appointees);
@@ -647,7 +650,7 @@ public class UserController {
     }
 
     public User getUserByName(String username){
-        return new User(DALService.getInstance().getUser(username));
+        return new User(DALProxy.getInstance().getUser(username));
     }
 
     public boolean isConnected(String username){

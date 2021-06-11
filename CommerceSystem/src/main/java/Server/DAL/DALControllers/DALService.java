@@ -1,6 +1,7 @@
-package Server.DAL;
+package Server.DAL.DALControllers;
 
 import Server.DAL.DiscountRuleDTOs.*;
+import Server.DAL.DomainDTOs.*;
 import Server.DAL.PairDTOs.IntPermsListPair;
 import Server.DAL.PairDTOs.IntStringListPair;
 import Server.DAL.PairDTOs.PredPair;
@@ -11,8 +12,6 @@ import Server.Domain.CommonClasses.Pair;
 import Server.Domain.UserManager.UserStateEnum;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoConfigurationException;
-import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
@@ -36,7 +35,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-public class DALService implements Runnable{
+public class DALService implements Runnable, DALInterface{
 
     // NOTE: acquisition of locks is in the order they appear in the field list
 
@@ -1611,6 +1610,8 @@ public class DALService implements Runnable{
     public void setName(String dbName){
         this.dbName = dbName;
     }
+
+    public String getName(){return this.dbName;}
 
     public void setURL(String dbURL){
         this.dbURL = dbURL;

@@ -3,9 +3,9 @@ package Server.Domain.UserManager.DTOs;
 import java.time.LocalDate;
 
 import Server.DAL.PairDTOs.ProductIntPair;
-import Server.DAL.ProductDTO;
-import Server.DAL.ReviewDTO;
-import Server.DAL.PurchaseDTO;
+import Server.DAL.DomainDTOs.ProductDTO;
+import Server.DAL.DomainDTOs.ReviewDTO;
+import Server.DAL.DomainDTOs.PurchaseDTO;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.Review;

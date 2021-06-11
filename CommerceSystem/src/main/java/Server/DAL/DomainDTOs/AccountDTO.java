@@ -1,25 +1,28 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
-@Entity(value = "adminAccounts")
-@BsonDiscriminator("AdminAccountDTO")
-
-public class AdminAccountDTO {
+@Entity(value = "accounts")
+@BsonDiscriminator("AccountDTO")
+public class AccountDTO {
 
     @Id
     @Property(value = "username")
     private String username;
 
-    public AdminAccountDTO(){
+    @Property(value = "password")
+    private String password;
+
+    public AccountDTO(){
         // For Morphia
     }
 
-    public AdminAccountDTO(String username) {
+    public AccountDTO(String username, String password) {
         this.username = username;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -28,5 +31,13 @@ public class AdminAccountDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

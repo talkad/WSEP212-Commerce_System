@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.StoreDTO;
+import Server.DAL.DomainDTOs.StoreDTO;
 import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;

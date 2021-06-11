@@ -1,10 +1,8 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.OfferDTO;
-import Server.Domain.ShoppingManager.StoreController;
+import Server.DAL.DomainDTOs.OfferDTO;
 
 import java.util.List;
-import java.util.Vector;
 
 public class Offer {
     private int productId;

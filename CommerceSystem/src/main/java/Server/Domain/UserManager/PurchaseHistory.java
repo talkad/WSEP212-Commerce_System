@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.PurchaseDTO;
-import Server.DAL.PurchaseHistoryDTO;
+import Server.DAL.DomainDTOs.PurchaseDTO;
+import Server.DAL.DomainDTOs.PurchaseHistoryDTO;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 
@@ -18,9 +18,9 @@ public class PurchaseHistory {
 
     public PurchaseHistory(PurchaseHistoryDTO purchaseHistoryDTO){
         this.purchases = new Vector<>();
-        List<Server.DAL.PurchaseDTO> purchasesList = purchaseHistoryDTO.getPurchases();
+        List<PurchaseDTO> purchasesList = purchaseHistoryDTO.getPurchases();
         if(purchases != null){
-            for(Server.DAL.PurchaseDTO purchaseDTO : purchasesList){
+            for(PurchaseDTO purchaseDTO : purchasesList){
                 this.purchases.add(new PurchaseClientDTO(purchaseDTO));
             }
         }
@@ -31,7 +31,7 @@ public class PurchaseHistory {
     }
 
     public PurchaseHistoryDTO toDTO(){
-        List<Server.DAL.PurchaseDTO> purchasesList = new Vector<>();
+        List<PurchaseDTO> purchasesList = new Vector<>();
 
         for(PurchaseClientDTO purchaseDTO : this.purchases){
             purchasesList.add(purchaseDTO.toDTO());

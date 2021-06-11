@@ -1,6 +1,6 @@
 package TestComponent.AcceptanceTestings.Tests;
 
-import Server.DAL.UserDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.CategoryDiscountRule;
@@ -67,7 +67,16 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
 
             bridge.addProductsToStore("aviad", productDTO, 1000);
 
-            initialized = true;
+            while(bridge.searchByProductName("masmer yarok").isFailure() || bridge.searchByProductName("masmer yarok").getResult().size() == 0){
+                try{
+                    Thread.sleep(1000);
+                }
+                catch(Exception e){
+
+                }
+            }
+
+            //initialized = true;
         }
     }
 
@@ -80,7 +89,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 new LinkedList<String>(Arrays.asList("masmer")));
 
         Response<Boolean> addResponse = bridge.addProductsToStore("aviad", productDTO, 20);
-        Assert.assertTrue(addResponse.getResult());
+        Assert.assertFalse(addResponse.isFailure());
 
         // looking the product up in the store
         Response<List<ProductClientDTO>> searchResponse = bridge.searchByProductName("masmer yarok");
@@ -942,12 +951,12 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         // the removed user will try to appoint another user. should fail
         appointResult = bridge.appointStoreOwner("aaa", "ccc",
                 this.storeID);
-        Assert.assertFalse(appointResult.getResult());
+        Assert.assertTrue(appointResult.isFailure());
 
         // the second degree appointee shouldn't be able to appoint either.
         appointResult = bridge.appointStoreOwner("bbb", "ccc",
                 this.storeID);
-        Assert.assertFalse(appointResult.getResult());
+        Assert.assertFalse(appointResult.isFailure());
     }
 
     @Test
@@ -1041,7 +1050,7 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
                 new LinkedList<String>(Arrays.asList("masmer")));
 
         Response<Boolean> actionResult = bridge.addProductsToStore("e", productDTO, 20);
-        Assert.assertTrue(actionResult.getResult());
+        Assert.assertFalse(actionResult.isFailure());
 
         ProductClientDTO product = bridge.searchByProductName("masmer krem").getResult().get(0);
 

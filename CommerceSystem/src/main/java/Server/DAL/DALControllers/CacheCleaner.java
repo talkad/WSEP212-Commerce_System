@@ -1,4 +1,6 @@
-package Server.DAL;
+package Server.DAL.DALControllers;
+
+import Server.DAL.DALControllers.DALService;
 
 public class CacheCleaner implements Runnable{
     public void run(){

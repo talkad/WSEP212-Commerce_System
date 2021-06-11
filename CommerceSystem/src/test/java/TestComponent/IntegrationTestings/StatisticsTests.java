@@ -1,8 +1,9 @@
 package TestComponent.IntegrationTestings;
 
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
 import Server.Domain.UserManager.UserController;
@@ -17,7 +18,7 @@ import java.util.List;
 public class StatisticsTests {
     @Before
     public void init(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
         PaymentSystemAdapter.getInstance().setMockFlag();
@@ -26,14 +27,12 @@ public class StatisticsTests {
 
     @Test
     public void basicSuccessStatistics() {
-        CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
-        String initialUserName = commerceService.addGuest().getResult();
+        String initialUserName = userController.addGuest().getResult();
         userController.login(initialUserName, "a1", "a1");
         List<String> statistics = userController.getDailyStatistics("a1", LocalDate.now()).getResult();
-        Assert.assertEquals("Guest: 3", statistics.get(0));
-        Assert.assertEquals("Registered: 1", statistics.get(1));
+        Assert.assertEquals("Guest: 1", statistics.get(0));
+        Assert.assertEquals("Registered: 0", statistics.get(1));
         Assert.assertEquals("Manager: 0", statistics.get(2));
         Assert.assertEquals("Owner: 0"  , statistics.get(3));
         Assert.assertEquals("Admin: 1", statistics.get(4));
@@ -42,7 +41,6 @@ public class StatisticsTests {
     @Test
     public void failedFutureDatestatistics() {
         CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         userController.login(initialUserName, "a1", "a1");

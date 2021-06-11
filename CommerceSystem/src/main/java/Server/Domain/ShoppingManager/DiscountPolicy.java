@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.DiscountPolicyDTO;
+import Server.DAL.DomainDTOs.DiscountPolicyDTO;
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;

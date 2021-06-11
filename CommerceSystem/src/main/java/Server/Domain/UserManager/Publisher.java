@@ -1,8 +1,8 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALProxy;
 import Server.DAL.PairDTOs.IntStringListPair;
-import Server.DAL.PublisherDTO;
+import Server.DAL.DomainDTOs.PublisherDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notifier;
@@ -25,7 +25,7 @@ public class Publisher{
         userController = UserController.getInstance();
         notifier = Notifier.getInstance();
 
-        PublisherDTO publisherDTO = DALService.getInstance().getPublisher();
+        PublisherDTO publisherDTO = DALProxy.getInstance().getPublisher();
         if(publisherDTO != null){
             this.loadFromDTO(publisherDTO);
         }
@@ -82,13 +82,13 @@ public class Publisher{
     public void subscribe(Integer storeID, String username) {
         storeSubscribers.putIfAbsent(storeID, new Vector<>());
         storeSubscribers.get(storeID).add(username);
-        DALService.getInstance().savePublisher(this.toDTO());
+        DALProxy.getInstance().savePublisher(this.toDTO());
     }
 
     public void unsubscribe(Integer storeID, String username) {
         if(storeSubscribers.containsKey(storeID)) {
             storeSubscribers.get(storeID).remove(username);
-            DALService.getInstance().savePublisher(this.toDTO());
+            DALProxy.getInstance().savePublisher(this.toDTO());
         }
     }
 

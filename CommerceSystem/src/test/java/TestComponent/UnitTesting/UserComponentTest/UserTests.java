@@ -1,6 +1,6 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;

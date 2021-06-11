@@ -39,6 +39,6 @@ public class ProductPredicate implements Predicate {
 
     @Override
     public String toString() {
-        return "If you buy at least " + minUnits + " and at most " + maxUnits + " of product with productID " + productID +".\n" ;
+        return "If you buy at least " + minUnits + " and at most " + maxUnits + " of product with productID " + productID +".\\n" ;
     }
 }

@@ -16,12 +16,12 @@ public class ParallelismTests extends ProjectAcceptanceTests{
 
     private int storeID;
 
-    private static boolean initialized = false;
+    private static boolean initialized = true;
 
     @Before
     public void setUp(){
 
-        if(!initialized) {
+        if(initialized) {
             super.setUp(true);
 
             String guestName = bridge.addGuest().getResult();

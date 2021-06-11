@@ -1,4 +1,4 @@
-package Server.DAL;
+package Server.DAL.DomainDTOs;
 
 import Server.Domain.UserManager.OfferState;
 import dev.morphia.annotations.Embedded;

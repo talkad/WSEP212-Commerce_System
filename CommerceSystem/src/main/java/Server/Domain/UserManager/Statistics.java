@@ -1,16 +1,14 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
-import Server.DAL.DailyCountersDTO;
-import Server.Service.DataObjects.OfferData;
+
+import Server.DAL.DALControllers.DALProxy;
+import Server.DAL.DomainDTOs.DailyCountersDTO;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -32,7 +30,7 @@ public class Statistics {
 
     private void initStats(){
         this.currentDate = LocalDate.now();
-        DailyCountersDTO counters = DALService.getInstance().getDailyCounters(this.currentDate);
+        DailyCountersDTO counters = DALProxy.getInstance().getDailyCounters(this.currentDate);
 
         this.dailyGuestCounter = new AtomicInteger(counters.getGuestCounter());
         this.dailyRegisteredCounter = new AtomicInteger(counters.getRegisteredCounter());
@@ -158,7 +156,7 @@ public class Statistics {
                 this.dailyOwnerCounter.get(),
                 this.dailyAdminCounter.get());
 
-        DALService.getInstance().saveCounters(dailyCountersDTO);
+        DALProxy.getInstance().saveCounters(dailyCountersDTO);
     }
 
     private List<String> getCounters(){

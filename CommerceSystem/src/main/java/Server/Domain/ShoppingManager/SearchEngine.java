@@ -1,7 +1,8 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.DALService;
-import Server.DAL.StoreDTO;
+
+import Server.DAL.DALControllers.DALProxy;
+import Server.DAL.DomainDTOs.StoreDTO;
 import Server.Domain.CommonClasses.RatingEnum;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -28,7 +29,7 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> searchByProductName(String productName) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
         List<ProductClientDTO> productList = new LinkedList<>();
         if (productName != null) {
             for (StoreDTO storeDTO : stores) {
@@ -44,7 +45,7 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> searchByCategory(String category) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (category != null) {
@@ -60,7 +61,7 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> searchByKeyWord(String keyword) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (keyword != null) {
@@ -76,7 +77,7 @@ public class SearchEngine {
 
 
     public Response<List<ProductClientDTO>> filterByPriceRange(double lowPart, double highPart) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (!(lowPart < 0 || highPart < 0 || lowPart > highPart)) {
@@ -91,7 +92,7 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> filterByRating(double rating) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
         List<ProductClientDTO> productList = new LinkedList<>();
         if (rating <= RatingEnum.VERY_HIGH.rate) {
             for (StoreDTO storeDTO : stores) {
@@ -105,7 +106,7 @@ public class SearchEngine {
     }
 
     public Response<List<ProductClientDTO>> filterByStoreRating(double rating) {
-        Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> stores = DALProxy.getInstance().getAllStores();
 
         List<ProductClientDTO> productList = new LinkedList<>();
         if (rating <= RatingEnum.VERY_HIGH.rate) {

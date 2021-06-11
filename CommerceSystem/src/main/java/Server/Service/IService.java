@@ -1,6 +1,6 @@
 package Server.Service;
 
-import Server.DAL.UserDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -17,7 +17,6 @@ import Server.Domain.UserManager.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 
 /**
