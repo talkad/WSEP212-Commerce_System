@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings.Mocks;
 
+import Server.Domain.CommonClasses.Response;
 import Server.Service.DataObjects.ReplyMessage;
 import Server.Service.Notify;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,7 +39,7 @@ public class MockNotifier implements Notify {
         if(msgs != null)
             messages.get(identifier).add(msg);
         else
-            System.out.println("user "+ identifier +  " doesn't exists");
+            new Response<>(false, true, "notify: user "+ identifier +  " doesn't exists");
     }
 
     public List<ReplyMessage> getMessages(String username){

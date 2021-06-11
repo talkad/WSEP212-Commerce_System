@@ -19,9 +19,8 @@ public class ServerApp {
 
         Response<Boolean> initRes;
 
-//        DALService.getInstance().resetDatabase();
-        // Start threads in DAL, responsible for saving data in DB and cleaning cache
-        DALService.getInstance().startDB();
+        // for testing
+
 
         initRes = CommerceService.getInstance().init();
 

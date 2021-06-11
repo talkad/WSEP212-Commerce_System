@@ -254,10 +254,7 @@ public class StoreController {
         Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
 
         for(StoreDTO store: storeDTOS){
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            System.out.println(store.getName());
             Store domainStore = new Store(store);
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
             if(store.getName().equals(storeName))
                 storeList.add(new StoreClientDTO(store.getStoreID(), store.getName(), domainStore.getInventory().getProductsDTO()));
         }

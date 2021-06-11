@@ -4,6 +4,7 @@ import Server.DAL.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ShoppingBasket;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +16,7 @@ public class ShoppingBasketTest {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }

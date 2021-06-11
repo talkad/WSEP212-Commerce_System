@@ -29,14 +29,11 @@ public class SearchEngine {
 
     public Response<List<ProductClientDTO>> searchByProductName(String productName) {
         Collection<StoreDTO> stores = DALService.getInstance().getAllStores();
-        System.out.println("search by name " + productName);
         List<ProductClientDTO> productList = new LinkedList<>();
         if (productName != null) {
             for (StoreDTO storeDTO : stores) {
                 Store store = new Store(storeDTO);
-                System.out.println("search in store " + store.getName());
                 for (Product product : store.getInventory().getProducts()) {
-                    System.out.println("product " + product.getName());
                     if (product.getName().equalsIgnoreCase(productName))
                         productList.add(product.getProductDTO());
                 }
