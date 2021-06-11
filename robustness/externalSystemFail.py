@@ -17,6 +17,8 @@ S = 10  # number of characters in the string.
 
 
 class UserTaskSet(TaskSet):
+
+
     def on_start(self):
         self.ws = create_connection('ws://127.0.0.1:8080/ws')
 
@@ -55,12 +57,307 @@ class UserTaskSet(TaskSet):
     def on_quit(self):
         self.ws.close()
 
-    @task(1)
-    def purchase(self):
+
+    def connect_register_login(self, guest):
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=(S - 1)))
+        self.username = str(ran)
+
+        to_send = {"action": "register", "identifier": guest, "username": self.username, "pwd": "123"}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        new_ans = self.ws.recv()
+
+        locust.events.request_success.fire(
+            request_type='register',
+            name='test/ws/register',
+            response_time=int((time.time() - start_time) * 1000),
+            response_length=len(new_ans))
+
+        to_send = {"action": "login", "identifier": guest, "username": self.username, "pwd": "123"}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+        self.ws.recv()
+
+        locust.events.request_success.fire(
+            request_type='login',
+            name='test/ws/login',
+            response_time=int((time.time() - start_time) * 1000),
+            response_length=len(new_ans))
+
+    @task(75)
+    def purchase_good(self):
+        # registered user opens store
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
+        storename = str(ran)
+        to_send = {"action": "openStore", "username": self.username, "storeName": storename}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='openStore',
+            name='test/ws/open_store',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # adding products to the store
+        store_id = json.loads(json.loads(ans)["message"])["result"]
+
+        to_send = {"action": "addProductsToStore", "username": self.username,
+                   "productDTO": json.dumps({"name": "Bamba Nugat", "storeID": store_id,
+                                             "price": 8, "categories": ["snack"],
+                                             "keywords": ["peanuts"]}), "amount": 40}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='addProductsToStore',
+            name='test/ws/add_products',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+
+        # logout and give guest name to connect later
+        to_send = {"action": "logout", "username": self.username}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        guest = json.loads(json.loads(ans)["message"])["result"]
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='logout',
+            name='test/ws/logout',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # add guest and connect him
+        self.connect_register_login(guest)
+
+        # add to cart
+        to_send = {"action": "searchByProductName", "productName": "Bamba Nugat"}
+        msg = json.dumps(to_send)
+        self.ws.send(msg)
+        new_user_ans = self.ws.recv()
+
+        products = json.loads(json.loads(new_user_ans)["message"])["result"]
+        if len(products) > 0:
+            first_product = products[0]
+            store_id = first_product["storeID"]
+            product_id = first_product["productID"]
+
+            to_send = {"action": "addToCart", "username": self.username, "storeID": store_id, "productID": product_id}
+            msg = json.dumps(to_send)
+
+            start_time = time.time()
+            self.ws.send(msg)
+
+            new_user_ans = self.ws.recv()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(new_user_ans))
+        else:
+            print("aaaaaaaaaaaaaaaaaaaaaa")
+            start_time = time.time()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(new_user_ans))
+
+        # commit purchase
+
+        to_send = {"action": "directPurchase", "username": self.username,
+                   "paymentDetails": json.dumps(
+                       {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 111, "id": "a"}),
+                   "supplyDetails": json.dumps({"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        new_user_ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='directPurchase',
+            name='test/ws/purchase',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(new_user_ans))
+
+        # check that the product is in the user's history
+
+        to_send = {"action": "getPurchaseHistory", "username": self.username}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        new_user_ans = self.ws.recv()
+        purchase_history_list = json.loads(json.loads(new_user_ans)["message"])["result"]
+        assert len(purchase_history_list) >= 1
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='getPurchaseHistory',
+            name='test/ws/show_purchase_history',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(new_user_ans))
+
+        to_send = {"action": "directPurchase", "username": self.username,
+                   "paymentDetails": json.dumps(
+                       {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 111, "id": "a"}),
+                   "supplyDetails": json.dumps({"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='directPurchase',
+            name='test/ws/purchase',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+    @task(25)
+    def purchase_bad(self):
+        # registered user opens store
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k=S))
+        storename = str(ran)
+        to_send = {"action": "openStore", "username": self.username, "storeName": storename}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='openStore',
+            name='test/ws/open_store',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # adding products to the store
+        store_id = json.loads(json.loads(ans)["message"])["result"]
+
+        to_send = {"action": "addProductsToStore", "username": self.username,
+                   "productDTO": json.dumps({"name": "Bamba Nugat", "storeID": store_id,
+                                             "price": 8, "categories": ["snack"],
+                                             "keywords": ["peanuts"]}), "amount": 40}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='addProductsToStore',
+            name='test/ws/add_products',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # logout and give guest name to connect later
+        to_send = {"action": "logout", "username": self.username}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        ans = self.ws.recv()
+        guest = json.loads(json.loads(ans)["message"])["result"]
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='logout',
+            name='test/ws/logout',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(ans))
+
+        # add guest and connect him
+        self.connect_register_login(guest)
+
+        # add to cart
+        to_send = {"action": "searchByProductName", "productName": "Bamba Nugat"}
+        msg = json.dumps(to_send)
+        self.ws.send(msg)
+        new_user_ans = self.ws.recv()
+
+        products = json.loads(json.loads(new_user_ans)["message"])["result"]
+        if len(products) > 0:
+            first_product = products[0]
+            store_id = first_product["storeID"]
+            product_id = first_product["productID"]
+
+            to_send = {"action": "addToCart", "username": self.username, "storeID": store_id,
+                       "productID": product_id}
+            msg = json.dumps(to_send)
+
+            start_time = time.time()
+            self.ws.send(msg)
+
+            new_user_ans = self.ws.recv()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(new_user_ans))
+        else:
+            start_time = time.time()
+            end_time = time.time()
+            locust.events.request_success.fire(
+                request_type='addToCart',
+                name='test/ws/add_to_cart',
+                response_time=int((end_time - start_time) * 1000),
+                response_length=len(new_user_ans))
+
+        # commit purchase
+
         to_send = {"action": "directPurchase", "username": self.username,
                    "paymentDetails": json.dumps(
                        {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 984, "id": "a"}),
-                   "supplyDetails": json.dumps({"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
+                   "supplyDetails": json.dumps(
+                       {"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        new_user_ans = self.ws.recv()
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='directPurchase',
+            name='test/ws/purchase',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(new_user_ans))
+
+        # check that the product is in the user's history
+
+        to_send = {"action": "getPurchaseHistory", "username": self.username}
+        msg = json.dumps(to_send)
+        start_time = time.time()
+        self.ws.send(msg)
+
+        new_user_ans = self.ws.recv()
+        purchase_history_list = json.loads(json.loads(new_user_ans)["message"])["result"]
+        assert len(purchase_history_list) >= 1
+        end_time = time.time()
+        locust.events.request_success.fire(
+            request_type='getPurchaseHistory',
+            name='test/ws/show_purchase_history',
+            response_time=int((end_time - start_time) * 1000),
+            response_length=len(new_user_ans))
+
+        to_send = {"action": "directPurchase", "username": self.username,
+                   "paymentDetails": json.dumps(
+                       {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 111, "id": "a"}),
+                   "supplyDetails": json.dumps(
+                       {"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
         msg = json.dumps(to_send)
         start_time = time.time()
         self.ws.send(msg)
