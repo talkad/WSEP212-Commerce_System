@@ -67,7 +67,7 @@ public class GuestHandler extends Handler{
             case "searchByProductKeyword" ->{
                 String keyword = data.getProperty("keyword");
 
-                response = service.getPurchaseHistory(keyword);
+                response = service.searchByProductKeyword(keyword);
             }
             case "addToCart" ->{
                 String username = data.getProperty("username");
