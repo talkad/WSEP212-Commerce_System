@@ -76,7 +76,7 @@ public class DALService implements Runnable{
     private String dbName;
     private String dbURL;
 
-    private boolean useLocal = true;
+    private boolean useLocal = false;
 
     private boolean cleaningCache = false;
 
