@@ -54,7 +54,7 @@ public class ExternalSystemsConnection {
      * if the connection succeeds isConnected will be true, false otherwise.
      * @return positive response if the handshake succeeds.
      */
-    public Response<Boolean> createHandshake() {
+    public synchronized Response<Boolean> createHandshake() {
 
         Response<String> res;
 
@@ -110,7 +110,7 @@ public class ExternalSystemsConnection {
         }
     }
 
-    public Response<String> send(List<NameValuePair> request){
+    public synchronized Response<String> send(List<NameValuePair> request){
 
         try {
 
