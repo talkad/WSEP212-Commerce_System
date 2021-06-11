@@ -1,5 +1,6 @@
 package TestComponent.IntegrationTestings;
 
+import Server.DAL.DALControllers.DALProxy;
 import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -520,6 +521,7 @@ public class UserIntegrationTests {
 
         Assert.assertFalse(shaked.isManager(store1ID));
         Assert.assertFalse(yaakov.appointManager("shaked", store1ID).isFailure());
+        shaked = new User(DALProxy.getInstance().getUser("shaked"));
         Assert.assertTrue(shaked.isManager(store1ID));
     }
 
@@ -599,6 +601,7 @@ public class UserIntegrationTests {
         almog.addProductsToStore(new ProductClientDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointManager("shaked", store1ID);
+        shaked = new User(DALProxy.getInstance().getUser("shaked"));
         Assert.assertTrue(shaked.isManager(store1ID));
         Assert.assertFalse(yaakov.removeAppointment("shaked", store1ID).isFailure());
     }
@@ -639,6 +642,7 @@ public class UserIntegrationTests {
         almog.addProductsToStore(new ProductClientDTO("beef", store2ID, 5, categories2, keyword2), 5);
 
         yaakov.appointManager("shaked", store1ID);
+        shaked = new User(DALProxy.getInstance().getUser("shaked"));
         Assert.assertTrue(shaked.isManager(store1ID));
         Assert.assertTrue(almog.removeAppointment("shaked", store1ID).isFailure());
         Assert.assertTrue(shaked.isManager(store1ID));
@@ -688,6 +692,7 @@ public class UserIntegrationTests {
 
         Assert.assertTrue(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
         Assert.assertFalse(yaakov.addPermission(store1ID, "shaked", PermissionsEnum.ADD_PRODUCT_TO_STORE).isFailure());
+        shaked = new User(DALProxy.getInstance().getUser("shaked"));
         Assert.assertFalse(shaked.addProductsToStore(new ProductClientDTO("egg carton", store1ID, 10, categories, keyword), 5).isFailure());
     }
 

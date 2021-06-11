@@ -35,6 +35,8 @@ import java.util.List;
 
      void saveStoreAndProduct(StoreDTO storeDTO, ProductDTO productDTO);
 
+     void saveStoreRemoveProduct(StoreDTO storeDTO, ProductDTO productDTO);
+
      UserDTO getUser(String username);
 
      void insertUser(UserDTO userDTO);
@@ -55,5 +57,4 @@ import java.util.List;
 
      boolean checkConnection();
 
-     void waitForDataStorage();
 }

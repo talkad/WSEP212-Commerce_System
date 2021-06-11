@@ -52,17 +52,8 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
             bridge.appointStoreOwner("aviad", "shalom", storeID);
             bridge.appointStoreOwner("aviad", "tzemah", storeID);
 
-            initialized = true;
+            //initialized = true;
 
-            while(bridge.searchByProductName("simania zoheret").isFailure() || bridge.searchByProductName("simania zoheret").getResult().size() == 0){
-                try{
-                    System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-                    Thread.sleep(1000);
-                }
-                catch(Exception e){
-
-                }
-            }
         }
     }
 
@@ -111,13 +102,6 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
                 productDTO.getProductID(), "best simania i ever bought! solid 5/7");
         Assert.assertTrue(reviewResult.getResult());
 
-        while(bridge.searchByProductName("simania zoheret").getResult().get(0).getReviews().size() < 1){
-            try{
-                Thread.sleep(1000);
-            }catch(Exception e){
-
-            }
-        }
 
         // checking if the review was added
         searchResult = bridge.searchByProductName("simania zoheret");

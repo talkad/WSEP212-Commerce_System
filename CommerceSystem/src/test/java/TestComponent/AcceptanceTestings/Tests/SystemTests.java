@@ -1,6 +1,6 @@
 package TestComponent.AcceptanceTestings.Tests;
 
-import Server.DAL.DALControllers.DALService;
+import Server.DAL.DALControllers.DALProxy;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
@@ -22,7 +22,7 @@ public class SystemTests extends ProjectAcceptanceTests {
         // checking if there exists an admin. there's a built in admin and we'll try to log into his account
         bridge = Driver.getBridge();
         bridge.configInit("successconfigfile.json");
-        DALService.getInstance().resetDatabase();
+        DALProxy.getInstance().resetDatabase();
         bridge.initState("initfile");
 
         notifier = Driver.getNotifier();
@@ -37,7 +37,7 @@ public class SystemTests extends ProjectAcceptanceTests {
     public void initfileSuccess(){
         bridge = Driver.getBridge();
         bridge.configInit("successconfigfile.json");
-        DALService.getInstance().resetDatabase();
+        DALProxy.getInstance().resetDatabase();
         Response<Boolean> res = bridge.initState("initfile");
 
         notifier = Driver.getNotifier();
@@ -51,7 +51,7 @@ public class SystemTests extends ProjectAcceptanceTests {
     public void initfileFailure(){
         bridge = Driver.getBridge();
         bridge.configInit("successconfigfile.json");
-        DALService.getInstance().resetDatabase();
+        DALProxy.getInstance().resetDatabase();
         Response<Boolean> res = bridge.initState("failedinitfile");
 
         notifier = Driver.getNotifier();

@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.DALControllers.DALService;
+import Server.DAL.DALControllers.DALProxy;
 import Server.DAL.DomainDTOs.StoreDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -27,7 +27,7 @@ public class StoreController {
 
     private StoreController(){
         stores = new ConcurrentHashMap<>();
-        indexer = new AtomicInteger(DALService.getInstance().getNextAvailableStoreID());
+        indexer = new AtomicInteger(DALProxy.getInstance().getNextAvailableStoreID());
         spellChecker = new SpellChecker();
         spellRequest = new SpellRequest();
     }
@@ -89,7 +89,7 @@ public class StoreController {
             return stores.get(storeId);
         }
         else {
-            StoreDTO storeDTO = DALService.getInstance().getStore(storeId);
+            StoreDTO storeDTO = DALProxy.getInstance().getStore(storeId);
             if(storeDTO == null){
                 return null;
             }
@@ -104,7 +104,7 @@ public class StoreController {
             return stores.get(storeId).getName();
         }
         else {
-            StoreDTO storeDTO = DALService.getInstance().getStore(storeId);
+            StoreDTO storeDTO = DALProxy.getInstance().getStore(storeId);
             if(storeDTO == null){
                 return null;
             }
@@ -251,7 +251,7 @@ public class StoreController {
 
     public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
         List<StoreClientDTO> storeList = new LinkedList<>();
-        Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> storeDTOS = DALProxy.getInstance().getAllStores();
 
         for(StoreDTO store: storeDTOS){
             Store domainStore = new Store(store);
@@ -265,7 +265,7 @@ public class StoreController {
     public double getTotalSystemRevenue() {
         double totalRevenue = 0;
 
-        Collection<StoreDTO> storeDTOS = DALService.getInstance().getAllStores();
+        Collection<StoreDTO> storeDTOS = DALProxy.getInstance().getAllStores();
         for(StoreDTO storeDTO: storeDTOS) {
             Store store = new Store(storeDTO);
             totalRevenue += store.getTotalRevenue();

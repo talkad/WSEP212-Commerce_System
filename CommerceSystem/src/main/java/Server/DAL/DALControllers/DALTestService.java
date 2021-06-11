@@ -1089,14 +1089,18 @@ public class DALTestService implements DALInterface{
             this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
             this.productSaveCache.add(new Pair<>(productDTO, DBOperation.SAVE));
 
-            synchronized (this){
-                notifyAll();
-            }
+
+            this.storeLock.writeLock().unlock();
+            this.userLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
+            run();
+        }
+        else{
+            this.storeLock.writeLock().unlock();
+            this.userLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
         }
 
-        this.storeLock.writeLock().unlock();
-        this.userLock.writeLock().unlock();
-        this.productLock.writeLock().unlock();
     }
 
     public void saveStoreAndProduct(StoreDTO storeDTO, ProductDTO productDTO){
@@ -1113,10 +1117,16 @@ public class DALTestService implements DALInterface{
             synchronized (this){
                 notifyAll();
             }
+            this.storeLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
+            run();
+        }
+        else{
+            this.storeLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
         }
 
-        this.storeLock.writeLock().unlock();
-        this.productLock.writeLock().unlock();
+
     }
 
     public void saveStoreRemoveProduct(StoreDTO storeDTO, ProductDTO productDTO){
@@ -1130,13 +1140,17 @@ public class DALTestService implements DALInterface{
             this.storeSaveCache.add(new Pair<>(storeDTO, DBOperation.SAVE));
             this.productSaveCache.add(new Pair<>(productDTO, DBOperation.DELETE));
 
-            synchronized (this){
-                notifyAll();
-            }
+
+            this.storeLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
+            run();
+        }
+        else{
+            this.storeLock.writeLock().unlock();
+            this.productLock.writeLock().unlock();
         }
 
-        this.storeLock.writeLock().unlock();
-        this.productLock.writeLock().unlock();
+
     }
 
     public UserDTO getUser(String username){
@@ -1267,14 +1281,13 @@ public class DALTestService implements DALInterface{
             this.users.put(userDTO.getName(), new Pair<>(userDTO, System.currentTimeMillis()));
             if(!useLocal) {
                 this.userSaveCache.add(new Pair<>(userDTO, DBOperation.SAVE));
-
-                synchronized (this) {
-                    notifyAll();
-                }
             }
         }
 
         this.userLock.writeLock().unlock();
+        if(!useLocal) {
+            run();
+        }
     }
 
     public boolean saveUsers(List<UserDTO> userDTOList){
@@ -1296,12 +1309,13 @@ public class DALTestService implements DALInterface{
             }
         }
         if(!useLocal && addedToCache){
-            synchronized (this) {
-                notifyAll();
-            }
+            this.userLock.writeLock().unlock();
+            run();
+        }
+        else {
+            this.userLock.writeLock().unlock();
         }
 
-        this.userLock.writeLock().unlock();
         return true;
     }
 

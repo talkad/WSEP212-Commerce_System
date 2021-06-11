@@ -1,6 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.DALControllers.DALService;
+import Server.DAL.DALControllers.DALTestService;
 import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
@@ -333,6 +334,10 @@ public class CommerceSystem implements IService {
             DALService conDB = DALService.getInstance();
             conDB.setURL(dbloc);
             conDB.setName(dbName);
+
+            DALTestService testconDB = DALTestService.getInstance();
+            testconDB.setURL(dbloc);
+            testconDB.setName(dbName);
 
             if(!conDB.checkConnection())
                 return new Response<>(false, true, "DB Connection failed (CRITICAL)");

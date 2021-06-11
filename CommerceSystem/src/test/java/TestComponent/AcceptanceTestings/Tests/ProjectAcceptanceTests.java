@@ -1,6 +1,6 @@
 package TestComponent.AcceptanceTestings.Tests;
 
-import Server.DAL.DALControllers.DALService;
+import Server.DAL.DALControllers.DALProxy;
 import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import Server.Domain.UserManager.ExternalSystemsAdapters.ProductSupplyAdapter;
@@ -16,8 +16,8 @@ public abstract class ProjectAcceptanceTests {
     public void setUp(boolean toInit) {
         if (toInit) {
             CommerceSystem.getInstance().configInit("successconfigfile.json");
-            DALService.getInstance().startDB();
-            DALService.getInstance().resetDatabase();
+            //DALService.getInstance().startDB();
+            DALProxy.getInstance().resetDatabase();
             CommerceSystem.getInstance().initState("initfile");
 
             bridge = Driver.getBridge();

@@ -2,6 +2,7 @@ package TestComponent.IntegrationTestings.ExternalComponentsTests;
 
 import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentSystemAdapter;
 import org.junit.Assert;
@@ -13,7 +14,7 @@ public class PaymentSystemTests {
     @Before
     public void setUp(){
         payment = PaymentSystemAdapter.getInstance();
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
