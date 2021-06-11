@@ -885,6 +885,16 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    static sendOwnerStoreHistoryReportRequest(functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
 }
 
 export default Connection;
