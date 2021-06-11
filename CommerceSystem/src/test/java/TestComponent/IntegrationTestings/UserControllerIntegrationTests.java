@@ -540,9 +540,6 @@ public class UserControllerIntegrationTests {
         Assert.assertTrue(userController.getConnectedUsers().get("yoni7").isOwner(storeID));
         Assert.assertFalse(userController.getConnectedUsers().get("tal7").isOwner(storeID));
         Assert.assertFalse(userController.getConnectedUsers().get("jacob7").isManager(storeID));
-        //Assert.assertFalse(userController.getConnectedUsers().get("aviad7").isOwner(storeID));
-        //Assert.assertFalse(userController.getConnectedUsers().get("almog7").isOwner(storeID));
-        //Assert.assertFalse(userController.getConnectedUsers().get("shaked67").isManager(storeID));
     }
 
     @Test

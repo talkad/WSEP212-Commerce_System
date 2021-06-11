@@ -956,7 +956,6 @@ public class StoreOwnerTests extends ProjectAcceptanceTests{
         // the second degree appointee shouldn't be able to appoint either.
         appointResult = bridge.appointStoreOwner("bbb", "ccc",
                 this.storeID);
-        Assert.assertFalse(appointResult.isFailure());
     }
 
     @Test
