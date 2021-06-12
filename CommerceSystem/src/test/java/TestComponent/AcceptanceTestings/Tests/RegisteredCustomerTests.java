@@ -365,7 +365,6 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
         boolean added = false;
         for(Review review: productDTO.getReviews()){
-            System.out.println(review.getReview());
             if(review.getReview().equals("best simania i ever bought! solid 5/7")){
                 added = true;
                 break;
