@@ -28,6 +28,7 @@ public class StatisticsTests {
     @Test
     public void basicSuccessStatistics() {
         UserController userController = UserController.getInstance();
+        userController.zeroCounters();
         String initialUserName = userController.addGuest().getResult();
         userController.login(initialUserName, "a1", "a1");
         List<String> statistics = userController.getDailyStatistics("a1", LocalDate.now()).getResult();

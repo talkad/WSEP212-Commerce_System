@@ -125,6 +125,7 @@ class App extends React.Component {
         this.handleManagerReplyResponse = this.handleManagerReplyResponse.bind(this);
         this.onChangeCounterOffer = this.onChangeCounterOffer.bind(this);
         this.handleAcceptOffer = this.handleAcceptOffer.bind(this);
+        this.handleDismissOffer = this.handleDismissOffer.bind(this);
         this.handleManagerReply = this.handleManagerReply.bind(this);
         this.getNotifications = this.getNotifications.bind(this);
         this.handleNotification = this.handleNotification.bind(this);
@@ -259,7 +260,8 @@ class App extends React.Component {
     //-----------------------------------USER OFFER START-----------------------------------------------------------
 
     handleDismissOffer() {
-
+        console.log("aaaaaaaaaaaaaa");
+        console.log(this);
         this.removeNotification(this.state.bidNotificationIndex);
         this.setState({
             showUserAlert: false, offerUserAlertVariant: '', alertUserInfo: '',
@@ -268,6 +270,8 @@ class App extends React.Component {
     }
 
     handleAcceptOffer() {
+        console.log("aaaaaaaaaaaaaa");
+        console.log(this);
         this.removeNotification(this.state.bidNotificationIndex);
         window.location.href = `http://localhost:3000/checkout/?storeName=${this.state.offerUserName}&productName=${this.state.offerUserProductName}&productID=${this.state.offerUserProductID}&storeID=${this.state.offerUserStoreID}`
     }
@@ -462,7 +466,7 @@ class App extends React.Component {
                 <Alert dismissible show={this.state.showUserAlert} variant={this.state.offerUserAlertVariant}
                        onClose={() => this.setState({showUserAlert: false})}>
                     <Alert.Heading>{this.state.alertUserInfo}</Alert.Heading>
-                    {this.state.showPurchaseButton && <div>
+                    {  this.state.showPurchaseButton && <div>
                         <hr/>
                         <Button onClick={this.handleAcceptOffer} variant='success'>Purchase</Button>
                         <Button onClick={this.handleDismissOffer} variant='danger'>Dismiss</Button>

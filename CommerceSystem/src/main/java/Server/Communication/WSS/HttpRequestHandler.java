@@ -58,14 +58,14 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Client is connected.");
+        //System.out.println("Client is connected.");
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         notifier.removeConnection(ctx);
-        System.out.println("Client disconnected.");
+        //System.out.println("Client disconnected.");
         super.channelUnregistered(ctx);
     }
 

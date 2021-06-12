@@ -78,7 +78,7 @@ public class StoreController {
             spellRequest.setText(faultWord);
             spellRequest.setIgnoreDuplicates(true);
             spellRes = spellChecker.check(spellRequest);
-            System.out.println("Did you refer to one of the following:");
+            //System.out.println("Did you refer to one of the following:");
             for(SpellCorrection spellCorrection : spellRes.getCorrections())
                 System.out.println(spellCorrection.getValue());
         }

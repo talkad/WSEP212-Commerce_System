@@ -168,7 +168,7 @@ public class DALTestService implements DALInterface{
         boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
         if (!allEmpty) {
-            System.out.println("Accessing DB for save iteration: " + this.dbName);
+            //System.out.println("Accessing DB for save iteration: " + this.dbName);
 
             try (MongoClient mongoClient = MongoClients.create(this.dbURL)) {
                 Datastore datastore = Morphia.createDatastore(mongoClient, this.dbName);
@@ -294,11 +294,11 @@ public class DALTestService implements DALInterface{
                     // commit changes
                     session.commitTransaction();
                 } catch (Exception e) {
-                    System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
+                    //System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
                     saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
                 }
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
 
@@ -306,7 +306,7 @@ public class DALTestService implements DALInterface{
                 this.testLock.notifyAll();
             }
 
-            System.out.println("Completed save iteration");
+            //System.out.println("Completed save iteration");
         }
     }
 
@@ -421,7 +421,7 @@ public class DALTestService implements DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.countersLock.writeLock().unlock();
                 return getDailyCounters(date); // timeout, try again
             }
@@ -593,7 +593,7 @@ public class DALTestService implements DALInterface{
 
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.publisherLock.writeLock().unlock();
                 return getPublisher(); // timeout, try again
             }
@@ -750,7 +750,7 @@ public class DALTestService implements DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.accountLock.writeLock().unlock();
                 return getAccount(username); // timeout, try again
             }
@@ -901,7 +901,7 @@ public class DALTestService implements DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.storeLock.writeLock().unlock();
                 return getStore(storeId); // timeout, try again
             }
@@ -1026,7 +1026,7 @@ public class DALTestService implements DALInterface{
                         .toList();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
 
@@ -1257,7 +1257,7 @@ public class DALTestService implements DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.userLock.writeLock().unlock();
                 return getUser(username); // timeout, try again
             }
@@ -1436,7 +1436,7 @@ public class DALTestService implements DALInterface{
                 int id = head.getStoreID();
                 return id + 1;
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 return getNextAvailableStoreID(); // timeout, try again
             }
         }
@@ -1454,7 +1454,7 @@ public class DALTestService implements DALInterface{
                 mongoClient.getDatabase(this.dbName).getCollection("dailyCounters").drop();
 
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 resetDatabase(); // timeout, try again
             }
         }

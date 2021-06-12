@@ -59,10 +59,10 @@ public class CommerceSystem implements IService {
         DALService.getInstance().startDB();
 
         // for testing
-        DALService.getInstance().resetDatabase(); //todo - remove that
+        //DALService.getInstance().resetDatabase(); //todo - remove that
 
         if(DALService.getInstance().getStore(0) != null){
-            System.out.println(" -------------- System initialization already occurred in the past -------------- ");
+            //System.out.println(" -------------- System initialization already occurred in the past -------------- ");
             return new Response<>(true, false, "initialization complete");
         }
 
