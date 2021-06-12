@@ -39,7 +39,10 @@ public class BidPurchase {
 
         Response<Product> product = storeController.getProduct(storeID, productID);
         Product product1 = Product.createProduct(product.getResult().getProductDTO());
-        product1.setPrice(newPrice);
+        System.out.println(newPrice);
+        if(newPrice > 0)
+            product1.setPrice(newPrice);
+
         Response<PurchaseClientDTO> res = storeController.purchase(product1);
 
         if (res.isFailure())

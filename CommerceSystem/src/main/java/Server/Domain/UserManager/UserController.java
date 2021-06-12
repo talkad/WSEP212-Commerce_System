@@ -860,6 +860,8 @@ public class UserController {
             readLock.unlock();
 
             Offer offer = user.getOffers().get(productID);
+            System.out.println(username);
+            System.out.println(productID);
 
             if(offer == null)
                 return new Response<>(false, true, "The given product doesn't exists in offers");

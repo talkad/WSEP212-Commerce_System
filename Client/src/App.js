@@ -259,6 +259,7 @@ class App extends React.Component {
     //-----------------------------------USER OFFER START-----------------------------------------------------------
 
     handleDismissOffer() {
+
         this.removeNotification(this.state.bidNotificationIndex);
         this.setState({
             showUserAlert: false, offerUserAlertVariant: '', alertUserInfo: '',

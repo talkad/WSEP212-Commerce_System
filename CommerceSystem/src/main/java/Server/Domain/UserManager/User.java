@@ -945,8 +945,11 @@ public class User {
 
             } else if (bidReply == -1) {
                 Gson gson = new Gson();
-                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, offeringUser.getOffers().get(productID).getOfferReply())), "changeOfferStatusAccepted"));
                 offer.setState(this.name, OfferState.APPROVED);
+
+                if(offer.getState() == OfferState.APPROVED)
+                    Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification",  gson.toJson(new OfferData(store.getName(), product.getName(), productID, storeID, offer.getOfferReply())), "changeOfferStatusAccepted"));
+
                 DALProxy.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was accepted.");
 
@@ -1031,7 +1034,6 @@ public class User {
             offers.remove(productID);
         } else if (bidReply == -1) {
            offers.get(productID).setState(this.name, OfferState.APPROVED);
-           offers.get(productID).setOfferReply(bidReply);
         } else {
             offers.get(productID).setState(this.name, OfferState.APPROVED);
             offers.get(productID).setOfferReply(bidReply);
