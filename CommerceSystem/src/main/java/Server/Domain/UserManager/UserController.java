@@ -814,7 +814,7 @@ public class UserController {
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
-            List<String> appointees = new Vector<>();
+//            List<String> appointees = new Vector<>();
             return user.bidOffer(productID, storeID, priceOffer, getBidPermiters(StoreController.getInstance().getStoreOwnerName(storeID), storeID));
         }
         readLock.unlock();

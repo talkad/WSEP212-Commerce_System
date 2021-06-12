@@ -165,11 +165,38 @@ public class StoreController {
             prods.put(entry.getKey(), parseProductsMap(entry.getValue()));
         }
 
+        return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
+    }
+
+    public void addToHistory(ShoppingCart shoppingCart){
+        Store s;
+        Map<Integer, Map<ProductClientDTO, Integer>> prods = new ConcurrentHashMap<>();
+        Map<Integer, PurchaseClientDTO> purchases = new HashMap<>();
+        Response<PurchaseClientDTO> resPurchase;
+        Map<Integer, Map<Product, Integer>> baskets = shoppingCart.getBaskets();
+
+        if(baskets.isEmpty())
+            return;
+
+        for (Map.Entry<Integer, Map<Product, Integer>> entry : baskets.entrySet()) {
+            resPurchase = purchaseFromStore(entry.getKey(), parseProductsMap(entry.getValue()));
+
+            if (resPurchase.isFailure()) {
+                for (Map.Entry<Integer, Map<ProductClientDTO, Integer>> refundEntries : prods.entrySet()) {
+                    s = getStoreById(refundEntries.getKey());
+                    for (Map.Entry<ProductClientDTO, Integer> shopRefund : refundEntries.getValue().entrySet())
+                        s.addProduct(shopRefund.getKey(), shopRefund.getValue());
+                }
+                return;
+            }
+
+            purchases.put(entry.getKey(), resPurchase.getResult());
+            prods.put(entry.getKey(), parseProductsMap(entry.getValue()));
+        }
+
         for(Integer storeID: purchases.keySet()){
             stores.get(storeID).addPurchaseHistory(purchases.get(storeID));
         }
-
-        return new Response<>(new LinkedList<>(purchases.values()), false, "Purchase can be made.");
     }
 
     private Map<ProductClientDTO, Integer> parseProductsMap(Map<Product, Integer> value) {
@@ -193,11 +220,23 @@ public class StoreController {
 
         res = store.purchase(purchase);
 
+        return res;
+    }
+
+    public void addProductToHistory(Product product) {
+        Response<PurchaseClientDTO> res;
+        Store store = stores.get(product.getStoreID());
+        Map<ProductClientDTO, Integer> purchase = new HashMap<>();
+        purchase.put(product.getProductDTO(), 1);
+
+        if(store == null)
+            return;
+
+        res = store.purchase(purchase);
+
         if(!res.isFailure()){
             store.addPurchaseHistory(res.getResult());
         }
-
-        return res;
     }
 
     private Response<PurchaseClientDTO> purchaseFromStore(int storeID, Map<ProductClientDTO, Integer> shoppingBasket){
@@ -220,6 +259,10 @@ public class StoreController {
     }
 
     public String getStoreOwnerName(int storeID){
+
+        if(this.getStoreById(storeID) == null)
+            return "";
+
         return this.getStoreById(storeID).getOwnerName();
     }
 

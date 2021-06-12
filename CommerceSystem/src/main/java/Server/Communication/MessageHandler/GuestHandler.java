@@ -109,7 +109,7 @@ public class GuestHandler extends Handler{
                 String productID = data.getProperty("productID");
                 String priceOffer = data.getProperty("priceOffer");
 
-                response = service.bidOffer(username, Integer.parseInt(storeID), Integer.parseInt(productID), Double.parseDouble(priceOffer));
+                response = service.bidOffer(username, Integer.parseInt(productID), Integer.parseInt(storeID), Double.parseDouble(priceOffer));
            }
             case "bidUserReply" ->{
                 String username = data.getProperty("username");

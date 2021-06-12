@@ -938,7 +938,7 @@ public class User {
 
         if (this.state.allowed(PermissionsEnum.REPLY_TO_BID, this, storeID)) {
             if (bidReply == -2) {
-                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + "from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
+                Publisher.getInstance().notify(offeringUser.getName(), new ReplyMessage("reactiveNotification", "Your offer for " + product.getName() + " from " +store.getName()+ " was declined.", "changeOfferStatusDeclined"));
                 offeringUser.getOffers().remove(productID);
                 DALProxy.getInstance().insertUser(offeringUser.toDTO());
                 return new Response<>(true, false, "The offer was declined.");

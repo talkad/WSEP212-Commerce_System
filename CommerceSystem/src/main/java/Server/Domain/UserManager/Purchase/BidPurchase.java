@@ -2,6 +2,7 @@ package Server.Domain.UserManager.Purchase;
 
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
+import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
@@ -38,6 +39,10 @@ public class BidPurchase {
         Response<Integer> paymentRes;
 
         Response<Product> product = storeController.getProduct(storeID, productID);
+
+        if(product.getResult() == null)
+            return new Response<>(null, true, "product out of stock | didn't create external connection");
+
         Product product1 = Product.createProduct(product.getResult().getProductDTO());
         if(newPrice > 0)
             product1.setPrice(newPrice);
@@ -63,6 +68,8 @@ public class BidPurchase {
 
             return new Response<>(null, true, supplyRes.getErrMsg() + " => "+"Delivery failed" + " | created external connection");
         }
+
+        StoreController.getInstance().addProductToHistory(product1);
 
         return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
     }

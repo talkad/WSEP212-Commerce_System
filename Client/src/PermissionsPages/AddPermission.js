@@ -29,7 +29,7 @@ class AddPermission extends React.Component {
     }
 
     handleResponse(result) {
-        alert(result.result);
+        alert(result.errMsg);
     }
 
     render() {
@@ -65,6 +65,7 @@ class AddPermission extends React.Component {
                             <option value="RECEIVE_STORE_HISTORY">Receive store history</option>
 
                             <option value="RECEIVE_STORE_REVENUE">Receive store revenue</option>
+                            <option value="REPLY_TO_BID">Reply to bid</option>
                         </Form.Control>
                     </Form.Group>
                 </div>

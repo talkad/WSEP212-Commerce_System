@@ -57,6 +57,8 @@ public class DirectPurchase {
             return new Response<>(null, true, supplyRes.getErrMsg() + " => " +"Delivery failed" + " | created external connection");
         }
 
+        StoreController.getInstance().addToHistory(cart);
+
         return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
     }
 }
