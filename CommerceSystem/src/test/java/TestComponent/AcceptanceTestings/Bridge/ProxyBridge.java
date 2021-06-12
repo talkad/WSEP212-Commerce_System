@@ -423,7 +423,10 @@ public class ProxyBridge implements IService {
 
     @Override
     public Response<List<String>> getDailyStatistics(String adminName, LocalDate date) {
-        return null;
+        if (real != null){
+            return real.getDailyStatistics(adminName, date);
+        }
+        return new Response<>(null, true, "not implemented");
     }
 
     @Override

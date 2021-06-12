@@ -169,4 +169,12 @@ public class Statistics {
         );
 
     }
+
+    protected void zeroCounters(){
+        this.dailyGuestCounter.set(0);
+        this.dailyRegisteredCounter.set(0);
+        this.dailyManagerCounter.set(0);
+        this.dailyOwnerCounter.set(0);
+        this.dailyAdminCounter.set(0);
+    }
 }

@@ -51,7 +51,7 @@ class DiscountsDetails extends React.Component{
                 <h1>Discount Details Page </h1>
                 <div> <label> Username Name : <input readOnly value = {this.state.username} className = "username" type = "text" onChange = {(e) => this.handleInputChange(e, 'username')}/> </label> </div>
                 <div> <label> Store Id : <input readOnly value = {this.state.storeId} className = "storeId" type = "text" onChange = {(e) => this.handleInputChange(e, 'storeId')}/> </label> </div>
-                <div className="toShow"> {this.state.showMessage && <p> {this.state.toShow} </p>}
+                <div className="toShow"> {this.state.showMessage && <p> <pre> {this.state.toShow} </pre> </p>}
                     <button type = "button" onClick = {(e) => this.onButtonClickHandler(e)}> Show Details </button>
                 </div>
             </form>

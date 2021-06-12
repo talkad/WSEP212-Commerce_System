@@ -119,18 +119,18 @@ public class DALService implements Runnable, DALInterface{
 
     public void startDB(){
         if(!cleaningCache && !useLocal) {
-            System.out.println("Starting cache cleaning thread");
+            //System.out.println("Starting cache cleaning thread");
             CacheCleaner cacheCleaner = new CacheCleaner();
             Thread cleaningThread = new Thread(cacheCleaner);
             cleaningThread.start();
             cleaningCache = true;
-            System.out.println("Cache cleaning thread started");
+            //System.out.println("Cache cleaning thread started");
         }
         if(!useLocal) {
-            System.out.println("Starting DAL thread");
+            //System.out.println("Starting DAL thread");
             Thread thread = new Thread(this);
             thread.start();
-            System.out.println("DAL thread started");
+            //System.out.println("DAL thread started");
         }
     }
 
@@ -202,7 +202,7 @@ public class DALService implements Runnable, DALInterface{
         boolean allEmpty = storeList.isEmpty() && userList.isEmpty() && accountList.isEmpty() && adminAccountList.isEmpty() && productList.isEmpty() && publisherList.isEmpty() && countersList.isEmpty();
 
         if(!allEmpty) {
-            System.out.println("Accessing DB for save iteration: " + this.dbName);
+            //System.out.println("Accessing DB for save iteration: " + this.dbName);
 //            CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(
 //                    AndCompositionDiscountRuleDTO.class,
 //                    CategoryDiscountRuleDTO.class,
@@ -374,11 +374,11 @@ public class DALService implements Runnable, DALInterface{
                     // commit changes
                     session.commitTransaction();
                 } catch (Exception e) {
-                    System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
+                    //System.out.println("CRITICAL TRANSACTION ERROR: " + e.getMessage());
                     saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList);
                 }
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 saveToDatabase(storeList, userList, accountList, adminAccountList, productList, publisherList, countersList); // timeout, try again
             }
 
@@ -386,7 +386,7 @@ public class DALService implements Runnable, DALInterface{
                 this.testLock.notifyAll();
             }
 
-            System.out.println("Completed save iteration");
+            //System.out.println("Completed save iteration");
         }
     }
 
@@ -400,7 +400,7 @@ public class DALService implements Runnable, DALInterface{
         this.guestCartLock.writeLock().lock();
         this.countersLock.writeLock().lock();
 
-        System.out.println("Cleaning cache");
+        //System.out.println("Cleaning cache");
 
         long currTimeMillis = System.currentTimeMillis();
         long interval = 2*60*1000;
@@ -410,7 +410,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.stores.get(storeID).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.stores.remove(storeID);
-                System.out.println("Removed store " + storeID + " from cache");
+                //System.out.println("Removed store " + storeID + " from cache");
             }
         }
 
@@ -419,7 +419,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.users.get(username).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.users.remove(username);
-                System.out.println("Removed user " + username + " from cache");
+                //System.out.println("Removed user " + username + " from cache");
             }
         }
 
@@ -428,7 +428,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.accounts.get(username).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.accounts.remove(username);
-                System.out.println("Removed account " + username + " from cache");
+                //System.out.println("Removed account " + username + " from cache");
             }
         }
 
@@ -437,7 +437,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.admins.get(username).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.admins.remove(username);
-                System.out.println("Removed admin " + username + " from cache");
+                //System.out.println("Removed admin " + username + " from cache");
             }
         }
 
@@ -446,7 +446,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.products.get(productID).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.products.remove(productID);
-                System.out.println("Removed product " + productID + " from cache");
+                //System.out.println("Removed product " + productID + " from cache");
             }
         }
 
@@ -455,7 +455,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.publisher.get(publisherID).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.publisher.remove(publisherID);
-                System.out.println("Removed publisher " + publisherID + " from cache");
+                //System.out.println("Removed publisher " + publisherID + " from cache");
             }
         }
 
@@ -464,7 +464,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.guestCarts.get(username).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.guestCarts.remove(username);
-                System.out.println("Removed cart of " + username + " from cache");
+                //System.out.println("Removed cart of " + username + " from cache");
             }
         }
 
@@ -473,7 +473,7 @@ public class DALService implements Runnable, DALInterface{
             long oldTimeMillis = this.counters.get(date).getSecond();
             if(currTimeMillis >= oldTimeMillis + interval){ // 5 minutes have passed since last read/write
                 this.counters.remove(date);
-                System.out.println("Removed counters for " + date + " from cache");
+                //System.out.println("Removed counters for " + date + " from cache");
             }
         }
 
@@ -486,7 +486,7 @@ public class DALService implements Runnable, DALInterface{
         this.guestCartLock.writeLock().unlock();
         this.countersLock.writeLock().unlock();
 
-        System.out.println("Finished cleaning cache");
+        //System.out.println("Finished cleaning cache");
     }
 
     public void useTestDatabase() {
@@ -600,7 +600,7 @@ public class DALService implements Runnable, DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.countersLock.writeLock().unlock();
                 return getDailyCounters(date); // timeout, try again
             }
@@ -766,7 +766,7 @@ public class DALService implements Runnable, DALInterface{
 
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.publisherLock.writeLock().unlock();
                 return getPublisher(); // timeout, try again
             }
@@ -917,7 +917,7 @@ public class DALService implements Runnable, DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.accountLock.writeLock().unlock();
                 return getAccount(username); // timeout, try again
             }
@@ -1066,7 +1066,7 @@ public class DALService implements Runnable, DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.storeLock.writeLock().unlock();
                 return getStore(storeId); // timeout, try again
             }
@@ -1191,7 +1191,7 @@ public class DALService implements Runnable, DALInterface{
                         .toList();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 return getAllStores(); // timeout, try again
             }
 
@@ -1404,7 +1404,7 @@ public class DALService implements Runnable, DALInterface{
                         ).first();
             }
             catch(Exception e){
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 this.userLock.writeLock().unlock();
                 return getUser(username); // timeout, try again
             }
@@ -1583,7 +1583,7 @@ public class DALService implements Runnable, DALInterface{
                 int id = head.getStoreID();
                 return id + 1;
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 return getNextAvailableStoreID(); // timeout, try again
             }
         }
@@ -1601,7 +1601,7 @@ public class DALService implements Runnable, DALInterface{
                 mongoClient.getDatabase(this.dbName).getCollection("dailyCounters").drop();
 
             } catch (Exception e) {
-                System.out.println("Exception received: " + e.getMessage());
+                //System.out.println("Exception received: " + e.getMessage());
                 resetDatabase(); // timeout, try again
             }
         }

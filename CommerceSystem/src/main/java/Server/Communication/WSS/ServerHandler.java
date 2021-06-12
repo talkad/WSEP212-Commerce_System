@@ -65,7 +65,7 @@ public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         notifier.removeConnection(ctx);
-        System.out.println("Client disconnected.");
+        //System.out.println("Client disconnected.");
         super.channelUnregistered(ctx);
     }
 

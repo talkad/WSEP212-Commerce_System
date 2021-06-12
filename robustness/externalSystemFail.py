@@ -168,7 +168,6 @@ class UserTaskSet(TaskSet):
                 response_time=int((end_time - start_time) * 1000),
                 response_length=len(new_user_ans))
         else:
-            print("aaaaaaaaaaaaaaaaaaaaaa")
             start_time = time.time()
             end_time = time.time()
             locust.events.request_success.fire(
@@ -321,7 +320,7 @@ class UserTaskSet(TaskSet):
 
         to_send = {"action": "directPurchase", "username": self.username,
                    "paymentDetails": json.dumps(
-                       {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 984, "id": "a"}),
+                       {"card_number": "a", "month": "a", "year": "a", "holder": "a", "ccv": 986, "id": "a"}),
                    "supplyDetails": json.dumps(
                        {"name": "a", "address": "b", "city": "c", "country": "d", "zip": "e"})}
         msg = json.dumps(to_send)

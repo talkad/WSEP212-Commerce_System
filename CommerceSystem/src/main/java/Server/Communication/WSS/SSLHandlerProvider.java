@@ -20,7 +20,7 @@ public class SSLHandlerProvider {
     public static SslHandler getSSLHandler(){
         SSLEngine sslEngine=null;
         if(serverSSLContext ==null){
-            System.out.println("Server SSL context is null");
+            //System.out.println("Server SSL context is null");
             System.exit(-1);
         }else{
             sslEngine = serverSSLContext.createSSLEngine();
