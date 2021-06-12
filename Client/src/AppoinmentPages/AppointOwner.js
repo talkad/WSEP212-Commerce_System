@@ -7,15 +7,15 @@ class AppointOwner extends React.Component {
         super(props);
         this.state = {
             functionName: 'appointStoreOwner',
-            appointerName: StaticUserInfo.getUsername(),
+            appointerName: window.sessionStorage.getItem('username'),
             appointeeName: '',
-            storeId: StaticUserInfo.getStoreId(),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 
     handleClick(e) {
         e.preventDefault();
-        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName).then(this.handleAppointResponse, Connection.handleReject)
+        Connection.sendAppoints(this.state.functionName, this.state.appointerName, this.state.appointeeName, this.state.storeId).then(this.handleAppointResponse, Connection.handleReject)
     }
 
     handleAppointResponse(result){

@@ -1,5 +1,6 @@
 package Server.Service;
 
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -14,6 +15,8 @@ import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.ShoppingManager.DTOs.StoreClientDTO;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -52,8 +55,8 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<Boolean> configInit() {
-        return commerceSystem.configInit();
+    public Response<Boolean> configInit(String filename) {
+        return commerceSystem.configInit(filename);
     }
 
     @Override
@@ -147,6 +150,11 @@ public class CommerceService implements IService{
     }
 
     @Override
+    public Response<List<String>> getMyStores(String username) {
+        return commerceSystem.getMyStores(username);
+    }
+
+    @Override
     public Response<StoreClientDTO> getStore(int storeID) {
         return commerceSystem.getStore(storeID);
     }
@@ -192,13 +200,23 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         return commerceSystem.getPurchasePolicy(username, storeID);
     }
 
     @Override
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         return commerceSystem.getDiscountPolicy(username, storeID);
+    }
+
+    @Override
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        return commerceSystem.getPurchasePolicyReal(username, storeID);
+    }
+
+    @Override
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        return commerceSystem.getDiscountPolicyReal(username, storeID);
     }
 
     @Override
@@ -269,7 +287,7 @@ public class CommerceService implements IService{
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
         return commerceSystem.getStoreWorkersDetails(username, storeID);
     }
 
@@ -288,7 +306,13 @@ public class CommerceService implements IService{
         return commerceSystem.getStorePurchaseHistory(adminName, storeID);
     }
 
-    public Response<String> getDailyStatistics(String adminName, String date){
+    @Override
+    public Response<List<String>> getDailyStatistics(String adminName, LocalDate date){
         return commerceSystem.getDailyStatistics(adminName, date);
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return commerceSystem.isAdmin(username);
     }
 }

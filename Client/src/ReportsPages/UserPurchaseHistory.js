@@ -7,7 +7,7 @@
 //         super(props);
 //         this.state = {
 //             functionName: 'getUserPurchaseHistory',
-//             adminName: StaticUserInfo.getUsername(),
+//             adminName: window.sessionStorage.getItem('username'),
 //             userName: '',
 //             showMessage: false,
 //             toShow: 'ghi' //TODO: this f** newline doesnt workkkkk

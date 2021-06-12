@@ -1,7 +1,6 @@
 package Server.Domain.ShoppingManager.PurchaseRules;
 
 import Server.DAL.PairDTOs.PredPair;
-import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.DAL.PurchaseRuleDTOs.ConditioningCompositionPurchaseRuleDTO;
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 
@@ -62,5 +61,16 @@ public class ConditioningCompositionPurchaseRule extends CompoundPurchaseRule{
     @Override
     public String getDescription() {
         return "Conditioning Composition Purchase Rule " + id;
+    }
+
+    @Override
+    public String toString() {
+        String [] compoundStrings = new String[conditionsMap.size()];
+        int i = 0;
+        for(Map.Entry<Predicate, Predicate> entry : conditionsMap.entrySet()) {
+            compoundStrings[i] = "----------\\n" + entry.getKey() + "IMPLIES\\n" + entry.getValue() + "----------\\n";
+            ++i;
+        }
+        return "Conditioning Composition Purchase Rule No." + id + ":\\n" + String.join("", compoundStrings);
     }
 }

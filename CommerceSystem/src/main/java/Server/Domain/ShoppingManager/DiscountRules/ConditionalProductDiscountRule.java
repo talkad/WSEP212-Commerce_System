@@ -1,11 +1,8 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
-import Server.DAL.DiscountRuleDTOs.ConditionalCategoryDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.ConditionalProductDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
-import Server.DAL.PredicateDTOs.CategoryPredicateDTO;
 import Server.DAL.PredicateDTOs.ProductPredicateDTO;
-import Server.Domain.ShoppingManager.Predicates.CategoryPredicate;
 import Server.Domain.ShoppingManager.Predicates.ProductPredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 
@@ -42,6 +39,15 @@ public class ConditionalProductDiscountRule extends ProductDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Conditional Product discount: ProductID - " + productID + " with a discount of " + discount + "%";
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Product Discount Rule No." + id + ":\n" +
+                                                                                            discount + "% Discount - " + productPredicate.toString())
+                                                                                        : productPredicate.toString();
+    }
+
+    @Override
+    public String toString() {
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Product Discount Rule No." + id + ":\\n" +
+                discount + "% Discount - \\n" + productPredicate.toString())
+                : productPredicate.toString();
     }
 }

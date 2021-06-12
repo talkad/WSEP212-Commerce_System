@@ -2,8 +2,11 @@ package Server.DAL.DiscountRuleDTOs;
 
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("LeafDiscountRuleDTO")
+
 public abstract class LeafDiscountRuleDTO implements DiscountRuleDTO {
 
     @Property(value = "id")

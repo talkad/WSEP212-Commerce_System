@@ -67,7 +67,7 @@ public class GuestHandler extends Handler{
             case "searchByProductKeyword" ->{
                 String keyword = data.getProperty("keyword");
 
-                response = service.getPurchaseHistory(keyword);
+                response = service.searchByProductKeyword(keyword);
             }
             case "addToCart" ->{
                 String username = data.getProperty("username");
@@ -109,7 +109,7 @@ public class GuestHandler extends Handler{
                 String productID = data.getProperty("productID");
                 String priceOffer = data.getProperty("priceOffer");
 
-                response = service.bidOffer(username, Integer.parseInt(storeID), Integer.parseInt(productID), Double.parseDouble(priceOffer));
+                response = service.bidOffer(username, Integer.parseInt(productID), Integer.parseInt(storeID), Double.parseDouble(priceOffer));
            }
             case "bidUserReply" ->{
                 String username = data.getProperty("username");
@@ -129,6 +129,11 @@ public class GuestHandler extends Handler{
                 String username = data.getProperty("username");
 
                 response = service.getStoreOwned(username);
+            }
+            case "getMyStores" ->{
+                String username = data.getProperty("username");
+
+                response = service.getMyStores(username);
             }
             default -> response = super.handle(input);
         }

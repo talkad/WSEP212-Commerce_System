@@ -1,8 +1,0 @@
-{
-  "adminuser": "u1",
-  "adminpass": "u1",
-  "dbloc": "mongodb+srv://commerceserver:commerceserver@cluster0.gx2cx.mongodb.net/test",
-  "dbuser": "commerceserver",
-  "dbpass": "commerceserver",
-  "extsysloc": "https://cs-bgu-wsep.herokuapp.com/"
-}

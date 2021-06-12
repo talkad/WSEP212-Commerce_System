@@ -1,10 +1,9 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.ShoppingBasketDTO;
-import Server.DAL.ShoppingCartDTO;
+import Server.DAL.DomainDTOs.ShoppingBasketDTO;
+import Server.DAL.DomainDTOs.ShoppingCartDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Product;
-import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.HashMap;

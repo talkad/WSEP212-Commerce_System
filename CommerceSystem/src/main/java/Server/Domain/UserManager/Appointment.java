@@ -1,6 +1,6 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.AppointmentDTO;
+import Server.DAL.DomainDTOs.AppointmentDTO;
 import Server.DAL.PairDTOs.IntStringListPair;
 
 import Server.Domain.CommonClasses.Response;
@@ -77,7 +77,7 @@ public class Appointment {
         if(this.storeAppointments.containsKey(storeId)){
             response = new Response<>(this.storeAppointments.get(storeId), false, "");
         }
-        else response = new Response<>(null, true, "No appointments for given store");
+        else response = new Response<>(new Vector<>(), true, "No appointments for given store");
         readLock.unlock();
         return response;
     }

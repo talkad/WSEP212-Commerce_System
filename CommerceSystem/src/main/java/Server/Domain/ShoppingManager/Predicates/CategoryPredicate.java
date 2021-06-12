@@ -36,4 +36,9 @@ public class CategoryPredicate implements Predicate {
 
         return numOfProducts >= minUnits && numOfProducts <= maxUnits;
     }
+
+    @Override
+    public String toString() {
+        return "If you buy at least " + minUnits + " and at most " + maxUnits + " that belong to category " + category +".\\n" ;
+    }
 }

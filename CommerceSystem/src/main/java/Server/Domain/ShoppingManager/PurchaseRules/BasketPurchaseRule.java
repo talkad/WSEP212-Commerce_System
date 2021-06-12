@@ -32,4 +32,9 @@ public class BasketPurchaseRule extends LeafPurchaseRule {
     public String getDescription() {
         return "Basket Purchase Rule " + id;
     }
+
+    @Override
+    public String toString() {
+        return predicate.toString();
+    }
 }

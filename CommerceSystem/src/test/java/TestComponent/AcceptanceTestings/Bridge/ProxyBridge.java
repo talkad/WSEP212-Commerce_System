@@ -1,5 +1,6 @@
 package TestComponent.AcceptanceTestings.Bridge;
 
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -14,6 +15,7 @@ import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
 import Server.Service.IService;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,9 +50,9 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<Boolean> configInit() {
+    public Response<Boolean> configInit(String filename) {
         if (real != null){
-            return real.configInit();
+            return real.configInit(filename);
         }
         return new Response<>(null, true, "not implemented");
     }
@@ -191,6 +193,11 @@ public class ProxyBridge implements IService {
     }
 
     @Override
+    public Response<List<String>> getMyStores(String username) {
+        return null;
+    }
+
+    @Override
     public Response<StoreClientDTO> getStore(int storeID) {
         return null;
     }
@@ -262,19 +269,29 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
         if (real != null){
-            return real.getPurchasePolicy(username, storeID);
+            return real.getPurchasePolicyReal(username, storeID);
         }
         return new Response<>(new PurchasePolicy(), false, "OK");
     }
 
     @Override
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
         if (real != null){
-            return real.getDiscountPolicy(username, storeID);
+            return real.getDiscountPolicyReal(username, storeID);
         }
         return new Response<>(new DiscountPolicy(), false, "OK");
+    }
+
+    @Override
+    public Response<String> getPurchasePolicy(String username, int storeID) {
+        return null;
+    }
+
+    @Override
+    public Response<String> getDiscountPolicy(String username, int storeID) {
+        return null;
     }
 
     @Override
@@ -358,7 +375,7 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
         if (real != null){
             return real.getStoreWorkersDetails(username, storeID);
         }
@@ -405,7 +422,15 @@ public class ProxyBridge implements IService {
     }
 
     @Override
-    public Response<String> getDailyStatistics(String adminName, String date) {
+    public Response<List<String>> getDailyStatistics(String adminName, LocalDate date) {
+        if (real != null){
+            return real.getDailyStatistics(adminName, date);
+        }
+        return new Response<>(null, true, "not implemented");
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
         return null;
     }
 }

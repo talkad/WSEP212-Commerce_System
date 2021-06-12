@@ -1,6 +1,7 @@
 package Server.Service;
 
 
+import Server.Domain.CommonClasses.Response;
 import Server.Service.DataObjects.ReplyMessage;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,7 +34,6 @@ public class Notifier implements Notify{
             connections.remove(identifier);
         }
 
-        System.out.println("new connection added " + identifier + " ctx " + ctx);
         connections.put(identifier, ctx);
     }
 
@@ -47,7 +47,6 @@ public class Notifier implements Notify{
 
         if(channel != null) {
             channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(msg)));
-            System.out.println("server sent to client " + identifier+ " the msg " + gson.toJson(msg) + " to " + connections.get(identifier));
         }
     }
 }

@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
 import Server.DAL.PairDTOs.ProductIntPair;
-import Server.DAL.ShoppingBasketDTO;
+import Server.DAL.DomainDTOs.ShoppingBasketDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;

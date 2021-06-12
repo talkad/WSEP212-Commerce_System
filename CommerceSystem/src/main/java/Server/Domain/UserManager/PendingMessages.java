@@ -1,7 +1,7 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.PendingMessagesDTO;
-import Server.DAL.ReplyMessageDTO;
+import Server.DAL.DomainDTOs.PendingMessagesDTO;
+import Server.DAL.DomainDTOs.ReplyMessageDTO;
 import Server.Service.DataObjects.ReplyMessage;
 
 import java.util.List;

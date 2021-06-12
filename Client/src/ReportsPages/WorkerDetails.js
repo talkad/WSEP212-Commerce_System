@@ -7,10 +7,10 @@ class WorkerDetails extends React.Component{
         super(props);
         this.state = {
             functionName: 'getStoreWorkersDetails',
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
             showMessage: false,
-            toShow: ''
+            toShow: '',
         };
         this.handleReportResponse = this.handleReportResponse.bind(this)
     }
@@ -25,7 +25,12 @@ class WorkerDetails extends React.Component{
 
     handleReportResponse(result){
         if(!result.isFailure){
-            this.setState({toShow: result.result.toString()})
+            let show = "";
+
+            result.result.forEach(element => show = show.concat(
+                "Employee's name is " + element.name.toString() + ", he ownes " + element.storesOwned.length.toString() + " stores and managing " + element.storesManaged.length.toString() + " stores :::  "));
+
+            this.setState({toShow: show});
         }
         else{
             alert(result.errMsg);

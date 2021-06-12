@@ -52,7 +52,7 @@ public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 
-        Response<String> response = CommerceService.getInstance().addGuest();
+        Response<String> response = CommerceService.getInstance().addGuest();//todo adds an additional guest?
 
         ByteBuf content = Unpooled.copiedBuffer(response.getResult(), CharsetUtil.UTF_8);
 
@@ -65,7 +65,7 @@ public class ServerHandler  extends SimpleChannelInboundHandler<Object> {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         notifier.removeConnection(ctx);
-        System.out.println("Client disconnected.");
+        //System.out.println("Client disconnected.");
         super.channelUnregistered(ctx);
     }
 

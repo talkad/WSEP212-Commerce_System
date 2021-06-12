@@ -4,9 +4,12 @@ import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.Domain.ShoppingManager.PurchaseRules.BasketPurchaseRule;
 import Server.Domain.ShoppingManager.PurchaseRules.PurchaseRule;
 import dev.morphia.annotations.Embedded;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
-public class BasketPurchaseRuleDTO extends LeafPurchaseRuleDTO{
+@BsonDiscriminator("BasketPurchaseRuleDTO")
+
+public class BasketPurchaseRuleDTO extends LeafPurchaseRuleDTO {
 
     public BasketPurchaseRuleDTO() {
         super();

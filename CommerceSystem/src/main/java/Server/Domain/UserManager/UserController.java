@@ -1,6 +1,9 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.*;
+import Server.DAL.DALControllers.DALProxy;
+import Server.DAL.DomainDTOs.AccountDTO;
+import Server.DAL.DomainDTOs.AdminAccountDTO;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DiscountPolicy;
 import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
@@ -30,39 +33,22 @@ public class UserController {
     private ReadWriteLock lock;
     private Lock writeLock;
     private Lock readLock;
+    private Statistics stats;
 
-    private LocalDate currentDate;
-    private ReadWriteLock dateLock;
-    private AtomicInteger dailyGuestCounter;
-    private AtomicInteger dailyRegisteredCounter;
-    private AtomicInteger dailyManagerCounter;
-    private AtomicInteger dailyOwnerCounter;
-    private AtomicInteger dailyAdminCounter;
+
 
     private UserController() {
         this.availableId = new AtomicInteger(1);
-        this.dailyGuestCounter = new AtomicInteger(0);
-        this.dailyRegisteredCounter = new AtomicInteger(0);
-        this.dailyManagerCounter = new AtomicInteger(0);
-        this.dailyOwnerCounter = new AtomicInteger(0);
-        this.dailyAdminCounter = new AtomicInteger(0);
-        this.currentDate = LocalDate.now();
+
         this.purchaseController = PurchaseController.getInstance();
         this.security = Security.getInstance();
         this.connectedUsers = new ConcurrentHashMap<>();
 
+        this.stats = Statistics.getInstance();
+
         lock = new ReentrantReadWriteLock();
         writeLock = lock.writeLock();
         readLock = lock.readLock();
-
-        dateLock = new ReentrantReadWriteLock();
-
-        DailyCountersDTO dailyCountersDTO = DALService.getInstance().getDailyCounters(this.currentDate);
-        this.dailyGuestCounter.set(dailyCountersDTO.getGuestCounter());
-        this.dailyRegisteredCounter.set(dailyCountersDTO.getRegisteredCounter());
-        this.dailyManagerCounter.set(dailyCountersDTO.getManagerCounter());
-        this.dailyOwnerCounter.set(dailyCountersDTO.getOwnerCounter());
-        this.dailyAdminCounter.set(dailyCountersDTO.getAdminCounter());
     }
 
     public Response<String> removeGuest(String name) {
@@ -145,44 +131,13 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    // TODO add lock for entire counter update
-    private void checkDateToUpdate(){
-        dateLock.readLock().lock();
-        if(this.currentDate.compareTo(LocalDate.now()) < 0){
-            dateLock.readLock().unlock();
-            dateLock.writeLock().lock();
-            currentDate = LocalDate.now();
-            dateLock.writeLock().unlock();
-            dateLock.readLock().lock();
-            this.dailyGuestCounter.set(0);
-            this.dailyRegisteredCounter.set(0);
-            this.dailyManagerCounter.set(0);
-            this.dailyOwnerCounter.set(0);
-            this.dailyAdminCounter.set(0);
-        }
-        dateLock.readLock().unlock();
-    }
-
-    private void saveCounters(){
-        dateLock.readLock().lock();
-        DailyCountersDTO dailyCountersDTO = new DailyCountersDTO(   this.currentDate.toString(),
-                                                                    this.dailyGuestCounter.get(),
-                                                                    this.dailyRegisteredCounter.get(),
-                                                                    this.dailyManagerCounter.get(),
-                                                                    this.dailyOwnerCounter.get(),
-                                                                    this.dailyAdminCounter.get());
-
-        DALService.getInstance().saveCounters(dailyCountersDTO);
-        dateLock.readLock().unlock();
-    }
 
     public Response<String> addGuest(){
         String guestName = "Guest" + availableId.getAndIncrement();
-        connectedUsers.put(guestName, new User());
-        checkDateToUpdate();
-        this.dailyGuestCounter.incrementAndGet();
-        //todo send dto
-        saveCounters();
+        User user = new User();
+        user.setName(guestName);
+        connectedUsers.put(guestName, user);
+        stats.incDailyGuestCounter();
         return new Response<>(guestName, false, "added guest");
     }
 
@@ -195,13 +150,13 @@ public class UserController {
                 Response<Boolean> result = user.register();
                 if (!result.isFailure()) {
                     writeLock.lock();  // TODO check if needed (prevents multiple registration)
-                    if (DALService.getInstance().getAccount(name) == null) {
+                    if (DALProxy.getInstance().getAccount(name) == null) {
                         //UserDAO.getInstance().registerUser(name, security.sha256(password));
-                        DALService.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
+                        DALProxy.getInstance().addAccount(new AccountDTO(name, security.sha256(password)));
                         UserDTO userDTO = new UserDTO();
                         userDTO.setName(name);
                         userDTO.setState(UserStateEnum.REGISTERED);
-                        DALService.getInstance().insertUser(userDTO);
+                        DALProxy.getInstance().insertUser(userDTO);
                         writeLock.unlock();
                         result = new Response<>(true, false, "Registration occurred");
                     } else {
@@ -220,21 +175,18 @@ public class UserController {
     }
     
     private void checkCounterToInc(User user){
-        checkDateToUpdate();
         if(user.isAdmin()){
-            dailyAdminCounter.incrementAndGet();
+            stats.incDailyAdminCounter();
         }
         else if(user.isOwner()){
-            dailyOwnerCounter.incrementAndGet();
+            stats.incDailyOwnerCounter();
         }
         else if(user.isManager()){
-            dailyManagerCounter.incrementAndGet();
+            stats.incDailyManagerCounter();
         }
         else{
-            dailyRegisteredCounter.incrementAndGet();
+            stats.incDailyRegisteredCounter();
         }
-        //todo send to dto
-        saveCounters();
     }
 
     public Response<String> login(String prevName, String name, String password){
@@ -245,7 +197,7 @@ public class UserController {
                 if (this.isValidUser(name, security.sha256(password))) {
                     writeLock.lock();
                     connectedUsers.remove(prevName);
-                    UserDTO userDTO = DALService.getInstance().getUser(name);
+                    UserDTO userDTO = DALProxy.getInstance().getUser(name);
                     if(userDTO == null)
                         userDTO = new User(name).toDTO();
                     user = new User(userDTO);
@@ -271,7 +223,7 @@ public class UserController {
     }
 
     public boolean isValidUser(String username, String password){
-        AccountDTO accountDTO = DALService.getInstance().getAccount(username);
+        AccountDTO accountDTO = DALProxy.getInstance().getAccount(username);
         return (accountDTO != null) && username.equals(accountDTO.getUsername()) && password.equals(accountDTO.getPassword());
     }
 
@@ -314,7 +266,7 @@ public class UserController {
         writeLock.lock();
         if(connectedUsers.containsKey(name)) {
             if (!connectedUsers.get(name).logout().isFailure()) {
-                DALService.getInstance().insertUser(connectedUsers.get(name).toDTO());
+                DALProxy.getInstance().insertUser(connectedUsers.get(name).toDTO());
                 connectedUsers.remove(name);
                 response = addGuest();
             } else {
@@ -404,11 +356,11 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
             User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_OWNER_APPOINTMENT);
             if (!response.isFailure()) {
-                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
                 User appointee = new User(appointeeDTO);
                 if (appointee.isOwner(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
@@ -435,7 +387,7 @@ public class UserController {
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(appointerDTO);
                     userDTOS.add(appointeeDTO);
-                    DALService.getInstance().saveUsers(userDTOS);
+                    DALProxy.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
                     Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -465,11 +417,11 @@ public class UserController {
         if(connectedUsers.containsKey(appointerName)) {
             //writeLock.lock();
             Response<Boolean> response;
-            UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
+            UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
             User appointer = new User(appointerDTO);
             response = appointer.appointedAndAllowed(storeID, appointeeName, PermissionsEnum.REMOVE_MANAGER_APPOINTMENT);
             if (!response.isFailure()) {
-                UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+                UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
                 User appointee = new User(appointeeDTO);
                 if (appointee.isManager(storeID)) {
                     if (this.connectedUsers.containsKey(appointerName)) {
@@ -496,7 +448,7 @@ public class UserController {
                     List<UserDTO> userDTOS = new Vector<>();
                     userDTOS.add(appointerDTO);
                     userDTOS.add(appointeeDTO);
-                    DALService.getInstance().saveUsers(userDTOS);
+                    DALProxy.getInstance().saveUsers(userDTOS);
 
                     Appointment appointments = new Appointment(appointeeDTO.getAppointments());
                     Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -521,8 +473,8 @@ public class UserController {
     }
 
     private void removeAppointmentRec(String appointerName, String appointeeName, int storeID) {
-        UserDTO appointerDTO = DALService.getInstance().getUser(appointerName);
-        UserDTO appointeeDTO = DALService.getInstance().getUser(appointeeName);
+        UserDTO appointerDTO = DALProxy.getInstance().getUser(appointerName);
+        UserDTO appointeeDTO = DALProxy.getInstance().getUser(appointeeName);
         User appointer = new User(appointerDTO);
         User appointee = new User(appointeeDTO);
         if(this.connectedUsers.containsKey(appointerName)) {                                    // if the user is connected:
@@ -534,7 +486,7 @@ public class UserController {
         //List<String> appointments = UserDAO.getInstance().getAppointments(appointeeName, storeID).getResult();
 //        appointer.removeAppointment(appointeeName, storeID);         // remove appointee from the appointers list
         Appointment appointment = appointer.getAppointments();
-        appointment.removeAppointment(storeID, appointerName);
+        appointment.removeAppointment(storeID, appointeeName);
         appointer.setAppointments(appointment);
 
         appointee.notifyManagementCancellation(storeID);
@@ -546,7 +498,7 @@ public class UserController {
         List<UserDTO> userDTOS = new Vector<>();
         userDTOS.add(appointerDTO);
         userDTOS.add(appointeeDTO);
-        DALService.getInstance().saveUsers(userDTOS);
+        DALProxy.getInstance().saveUsers(userDTOS);
 
         Appointment appointments = new Appointment(appointeeDTO.getAppointments());
         Response<List<String>> apptsList = appointments.getAppointees(storeID);
@@ -621,11 +573,11 @@ public class UserController {
     }
 
     public void adminBoot(String username, String password) {
-        DALService.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
-        DALService.getInstance().addAdmin(new AdminAccountDTO(username));
+        DALProxy.getInstance().addAccount(new AccountDTO(username, security.sha256(password)));
+        DALProxy.getInstance().addAdmin(new AdminAccountDTO(username));
         User user = new User(username);
         user.setState(new Admin());
-        DALService.getInstance().insertUser(user.toDTO());
+        DALProxy.getInstance().insertUser(user.toDTO());
         connectedUsers.put(username, user);
     }
 
@@ -641,18 +593,18 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<List<User>> getStoreWorkersDetails(String username,int storeID) {
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username,int storeID) {
         if(!connectedUsers.get(username).getStoreWorkersDetails(storeID).isFailure()){
             String ownerName = StoreController.getInstance().getStoreOwnerName(storeID);
-            List<User> result = new Vector<>();
-            result.add(new User(DALService.getInstance().getUser(ownerName)));
+            List<UserDTO> result = new Vector<>();
+            result.add(DALProxy.getInstance().getUser(ownerName));
             List<String> appointees = connectedUsers.get(username).getAppointments().getAppointees(storeID).getResult();
             List<String> names = new Vector<>(appointees);
             for(String name : names){
                 appointees.addAll(getAppointeesNamesRec(name, storeID));
             }
             for(String name : appointees){
-                result.add(new User(DALService.getInstance().getUser(name)));
+                result.add(DALProxy.getInstance().getUser(name));
             }
             return new Response<>(result, false, "Workers found");
         }
@@ -660,7 +612,7 @@ public class UserController {
     }
 
     private List<String> getAppointeesNamesRec(String workerName, int storeID) {
-        List<String> appointees = new User(DALService.getInstance().getUser(workerName)).getAppointments().getAppointees(storeID).getResult();
+        List<String> appointees = new User(DALProxy.getInstance().getUser(workerName)).getAppointments().getAppointees(storeID).getResult();
 
         if(appointees != null && !appointees.isEmpty()){
             List<String> names = new Vector<>(appointees);
@@ -698,7 +650,7 @@ public class UserController {
     }
 
     public User getUserByName(String username){
-        return new User(DALService.getInstance().getUser(username));
+        return new User(DALProxy.getInstance().getUser(username));
     }
 
     public boolean isConnected(String username){
@@ -766,7 +718,7 @@ public class UserController {
         return new Response<>(false, true, "User not connected");
     }
 
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
+    public Response<String> getPurchasePolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
@@ -778,13 +730,37 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
+    public Response<String> getDiscountPolicy(String username, int storeID) {
         readLock.lock();
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
 
             return user.getDiscountPolicy(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getPurchasePolicyReal(storeID);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return user.getDiscountPolicyReal(storeID);
         }
         readLock.unlock();
         return new Response<>(null, true, "User not connected");
@@ -838,7 +814,7 @@ public class UserController {
         if(connectedUsers.containsKey(username)) {
             User user = connectedUsers.get(username);
             readLock.unlock();
-            List<String> appointees = new Vector<>();
+//            List<String> appointees = new Vector<>();
             return user.bidOffer(productID, storeID, priceOffer, getBidPermiters(StoreController.getInstance().getStoreOwnerName(storeID), storeID));
         }
         readLock.unlock();
@@ -849,14 +825,15 @@ public class UserController {
         List<String> approvals = new Vector<>();
         approvals.add(storeOwnerName);
         List<String> appointees = UserController.getInstance().getUserByName(storeOwnerName).getAppointments().getAppointees(storeId).getResult();
-        for (String appointee: appointees){
-            User u = UserController.getInstance().getUserByName(appointee);
-            if(u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))){
-                approvals.add(appointee);
-                recBidPermiters(appointee, storeId, approvals);
+        if(appointees != null){
+            for (String appointee: appointees){
+                User u = UserController.getInstance().getUserByName(appointee);
+                if(u.getStoresOwned().contains(storeId) || (u.getStoresManaged().containsKey(storeId) && u.getStoresManaged().get(storeId).contains(PermissionsEnum.REPLY_TO_BID))){
+                    approvals.add(appointee);
+                    recBidPermiters(appointee, storeId, approvals);
+                }
             }
         }
-        System.out.println(approvals);
         return approvals;
     }
 
@@ -914,9 +891,42 @@ public class UserController {
         return new Response<>(null, true, "User not connected");
     }
 
-    public Response<String> getDailyStatistics(String username, LocalDate date){
+    public Response<List<String>> getMyStores(String username) {
+        readLock.lock();
+        if(connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getMyStores();
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
 
-        return new Response<String>("", false, "");
+    public Response<List<String>> getDailyStatistics(String username, LocalDate date) {
+
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+            return user.getDailyStatistics(date);
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
+    }
+
+    public void zeroCounters(){
+        stats.zeroCounters();
+    }
+
+    public Response<Boolean> isAdmin(String username) {
+        readLock.lock();
+        if (connectedUsers.containsKey(username)) {
+            User user = connectedUsers.get(username);
+            readLock.unlock();
+
+            return new Response<>(user.isAdmin(), !user.isAdmin(), "get is Admin");
+        }
+        readLock.unlock();
+        return new Response<>(null, true, "User not connected");
     }
 }
-

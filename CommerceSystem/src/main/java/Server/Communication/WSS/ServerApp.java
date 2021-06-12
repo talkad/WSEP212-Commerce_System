@@ -1,6 +1,5 @@
 package Server.Communication.WSS;
 
-import Server.DAL.DALService;
 import Server.Service.CommerceService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -17,16 +16,18 @@ public class ServerApp {
 
     public static void main(String[] args) {
 
-        DALService.getInstance().resetDatabase();
-        // Start threads in DAL, responsible for saving data in DB and cleaning cache
-        DALService.getInstance().startDB();
-        Response<Boolean> initRes = CommerceService.getInstance().init();
+        Response<Boolean> initRes;
+
+        // for testing
+
+
+        initRes = CommerceService.getInstance().init();
 
         if(!initRes.isFailure()){
 
             // Configure the bootstrap
             EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-            EventLoopGroup workerGroup = new NioEventLoopGroup();
+            EventLoopGroup workerGroup = new NioEventLoopGroup(20);
 
             // Load the certificates and initiate the SSL context
             //        SSLHandlerProvider.initSSLContext();

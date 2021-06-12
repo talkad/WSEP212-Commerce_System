@@ -3,16 +3,15 @@ package Server.Domain.UserManager.DTOs;
 import java.time.LocalDate;
 
 import Server.DAL.PairDTOs.ProductIntPair;
-import Server.DAL.ProductDTO;
-import Server.DAL.ReviewDTO;
-import Server.DAL.PurchaseDTO;
+import Server.DAL.DomainDTOs.ProductDTO;
+import Server.DAL.DomainDTOs.ReviewDTO;
+import Server.DAL.DomainDTOs.PurchaseDTO;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Product;
 import Server.Domain.ShoppingManager.Review;
 import Server.Domain.ShoppingManager.StoreController;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class PurchaseClientDTO {
 
@@ -46,7 +45,7 @@ public class PurchaseClientDTO {
             amounts.add(pair.getSecond());
         }
 
-        this.basket = new BasketClientDTO(purchaseDTO.getStoreID(), StoreController.getInstance().getStore(purchaseDTO.getStoreID()).getResult().getStoreName(), productsDTO, amounts);
+        this.basket = new BasketClientDTO(purchaseDTO.getStoreID(), StoreController.getInstance().getStoreName(purchaseDTO.getStoreID()), productsDTO, amounts);
     }
 
     public PurchaseDTO toDTO(){

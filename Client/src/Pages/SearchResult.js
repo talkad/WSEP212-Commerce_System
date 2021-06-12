@@ -3,6 +3,8 @@ import ProductEntry from '../Components/ProductEntry'
 import StoreEntry from "../Components/StoreEntry";
 import Connection from "../API/Connection";
 import {Button, Col, Container, Image, Row, Spinner} from "react-bootstrap";
+import Search from "../Components/Search";
+import could_not_find_harold from '../Images/harold_couldnt_find.png'
 
 const products = [
     {
@@ -244,7 +246,18 @@ class SearchResult extends React.Component {
 
     handleSearchResponse(result) {
         if (!result.isFailure) {
-            this.setState({responseResults: result.result, loaded: true});
+            if(this.state.showProduct){
+                this.setState({responseResults: result.result, loaded: true});
+            }
+            else if(this.state.showStore){
+                let allProducts = [];
+                let stores = result.result;
+
+                stores.map(({storeID, storeName, products}) => allProducts = allProducts.concat(products));
+
+                this.setState({responseResults: allProducts, loaded: true, showStore: false, showProduct: true});
+            }
+
         } else {
             alert(result.errMsg);
         }
@@ -281,9 +294,10 @@ class SearchResult extends React.Component {
     render() {
         return (
             <div>
+                <Search/>
                 <h1>Search Results</h1>
                 {this.state.loaded && (this.state.responseResults.length === 0) &&
-                <Image src="https://i.imgflip.com/5a4a1e.jpg"/>}
+                <Image src={could_not_find_harold}/>}
                 {! this.state.loaded && <Spinner animation="grow"/>}
                 {this.state.loaded && this.state.showProduct && this.state.responseResults.map(({
                      name, productID, storeID, price, categories, keywords, reviews, rating, numRatings}) => (

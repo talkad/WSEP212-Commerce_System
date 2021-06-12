@@ -1,10 +1,11 @@
 package TestComponent.UnitTesting.ShopComponentTests;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.Inventory;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.CommerceSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class InventoryTest {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
         DALService.getInstance().resetDatabase();
     }
 

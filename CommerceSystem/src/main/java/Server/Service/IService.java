@@ -1,5 +1,6 @@
 package Server.Service;
 
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -12,6 +13,8 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.DTOs.PurchaseClientDTO;
 import Server.Domain.UserManager.User;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,7 +31,7 @@ public interface IService {
 
     Response<Boolean> initState(String filename);
 
-    Response<Boolean> configInit();
+    Response<Boolean> configInit(String filename);
 
         /**
          * Guest requirements - 2
@@ -65,6 +68,8 @@ public interface IService {
 
     Response<List<Integer>> getStoreOwned(String username);
 
+    Response<List<String>> getMyStores(String username);
+
     Response<StoreClientDTO> getStore(int storeID);
 
     User getUserByName(String username); // for tests purposes
@@ -73,7 +78,7 @@ public interface IService {
     /**
      * Registered requirements - 3
      */
-    Response<String> logout(String userName); // 3.1
+    Response<String> logout(String username); // 3.1
 
     Response<Integer> openStore(String username, String storeName); // 3.2
 
@@ -94,9 +99,14 @@ public interface IService {
 
     Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName); // 4.1 - c
 
-    Response<PurchasePolicy> getPurchasePolicy(String username, int storeID); // 4.2 - a
+    Response<String> getPurchasePolicy(String username, int storeID); // 4.2 - a
 
-    Response<DiscountPolicy> getDiscountPolicy(String username, int storeID); // 4.2 - b
+    Response<String> getDiscountPolicy(String username, int storeID); // 4.2 - b
+
+    // for tests
+    Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID); // 4.2 - a
+
+    Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID); // 4.2 - b
 
     Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule); // 4.2 - c
 
@@ -118,7 +128,7 @@ public interface IService {
 
     Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID); // 4.7
 
-    Response<List<User>> getStoreWorkersDetails(String username, int storeID); // 4.9
+    Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID); // 4.9
 
     Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID); // 4.11
 
@@ -138,6 +148,7 @@ public interface IService {
 
     Response<Double> getTotalSystemRevenue(String username);
 
-    Response<String> getDailyStatistics(String adminName, String date);
+    Response<List<String>> getDailyStatistics(String adminName, LocalDate date);
 
+    Response<Boolean> isAdmin(String username);
 }

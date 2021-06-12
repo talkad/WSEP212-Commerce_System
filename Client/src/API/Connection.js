@@ -6,7 +6,8 @@ import Cookies from 'js-cookie'
 class Connection{
     static connection;
     static dataFromServer = [];
-    static offerNotifications = [];
+    static gotNotification = 0;
+    static dailyStatisticsLiveUpdate = null;
 
     static setConnection(connection) {
         this.connection = connection;
@@ -21,7 +22,6 @@ class Connection{
             console.log("saved cookie: " + window.sessionStorage.getItem('username'));
             if(window.sessionStorage.getItem('username') === null || window.sessionStorage.getItem('username') === '') {
                 console.log("doesn't have a cookie");
-                // TODO: when waiting for a response for this message then make the site "load"
                 connection.send(JSON.stringify({
                     action: "startup",
                 }))
@@ -41,6 +41,8 @@ class Connection{
 
         this.connection.onmessage = (message) => {
             let receivedData = JSON.parse(message.data);
+
+            console.log("just got from server");
             console.log(receivedData);
 
             if(receivedData.type === "startup"){
@@ -50,13 +52,14 @@ class Connection{
                 console.log("new cookie: " + inner_parse.result);
                 StaticUserInfo.setUsername(inner_parse.result);
             }
-            else if(receivedData.type === "notification"){
-                alert(receivedData.message);
+            else if(receivedData.type === "notification" || receivedData.type === "reactiveNotification"){
+                this.addNotification(receivedData);
+
+                // alert(receivedData.message);
             }
-            else if(receivedData.type === "reactiveNotification"){
-
-                Connection.offerNotifications.push(receivedData);
-
+            else if(receivedData.type === "liveUpdate"){
+                this.dailyStatisticsLiveUpdate = receivedData;
+                //this.addLiveUpdate(receivedData);
             }
             else if(receivedData.type === "response"){
                 Connection.dataFromServer.push(receivedData);
@@ -64,7 +67,6 @@ class Connection{
         }
 
         this.connection.onclose = (event) => {
-            // console.log(event); // TODO: just in case
 
             setTimeout(this.disconnect, 3000);
 
@@ -74,6 +76,27 @@ class Connection{
     static disconnect(){
         window.sessionStorage.setItem('username', ''); //TODO: change this once the db works
         window.location.href = "/Disconnected";
+    }
+
+    static addNotification(notification){
+        let notificationsCookie = window.sessionStorage.getItem('notifications');
+
+        if(notificationsCookie === null){
+            notificationsCookie = [];
+            notificationsCookie.push(notification);
+            window.sessionStorage.setItem('notifications', JSON.stringify(notificationsCookie));
+        }
+        else{
+            let parsed = JSON.parse(notificationsCookie);
+            parsed.push(notification);
+            window.sessionStorage.setItem('notifications', JSON.stringify(parsed));
+        }
+
+        this.gotNotification = 1;
+    }
+
+    static addLiveUpdate(update){
+        this.dailyStatisticsLiveUpdate = update;
     }
 
     static waitForOpenConnection = (socket) => {
@@ -106,7 +129,7 @@ class Connection{
         }
     }
 
-    static catchOfferNotification() {
+    static catchNotification() {
 
         function sleep(ms){
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -114,17 +137,43 @@ class Connection{
 
         return new Promise(async (resolve, reject) => {
             while(true){
-                if(Connection.offerNotifications.length !== 0){
-
-                    resolve(Connection.offerNotifications.shift());
+                if(this.gotNotification === 1){
+                    console.log("got a notification");
+                    this.gotNotification = 0;
+                    resolve(true);
+                    break;
                 }
                 await sleep(5000);
             }
         });
     }
 
-    static async getOfferNotification(){
-        return await Connection.catchOfferNotification();
+    static async getNotification(){
+        console.log("waiting for a notification");
+        return await Connection.catchNotification();
+    }
+
+    static catchLiveUpdate(){
+        function sleep(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        this.dailyStatisticsLiveUpdate = null;
+        return new Promise(async (resolve, reject) => {
+            while(true){
+                if(this.dailyStatisticsLiveUpdate !== null){
+                    console.log("got a live update");
+                    resolve(this.dailyStatisticsLiveUpdate);
+                    break;
+                }
+                await sleep(5000);
+            }
+        });
+    }
+
+    static async getLiveUpdate(){
+        console.log("waiting for live update");
+        return await Connection.catchLiveUpdate();
     }
 
 
@@ -154,11 +203,17 @@ class Connection{
 
                     if(index !== -1){
                         let message = Connection.dataFromServer[index];
-                        delete Connection.dataFromServer[index];
+                        Connection.dataFromServer.splice(index, 1);
+                        // delete Connection.dataFromServer[index];
+                        console.log("resolving " + action);
+                        console.log("about to resolve");
+                        console.log(message);
                         resolve(JSON.parse(message.message));
+                        break;
                     }
 
                 }
+                //console.log("going to sleep on " + action);
                 await sleep(1000);
                 i++;
             }
@@ -353,6 +408,15 @@ class Connection{
         return Connection.getResponse("getStoreOwned");
     }
 
+    static sendGetMyStores(){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "getMyStores",
+            username: window.sessionStorage.getItem('username'),
+        }))
+
+        return Connection.getResponse("getMyStores");
+    }
+
     static sendAddProductReview(storeID, productID, review){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: "addProductReview",
@@ -372,6 +436,25 @@ class Connection{
         }));
 
         return Connection.getResponse("getPurchaseHistory");
+    }
+
+    static sendGetDailyStatistics(date){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "getDailyStatistics",
+            adminName: window.sessionStorage.getItem('username'),
+            date: date,
+        }));
+
+        return Connection.getResponse("getDailyStatistics");
+    }
+
+    static sendIsAdmin(){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "isAdmin",
+            username: window.sessionStorage.getItem('username'),
+        }))
+
+        return Connection.getResponse("isAdmin");
     }
 
     // static sendAppointManager (functionName, appointerName, appointeeName, storeId){
@@ -467,7 +550,7 @@ class Connection{
     }
 
     /*
-    * Holds for all 3 pages in Report Pages- Need to receive information too
+    * Holds for 2 pages in Report Pages- Need to receive information too
     */
     static sendReportRequest (functionName, adminName, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
@@ -477,6 +560,16 @@ class Connection{
         }))
 
         return Connection.getResponse(functionName);
+    }
+
+    static sendStoreHistoryRequest(storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: "getStorePurchaseHistory",
+            adminName: window.sessionStorage.getItem('username'),
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse("getStorePurchaseHistory");
     }
 
     static sendGetPermissionsRequest (functionName, username, storeId){
@@ -621,6 +714,22 @@ class Connection{
         return Connection.getResponse(functionName);
     }
 
+    static sendCompositionPoliciesTerm (functionName, username, storeId, type, category, discount, predicate){
+        let fixedRules = predicate.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            discountRule: JSON.stringify({type: type,
+                category: category,
+                discount: discount,
+                predicates: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
     static sendCompositionPoliciesXor (functionName, username, storeId, type, discount, policyRules, xorResolveType){
         let fixedRules = policyRules.join(', ');
         Connection.sendMessage(Connection.connection, JSON.stringify({
@@ -636,6 +745,20 @@ class Connection{
         }))
         return Connection.getResponse(functionName);
     }
+
+    // static sendCompositionPoliciesTerm (functionName, username, storeId, type, predicate){
+    //     let fixedRules = predicate.join(', ');
+    //     Connection.sendMessage(Connection.connection, JSON.stringify({
+    //         action: functionName,
+    //         username: username,
+    //         storeID: storeId,
+    //
+    //         discountRule: JSON.stringify({type: type,
+    //             predicates: fixedRules,
+    //         }),
+    //     }))
+    //     return Connection.getResponse(functionName);
+    // }
 
     static sendGetStoreRevenue (functionName, username, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
@@ -657,6 +780,121 @@ class Connection{
     }
 
     static sendGetStoreWorkersInfo (functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemoveDiscount (functionName, username, storeId, discountRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            discountRuleID: discountRuleID,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendRemovePurchase (functionName, username, storeId, purchaseRuleID){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+            purchaseRuleID: purchaseRuleID,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCategoryPurchaseRule (functionName, username, storeId, type, category, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                category: category,
+                categoryPredicate: JSON.stringify({category: category, minUnits: minUnits,maxUnits: maxUnits})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendBasketPurchaseRule (functionName, username, storeId, type, minUnits, maxUnits, minPrice){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                basketPredicate: JSON.stringify({ minUnits: minUnits,maxUnits: maxUnits,minPrice: minPrice})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendProductPurchaseRule (functionName, username, storeId, type, productId, minUnits, maxUnits){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                productID: productId,
+                productPredicate: JSON.stringify({minUnits: minUnits,maxUnits: maxUnits, productID: productId})
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPurchaseAndOr (functionName, username, storeId, type, policyRules){
+        let fixedRules = policyRules.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                policyRules: fixedRules,
+            }),
+        }))
+        return Connection.getResponse(functionName);
+    }
+
+    static sendCompositionPurchaseConditioning (functionName, username, storeId, type, predicate1, predicate2){
+        let fixedRules = predicate1.join(', ');
+        let fixedRules2 = predicate2.join(', ');
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+
+            purchaseRule: JSON.stringify({type: type,
+                predicates: fixedRules,
+                impliedPredicates: fixedRules2,
+
+            }),
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendDiscountPurchaseReportRequest(functionName, username, storeId){
+        Connection.sendMessage(Connection.connection, JSON.stringify({
+            action: functionName,
+            username: username,
+            storeID: storeId,
+        }))
+
+        return Connection.getResponse(functionName);
+    }
+
+    static sendOwnerStoreHistoryReportRequest(functionName, username, storeId){
         Connection.sendMessage(Connection.connection, JSON.stringify({
             action: functionName,
             username: username,

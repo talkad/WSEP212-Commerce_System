@@ -2,7 +2,6 @@ package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.DAL.DiscountRuleDTOs.ConditionalStoreDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
-import Server.DAL.DiscountRuleDTOs.StoreDiscountRuleDTO;
 import Server.DAL.PredicateDTOs.StorePredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.StorePredicate;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -61,6 +60,14 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Conditional store discount: " + this.discount + "% discount on the entire store.";
+        return (discount == COMPOSITION_USE_ONLY) ? ("Conditional Store Discount Rule No." + id + ":\n " +
+                                                                                            this.discount + "% discount on the entire store - " + storePredicate.toString())
+                                                                                         : storePredicate.toString();
     }
+
+    @Override
+    public String toString() {
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Store Discount Rule No." + id + ":\\n " +
+                this.discount + "% discount on the entire store - \\n" + storePredicate.toString())
+                : storePredicate.toString();    }
 }

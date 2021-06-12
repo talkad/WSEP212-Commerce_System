@@ -5,11 +5,14 @@ import Server.Domain.ShoppingManager.DiscountRules.XorCompositionDiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.XorResolveType;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 
 @Embedded
-public class XorCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
+@BsonDiscriminator("XorCompositionDiscountRuleDTO")
+
+public class XorCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
 
     @Property(value = "xorResolveType")

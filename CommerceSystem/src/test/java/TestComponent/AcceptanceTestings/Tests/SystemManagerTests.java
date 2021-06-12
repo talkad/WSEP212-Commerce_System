@@ -63,18 +63,18 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
 
         bridge.directPurchase("avi", paymentDetails, supplyDetails);
 
-        initialized = true;
+        //initialized = true;
         }
 
     @Test
     public void getUserPurchaseHistoryTest(){ // 6.4 - a good
         // getting the purchase history of a user as an admin
-        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "avi");
+        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("a1", "avi");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
         Assert.assertFalse(userPurchaseHistoryResult.getResult().isEmpty());
 
         // getting an empty purchase history of a user as an admin
-        userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "shemesh");
+        userPurchaseHistoryResult = bridge.getUserPurchaseHistory("a1", "shemesh");
         Assert.assertFalse(userPurchaseHistoryResult.isFailure());
         Assert.assertTrue(userPurchaseHistoryResult.getResult().isEmpty());
     }
@@ -82,7 +82,7 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void getUserPurchaseHistoryOfNonExistentUser(){ // 6.4 - a bad
         // trying to get the purchase history of a non existent user. should fail
-        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("shaked", "hemi");
+        Response<List<PurchaseClientDTO>> userPurchaseHistoryResult = bridge.getUserPurchaseHistory("a1", "hemi");
         Assert.assertTrue(userPurchaseHistoryResult.isFailure());
     }
 
@@ -96,11 +96,10 @@ public class SystemManagerTests extends ProjectAcceptanceTests{
     @Test
     public void getStorePurchaseHistory(){ // 6.4 - b
         // getting the purchase history of a store as an admin
-        Response<Collection<PurchaseClientDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("shaked",
+        Response<Collection<PurchaseClientDTO>> storeHistoryResult = bridge.getStorePurchaseHistory("a1",
                 this.storeID);
         Assert.assertFalse(storeHistoryResult.isFailure());
         Assert.assertFalse(storeHistoryResult.getResult().isEmpty());
-
 
     }
 

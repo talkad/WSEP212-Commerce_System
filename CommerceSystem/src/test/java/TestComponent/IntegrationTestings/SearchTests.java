@@ -1,6 +1,6 @@
 package TestComponent.IntegrationTestings;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Review;
@@ -36,7 +36,8 @@ public class SearchTests {
     @Before
     public void setUp(){
 
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
 
         userController = UserController.getInstance();

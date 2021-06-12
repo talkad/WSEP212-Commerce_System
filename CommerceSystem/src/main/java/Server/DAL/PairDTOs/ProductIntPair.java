@@ -1,10 +1,12 @@
 package Server.DAL.PairDTOs;
 
-import Server.DAL.ProductDTO;
+import Server.DAL.DomainDTOs.ProductDTO;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @Embedded
+@BsonDiscriminator("ProductIntPair")
 public class ProductIntPair {
     @Property(value = "first")
     private ProductDTO first;

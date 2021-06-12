@@ -1,6 +1,8 @@
 package Server.Domain.UserManager;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
+import Server.DAL.DALControllers.DALTestService;
+import Server.DAL.DomainDTOs.UserDTO;
 import Server.Domain.CommonClasses.Log;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.*;
@@ -15,15 +17,9 @@ import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Service.IService;
 import com.google.gson.Gson;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.bson.json.JsonReader;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,16 +29,13 @@ import java.util.*;
 
 
 public class CommerceSystem implements IService {
-
-    private UserController userController;
-    private StoreController storeController;
+    
     public static Log log = new Log("Logs.txt");
-//    public static Log logCrit = new Log("CriticaldatabaseLogs.txt"); // todo - add this line
+    public static Log logCrit = new Log("CriticaldatabaseLogs.txt");
 
 
     private CommerceSystem() {
-        this.userController = UserController.getInstance();
-        this.storeController = StoreController.getInstance();
+
     }
 
     private static class CreateSafeThreadSingleton {
@@ -55,305 +48,347 @@ public class CommerceSystem implements IService {
 
     @Override
     public Response<Boolean> init() {
-        Response<Boolean> responseInit;
         Response<Boolean> responseConfig;
-        DALService.getInstance().resetDatabase();
-        //responseConfig = configInit();
-        userController.adminBoot("u1", "u1");
-        responseInit = initState(null);
+        Response<Boolean> responseInit;
 
+        responseConfig = configInit("configfile.json");
+        if(responseConfig.isFailure())
+            return new Response<>(false, true, "initialization failed due to error in config (CRITICAL)");
 
-//        if (responseInit.isFailure() || responseConfig.isFailure())
-//            return new Response<>(false, true, "initialization failed (CRITICAL)");
+        // Start threads in DAL, responsible for saving data in DB and cleaning cache
+        DALService.getInstance().startDB();
+
+        // for testing
+        DALService.getInstance().resetDatabase(); //todo - remove that
+
+        if(DALService.getInstance().getStore(0) != null){
+            System.out.println(" -------------- System initialization already occurred in the past -------------- ");
+            return new Response<>(true, false, "initialization complete");
+        }
+
+        responseInit = initState("initfileforpresentation");
+        if(responseInit.isFailure())
+            return new Response<>(false, true, "initialization failed due to error in init (CRITICAL)");
 
         return new Response<>(true, false, "initialization complete");
     }
 
     @Override
     public Response<String> addGuest() {
-        return userController.addGuest();
+        return UserController.getInstance().addGuest();
     }
 
     @Override
     public Response<String> removeGuest(String name) {
-        return userController.removeGuest(name);
+        return UserController.getInstance().removeGuest(name);
     }
 
     @Override
     public Response<Boolean> register(String prevName, String username, String pwd) {
-        return userController.register(prevName, username, pwd);
+        return UserController.getInstance().register(prevName, username, pwd);
     }
 
     @Override
     public Response<String> login(String prevName, String username, String pwd) {
-        return userController.login(prevName, username, pwd);
+        return UserController.getInstance().login(prevName, username, pwd);
     }
 
     @Override
     public Response<List<StoreClientDTO>> searchByStoreName(String storeName) {
-        return storeController.searchByStoreName(storeName);
+        return StoreController.getInstance().searchByStoreName(storeName);
     }
 
     @Override
     public Response<List<ProductClientDTO>> searchByProductName(String productName) {
-        return storeController.searchByProductName(productName);
+        return StoreController.getInstance().searchByProductName(productName);
     }
 
     @Override
     public Response<List<ProductClientDTO>> searchByProductCategory(String category) {
-        return storeController.searchByCategory(category);
+        return StoreController.getInstance().searchByCategory(category);
     }
 
     @Override
     public Response<List<ProductClientDTO>> searchByProductKeyword(String keyword) {
-        return storeController.searchByKeyWord(keyword);
+        return StoreController.getInstance().searchByKeyWord(keyword);
     }
 
     @Override
     public Response<Boolean> addToCart(String username, int storeID, int productID) {
-        return userController.addToCart(username, storeID, productID);
+        return UserController.getInstance().addToCart(username, storeID, productID);
     }
 
     @Override
     public Response<Boolean> removeFromCart(String username, int storeID, int productID) {
-        return userController.removeProduct(username, storeID, productID);
+        return UserController.getInstance().removeProduct(username, storeID, productID);
     }
 
     @Override
     public Response<List<BasketClientDTO>> getCartDetails(String username) {
-        return userController.getShoppingCartContents(username);
+        return UserController.getInstance().getShoppingCartContents(username);
     }
 
     @Override
     public Response<Boolean> updateProductQuantity(String username, int storeID, int productID, int amount) {
-        return userController.updateProductQuantity(username, storeID, productID, amount);
+        return UserController.getInstance().updateProductQuantity(username, storeID, productID, amount);
     }
 
     @Override
     public Response<Boolean> directPurchase(String username, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
-        return userController.purchase(username, paymentDetails, supplyDetails);
+        return UserController.getInstance().purchase(username, paymentDetails, supplyDetails);
     }
 
     @Override
     public Response<Boolean> bidOffer(String username, int productID, int storeID, double priceOffer) {
-        return userController.bidOffer(username, productID, storeID, priceOffer);
+        return UserController.getInstance().bidOffer(username, productID, storeID, priceOffer);
     }
 
     @Override
     public Response<Boolean> bidManagerReply(String username, String offeringUsername, int productID, int storeID, double bidReply) {
-        return userController.bidManagerReply(username, offeringUsername, productID, storeID, bidReply);
+        return UserController.getInstance().bidManagerReply(username, offeringUsername, productID, storeID, bidReply);
     }
 
     @Override
     public Response<Boolean> bidUserReply(String username, int productID, int storeID, PaymentDetails paymentDetails, SupplyDetails supplyDetails) {
-        return userController.bidUserReply(username, productID, storeID, paymentDetails, supplyDetails);
+        return UserController.getInstance().bidUserReply(username, productID, storeID, paymentDetails, supplyDetails);
     }
 
     @Override
     public Response<List<Integer>> getStoreOwned(String username) {
-        return userController.getStoreOwned(username);
+        return UserController.getInstance().getStoreOwned(username);
+    }
+
+    @Override
+    public Response<List<String>> getMyStores(String username) {
+        return UserController.getInstance().getMyStores(username);
     }
 
     @Override
     public Response<StoreClientDTO> getStore(int storeID) {
-        return storeController.getStore(storeID);
+        return StoreController.getInstance().getStore(storeID);
     }
 
     @Override
     public User getUserByName(String username) {
-        return userController.getUserByName(username);
+        return UserController.getInstance().getUserByName(username);
     }
 
     @Override
     public Response<String> logout(String username) {
-        return userController.logout(username);
+        return UserController.getInstance().logout(username);
     }
 
     @Override
     public Response<Integer> openStore(String username, String storeName) {
-        return userController.openStore(username, storeName);
+        return UserController.getInstance().openStore(username, storeName);
     }
 
     @Override
     public Response<Boolean> addProductReview(String username, int storeID, int productID, String review) {
-        return userController.addProductReview(username, storeID, productID, review);
+        return UserController.getInstance().addProductReview(username, storeID, productID, review);
     }
 
     @Override
     public Response<List<PurchaseClientDTO>> getPurchaseHistory(String username) {
-        return userController.getPurchaseHistoryContents(username);
+        return UserController.getInstance().getPurchaseHistoryContents(username);
     }
 
     @Override
     public Response<Boolean> addProductsToStore(String username, ProductClientDTO productDTO, int amount) {
-        return userController.addProductsToStore(username, productDTO, amount);
+        return UserController.getInstance().addProductsToStore(username, productDTO, amount);
     }
 
     @Override
     public Response<Boolean> removeProductsFromStore(String username, int storeID, int productID, int amount) {
-        return userController.removeProductsFromStore(username, storeID, productID, amount);
+        return UserController.getInstance().removeProductsFromStore(username, storeID, productID, amount);
     }
 
     @Override
     public Response<Boolean> updateProductInfo(String username, int storeID, int productID, double newPrice, String newName) {
-        return userController.updateProductInfo(username, storeID, productID, newPrice, newName);
+        return UserController.getInstance().updateProductInfo(username, storeID, productID, newPrice, newName);
     }
 
     @Override
-    public Response<PurchasePolicy> getPurchasePolicy(String username, int storeID) {
-        return userController.getPurchasePolicy(username, storeID);
+    public Response<String> getPurchasePolicy(String username, int storeID) {
+        return UserController.getInstance().getPurchasePolicy(username, storeID);
     }
 
     @Override
-    public Response<DiscountPolicy> getDiscountPolicy(String username, int storeID) {
-        return userController.getDiscountPolicy(username, storeID);
+    public Response<String> getDiscountPolicy(String username, int storeID) {
+        return UserController.getInstance().getDiscountPolicy(username, storeID);
+    }
+
+    @Override
+    public Response<PurchasePolicy> getPurchasePolicyReal(String username, int storeID) {
+        return UserController.getInstance().getPurchasePolicyReal(username, storeID);
+    }
+
+    @Override
+    public Response<DiscountPolicy> getDiscountPolicyReal(String username, int storeID) {
+        return UserController.getInstance().getDiscountPolicyReal(username, storeID);
     }
 
     @Override
     public Response<Boolean> addDiscountRule(String username, int storeID, DiscountRule discountRule) {
-        return userController.addDiscountRule(username, storeID, discountRule);
+        return UserController.getInstance().addDiscountRule(username, storeID, discountRule);
     }
 
     @Override
     public Response<Boolean> addPurchaseRule(String username, int storeID, PurchaseRule purchaseRule) {
-        return userController.addPurchaseRule(username, storeID, purchaseRule);
+        return UserController.getInstance().addPurchaseRule(username, storeID, purchaseRule);
     }
 
     @Override
     public Response<Boolean> removeDiscountRule(String username, int storeID, int discountRuleID) {
-        return userController.removeDiscountRule(username, storeID, discountRuleID);
+        return UserController.getInstance().removeDiscountRule(username, storeID, discountRuleID);
     }
 
     @Override
     public Response<Boolean> removePurchaseRule(String username, int storeID, int purchaseRuleID) {
-        return userController.removePurchaseRule(username, storeID, purchaseRuleID);
+        return UserController.getInstance().removePurchaseRule(username, storeID, purchaseRuleID);
     }
 
     @Override
     public Response<Boolean> appointStoreOwner(String appointerName, String appointeeName, int storeID) {
-        return userController.appointOwner(appointerName, appointeeName, storeID);
+        return UserController.getInstance().appointOwner(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> removeOwnerAppointment(String appointerName, String appointeeName, int storeID) {
-        return userController.removeOwnerAppointment(appointerName, appointeeName, storeID);
+        return UserController.getInstance().removeOwnerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<List<String>> getUserPermissions(String username, int storeID) {
-        return userController.getUserPermissions(username, storeID);
+        return UserController.getInstance().getUserPermissions(username, storeID);
     }
 
     @Override
     public Response<Double> getTotalSystemRevenue(String username) {
-        return userController.getTotalSystemRevenue(username);
+        return UserController.getInstance().getTotalSystemRevenue(username);
     }
 
     @Override
-    public Response<String> getDailyStatistics(String adminName, String date) {
-        return userController.getDailyStatistics(adminName, LocalDate.parse(date));
+    public Response<List<String>> getDailyStatistics(String adminName, LocalDate date) {
+        return UserController.getInstance().getDailyStatistics(adminName, date);
+    }
+
+    @Override
+    public Response<Boolean> isAdmin(String username) {
+        return UserController.getInstance().isAdmin(username);
     }
 
     @Override
     public Response<Double> getTotalStoreRevenue(String username, int storeID) {
-        return userController.getTotalStoreRevenue(username, storeID);
+        return UserController.getInstance().getTotalStoreRevenue(username, storeID);
     }
 
     @Override
     public Response<Boolean> appointStoreManager(String appointerName, String appointeeName, int storeID) {
-        return userController.appointManager(appointerName, appointeeName, storeID);
+        return UserController.getInstance().appointManager(appointerName, appointeeName, storeID);
     }
 
     @Override
     public Response<Boolean> addPermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
-        return userController.addPermission(permitting, storeId, permitted, permission);
+        return UserController.getInstance().addPermission(permitting, storeId, permitted, permission);
     }
 
     @Override
     public Response<Boolean> removePermission(String permitting, int storeId, String permitted, PermissionsEnum permission) {
-        return userController.removePermission(permitting, storeId, permitted, permission);
+        return UserController.getInstance().removePermission(permitting, storeId, permitted, permission);
     }
 
     @Override
     public Response<Boolean> removeManagerAppointment(String appointerName, String appointeeName, int storeID) {
-        return userController.removeManagerAppointment(appointerName, appointeeName, storeID);
+        return UserController.getInstance().removeManagerAppointment(appointerName, appointeeName, storeID);
     }
 
     @Override
-    public Response<List<User>> getStoreWorkersDetails(String username, int storeID) {
-        return userController.getStoreWorkersDetails(username, storeID);
+    public Response<List<UserDTO>> getStoreWorkersDetails(String username, int storeID) {
+        return UserController.getInstance().getStoreWorkersDetails(username, storeID);
     }
 
     @Override
     public Response<Collection<PurchaseClientDTO>> getPurchaseDetails(String username, int storeID) {
-        return userController.getPurchaseDetails(username, storeID);
+        return UserController.getInstance().getPurchaseDetails(username, storeID);
     }
 
     @Override
     public Response<List<PurchaseClientDTO>> getUserPurchaseHistory(String adminName, String username) {
-        return userController.getUserPurchaseHistory(adminName, username);
+        return UserController.getInstance().getUserPurchaseHistory(adminName, username);
     }
 
     @Override
     public Response<Collection<PurchaseClientDTO>> getStorePurchaseHistory(String adminName, int storeID) {
-        return userController.getStorePurchaseHistory(adminName, storeID);
+        return UserController.getInstance().getStorePurchaseHistory(adminName, storeID);
     }
 
-    public Response<Boolean> configInit(){
+    public Response<Boolean> configInit(String filename){
         Gson gson = new Gson();
         try {
-            Path pathToFile = Paths.get(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\configfile.json");
+            Path pathToFile = Paths.get(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\" + filename);
             byte [] jsonBytes = Files.readAllBytes(pathToFile);
             String jsonString = new String(jsonBytes);
 
             Properties data = gson.fromJson(jsonString, Properties.class);
 
+            // check connection to remote db
+            String dbloc = data.getProperty("dbloc");
+            String dbName = data.getProperty("dbname");
+
+            DALService conDB = DALService.getInstance();
+            conDB.setURL(dbloc);
+            conDB.setName(dbName);
+
+            DALTestService testconDB = DALTestService.getInstance();
+            testconDB.setURL(dbloc);
+            testconDB.setName(dbName);
+
+            if(!conDB.checkConnection())
+                return new Response<>(false, true, "DB Connection failed (CRITICAL)");
+
+            // initiate admin
             String adminUsername = data.getProperty("adminuser");
             String adminPassword = data.getProperty("adminpass");
 
-            userController.adminBoot(adminUsername, adminPassword);
+            UserController.getInstance().adminBoot(adminUsername, adminPassword);
 
-            String dbloc = data.getProperty("dbloc");
-            String dbUsername = data.getProperty("dbuser");
-            String dbPassword = data.getProperty("dbpass");
+            // check connection to external systems
+            String extsysloc = data.getProperty("extsysloc");
 
-            MongoClient mongoClient = MongoClients.create(dbloc);
-            mongoClient.close();
+            ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
+            con.setSysLoc(extsysloc);
+            boolean extSysRes = con.checkConnection();
+            if(extSysRes)
+                con.closeConnection();
+            else
+                return new Response<>(false, true, "External System connection failed. (CRITICAL)");
 
-//            String extsysloc = data.getProperty("extsysloc");
-//
-//            ExternalSystemsConnection con = ExternalSystemsConnection.getInstance();
-//            con.setSysLoc(extsysloc);
-//            boolean extSysRes = con.createHandshake().getResult();
-//            if(extSysRes)
-//                con.closeConnection();
-//            else
-//                throw new Exception("External System connection failed.");
-
-            return new Response<>(true,false,"System initialized successfully.");
+            return new Response<>(true,false,"System configured successfully.");
         }
         catch(Exception e) {
-            e.printStackTrace();
-            return new Response<>(false,true,"Error with config file | DB connection failed | External System connection failed.");
+            return new Response<>(false, true, "Error with config file. (CRITICAL)");
         }
     }
 
 
     public Response<Boolean> initState(String filename) {
-
         try {
             File file;
             if(filename != null){
-                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\" + filename);
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\" + filename);
             }
             else {
-                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initfile");
+                file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\Server\\Domain\\UserManager\\initFiles\\initfile");
             }
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
             fis.close();
             String str = new String(data, StandardCharsets.UTF_8);
+            if(str.length() == 0){
+                return new Response<>(true, false, "Successfully initialized the system with the initialization file");
+            }
             String[] funcs = str.split(";");
             String[] attributes;
             String currUser = addGuest().getResult();
@@ -401,6 +436,7 @@ public class CommerceSystem implements IService {
             }
         }
         catch (Exception e) {
+            e.printStackTrace();
             return new Response<>(false, true, "init: unexpected syntax");
         }
         return new Response<>(true, false, "Successfully initialized the system with the initialization file");

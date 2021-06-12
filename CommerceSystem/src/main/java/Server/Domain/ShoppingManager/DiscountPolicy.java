@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.DiscountPolicyDTO;
+import Server.DAL.DomainDTOs.DiscountPolicyDTO;
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -74,5 +74,14 @@ public class DiscountPolicy {
             if (discountRule.getID() == id)
                 return discountRule;
         return null;
+    }
+
+    public String getDescription() {
+        StringBuilder result = new StringBuilder();
+
+        for(DiscountRule discount: discountRules)
+            result.append("- ").append(discount.toString()).append("\n");
+
+        return result.toString();
     }
 }

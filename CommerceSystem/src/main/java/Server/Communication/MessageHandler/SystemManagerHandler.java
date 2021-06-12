@@ -7,6 +7,7 @@ import Server.Domain.ShoppingManager.PurchaseRules.*;
 import Server.Service.CommerceService;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -64,6 +65,32 @@ public class SystemManagerHandler extends  Handler{
 
                 response = service.addPurchaseRule(username, Integer.parseInt(storeID), purchaseRule);
             }
+            case "removeDiscountRule" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String discountID = data.getProperty("discountRuleID");
+
+                response = service.removeDiscountRule(username, Integer.parseInt(storeID), Integer.parseInt(discountID));
+            }
+            case "removePurchaseRule" -> {
+                String username = data.getProperty("username");
+                String storeID = data.getProperty("storeID");
+                String purchaseRuleID = data.getProperty("purchaseRuleID");
+
+                response = service.removePurchaseRule(username, Integer.parseInt(storeID), Integer.parseInt(purchaseRuleID));
+            }
+
+            case "getDailyStatistics" -> {
+                String adminName = data.getProperty("adminName");
+                String date = data.getProperty("date");
+
+                response = service.getDailyStatistics(adminName, LocalDate.parse(date));
+            }
+            case "isAdmin" -> {
+                String username = data.getProperty("username");
+
+                response = service.isAdmin(username);
+            }
             default -> response = new Response<>(false, true, "INVALID INPUT: "+input);  // end of the chain of responsibility
         }
 
@@ -99,8 +126,10 @@ public class SystemManagerHandler extends  Handler{
                 String[] ruleList = parseList(policyRules);
                 List<PurchaseRule> rules = new LinkedList<>();
 
-                for(String purchaseRule: ruleList)
-                    rules.add(parsePurchaseRule(purchaseRule));
+                for(String purchaseRule: ruleList) {
+                    PurchaseRule x = parsePurchaseRule(purchaseRule);
+                    rules.add(x);
+                }
                 rule = new AndCompositionPurchaseRule(rules);
             }
 
@@ -121,33 +150,41 @@ public class SystemManagerHandler extends  Handler{
 
                 String[] condStrList = parseList(conditions);
                 String[] impliedCondStrList = parseList(impliedConditions);
-
+                String pred;
                 List<Predicate> condList = new LinkedList<>();
                 List<Predicate> impliedCondList = new LinkedList<>();
 
                 for(String s : condStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("basketPredicate")){
-                        condList.add(parseBasketPredicate(s));
+                        pred = data.getProperty("basketPredicate");
+                        condList.add(parseBasketPredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        condList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        condList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        condList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        condList.add(parseProductPredicate(pred));
                     }
                     else
-                        throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
+                        throw new IllegalArgumentException("Invalid predicate type provided to purchase rule");
                 }
 
                 for(String s : impliedCondStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("basketPredicate")){
-                        impliedCondList.add(parseBasketPredicate(s));
+                        pred = data.getProperty("basketPredicate");
+                        impliedCondList.add(parseBasketPredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        impliedCondList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        impliedCondList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        impliedCondList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        impliedCondList.add(parseProductPredicate(pred));
                     }
                     else
                         throw new IllegalArgumentException("Invalid predicate type provided to purchase rule");
@@ -256,16 +293,21 @@ public class SystemManagerHandler extends  Handler{
                 String discount = data.getProperty("discount");
                 String predicates = data.getProperty("predicates");
                 String[] predStrList = parseList(predicates);
+                String pred;
                 List<Predicate> predList = new LinkedList<>();
                 for(String s : predStrList){
+                    data = gson.fromJson(s, Properties.class);
                     if(s.contains("storePredicate")){
-                        predList.add(parseStorePredicate(s));
+                        pred = data.getProperty("storePredicate");
+                        predList.add(parseStorePredicate(pred));
                     }
                     else if(s.contains("categoryPredicate")){
-                        predList.add(parseCategoryPredicate(s));
+                        pred = data.getProperty("categoryPredicate");
+                        predList.add(parseCategoryPredicate(pred));
                     }
                     else if(s.contains("productPredicate")){
-                        predList.add(parseProductPredicate(s));
+                        pred = data.getProperty("productPredicate");
+                        predList.add(parseProductPredicate(pred));
                     }
                     else
                         throw new IllegalArgumentException("Invalid predicate type provided to discount rule");
@@ -335,6 +377,6 @@ public class SystemManagerHandler extends  Handler{
     private String[] parseList(String listStr){
         //String str = listStr.substring(1, listStr.length() - 1);
 
-        return listStr.split(",");
+        return listStr.split(", ");
     }
 }

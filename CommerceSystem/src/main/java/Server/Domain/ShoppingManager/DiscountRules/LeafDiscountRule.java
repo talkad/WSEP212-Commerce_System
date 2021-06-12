@@ -6,6 +6,7 @@ import java.util.Map;
 
 public abstract class LeafDiscountRule implements DiscountRule {
     protected final static int NOT_SET = -1;
+    protected final static double COMPOSITION_USE_ONLY = -100;
     protected int id;
     protected double discount;
 

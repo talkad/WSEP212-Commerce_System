@@ -1,7 +1,7 @@
 package Server.Service.DataObjects;
 
 
-import Server.DAL.ReplyMessageDTO;
+import Server.DAL.DomainDTOs.ReplyMessageDTO;
 
 public class ReplyMessage {
     String type;

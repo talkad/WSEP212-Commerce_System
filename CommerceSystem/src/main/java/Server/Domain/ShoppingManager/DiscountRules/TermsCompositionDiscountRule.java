@@ -1,7 +1,6 @@
 package Server.Domain.ShoppingManager.DiscountRules;
 
 import Server.DAL.DiscountRuleDTOs.DiscountRuleDTO;
-import Server.DAL.DiscountRuleDTOs.SumCompositionDiscountRuleDTO;
 import Server.DAL.DiscountRuleDTOs.TermsCompositionDiscountRuleDTO;
 import Server.DAL.PredicateDTOs.PredicateDTO;
 import Server.Domain.ShoppingManager.Predicates.Predicate;
@@ -61,6 +60,19 @@ public class TermsCompositionDiscountRule extends CompoundDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Terms Composition: " + id;
+        return "Terms Composition Rule No." + id + ":\n";
+    }
+
+    @Override
+    public String toString() {
+        String[] compoundStrings = new String[predicates.size()];
+        int i = 0;
+        for(Predicate predicate : predicates){
+            compoundStrings[i] = predicate.toString();
+            ++i;
+        }
+
+        return "Terms Composition Discount Rule No." + id + ":\\n" +  "Receive a " + discount + "% discount on category " + category + " - \\n" +
+                  String.join("AND\\n", compoundStrings);
     }
 }

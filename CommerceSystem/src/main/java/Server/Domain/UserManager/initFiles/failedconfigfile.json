@@ -1,0 +1,7 @@
+{
+  "adminuser": "a1",
+  "adminpass": "a1",
+  "dbloc": "verybadloc",
+  "dbname": "trashname",
+  "extsysloc": "https://cs-bgu-wsep.herokuapp.com/"
+}

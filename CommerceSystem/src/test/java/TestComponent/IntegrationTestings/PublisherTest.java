@@ -1,10 +1,11 @@
 package TestComponent.IntegrationTestings;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
 import Server.Domain.ShoppingManager.Store;
 import Server.Domain.ShoppingManager.StoreController;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.ExternalSystemsAdapters.PaymentDetails;
 import Server.Domain.UserManager.ExternalSystemsAdapters.SupplyDetails;
 import Server.Domain.UserManager.Publisher;
@@ -19,7 +20,8 @@ public class PublisherTest {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
 
@@ -28,7 +30,6 @@ public class PublisherTest {
         int productID = 4562781;
         ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         String costumerName = UserController.getInstance().addGuest().getResult();
@@ -66,7 +67,6 @@ public class PublisherTest {
         int productID = 2345682;
         ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         String costumerName = UserController.getInstance().addGuest().getResult();
@@ -113,7 +113,6 @@ public class PublisherTest {
         int productID = 514523;
         ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         String costumerName = UserController.getInstance().addGuest().getResult();
@@ -151,7 +150,6 @@ public class PublisherTest {
         int productID = 5687589;
         ProductClientDTO productDTO;
         CommerceService commerceService = CommerceService.getInstance();
-        commerceService.init();
         UserController userController = UserController.getInstance();
         String initialUserName = commerceService.addGuest().getResult();
         String costumerName = UserController.getInstance().addGuest().getResult();

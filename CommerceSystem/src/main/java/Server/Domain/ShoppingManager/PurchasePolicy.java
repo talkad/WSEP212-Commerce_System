@@ -1,6 +1,6 @@
 package Server.Domain.ShoppingManager;
 
-import Server.DAL.PurchasePolicyDTO;
+import Server.DAL.DomainDTOs.PurchasePolicyDTO;
 import Server.DAL.PurchaseRuleDTOs.PurchaseRuleDTO;
 import Server.Domain.CommonClasses.Response;
 import Server.Domain.ShoppingManager.DTOs.ProductClientDTO;
@@ -71,5 +71,14 @@ public class PurchasePolicy {
             if (purchaseRule.getID() == id)
                 return purchaseRule;
         return null;
+    }
+
+    public String getDescription() {
+        StringBuilder result = new StringBuilder();
+
+        for(PurchaseRule rule: purchaseRules)
+            result.append("- ").append(rule.toString()).append("\n");
+
+        return result.toString();
     }
 }

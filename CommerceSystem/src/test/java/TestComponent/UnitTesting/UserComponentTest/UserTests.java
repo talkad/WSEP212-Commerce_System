@@ -1,6 +1,7 @@
 package TestComponent.UnitTesting.UserComponentTest;
 
-import Server.DAL.DALService;
+import Server.DAL.DALControllers.DALService;
+import Server.Domain.UserManager.CommerceSystem;
 import Server.Domain.UserManager.PermissionsEnum;
 import Server.Domain.UserManager.User;
 import Server.Domain.UserManager.UserController;
@@ -18,7 +19,8 @@ public class UserTests {
 
     @Before
     public void setUp(){
-        DALService.getInstance().useTestDatabase();
+        CommerceSystem.getInstance().configInit("successconfigfile.json");
+        DALService.getInstance().startDB();
         DALService.getInstance().resetDatabase();
     }
 

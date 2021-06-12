@@ -42,6 +42,15 @@ public class ConditionalCategoryDiscountRule extends CategoryDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Conditional category discount: Products that belong to category " + category + " have a discount of " + discount + "%";
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Category Discount Rule No." + id + ":\\n" +
+                                                                                            discount + "% Discount - " + categoryPredicate.toString())
+                                                                                            : categoryPredicate.toString();
+    }
+
+    @Override
+    public String toString() {
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Category Discount Rule No." + id + ":\\n" +
+                discount + "% Discount - \\n" + categoryPredicate.toString())
+                : categoryPredicate.toString();
     }
 }

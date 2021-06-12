@@ -4,11 +4,14 @@ import Server.Domain.ShoppingManager.DiscountRules.DiscountRule;
 import Server.Domain.ShoppingManager.DiscountRules.OrCompositionDiscountRule;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Property;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.List;
 
 @Embedded
-public class OrCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO{
+@BsonDiscriminator("OrCompositionDiscountRuleDTO")
+
+public class OrCompositionDiscountRuleDTO extends CompoundDiscountRuleDTO {
 
     @Property(value = "category")
     private String category;

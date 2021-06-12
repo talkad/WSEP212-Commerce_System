@@ -6,9 +6,9 @@ class DeletePermission extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            functionName: 'addPermission',
-            permitting: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            functionName: 'removePermission',
+            permitting: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
             permitted: '',
             permissions: '',
         };

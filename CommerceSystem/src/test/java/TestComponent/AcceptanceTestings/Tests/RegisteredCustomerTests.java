@@ -20,10 +20,9 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
     private static boolean initialized = false;
 
     @Before
-    public void setUp(){
+    public void setUp() throws InterruptedException {
         if(!initialized) {
             super.setUp(true);
-
             String guestName = bridge.addGuest().getResult();
             bridge.register(guestName, "aviad", "123456");
             bridge.register(guestName, "shalom", "123456");
@@ -53,7 +52,8 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
             bridge.appointStoreOwner("aviad", "shalom", storeID);
             bridge.appointStoreOwner("aviad", "tzemah", storeID);
 
-            initialized = true;
+            //initialized = true;
+
         }
     }
 
@@ -101,6 +101,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
         Response<Boolean> reviewResult = bridge.addProductReview("shalom", productDTO.getStoreID(),
                 productDTO.getProductID(), "best simania i ever bought! solid 5/7");
         Assert.assertTrue(reviewResult.getResult());
+
 
         // checking if the review was added
         searchResult = bridge.searchByProductName("simania zoheret");
@@ -337,6 +338,7 @@ public class RegisteredCustomerTests extends ProjectAcceptanceTests{
 
     @Test
     public void reviewProductSuccessStoredNotificationTest(){ // 9.1 good (3.3)
+
         PaymentDetails paymentDetails = new PaymentDetails("2222333344445555", "4", "2021", "Israel Israelovice", "262", "20444444");
         SupplyDetails supplyDetails = new SupplyDetails("Israel Israelovice", "Rager Blvd 12", "Beer Sheva", "Israel", "8458527");
 

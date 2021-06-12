@@ -38,12 +38,12 @@ public class DirectPurchase {
         Response<Integer> supplyRes;
 
         if (res.isFailure())
-            return new Response<>(null, true, "Purchase Failed:\n" + res.getErrMsg() + " | doesn't created external connection");
+            return new Response<>(null, true, "Purchase Failed:\n" + res.getErrMsg() + " | didn't create external connection");
 
         paymentRes = paymentSystemAdapter.pay(paymentDetails);
         if(paymentRes.isFailure()) {
             storeController.addProductsToInventories(cart);
-            return new Response<>(null, true, "Payment failed" + " | created external connection");
+            return new Response<>(null, true, paymentRes.getErrMsg() + " => " +"Payment failed" + " | created external connection");
         }
 
         supplyRes = supplySystemAdapter.supply(supplyDetails);
@@ -54,8 +54,10 @@ public class DirectPurchase {
             if(cancelRes.isFailure())
                 return  new Response<>(null, true, "Delivery failed and you have been charged but the payment cancellation failed | created external connection");
 
-            return new Response<>(null, true, "Delivery failed" + " | created external connection");
+            return new Response<>(null, true, supplyRes.getErrMsg() + " => " +"Delivery failed" + " | created external connection");
         }
+
+        StoreController.getInstance().addToHistory(cart);
 
         return new Response<>(res.getResult(), false, "The purchase was successful" + " | created external connection");
     }

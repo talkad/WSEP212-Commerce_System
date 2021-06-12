@@ -70,4 +70,9 @@ public class BasketPredicate implements Predicate {
 
         return (amountOfProducts >= minUnits && amountOfProducts <= maxUnits) && totalPrice >= minPrice;
     }
+
+    @Override
+    public String toString() {
+        return "If basket contains at least " + minUnits + " and at most " + maxUnits + " and baskets overall price is at least " + minPrice +".\\n" ;
+    }
 }

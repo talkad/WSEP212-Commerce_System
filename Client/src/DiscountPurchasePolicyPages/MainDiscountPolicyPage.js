@@ -1,4 +1,4 @@
-import React from "react";
+    import React from "react";
 import StaticUserInfo from "../API/StaticUserInfo";
 import ReactDOM from "react-dom";
 import CategoryDiscountRule from "./CategoryDiscountRule";
@@ -11,8 +11,8 @@ class MainDiscountPolicyPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: StaticUserInfo.getUsername(),
-            storeId: StaticUserInfo.getStoreId(),
+            username: window.sessionStorage.getItem('username'),
+            storeId: window.sessionStorage.getItem('storeID'),
         };
     }
 

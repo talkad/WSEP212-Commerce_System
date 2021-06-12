@@ -39,4 +39,9 @@ public class StorePredicate implements Predicate {
 
         return (numOfProducts >= minUnits && numOfProducts <= maxUnits) && totalPrice >= minPrice;
     }
+
+    @Override
+    public String toString() {
+        return "If you buy at least " + minUnits + " and at most " + maxUnits + " and overall price is at least " + minPrice +".\\n" ;
+    }
 }
