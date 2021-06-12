@@ -27,7 +27,7 @@ public class ServerApp {
 
             // Configure the bootstrap
             EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-            EventLoopGroup workerGroup = new NioEventLoopGroup();
+            EventLoopGroup workerGroup = new NioEventLoopGroup(20);
 
             // Load the certificates and initiate the SSL context
             //        SSLHandlerProvider.initSSLContext();

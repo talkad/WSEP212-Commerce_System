@@ -118,8 +118,11 @@ public class ExternalSystemsConnection {
             HttpPost httpPost = (sysLoc == null) ? new HttpPost(sysLoc) :
                     new HttpPost(sysLoc);
             httpPost.setEntity(postParams);
-
-            CloseableHttpResponse httpResponse = client.execute(httpPost);
+            CloseableHttpResponse httpResponse = null;
+            try {
+                httpResponse = client.execute(httpPost);
+            }
+            catch(Exception ignored){}
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 
