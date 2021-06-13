@@ -51,7 +51,7 @@ public class CommerceSystem implements IService {
         Response<Boolean> responseConfig;
         Response<Boolean> responseInit;
 
-        responseConfig = configInit("failedconfigfile.json");
+        responseConfig = configInit("configfile.json");
         if(responseConfig.isFailure())
             return new Response<>(false, true, "initialization failed due to error in config (CRITICAL)");
 

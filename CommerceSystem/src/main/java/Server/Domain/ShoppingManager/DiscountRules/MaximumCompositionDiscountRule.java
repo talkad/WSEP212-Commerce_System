@@ -50,6 +50,6 @@ public class MaximumCompositionDiscountRule extends CompoundDiscountRule {
             compoundStrings[i] = rule.toString();
             ++i;
         }
-        return "Maximum Composition Discount Rule No." + id + ":\\n" + "Receive the highest of the following discounts:\\n" + String.join("", compoundStrings);
+        return "Maximum Composition Discount Rule No." + id + ":\n" + "Receive the highest of the following discounts:\n" + String.join("", compoundStrings);
     }
 }

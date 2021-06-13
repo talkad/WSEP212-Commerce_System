@@ -59,7 +59,7 @@ public class AndCompositionDiscountRule extends CompoundDiscountRule {
             ++i;
         }
 
-        return "And Composition Discount Rule No." + id + ":\\n" + "Receive a " + discount + "% discount on category " + category + " - \\n" +
-                    String.join("AND\\n", compoundStrings);
+        return "And Composition Discount Rule No." + id + ":\n" + "Receive a " + discount + "% discount on category " + category + " - \n" +
+                    String.join("AND\n", compoundStrings);
     }
 }

@@ -33,6 +33,11 @@ public class StoreDiscountRule extends LeafDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Store Discount Rule No." + id + ": " + this.discount + "% discount on the entire store.\\n";
+        return "Store Discount Rule No." + id + ": " + this.discount + "% discount on the entire store.\n";
+    }
+
+    @Override
+    public String toString() {
+        return "Store Discount Rule No." + id + ": " + this.discount + "% discount on the entire store.\n";
     }
 }

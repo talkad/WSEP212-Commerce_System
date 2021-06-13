@@ -68,9 +68,9 @@ public class ConditioningCompositionPurchaseRule extends CompoundPurchaseRule{
         String [] compoundStrings = new String[conditionsMap.size()];
         int i = 0;
         for(Map.Entry<Predicate, Predicate> entry : conditionsMap.entrySet()) {
-            compoundStrings[i] = "----------\\n" + entry.getKey() + "IMPLIES\\n" + entry.getValue() + "----------\\n";
+            compoundStrings[i] = "----------\n" + entry.getKey() + "IMPLIES\n" + entry.getValue() + "----------\n";
             ++i;
         }
-        return "Conditioning Composition Purchase Rule No." + id + ":\\n" + String.join("", compoundStrings);
+        return "Conditioning Composition Purchase Rule No." + id + ":\n" + String.join("", compoundStrings);
     }
 }

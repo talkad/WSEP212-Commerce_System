@@ -60,7 +60,7 @@ public class OrCompositionDiscountRule extends CompoundDiscountRule {
             ++i;
         }
 
-        return "Or Composition Discount Rule No." + id + ":\\n" + "Receive a " + discount + "% discount on category " + category + " - \\n" +
-                String.join("OR\\n", compoundStrings);
+        return "Or Composition Discount Rule No." + id + ":\n" + "Receive a " + discount + "% discount on category " + category + " - \n" +
+                String.join("OR\n", compoundStrings);
     }
 }

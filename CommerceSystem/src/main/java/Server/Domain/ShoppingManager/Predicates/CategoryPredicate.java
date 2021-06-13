@@ -39,6 +39,6 @@ public class CategoryPredicate implements Predicate {
 
     @Override
     public String toString() {
-        return "If you buy at least " + minUnits + " and at most " + maxUnits + " that belong to category " + category +".\\n" ;
+        return "If you buy at least " + minUnits + " and at most " + maxUnits + " that belong to category " + category +".\n" ;
     }
 }

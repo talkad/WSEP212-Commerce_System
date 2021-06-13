@@ -38,6 +38,11 @@ public class CategoryDiscountRule extends LeafDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Category Discount Rule No." + id + ": Products that belong to category " + category + " have a discount of " + this.discount + "%\\n";
+        return "Category Discount Rule No." + id + ": Products that belong to category " + category + " have a discount of " + this.discount + "%\n";
+    }
+
+    @Override
+    public String toString() {
+        return "Category Discount Rule No." + id + ": Products that belong to category " + category + " have a discount of " + this.discount + "%\n";
     }
 }

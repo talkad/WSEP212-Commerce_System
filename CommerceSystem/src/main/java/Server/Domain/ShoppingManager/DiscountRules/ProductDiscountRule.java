@@ -34,8 +34,12 @@ public class ProductDiscountRule extends LeafDiscountRule {
 
     @Override
     public String getDescription() {
-        return "Product Discount Rule No." + id + ": ProductID - " + productID + " with a discount of " + this.discount + "%\\n";
+        return "Product Discount Rule No." + id + ": ProductID - " + productID + " with a discount of " + this.discount + "%\n";
     }
 
+    @Override
+    public String toString() {
+        return "Product Discount Rule No." + id + ": ProductID - " + productID + " with a discount of " + this.discount + "%\n";
+    }
 
 }

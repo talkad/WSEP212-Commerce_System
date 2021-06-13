@@ -47,6 +47,6 @@ public class AndCompositionPurchaseRule extends CompoundPurchaseRule {
             ++i;
         }
 
-        return "And Composition Purchase Rule No." + id + ":\\n" + String.join("AND\\n", compoundStrings);
+        return "And Composition Purchase Rule No." + id + ":\n" + String.join("AND\n", compoundStrings);
     }
 }

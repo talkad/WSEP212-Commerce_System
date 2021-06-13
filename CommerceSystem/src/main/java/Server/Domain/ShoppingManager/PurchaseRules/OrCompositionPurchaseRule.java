@@ -44,6 +44,6 @@ public class OrCompositionPurchaseRule extends CompoundPurchaseRule {
             ++i;
         }
 
-        return "Or Composition Purchase Rule No." + id + ":\\n" + String.join("OR\\n", compoundStrings);
+        return "Or Composition Purchase Rule No." + id + ":\n" + String.join("OR\n", compoundStrings);
     }
 }

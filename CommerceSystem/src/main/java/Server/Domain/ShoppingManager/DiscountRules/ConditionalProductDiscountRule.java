@@ -46,8 +46,8 @@ public class ConditionalProductDiscountRule extends ProductDiscountRule {
 
     @Override
     public String toString() {
-        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Product Discount Rule No." + id + ":\\n" +
-                discount + "% Discount - \\n" + productPredicate.toString())
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Product Discount Rule No." + id + ":\n" +
+                discount + "% Discount - \n" + productPredicate.toString())
                 : productPredicate.toString();
     }
 }

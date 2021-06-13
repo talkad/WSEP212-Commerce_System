@@ -67,7 +67,7 @@ public class ConditionalStoreDiscountRule extends StoreDiscountRule {
 
     @Override
     public String toString() {
-        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Store Discount Rule No." + id + ":\\n " +
-                this.discount + "% discount on the entire store - \\n" + storePredicate.toString())
+        return (discount != COMPOSITION_USE_ONLY) ? ("Conditional Store Discount Rule No." + id + ":\n " +
+                this.discount + "% discount on the entire store - \n" + storePredicate.toString())
                 : storePredicate.toString();    }
 }
