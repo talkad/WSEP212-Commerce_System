@@ -45,7 +45,7 @@ class AddPermission extends React.Component {
                             <option>Choose permission...</option>
                             <option value="ADD_PRODUCT_TO_STORE">Add product to store</option>
                             <option value="REMOVE_PRODUCT_FROM_STORE">Remove product from store</option>
-                            <option value="UPDATE_PRODUCT_PRICE">Update product price</option>
+                            <option value="UPDATE_PRODUCT_INFO">Update product price</option>
 
                             <option value="VIEW_DISCOUNT_POLICY">View discount policy</option>
                             <option value="VIEW_PURCHASE_POLICY">View purchase policy</option>

@@ -35,7 +35,7 @@ public class CommerceSystem implements IService {
 
 
     private CommerceSystem() {
-
+        log.logger.info("asd");
     }
 
     private static class CreateSafeThreadSingleton {
@@ -51,7 +51,7 @@ public class CommerceSystem implements IService {
         Response<Boolean> responseConfig;
         Response<Boolean> responseInit;
 
-        responseConfig = configInit("configfile.json");
+        responseConfig = configInit("failedconfigfile.json");
         if(responseConfig.isFailure())
             return new Response<>(false, true, "initialization failed due to error in config (CRITICAL)");
 
