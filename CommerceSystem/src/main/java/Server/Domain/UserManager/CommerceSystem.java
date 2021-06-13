@@ -59,7 +59,7 @@ public class CommerceSystem implements IService {
         DALService.getInstance().startDB();
 
         // for testing
-        DALService.getInstance().resetDatabase(); //todo - remove that
+//        DALService.getInstance().resetDatabase(); //todo - remove that
 
         if(DALService.getInstance().getStore(0) != null){
             System.out.println(" -------------- System initialization already occurred in the past -------------- ");
@@ -406,7 +406,6 @@ public class CommerceSystem implements IService {
                 }
                 else if(funcs[i].startsWith("openStore")){
                     attributes = funcs[i].substring(10).split(", ");
-                    //currStoreId =
                     openStore(attributes[0], attributes[1].substring(0, attributes[1].length() - 1));
 
                 }
@@ -439,6 +438,29 @@ public class CommerceSystem implements IService {
             e.printStackTrace();
             return new Response<>(false, true, "init: unexpected syntax");
         }
+
+//        // pre-populated
+//        String freshGuest;
+//        for(int i = 0; i < 5; i++) {
+//            freshGuest = addGuest().getResult();
+//            register(freshGuest, "manager" + i, "manager" + i);
+//            freshGuest = addGuest().getResult();
+//            register(freshGuest, "registered" + i, "registered" + i);
+//        }
+//
+//        for(int i = 0; i < 5; i++){
+//            freshGuest = addGuest().getResult();
+//            register(freshGuest, "owner" + i, "owner" + i);
+//            login(freshGuest, "owner" + i, "owner" + i);
+//            Response<Integer> res = openStore("owner" + i, "store" + i);
+//
+//            for(int j = 0; j < 5; j++){
+//                addProductsToStore("owner" + i, new ProductClientDTO("product" + j , res.getResult(), 19.99, Arrays.asList("aProductCategory"), Arrays.asList("aProductKeyword" + i)), 5);
+//            }
+//            appointStoreManager("owner" + i, "manager" + i, res.getResult());
+//            freshGuest = logout("user" + i).getResult();
+//        }
+
         return new Response<>(true, false, "Successfully initialized the system with the initialization file");
     }
 
