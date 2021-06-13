@@ -18,17 +18,35 @@ class ProductEntryCart extends React.Component{
         this.updateQuantity = this.updateQuantity.bind(this);
     }
 
-    quantityChange(event){
-        if(parseInt(event.target.value) !== this.state.original_amount){
-            this.setState({amount: event.target.value, showUpdate: true});
+    isNumber(evt) {
+        let input = evt.target.value;
+
+        for(let i=0; i<input.length; i++){
+            if(input[i] < '0' || input[i] > '9'){
+                return false;
+            }
         }
-        else{
-            this.setState({amount: event.target.value, showUpdate: false});
+
+        return true;
+    }
+
+    quantityChange(event){
+        if(this.isNumber(event)) {
+            if (parseInt(event.target.value) !== this.state.original_amount) {
+                this.setState({amount: event.target.value, showUpdate: true});
+            } else {
+                this.setState({amount: event.target.value, showUpdate: false});
+            }
         }
     }
 
     updateQuantity(){
-        Connection.sendUpdateProductQuantity(this.props.storeID, this.props.productID, this.state.amount).then(this.props.handlerUpdate, Connection.handleReject);
+        if(this.state.amount !== ''){
+            Connection.sendUpdateProductQuantity(this.props.storeID, this.props.productID, this.state.amount).then(this.props.handlerUpdate, Connection.handleReject);
+        }
+        else{
+            alert("please enter a quantity")
+        }
     }
 
     render() {
